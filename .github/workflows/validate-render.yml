@@ -1,0 +1,64 @@
+name: Validate Render service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server.js'
+      - 'package.json'
+      - 'api/**'
+      - 'index.html'
+      - 'success.html'
+      - 'cancel.html'
+      - '.github/workflows/validate-render.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Syntax checks
+        run: |
+          node --check server.js
+          node --check api/create-checkout-session.js
+
+      - name: Start service without real Stripe key
+        env:
+          PORT: '3000'
+          APP_URL: 'http://127.0.0.1:3000'
+          STRIPE_SECRET_KEY: 'stub_not_a_real_key'
+        run: |
+          node server.js > /tmp/miele-server.log 2>&1 &
+          echo $! > /tmp/miele-server.pid
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:3000/ > /tmp/index.out; then
+              break
+            fi
+            sleep 0.5
+          done
+          curl -fsS http://127.0.0.1:3000/ > /tmp/index.out
+          curl -fsS http://127.0.0.1:3000/success.html > /tmp/success.out
+          curl -fsS http://127.0.0.1:3000/cancel.html > /tmp/cancel.out
+          grep -q '<!DOCTYPE html>' /tmp/index.out
+          test "$(curl -sS -o /tmp/api.out -w '%{http_code}' -H 'Content-Type: application/json' -d '{"items":[]}' http://127.0.0.1:3000/api/create-checkout-session)" = '400'
+          grep -q 'carrello' /tmp/api.out
+
+      - name: Stop service
+        if: always()
+        run: |
+          if [ -f /tmp/miele-server.pid ]; then kill $(cat /tmp/miele-server.pid) || true; fi
+          cat /tmp/miele-server.log || true
