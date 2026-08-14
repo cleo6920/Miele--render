@@ -74,14 +74,75 @@ const cacheBustScript = `
 })();
 </script>`;
 
-// Existing ecommerce: keep index.html untouched and serve it only as the Shop.
+const shopBridgeScript = `
+<style>
+  #center-home-link {
+    position: fixed;
+    left: 16px;
+    bottom: 18px;
+    z-index: 99999;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(212,175,55,.85);
+    background: rgba(7,55,43,.96);
+    color: #fff;
+    text-decoration: none;
+    font: 700 14px/1.1 system-ui, sans-serif;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    backdrop-filter: blur(8px);
+  }
+  #center-home-link:hover { background: #0b4a39; }
+  @media (max-width: 640px) {
+    #center-home-link { left: 10px; bottom: 12px; padding: 10px 13px; font-size: 13px; }
+  }
+</style>
+<script>
+(() => {
+  const addHomeLink = () => {
+    if (document.getElementById('center-home-link')) return;
+    const link = document.createElement('a');
+    link.id = 'center-home-link';
+    link.href = '/';
+    link.setAttribute('aria-label', 'Torna alla Home del Centro');
+    link.textContent = '← Home Centro';
+    document.body.appendChild(link);
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', addHomeLink, { once: true });
+  } else {
+    addHomeLink();
+  }
+})();
+</script>`;
+
+// Existing ecommerce: keep index.html logic untouched and serve it only as the Shop.
 const sendShop = (_req, res) => {
   try {
     const indexPath = path.join(__dirname, 'index.html');
     let html = fs.readFileSync(indexPath, 'utf8');
+
+    // Rebrand only the visible ecommerce identity for the new Center.
+    html = html.replaceAll("L'Italiano", 'La Bottega del Centro');
+    html = html.replaceAll('I Mieli Artigianali', "Mieli e prodotti dell'alveare");
+
+    // Keep the shop name static and preserve the rotating 3D effect on the Italian flag only.
+    html = html.replace(
+      'className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2 text-3d-effect"',
+      'className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2"'
+    );
+    html = html.replace(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="60" height="40" viewBox="0 0 30 20">',
+      '<svg className="text-3d-effect" xmlns="http://www.w3.org/2000/svg" width="60" height="40" viewBox="0 0 30 20">'
+    );
+
+    const injected = `${cacheBustScript}\n${shopBridgeScript}`;
     html = html.includes('</head>')
-      ? html.replace('</head>', `${cacheBustScript}\n</head>`)
-      : `${cacheBustScript}\n${html}`;
+      ? html.replace('</head>', `${injected}\n</head>`)
+      : `${injected}\n${html}`;
+
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
