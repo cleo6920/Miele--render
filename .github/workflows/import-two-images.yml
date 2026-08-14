@@ -1,0 +1,32 @@
+name: Import two image files
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-two-images.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download original images
+        run: |
+          mkdir -p images
+          curl -L --fail --retry 3 -o images/bee-energy.png 'https://drive.usercontent.google.com/download?id=1stTELBqYNY-OvpTgedjcr3Zz4XeFyKlw&export=download&confirm=t'
+          curl -L --fail --retry 3 -o images/propol-active.png 'https://drive.usercontent.google.com/download?id=1gWEUwbEnGW6J3ZCx_IQyRyhTe845RWLL&export=download&confirm=t'
+          file images/bee-energy.png images/propol-active.png
+          test -s images/bee-energy.png
+          test -s images/propol-active.png
+      - name: Commit image files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add images/bee-energy.png images/propol-active.png
+          git diff --cached --quiet && exit 0
+          git commit -m 'Add two original product images [skip ci]'
+          git push
