@@ -1,3 +1,3 @@
-# Miele Render
+# Miele--render
 
-Repository dedicato alla versione Render del sito Miele Artigianale.
+Render deployment for the Centro di Alveoterapia Integrata site with integrated ecommerce.
