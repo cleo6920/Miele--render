@@ -62,6 +62,10 @@ app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
 app.post('/api/create-checkout-session', createCheckoutSession);
 
+// Serve real files from the repository first.
+app.use(express.static(__dirname));
+
+// Only if a local image does not exist, try the old Drive fallback.
 app.get('/images/:filename', (req, res, next) => {
   const id = driveImageIds[req.params.filename];
   if (!id) return next();
@@ -70,7 +74,6 @@ app.get('/images/:filename', (req, res, next) => {
   return res.redirect(302, `https://drive.google.com/uc?export=view&id=${encodeURIComponent(id)}`);
 });
 
-app.use(express.static(__dirname));
 app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 app.listen(PORT, '0.0.0.0', () => {
