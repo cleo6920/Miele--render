@@ -5,7 +5,24 @@ const createCheckoutSession = require('./api/create-checkout-session');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-const IMAGE_VERSION = '20260814-2';
+const IMAGE_VERSION = '20260814-3';
+
+// Rebuild the approved Center homepage image from a text-safe base64 asset.
+// This avoids binary corruption when updating the repository through the connector.
+try {
+  const encodedImagePath = path.join(__dirname, 'images', 'centro-porticato-home-fixed.txt');
+  const targetImagePath = path.join(__dirname, 'images', 'centro-porticato-home.jpg');
+  if (fs.existsSync(encodedImagePath)) {
+    const encoded = fs.readFileSync(encodedImagePath, 'utf8').trim();
+    const imageBuffer = Buffer.from(encoded, 'base64');
+    if (imageBuffer.length > 1000) {
+      fs.writeFileSync(targetImagePath, imageBuffer);
+      console.log('[Miele Artigianale] Immagine Centro ricostruita correttamente.');
+    }
+  }
+} catch (error) {
+  console.error('[Miele Artigianale] Errore ricostruzione immagine Centro:', error);
+}
 
 app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
@@ -154,7 +171,6 @@ const shopBridgeScript = `
 <script>
 (() => {
   const enhanceShop = () => {
-    // Home link lives in normal document flow: visible, but never covers products.
     if (!document.getElementById('center-home-bar')) {
       const bar = document.createElement('div');
       bar.id = 'center-home-bar';
@@ -169,7 +185,6 @@ const shopBridgeScript = `
       else document.body.appendChild(bar);
     }
 
-    // Find the visible ecommerce brand created by React.
     const headings = Array.from(document.querySelectorAll('h1,h2,h3'));
     const title = headings.find((el) => (el.textContent || '').includes('La Bottega del Centro'));
     if (title) {
@@ -205,18 +220,14 @@ const shopBridgeScript = `
 })();
 </script>`;
 
-// Existing ecommerce: keep index.html logic untouched and serve it only as the Shop.
 const sendShop = (_req, res) => {
   try {
     const indexPath = path.join(__dirname, 'index.html');
     let html = fs.readFileSync(indexPath, 'utf8');
 
-    // Rebrand only the visible ecommerce identity for the new Center.
     html = html.replaceAll("L'Italiano", 'La Bottega del Centro');
     html = html.replaceAll('I Mieli Artigianali', "Mieli e prodotti dell'alveare");
 
-    // Keep the shop name static. The runtime bridge moves the flag next to the subtitle
-    // so flag + subtitle rotate together while the shop name remains readable.
     html = html.replace(
       'className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2 text-3d-effect"',
       'className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2"'
@@ -242,7 +253,6 @@ const sendPage = (filename) => (_req, res) => {
   return res.sendFile(path.join(__dirname, filename));
 };
 
-// New institutional site.
 app.get('/', sendPage('home.html'));
 app.get('/home', sendPage('home.html'));
 app.get('/centro', sendPage('centro.html'));
@@ -251,12 +261,10 @@ app.get('/bacheca', sendPage('bacheca.html'));
 app.get('/chi-siamo', sendPage('chi-siamo.html'));
 app.get('/contatti', sendPage('contatti.html'));
 
-// Existing ecommerce preserved as-is.
 app.get('/shop', sendShop);
 app.get('/shop.html', sendShop);
 app.get('/index.html', sendShop);
 
-// Serve CSS, success/cancel pages and remaining repository files normally.
 app.use(express.static(__dirname));
 
 app.listen(PORT, '0.0.0.0', () => {
