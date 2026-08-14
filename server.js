@@ -76,44 +76,131 @@ const cacheBustScript = `
 
 const shopBridgeScript = `
 <style>
+  html, body { max-width: 100%; overflow-x: hidden !important; }
+
+  #center-home-bar {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 9px 18px;
+    background: #07372b;
+    border-bottom: 1px solid rgba(212,175,55,.55);
+    position: relative;
+    z-index: 40;
+  }
   #center-home-link {
-    position: fixed;
-    left: 16px;
-    bottom: 18px;
-    z-index: 99999;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 11px 16px;
+    padding: 9px 15px;
     border-radius: 999px;
-    border: 1px solid rgba(212,175,55,.85);
-    background: rgba(7,55,43,.96);
+    border: 1px solid rgba(212,175,55,.9);
+    background: rgba(255,255,255,.04);
     color: #fff;
     text-decoration: none;
     font: 700 14px/1.1 system-ui, sans-serif;
-    box-shadow: 0 8px 24px rgba(0,0,0,.35);
-    backdrop-filter: blur(8px);
+    box-shadow: 0 5px 16px rgba(0,0,0,.2);
   }
-  #center-home-link:hover { background: #0b4a39; }
-  @media (max-width: 640px) {
-    #center-home-link { left: 10px; bottom: 12px; padding: 10px 13px; font-size: 13px; }
+  #center-home-link:hover { background: rgba(212,175,55,.16); }
+
+  .shop-brand-title {
+    max-width: min(920px, 100%) !important;
+    width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    font-size: clamp(2.4rem, 5.4vw, 5.4rem) !important;
+    line-height: .98 !important;
+    text-align: right !important;
+  }
+  .shop-brand-wrap {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+  .shop-subtitle-spin {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 14px !important;
+    max-width: 100% !important;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    animation: rotate3DLinear 20s infinite linear;
+    transform-origin: center center;
+  }
+  .shop-subtitle-spin svg {
+    flex: 0 0 auto;
+    width: 60px;
+    height: 40px;
+  }
+
+  @media (max-width: 760px) {
+    #center-home-bar { padding: 8px 10px; }
+    #center-home-link { padding: 8px 12px; font-size: 13px; }
+    .shop-brand-title {
+      font-size: clamp(2rem, 10vw, 3.15rem) !important;
+      text-align: center !important;
+    }
+    .shop-subtitle-spin {
+      justify-content: center !important;
+      font-size: clamp(1rem, 4.6vw, 1.45rem) !important;
+      text-align: center !important;
+    }
   }
 </style>
 <script>
 (() => {
-  const addHomeLink = () => {
-    if (document.getElementById('center-home-link')) return;
-    const link = document.createElement('a');
-    link.id = 'center-home-link';
-    link.href = '/';
-    link.setAttribute('aria-label', 'Torna alla Home del Centro');
-    link.textContent = '← Home Centro';
-    document.body.appendChild(link);
+  const enhanceShop = () => {
+    // Home link lives in normal document flow: visible, but never covers products.
+    if (!document.getElementById('center-home-bar')) {
+      const bar = document.createElement('div');
+      bar.id = 'center-home-bar';
+      const link = document.createElement('a');
+      link.id = 'center-home-link';
+      link.href = '/';
+      link.setAttribute('aria-label', 'Torna alla Home del Centro');
+      link.textContent = '← Home Centro';
+      bar.appendChild(link);
+      const first = document.body.firstElementChild;
+      if (first) document.body.insertBefore(bar, first);
+      else document.body.appendChild(bar);
+    }
+
+    // Find the visible ecommerce brand created by React.
+    const headings = Array.from(document.querySelectorAll('h1,h2,h3'));
+    const title = headings.find((el) => (el.textContent || '').includes('La Bottega del Centro'));
+    if (title) {
+      title.classList.add('shop-brand-title');
+      if (title.parentElement) title.parentElement.classList.add('shop-brand-wrap');
+
+      const wrap = title.parentElement;
+      if (wrap) {
+        const subtitle = Array.from(wrap.querySelectorAll('p')).find((el) =>
+          (el.textContent || '').includes("Mieli e prodotti dell'alveare")
+        );
+        const flag = title.querySelector('svg');
+        if (subtitle && flag && !subtitle.classList.contains('shop-subtitle-spin')) {
+          flag.classList.remove('text-3d-effect');
+          subtitle.classList.add('shop-subtitle-spin');
+          subtitle.insertBefore(flag, subtitle.firstChild);
+        }
+      }
+    }
   };
+
+  const start = () => {
+    enhanceShop();
+    const observer = new MutationObserver(() => enhanceShop());
+    observer.observe(document.body, { childList: true, subtree: true });
+  };
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', addHomeLink, { once: true });
+    document.addEventListener('DOMContentLoaded', start, { once: true });
   } else {
-    addHomeLink();
+    start();
   }
 })();
 </script>`;
@@ -128,14 +215,11 @@ const sendShop = (_req, res) => {
     html = html.replaceAll("L'Italiano", 'La Bottega del Centro');
     html = html.replaceAll('I Mieli Artigianali', "Mieli e prodotti dell'alveare");
 
-    // Keep the shop name static and preserve the rotating 3D effect on the Italian flag only.
+    // Keep the shop name static. The runtime bridge moves the flag next to the subtitle
+    // so flag + subtitle rotate together while the shop name remains readable.
     html = html.replace(
       'className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2 text-3d-effect"',
       'className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2"'
-    );
-    html = html.replace(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="60" height="40" viewBox="0 0 30 20">',
-      '<svg className="text-3d-effect" xmlns="http://www.w3.org/2000/svg" width="60" height="40" viewBox="0 0 30 20">'
     );
 
     const injected = `${cacheBustScript}\n${shopBridgeScript}`;
