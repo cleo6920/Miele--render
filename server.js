@@ -74,7 +74,8 @@ const cacheBustScript = `
 })();
 </script>`;
 
-const sendIndex = (_req, res) => {
+// Existing ecommerce: keep index.html untouched and serve it only as the Shop.
+const sendShop = (_req, res) => {
   try {
     const indexPath = path.join(__dirname, 'index.html');
     let html = fs.readFileSync(indexPath, 'utf8');
@@ -86,17 +87,31 @@ const sendIndex = (_req, res) => {
     res.setHeader('Expires', '0');
     return res.type('html').send(html);
   } catch (error) {
-    console.error('[Miele Artigianale] Errore caricamento index:', error);
+    console.error('[Miele Artigianale] Errore caricamento shop:', error);
     return res.status(500).send('Errore caricamento pagina.');
   }
 };
 
-// Serve the versioned HTML before generic static middleware, so old browsers
-// receive fresh image URLs even if they cached a previous /images/* redirect.
-app.get('/', sendIndex);
-app.get('/index.html', sendIndex);
+const sendPage = (filename) => (_req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  return res.sendFile(path.join(__dirname, filename));
+};
 
-// Serve the remaining repository files normally.
+// New institutional site.
+app.get('/', sendPage('home.html'));
+app.get('/home', sendPage('home.html'));
+app.get('/centro', sendPage('centro.html'));
+app.get('/alveoterapia', sendPage('alveoterapia.html'));
+app.get('/bacheca', sendPage('bacheca.html'));
+app.get('/chi-siamo', sendPage('chi-siamo.html'));
+app.get('/contatti', sendPage('contatti.html'));
+
+// Existing ecommerce preserved as-is.
+app.get('/shop', sendShop);
+app.get('/shop.html', sendShop);
+app.get('/index.html', sendShop);
+
+// Serve CSS, success/cancel pages and remaining repository files normally.
 app.use(express.static(__dirname));
 
 app.listen(PORT, '0.0.0.0', () => {
