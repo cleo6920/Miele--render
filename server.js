@@ -5,7 +5,7 @@ const createCheckoutSession = require('./api/create-checkout-session');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-const IMAGE_VERSION = '20260827-4';
+const IMAGE_VERSION = '20260827-5';
 
 try {
   const encodedImagePath = path.join(__dirname, 'images', 'centro-porticato-home-fixed.txt');
@@ -86,11 +86,46 @@ const shopBridgeScript = `
   .shop-subtitle-spin svg { flex:0 0 auto; width:60px; height:40px; }
   .honey-selection-card { grid-column:span 2!important; width:100%!important; max-width:540px!important; aspect-ratio:8/5!important; }
   .honey-selection-card h3 { font-size:clamp(17px,2.4vw,24px)!important; color:#f6c85f!important; }
+  .selected-honey-divider { grid-column:1 / -1 !important; width:100%; margin:30px 0 8px; padding:20px 22px; border-radius:18px; border:1px solid rgba(212,175,55,.45); background:linear-gradient(135deg,rgba(7,55,43,.78),rgba(22,31,27,.68)); box-shadow:0 10px 26px rgba(0,0,0,.22); }
+  .selected-honey-divider h2 { margin:0; font:700 clamp(1.55rem,3vw,2.35rem)/1.05 Georgia,'Times New Roman',serif; color:#f4c85b; }
+  .selected-honey-divider p { margin:7px 0 0; color:#e7e5e4; font:500 15px/1.45 system-ui,sans-serif; }
   @media(max-width:900px){ .shop-brand-wrap{width:calc(100vw - 32px)!important;max-width:calc(100vw - 32px)!important;margin:12px auto!important;padding:20px 18px 22px!important}.shop-brand-title{font-size:clamp(2rem,8vw,3.8rem)!important;line-height:.96!important} }
-  @media(max-width:760px){ #center-home-bar{padding:8px 10px}#center-home-link{padding:8px 12px;font-size:13px}.shop-brand-wrap{padding:18px 14px 20px!important;border-radius:20px!important}.shop-brand-title{font-size:clamp(1.9rem,10vw,3.25rem)!important;line-height:.98!important}.shop-subtitle-spin{font-size:clamp(.95rem,4.4vw,1.35rem)!important}.honey-selection-card{grid-column:span 1!important;max-width:100%!important;aspect-ratio:4/3!important} }
+  @media(max-width:760px){ #center-home-bar{padding:8px 10px}#center-home-link{padding:8px 12px;font-size:13px}.shop-brand-wrap{padding:18px 14px 20px!important;border-radius:20px!important}.shop-brand-title{font-size:clamp(1.9rem,10vw,3.25rem)!important;line-height:.98!important}.shop-subtitle-spin{font-size:clamp(.95rem,4.4vw,1.35rem)!important}.honey-selection-card{grid-column:span 1!important;max-width:100%!important;aspect-ratio:4/3!important}.selected-honey-divider{padding:16px 15px;margin-top:22px} }
 </style>
 <script>
 (() => {
+  const selectedHoneyNames = ['Miele di Acacia','Miele di Castagno','Millefiori di Rucas','Alta Montagna','Miele di Eucalipto','Eucamiel','Euca Miel','Propol Miel','Propolmiel','Balsam Miel','Balsammiel'];
+
+  const findProductCard = (node) => {
+    let current = node;
+    for (let i = 0; current && i < 7; i += 1, current = current.parentElement) {
+      if (current.querySelector && current.querySelector('img') && current.parentElement && current.parentElement.children.length > 1) return current;
+    }
+    return null;
+  };
+
+  const addSelectedHoneyDivider = () => {
+    if (document.getElementById('selected-honey-divider')) return;
+    const busatelloTitle = Array.from(document.querySelectorAll('h1,h2,h3')).find(el => /Mieli del Busatello/i.test(el.textContent || ''));
+    if (!busatelloTitle) return;
+
+    const allTextNodes = Array.from(document.querySelectorAll('h2,h3,h4,p,span,div'));
+    const nameNode = allTextNodes.find(el => {
+      const text = (el.textContent || '').trim();
+      return text.length < 120 && selectedHoneyNames.some(name => text.toLowerCase().includes(name.toLowerCase()));
+    });
+    if (!nameNode) return;
+
+    const card = findProductCard(nameNode);
+    if (!card || !card.parentElement) return;
+
+    const divider = document.createElement('div');
+    divider.id = 'selected-honey-divider';
+    divider.className = 'selected-honey-divider';
+    divider.innerHTML = '<h2>Selezionati per voi</h2><p>Una selezione speciale di mieli scelti dalla Fabbrica delle Api.</p>';
+    card.parentElement.insertBefore(divider, card);
+  };
+
   const enhanceShop = () => {
     if (!document.getElementById('center-home-bar')) {
       const bar = document.createElement('div'); bar.id = 'center-home-bar';
@@ -110,6 +145,7 @@ const shopBridgeScript = `
     }
     const honeyHeading = headings.find((el) => (el.textContent || '').includes('La selezione di mieli della Fabbrica delle Api'));
     if (honeyHeading && honeyHeading.parentElement) honeyHeading.parentElement.classList.add('honey-selection-card');
+    addSelectedHoneyDivider();
   };
   const start = () => { enhanceShop(); const observer = new MutationObserver(() => enhanceShop()); observer.observe(document.body,{childList:true,subtree:true}); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once:true }); else start();
@@ -134,7 +170,6 @@ const sendShop = (_req, res) => {
 
     html = html.replace(/^\s*\{\s*id:\s*["'][^"']*12["'][^\n]*jars:\s*12[^\n]*\},?\s*$/gm, '');
 
-    // Only these honey families remain sellable; all other honey products stay visible but become sold out.
     const honeyAvailabilityHelper = `
             const applyHoneyAvailability = (list) => {
                 const allowedHoneyTokens = [
