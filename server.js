@@ -122,8 +122,11 @@ const shopBridgeScript = `
 
   .shop-brand-wrap {
     min-width: 0 !important;
-    max-width: 100% !important;
-    overflow: visible !important;
+    width: min(760px, calc(100vw - 360px)) !important;
+    max-width: min(760px, calc(100vw - 360px)) !important;
+    margin-left: auto !important;
+    margin-right: 24px !important;
+    overflow: hidden !important;
     position: relative !important;
     padding: 22px 28px 26px !important;
     border-radius: 28px !important;
@@ -145,16 +148,19 @@ const shopBridgeScript = `
   }
 
   .shop-brand-title {
-    max-width: min(1000px, 100%) !important;
+    display: block !important;
+    box-sizing: border-box !important;
     width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
     white-space: normal !important;
     overflow-wrap: normal !important;
     word-break: normal !important;
     font-family: Georgia, 'Times New Roman', serif !important;
-    font-size: clamp(2.7rem, 6vw, 6rem) !important;
-    line-height: .92 !important;
+    font-size: clamp(2.35rem, 4.6vw, 4.9rem) !important;
+    line-height: .94 !important;
     letter-spacing: -.025em !important;
-    text-align: right !important;
+    text-align: center !important;
     text-transform: uppercase !important;
     color: #f6cf69 !important;
     background: linear-gradient(180deg,#fff0a8 0%,#f3c651 42%,#c88716 100%) !important;
@@ -165,9 +171,11 @@ const shopBridgeScript = `
   }
 
   .shop-subtitle-spin {
-    display: inline-flex !important;
+    display: flex !important;
+    width: fit-content !important;
+    margin: 0 auto !important;
     align-items: center !important;
-    justify-content: flex-end !important;
+    justify-content: center !important;
     gap: 14px !important;
     max-width: 100% !important;
     padding-top: 10px !important;
@@ -184,18 +192,31 @@ const shopBridgeScript = `
     height: 40px;
   }
 
+  @media (max-width: 900px) {
+    .shop-brand-wrap {
+      width: calc(100vw - 32px) !important;
+      max-width: calc(100vw - 32px) !important;
+      margin: 12px auto !important;
+      padding: 20px 18px 22px !important;
+    }
+    .shop-brand-title {
+      font-size: clamp(2rem, 8vw, 3.8rem) !important;
+      line-height: .96 !important;
+    }
+  }
+
   @media (max-width: 760px) {
     #center-home-bar { padding: 8px 10px; }
     #center-home-link { padding: 8px 12px; font-size: 13px; }
     .shop-brand-wrap { padding: 18px 14px 20px !important; border-radius: 20px !important; }
     .shop-brand-title {
-      font-size: clamp(2.1rem, 11vw, 3.6rem) !important;
+      font-size: clamp(1.9rem, 10vw, 3.25rem) !important;
       text-align: center !important;
-      line-height: .96 !important;
+      line-height: .98 !important;
     }
     .shop-subtitle-spin {
       justify-content: center !important;
-      font-size: clamp(1rem, 4.6vw, 1.45rem) !important;
+      font-size: clamp(.95rem, 4.4vw, 1.35rem) !important;
       text-align: center !important;
     }
   }
