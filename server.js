@@ -5,7 +5,7 @@ const createCheckoutSession = require('./api/create-checkout-session');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-const IMAGE_VERSION = '20260827-1';
+const IMAGE_VERSION = '20260827-2';
 
 // Rebuild the approved Center homepage image from a text-safe base64 asset.
 // This avoids binary corruption when updating the repository through the connector.
@@ -192,6 +192,17 @@ const shopBridgeScript = `
     height: 40px;
   }
 
+  .honey-selection-card {
+    grid-column: span 2 !important;
+    width: 100% !important;
+    max-width: 540px !important;
+    aspect-ratio: 8 / 5 !important;
+  }
+  .honey-selection-card h3 {
+    font-size: clamp(17px, 2.4vw, 24px) !important;
+    color: #f6c85f !important;
+  }
+
   @media (max-width: 900px) {
     .shop-brand-wrap {
       width: calc(100vw - 32px) !important;
@@ -218,6 +229,11 @@ const shopBridgeScript = `
       justify-content: center !important;
       font-size: clamp(.95rem, 4.4vw, 1.35rem) !important;
       text-align: center !important;
+    }
+    .honey-selection-card {
+      grid-column: span 1 !important;
+      max-width: 100% !important;
+      aspect-ratio: 4 / 3 !important;
     }
   }
 </style>
@@ -257,6 +273,13 @@ const shopBridgeScript = `
         }
       }
     }
+
+    const honeyHeading = headings.find((el) =>
+      (el.textContent || '').includes('La selezione di mieli della Fabbrica delle Api')
+    );
+    if (honeyHeading && honeyHeading.parentElement) {
+      honeyHeading.parentElement.classList.add('honey-selection-card');
+    }
   };
 
   const start = () => {
@@ -280,6 +303,18 @@ const sendShop = (_req, res) => {
 
     html = html.replaceAll("L'Italiano", 'La Fabbrica delle Api');
     html = html.replaceAll('I Mieli Artigianali', "Mieli e prodotti dell'alveare");
+
+    // Unify all honey products in a single selection.
+    html = html.replaceAll("category: 'prelibati'", "category: 'busatello'");
+    html = html.replaceAll('alt="I mieli del Busatello"', 'alt="La selezione di mieli della Fabbrica delle Api"');
+    html = html.replaceAll('>I mieli del Busatello</h3>', '>La selezione di mieli della Fabbrica delle Api</h3>');
+    html = html.replace(
+      /<a className="card" href="#" onClick=\{\(e\) => \{ e\.preventDefault\(\); onSelectCategory\('prelibati'\); \}\}>[\s\S]*?<h3 className="rose">I mieli prelibati<\/h3>\s*<\/a>/,
+      ''
+    );
+
+    // Remove all legacy 12-jar options. A 3-jar promo will be added once its price is defined.
+    html = html.replace(/^\s*\{\s*id:\s*["'][^"']*12["'][^\n]*jars:\s*12[^\n]*\},?\s*$/gm, '');
 
     html = html.replace(
       'className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2 text-3d-effect"',
