@@ -5,7 +5,7 @@ const createCheckoutSession = require('./api/create-checkout-session');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-const IMAGE_VERSION = '20260827-9';
+const IMAGE_VERSION = '20260827-8';
 
 try {
   const encodedImagePath = path.join(__dirname, 'images', 'centro-porticato-home-fixed.txt');
@@ -22,7 +22,7 @@ app.use(express.json({ limit: '1mb' }));
 app.post('/api/create-checkout-session', createCheckoutSession);
 app.use('/images', express.static(path.join(__dirname, 'images'), { etag:true,lastModified:true,maxAge:0,setHeaders:(res)=>{res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');res.setHeader('Pragma','no-cache');res.setHeader('Expires','0');} }));
 
-const cacheBustScript = `<script>(()=>{const version=${JSON.stringify('20260827-9')};const addVersion=(img)=>{if(!img||!img.getAttribute)return;const raw=img.getAttribute('src');if(!raw||!/^(?:\\/?images\\/)/i.test(raw))return;try{const url=new URL(raw,window.location.href);if(url.searchParams.get('v')!==version){url.searchParams.set('v',version);img.src=url.pathname+url.search+url.hash;}}catch(_){}};const scan=(root)=>{if(!root)return;if(root.tagName==='IMG')addVersion(root);if(root.querySelectorAll)root.querySelectorAll('img[src]').forEach(addVersion);};const start=()=>{scan(document);const observer=new MutationObserver(ms=>{for(const m of ms){m.addedNodes.forEach(scan);if(m.type==='attributes'&&m.target.tagName==='IMG')addVersion(m.target);}});observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['src']});};document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start,{once:true}):start();})();</script>`;
+const cacheBustScript = `<script>(()=>{const version=${JSON.stringify('20260827-8')};const addVersion=(img)=>{if(!img||!img.getAttribute)return;const raw=img.getAttribute('src');if(!raw||!/^(?:\\/?images\\/)/i.test(raw))return;try{const url=new URL(raw,window.location.href);if(url.searchParams.get('v')!==version){url.searchParams.set('v',version);img.src=url.pathname+url.search+url.hash;}}catch(_){}};const scan=(root)=>{if(!root)return;if(root.tagName==='IMG')addVersion(root);if(root.querySelectorAll)root.querySelectorAll('img[src]').forEach(addVersion);};const start=()=>{scan(document);const observer=new MutationObserver(ms=>{for(const m of ms){m.addedNodes.forEach(scan);if(m.type==='attributes'&&m.target.tagName==='IMG')addVersion(m.target);}});observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['src']});};document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start,{once:true}):start();})();</script>`;
 
 const shopBridgeScript = `<style>
 html,body{max-width:100%;overflow-x:hidden!important}#center-home-bar{width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:flex-start;padding:9px 18px;background:#07372b;border-bottom:1px solid rgba(212,175,55,.55);position:relative;z-index:40}#center-home-link{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:999px;border:1px solid rgba(212,175,55,.9);background:rgba(255,255,255,.04);color:#fff;text-decoration:none;font:700 14px/1.1 system-ui,sans-serif}.shop-brand-wrap{min-width:0!important;width:min(760px,calc(100vw - 360px))!important;max-width:min(760px,calc(100vw - 360px))!important;margin-left:auto!important;margin-right:24px!important;overflow:hidden!important;position:relative!important;padding:22px 28px 26px!important;border-radius:28px!important;background:linear-gradient(135deg,rgba(7,55,43,.72),rgba(5,18,14,.25))!important;border:1px solid rgba(212,175,55,.45)!important}.shop-brand-title{display:block!important;width:100%!important;margin:0 auto!important;white-space:normal!important;font-family:Georgia,'Times New Roman',serif!important;font-size:clamp(2.35rem,4.6vw,4.9rem)!important;line-height:.94!important;text-align:center!important;text-transform:uppercase!important;background:linear-gradient(180deg,#fff0a8 0%,#f3c651 42%,#c88716 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important}.shop-subtitle-spin{display:flex!important;width:fit-content!important;margin:0 auto!important;align-items:center!important;justify-content:center!important;gap:14px!important;padding-top:10px!important;font-weight:700!important;color:#fff6d8!important;transform-style:preserve-3d;perspective:1000px;animation:rotate3DLinear 20s infinite linear}.shop-subtitle-spin svg{width:60px;height:40px}.honey-selection-card{grid-column:span 2!important;width:100%!important;max-width:540px!important;aspect-ratio:8/5!important}.honey-selection-card h3{font-size:clamp(17px,2.4vw,24px)!important;color:#f6c85f!important}.selected-honey-divider{grid-column:1/-1!important;width:100%;margin:30px 0 8px;padding:20px 22px;border-radius:18px;border:1px solid rgba(212,175,55,.45);background:linear-gradient(135deg,rgba(7,55,43,.78),rgba(22,31,27,.68));box-shadow:0 10px 26px rgba(0,0,0,.22)}.selected-honey-divider h2{margin:0;font:700 clamp(1.55rem,3vw,2.35rem)/1.05 Georgia,'Times New Roman',serif;color:#f4c85b}.selected-honey-divider p{margin:7px 0 0;color:#e7e5e4;font:500 15px/1.45 system-ui,sans-serif}@media(max-width:900px){.shop-brand-wrap{width:calc(100vw - 32px)!important;max-width:calc(100vw - 32px)!important;margin:12px auto!important}}@media(max-width:760px){.honey-selection-card{grid-column:span 1!important;max-width:100%!important;aspect-ratio:4/3!important}.shop-brand-title{font-size:clamp(1.9rem,10vw,3.25rem)!important}}
@@ -39,55 +39,7 @@ const honeyAvailabilityHelper=`
                 const selectedOrder = ['acacia','castagno','rucas','eucalipto','eucamiel','euca miel','propol miel','propolmiel','balsam miel','balsammiel'];
                 const allowedHoneyTokens = [...busatelloOrder, ...selectedOrder];
                 const normalize = (value) => String(value || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
-
-                // The old honey entries remain untouched in index.html / Firestore and Git history.
-                // Only the approved 12 are exposed by the shop.
-                const source = [...list];
-                const ensureMissingHoney = (template, tokens) => {
-                    const exists = source.some((product) => {
-                        const name = normalize(product.name);
-                        return tokens.some((token) => name.includes(token));
-                    });
-                    if (!exists) source.push(template);
-                };
-
-                ensureMissingHoney({
-                    id: 'millefiori-rucas-alta-montagna',
-                    name: 'Millefiori di Rucas – Alta Montagna',
-                    description: 'Miele di alta montagna. Scheda commerciale in aggiornamento: foto e prezzo definitivo da completare.',
-                    image: 'https://placehold.co/400x400/FFF7D6/78350F?text=Rucas+Alta+Montagna',
-                    packs: [{ id: 'rucas1', label: '1 vasetto (250g)', jars: 1, price: 10.00 }],
-                    inStock: false,
-                    stock: 0,
-                    order: 103,
-                    category: 'busatello'
-                }, ['rucas']);
-
-                ensureMissingHoney({
-                    id: 'miele-eucalipto',
-                    name: 'Miele di Eucalipto',
-                    description: 'Miele di eucalipto. Scheda commerciale in aggiornamento: foto e prezzo definitivo da completare.',
-                    image: 'https://placehold.co/400x400/E8F5E9/1B5E20?text=Miele+di+Eucalipto',
-                    packs: [{ id: 'eucalipto1', label: '1 vasetto (250g)', jars: 1, price: 10.00 }],
-                    inStock: false,
-                    stock: 0,
-                    order: 104,
-                    category: 'busatello'
-                }, ['miele di eucalipto']);
-
-                ensureMissingHoney({
-                    id: 'propol-miel',
-                    name: 'Propol Miel',
-                    description: 'Preparato al miele con propoli. Scheda commerciale in aggiornamento: foto e prezzo definitivo da completare.',
-                    image: 'https://placehold.co/400x400/F3E5AB/5D4037?text=Propol+Miel',
-                    packs: [{ id: 'propolmiel1', label: '1 vasetto (250g)', jars: 1, price: 10.00 }],
-                    inStock: false,
-                    stock: 0,
-                    order: 106,
-                    category: 'busatello'
-                }, ['propol miel','propolmiel']);
-
-                const mapped = source.map((product, originalIndex) => {
+                const mapped = list.map((product, originalIndex) => {
                     const normalizedProduct = product.category === 'prelibati' ? { ...product, category: 'busatello' } : product;
                     if (normalizedProduct.category !== 'busatello') return normalizedProduct;
                     const name = normalize(normalizedProduct.name);
@@ -97,15 +49,10 @@ const honeyAvailabilityHelper=`
                     let forcedOrder = 900 + originalIndex;
                     if (busIndex >= 0) forcedOrder = 1 + busIndex;
                     else if (selectedIndex >= 0) forcedOrder = 101 + selectedIndex;
-                    return { ...normalizedProduct, __isApprovedHoney: isAllowed, order: forcedOrder };
+                    const availableProduct = isAllowed ? normalizedProduct : { ...normalizedProduct, inStock: true, stock: 0 };
+                    return { ...availableProduct, order: forcedOrder };
                 });
-
-                const visible = mapped.filter((product) => {
-                    if (product.category !== 'busatello') return true;
-                    return product.__isApprovedHoney === true;
-                });
-
-                return visible.map(({ __isApprovedHoney, ...product }) => product);
+                return mapped;
             };
 `;
 html=html.replace('// === STOCK MODE TOGGLE ===',`${honeyAvailabilityHelper}\n            // === STOCK MODE TOGGLE ===`);html=html.replaceAll('staticInitialProducts.filter(p => allowedCategoriesForShop.includes(p.category))','applyHoneyAvailability(staticInitialProducts).filter(p => allowedCategoriesForShop.includes(p.category))');html=html.replace('const filtered = mergedProducts.filter(p => allowedCategoriesForShop.includes(p.category));','const filtered = applyHoneyAvailability(mergedProducts).filter(p => allowedCategoriesForShop.includes(p.category));');html=html.replace('className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2 text-3d-effect"','className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2"');const injected=`${cacheBustScript}\n${shopBridgeScript}`;html=html.includes('</head>')?html.replace('</head>',`${injected}\n</head>`):`${injected}\n${html}`;res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');res.setHeader('Pragma','no-cache');res.setHeader('Expires','0');return res.type('html').send(html);}catch(error){console.error('[Miele Artigianale] Errore caricamento shop:',error);return res.status(500).send('Errore caricamento pagina.');}};
