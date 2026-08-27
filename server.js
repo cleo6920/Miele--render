@@ -5,7 +5,7 @@ const createCheckoutSession = require('./api/create-checkout-session');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-const IMAGE_VERSION = '20260814-3';
+const IMAGE_VERSION = '20260827-1';
 
 // Rebuild the approved Center homepage image from a text-safe base64 asset.
 // This avoids binary corruption when updating the repository through the connector.
@@ -28,8 +28,6 @@ app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
 app.post('/api/create-checkout-session', createCheckoutSession);
 
-// During active development, force browsers to revalidate image files instead
-// of keeping stale product photos from previous deployments.
 app.use('/images', express.static(path.join(__dirname, 'images'), {
   etag: true,
   lastModified: true,
@@ -122,27 +120,59 @@ const shopBridgeScript = `
   }
   #center-home-link:hover { background: rgba(212,175,55,.16); }
 
-  .shop-brand-title {
-    max-width: min(920px, 100%) !important;
-    width: 100% !important;
-    white-space: normal !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    font-size: clamp(2.4rem, 5.4vw, 5.4rem) !important;
-    line-height: .98 !important;
-    text-align: right !important;
-  }
   .shop-brand-wrap {
     min-width: 0 !important;
     max-width: 100% !important;
     overflow: visible !important;
+    position: relative !important;
+    padding: 22px 28px 26px !important;
+    border-radius: 28px !important;
+    background:
+      radial-gradient(circle at 78% 10%, rgba(255,193,7,.16), transparent 28%),
+      linear-gradient(135deg, rgba(7,55,43,.72), rgba(5,18,14,.25)) !important;
+    border: 1px solid rgba(212,175,55,.45) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 16px 45px rgba(0,0,0,.28) !important;
   }
+
+  .shop-brand-wrap::before {
+    content: '✦';
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    color: #f5c85b;
+    font-size: 18px;
+    text-shadow: 0 0 14px rgba(245,200,91,.8);
+  }
+
+  .shop-brand-title {
+    max-width: min(1000px, 100%) !important;
+    width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    font-family: Georgia, 'Times New Roman', serif !important;
+    font-size: clamp(2.7rem, 6vw, 6rem) !important;
+    line-height: .92 !important;
+    letter-spacing: -.025em !important;
+    text-align: right !important;
+    text-transform: uppercase !important;
+    color: #f6cf69 !important;
+    background: linear-gradient(180deg,#fff0a8 0%,#f3c651 42%,#c88716 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    filter: drop-shadow(0 3px 0 rgba(94,56,0,.8)) drop-shadow(0 8px 18px rgba(0,0,0,.48)) !important;
+  }
+
   .shop-subtitle-spin {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: flex-end !important;
     gap: 14px !important;
     max-width: 100% !important;
+    padding-top: 10px !important;
+    font-weight: 700 !important;
+    color: #fff6d8 !important;
     transform-style: preserve-3d;
     perspective: 1000px;
     animation: rotate3DLinear 20s infinite linear;
@@ -157,9 +187,11 @@ const shopBridgeScript = `
   @media (max-width: 760px) {
     #center-home-bar { padding: 8px 10px; }
     #center-home-link { padding: 8px 12px; font-size: 13px; }
+    .shop-brand-wrap { padding: 18px 14px 20px !important; border-radius: 20px !important; }
     .shop-brand-title {
-      font-size: clamp(2rem, 10vw, 3.15rem) !important;
+      font-size: clamp(2.1rem, 11vw, 3.6rem) !important;
       text-align: center !important;
+      line-height: .96 !important;
     }
     .shop-subtitle-spin {
       justify-content: center !important;
@@ -186,7 +218,7 @@ const shopBridgeScript = `
     }
 
     const headings = Array.from(document.querySelectorAll('h1,h2,h3'));
-    const title = headings.find((el) => (el.textContent || '').includes('La Bottega del Centro'));
+    const title = headings.find((el) => (el.textContent || '').includes('La Fabbrica delle Api'));
     if (title) {
       title.classList.add('shop-brand-title');
       if (title.parentElement) title.parentElement.classList.add('shop-brand-wrap');
@@ -225,7 +257,7 @@ const sendShop = (_req, res) => {
     const indexPath = path.join(__dirname, 'index.html');
     let html = fs.readFileSync(indexPath, 'utf8');
 
-    html = html.replaceAll("L'Italiano", 'La Bottega del Centro');
+    html = html.replaceAll("L'Italiano", 'La Fabbrica delle Api');
     html = html.replaceAll('I Mieli Artigianali', "Mieli e prodotti dell'alveare");
 
     html = html.replace(
