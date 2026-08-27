@@ -5,7 +5,7 @@ const createCheckoutSession = require('./api/create-checkout-session');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-const IMAGE_VERSION = '20260827-5';
+const IMAGE_VERSION = '20260827-6';
 
 try {
   const encodedImagePath = path.join(__dirname, 'images', 'centro-porticato-home-fixed.txt');
@@ -179,10 +179,13 @@ const sendShop = (_req, res) => {
                 ];
                 const normalize = (value) => String(value || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
                 return list.map((product) => {
-                    if (product.category !== 'busatello') return product;
-                    const name = normalize(product.name);
+                    const normalizedProduct = product.category === 'prelibati'
+                        ? { ...product, category: 'busatello' }
+                        : product;
+                    if (normalizedProduct.category !== 'busatello') return normalizedProduct;
+                    const name = normalize(normalizedProduct.name);
                     const isAllowed = allowedHoneyTokens.some((token) => name.includes(token));
-                    return isAllowed ? product : { ...product, inStock: true, stock: 0 };
+                    return isAllowed ? normalizedProduct : { ...normalizedProduct, inStock: true, stock: 0 };
                 });
             };
 `;
