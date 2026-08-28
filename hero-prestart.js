@@ -3,7 +3,7 @@ const path = require('path');
 
 const indexPath = path.join(__dirname, 'index.html');
 const serverPath = path.join(__dirname, 'server.js');
-const ALVEO_HERO_IMAGE = '/images/alveoterapia.png';
+const ALVEO_HERO_IMAGE = '/images/alveoterapia-casetta-hero.jpg';
 const ALVEO_PRODUCTS_HERO_IMAGE = '/images/hero-prodotti-corretta.jpg';
 const BUSATELLO_HIVES_IMAGE = '/images/alveari-busatello.jpg';
 
