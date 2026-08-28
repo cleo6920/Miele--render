@@ -3,10 +3,13 @@ const path = require('path');
 
 const BALSAM_IMAGE = '/images/balsam-miel-final.jpg';
 const BALSAM_PLACEHOLDER = 'https://placehold.co/400x400/A52A2A/FFFFFF?text=Balsammiel';
+const ACACIA_IMAGE = '/images/acacia-shop.jpg';
+const ACACIA_PLACEHOLDER = 'https://placehold.co/400x400/ADD8E6/00008B?text=Miele%20Acacia';
 
 const indexPath = path.join(__dirname, 'index.html');
 let html = fs.readFileSync(indexPath, 'utf8');
 html = html.replaceAll(BALSAM_PLACEHOLDER, BALSAM_IMAGE);
+html = html.replaceAll(ACACIA_PLACEHOLDER, ACACIA_IMAGE);
 
 // Keep static product images authoritative while leaving all other Firestore fields untouched.
 const mergeNeedle = `? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id) }\n                                : staticProduct;`;
@@ -26,5 +29,5 @@ server = server
   .replaceAll("image: '/images/balsam-miel.jpg'", `image: '${BALSAM_IMAGE}'`);
 fs.writeFileSync(serverPath, server, 'utf8');
 
-console.log('[Miele Artigianale] Balsam Miel usa immagine locale verificata:', BALSAM_IMAGE);
+console.log('[Miele Artigianale] Immagini locali verificate:', { balsam: BALSAM_IMAGE, acacia: ACACIA_IMAGE });
 require('./server.js');
