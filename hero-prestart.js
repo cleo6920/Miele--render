@@ -3,7 +3,7 @@ const path = require('path');
 
 const indexPath = path.join(__dirname, 'index.html');
 const serverPath = path.join(__dirname, 'server.js');
-const ALVEO_HERO_IMAGE = '/images/alveoterapia-donna.jpg';
+const ALVEO_HERO_IMAGE = '/images/alveoterapia-donna-hd.jpg';
 const ALVEO_PRODUCTS_HERO_IMAGE = '/images/hero-prodotti-corretta.jpg';
 
 try {
@@ -61,25 +61,43 @@ try {
 
   server = server.replaceAll(
     '.shop-brand-wrap{min-width:0!important;width:min(760px,calc(100vw - 360px))!important;max-width:min(760px,calc(100vw - 360px))!important;margin-left:auto!important;margin-right:24px!important;overflow:hidden!important;position:relative!important;padding:22px 28px 26px!important;border-radius:28px!important;',
-    '.shop-brand-wrap{min-width:0!important;width:min(520px,calc(100vw - 480px))!important;max-width:min(520px,calc(100vw - 480px))!important;margin-left:auto!important;margin-right:24px!important;overflow:hidden!important;position:relative!important;padding:14px 20px 16px!important;border-radius:22px!important;'
+    '.shop-brand-wrap{min-width:0!important;width:min(520px,calc(100vw - 480px))!important;max-width:min(520px,calc(100vw - 480px))!important;margin-left:auto!important;margin-right:24px!important;overflow:hidden!important;position:relative!important;padding:8px 16px 10px!important;border-radius:20px!important;'
   );
 
   server = server.replaceAll(
     'font-size:clamp(2.35rem,4.6vw,4.9rem)!important;line-height:.94!important;',
-    'font-size:clamp(1.9rem,3.2vw,3.4rem)!important;line-height:.96!important;'
+    'font-size:clamp(1.55rem,2.8vw,2.8rem)!important;line-height:.9!important;'
   );
 
-  if (!server.includes('.shop-brand-wrap p{font-size:clamp(1rem,1.8vw,1.35rem)!important;')) {
+  server = server.replaceAll('gap:14px!important;padding-top:10px!important;', 'gap:8px!important;padding-top:4px!important;');
+  server = server.replaceAll('.shop-subtitle-spin svg{width:60px;height:40px}', '.shop-subtitle-spin svg{width:44px;height:29px}');
+
+  if (!server.includes('.shop-brand-wrap p{font-size:clamp(.85rem,1.4vw,1.05rem)!important;')) {
     server = server.replace(
       '.shop-subtitle-spin{display:flex!important;',
-      '.shop-brand-wrap p{font-size:clamp(1rem,1.8vw,1.35rem)!important;line-height:1.2!important;margin-top:8px!important;}\n.shop-subtitle-spin{display:flex!important;'
+      '.shop-brand-wrap p{font-size:clamp(.85rem,1.4vw,1.05rem)!important;line-height:1.1!important;margin-top:4px!important;}\n.shop-subtitle-spin{display:flex!important;'
     );
   }
 
+  if (!server.includes('#busatello-hives-oval{')) {
+    server = server.replace(
+      '.honey-selection-card{',
+      '#busatello-hives-oval{width:min(420px,100%)!important;height:145px!important;margin:10px 24px 0 auto!important;border-radius:999px!important;overflow:hidden!important;border:4px solid #d4af37!important;box-shadow:0 12px 28px rgba(0,0,0,.32)!important;background:#111!important;flex-shrink:0!important}\\n#busatello-hives-oval img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;display:block!important}\\n.honey-selection-card{'
+    );
+    server = server.replace(
+      '@media(max-width:900px){.shop-brand-wrap{width:calc(100vw - 32px)!important;max-width:calc(100vw - 32px)!important;margin:12px auto!important}}',
+      '@media(max-width:900px){.shop-brand-wrap{width:calc(100vw - 32px)!important;max-width:calc(100vw - 32px)!important;margin:10px auto!important}#busatello-hives-oval{width:min(360px,calc(100vw - 48px))!important;height:135px!important;margin:10px auto 0!important}}'
+    );
+  }
+
+  const oldBrandJs = "const title=headings.find(el=>(el.textContent||'').includes('La Fabbrica delle Api'));if(title){title.classList.add('shop-brand-title');if(title.parentElement)title.parentElement.classList.add('shop-brand-wrap');}";
+  const newBrandJs = "const title=headings.find(el=>(el.textContent||'').includes('La Fabbrica delle Api'));if(title){title.classList.add('shop-brand-title');if(title.parentElement){const brandWrap=title.parentElement;brandWrap.classList.add('shop-brand-wrap');if(!document.getElementById('busatello-hives-oval')){const oval=document.createElement('div');oval.id='busatello-hives-oval';oval.innerHTML='<img src=\"/images/alveari-busatello.jpg\" alt=\"Alveari dell\\\'Oasi del Busatello\">';brandWrap.insertAdjacentElement('afterend',oval);}}}";
+  server = server.replace(oldBrandJs, newBrandJs);
+
   fs.writeFileSync(serverPath, server, 'utf8');
-  console.log('[Miele Artigianale] Card Fabbrica delle Api resa più compatta.');
+  console.log('[Miele Artigianale] Card Fabbrica delle Api più bassa e ovale alveari Busatello predisposto.');
 } catch (error) {
-  console.error('[Miele Artigianale] Errore ridimensionamento card Fabbrica delle Api:', error);
+  console.error('[Miele Artigianale] Errore aggiornamento card Fabbrica delle Api:', error);
 }
 
 require('./start.js');
