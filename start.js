@@ -4,7 +4,7 @@ const path = require('path');
 const BALSAM_IMAGE = '/images/balsam-miel-final.jpg';
 const BALSAM_PLACEHOLDER = 'https://placehold.co/400x400/A52A2A/FFFFFF?text=Balsammiel';
 const ACACIA_PLACEHOLDER = 'https://placehold.co/400x400/ADD8E6/00008B?text=Miele%20Acacia';
-const ACACIA_BASE64_FILE = path.join(__dirname, 'images', 'acacia-final-valid.b64');
+const ACACIA_BASE64_FILE = path.join(__dirname, 'images', 'acacia-tiny-valid.b64');
 
 let ACACIA_IMAGE = '/images/acacia-shop-v2.jpg';
 try {
