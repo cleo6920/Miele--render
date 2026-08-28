@@ -39,9 +39,10 @@ if (millefioriPromoCount > 0) {
   console.warn('[Miele Artigianale] Promo Millefiori 12 vasetti non trovata: nessuna modifica bundle applicata.');
 }
 
-// Keep static product images authoritative while leaving all other Firestore fields untouched.
+// Keep static product images authoritative. For Millefiori only, also keep the new tris packs
+// and its shipping message authoritative so Firestore cannot restore the old 12-jar promotion.
 const mergeNeedle = `? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id) }\n                                : staticProduct;`;
-const mergeReplacement = `? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id), image: staticProduct.image }\n                                : staticProduct;`;
+const mergeReplacement = `? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id), image: staticProduct.image, ...(staticProduct.id === 'millefiori' ? { packs: staticProduct.packs, shippingHints: staticProduct.shippingHints } : {}) }\n                                : staticProduct;`;
 if (html.includes(mergeNeedle)) {
   html = html.replaceAll(mergeNeedle, mergeReplacement);
 }
