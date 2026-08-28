@@ -3,8 +3,9 @@ const path = require('path');
 
 const indexPath = path.join(__dirname, 'index.html');
 const serverPath = path.join(__dirname, 'server.js');
-const ALVEO_HERO_IMAGE = '/images/alveoterapia-donna-hd.jpg';
+const ALVEO_HERO_IMAGE = '/images/alveoterapia.png';
 const ALVEO_PRODUCTS_HERO_IMAGE = '/images/hero-prodotti-corretta.jpg';
+const BUSATELLO_HIVES_IMAGE = '/images/alveari-busatello.jpg';
 
 try {
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -51,7 +52,7 @@ try {
   );
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Hero Alveoterapia applicato con doppio ovale.');
+  console.log('[Miele Artigianale] Hero Alveoterapia aggiornato con immagine nitida.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore aggiornamento hero Alveoterapia:', error);
 }
@@ -72,30 +73,16 @@ try {
   server = server.replaceAll('gap:14px!important;padding-top:10px!important;', 'gap:8px!important;padding-top:4px!important;');
   server = server.replaceAll('.shop-subtitle-spin svg{width:60px;height:40px}', '.shop-subtitle-spin svg{width:44px;height:29px}');
 
-  if (!server.includes('.shop-brand-wrap p{font-size:clamp(.85rem,1.4vw,1.05rem)!important;')) {
-    server = server.replace(
-      '.shop-subtitle-spin{display:flex!important;',
-      '.shop-brand-wrap p{font-size:clamp(.85rem,1.4vw,1.05rem)!important;line-height:1.1!important;margin-top:4px!important;}\n.shop-subtitle-spin{display:flex!important;'
-    );
-  }
-
-  if (!server.includes('#busatello-hives-oval{')) {
-    server = server.replace(
-      '.honey-selection-card{',
-      '#busatello-hives-oval{width:min(420px,100%)!important;height:145px!important;margin:10px 24px 0 auto!important;border-radius:999px!important;overflow:hidden!important;border:4px solid #d4af37!important;box-shadow:0 12px 28px rgba(0,0,0,.32)!important;background:#111!important;flex-shrink:0!important}\\n#busatello-hives-oval img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;display:block!important}\\n.honey-selection-card{'
-    );
-    server = server.replace(
-      '@media(max-width:900px){.shop-brand-wrap{width:calc(100vw - 32px)!important;max-width:calc(100vw - 32px)!important;margin:12px auto!important}}',
-      '@media(max-width:900px){.shop-brand-wrap{width:calc(100vw - 32px)!important;max-width:calc(100vw - 32px)!important;margin:10px auto!important}#busatello-hives-oval{width:min(360px,calc(100vw - 48px))!important;height:135px!important;margin:10px auto 0!important}}'
-    );
-  }
-
   const oldBrandJs = "const title=headings.find(el=>(el.textContent||'').includes('La Fabbrica delle Api'));if(title){title.classList.add('shop-brand-title');if(title.parentElement)title.parentElement.classList.add('shop-brand-wrap');}";
-  const newBrandJs = "const title=headings.find(el=>(el.textContent||'').includes('La Fabbrica delle Api'));if(title){title.classList.add('shop-brand-title');if(title.parentElement){const brandWrap=title.parentElement;brandWrap.classList.add('shop-brand-wrap');if(!document.getElementById('busatello-hives-oval')){const oval=document.createElement('div');oval.id='busatello-hives-oval';oval.innerHTML='<img src=\"/images/alveari-busatello.jpg\" alt=\"Alveari dell\\\'Oasi del Busatello\">';brandWrap.insertAdjacentElement('afterend',oval);}}}";
+  const newBrandJs = `const title=headings.find(el=>(el.textContent||'').includes('La Fabbrica delle Api'));if(title){title.classList.add('shop-brand-title');if(title.parentElement){const brandWrap=title.parentElement;brandWrap.classList.add('shop-brand-wrap');brandWrap.style.padding='8px 16px 10px';brandWrap.style.borderRadius='20px';if(!document.getElementById('busatello-hives-oval')){const oval=document.createElement('div');oval.id='busatello-hives-oval';oval.style.cssText='width:min(420px,calc(100vw - 48px));height:145px;margin:10px auto 0;border-radius:999px;overflow:hidden;border:4px solid #d4af37;box-shadow:0 12px 28px rgba(0,0,0,.32);background:#111;flex-shrink:0;';const img=document.createElement('img');img.src='${BUSATELLO_HIVES_IMAGE}';img.alt='Alveari dell Oasi del Busatello';img.style.cssText='width:100%;height:100%;object-fit:cover;object-position:center;display:block;';oval.appendChild(img);brandWrap.insertAdjacentElement('afterend',oval);}}}`;
+
+  if (!server.includes(oldBrandJs)) {
+    throw new Error('Hook La Fabbrica delle Api non trovato: intervento annullato');
+  }
   server = server.replace(oldBrandJs, newBrandJs);
 
   fs.writeFileSync(serverPath, server, 'utf8');
-  console.log('[Miele Artigianale] Card Fabbrica delle Api più bassa e ovale alveari Busatello predisposto.');
+  console.log('[Miele Artigianale] Card Fabbrica delle Api compatta e ovale alveari inserito.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore aggiornamento card Fabbrica delle Api:', error);
 }
