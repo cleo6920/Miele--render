@@ -3,7 +3,7 @@ const path = require('path');
 
 const BALSAM_IMAGE = '/images/balsam-miel-final.jpg';
 const BALSAM_PLACEHOLDER = 'https://placehold.co/400x400/A52A2A/FFFFFF?text=Balsammiel';
-const ACACIA_IMAGE = '/images/acacia-shop.jpg';
+const ACACIA_IMAGE = '/images/acacia-shop-v2.jpg';
 const ACACIA_PLACEHOLDER = 'https://placehold.co/400x400/ADD8E6/00008B?text=Miele%20Acacia';
 
 const indexPath = path.join(__dirname, 'index.html');
