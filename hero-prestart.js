@@ -4,13 +4,7 @@ const path = require('path');
 const indexPath = path.join(__dirname, 'index.html');
 const serverPath = path.join(__dirname, 'server.js');
 const ALVEO_HERO_IMAGE = '/images/alveoterapia-donna.jpg';
-const heroProductsDataPath = path.join(__dirname, 'hero-products-base64.txt');
-let ALVEO_PRODUCTS_HERO_IMAGE = '';
-try {
-  ALVEO_PRODUCTS_HERO_IMAGE = `data:image/jpeg;base64,${fs.readFileSync(heroProductsDataPath, 'utf8').trim()}`;
-} catch (error) {
-  console.error('[Miele Artigianale] Errore lettura immagine prodotti hero:', error);
-}
+const ALVEO_PRODUCTS_HERO_IMAGE = '/images/hero-prodotti-corretta.jpg';
 
 try {
   let html = fs.readFileSync(indexPath, 'utf8');
