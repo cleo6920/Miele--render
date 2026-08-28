@@ -70,7 +70,8 @@ const honeyAvailabilityHelper=`
                 const allowedHoneyTokens = [...busatelloOrder, ...selectedOrder];
                 const normalize = (value) => String(value || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
                 const mapped = list.map((product, originalIndex) => {
-                    const normalizedProduct = product.category === 'prelibati' ? { ...product, category: 'busatello' } : product;
+                    let normalizedProduct = product.category === 'prelibati' ? { ...product, category: 'busatello' } : product;
+                    if (normalizedProduct.id === 'balsammiel') normalizedProduct = { ...normalizedProduct, image: '/images/balsam-miel.jpg' };
                     if (normalizedProduct.category !== 'busatello') return normalizedProduct;
                     const name = normalize(normalizedProduct.name);
                     const busIndex = busatelloOrder.findIndex(token => name.includes(token));
