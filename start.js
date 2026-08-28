@@ -1,15 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const BALSAM_IMAGE = 'https://raw.githubusercontent.com/cleo6920/Miele--render/main/images/balsam-miel.jpg';
+const BALSAM_IMAGE = '/images/balsam-miel-final.jpg';
 const BALSAM_PLACEHOLDER = 'https://placehold.co/400x400/A52A2A/FFFFFF?text=Balsammiel';
 
 const indexPath = path.join(__dirname, 'index.html');
 let html = fs.readFileSync(indexPath, 'utf8');
 html = html.replaceAll(BALSAM_PLACEHOLDER, BALSAM_IMAGE);
 
-// Firestore may still provide old product fields. Keep static product images authoritative
-// while leaving all other Firestore fields (stock, price, etc.) untouched.
+// Keep static product images authoritative while leaving all other Firestore fields untouched.
 const mergeNeedle = `? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id) }\n                                : staticProduct;`;
 const mergeReplacement = `? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id), image: staticProduct.image }\n                                : staticProduct;`;
 if (html.includes(mergeNeedle)) {
@@ -17,8 +16,7 @@ if (html.includes(mergeNeedle)) {
 }
 fs.writeFileSync(indexPath, html, 'utf8');
 
-// The current server contains legacy Balsam-specific fallbacks. Point every one of
-// those fallbacks to the same external image URL used by working shop products.
+// Point every legacy Balsam fallback to the verified local image.
 const serverPath = path.join(__dirname, 'server.js');
 let server = fs.readFileSync(serverPath, 'utf8');
 server = server
@@ -28,5 +26,5 @@ server = server
   .replaceAll("image: '/images/balsam-miel.jpg'", `image: '${BALSAM_IMAGE}'`);
 fs.writeFileSync(serverPath, server, 'utf8');
 
-console.log('[Miele Artigianale] Immagini statiche preparate; Balsam Miel usa URL esterno.');
+console.log('[Miele Artigianale] Balsam Miel usa immagine locale verificata:', BALSAM_IMAGE);
 require('./server.js');
