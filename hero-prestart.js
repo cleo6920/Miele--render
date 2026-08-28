@@ -4,6 +4,13 @@ const path = require('path');
 const indexPath = path.join(__dirname, 'index.html');
 const serverPath = path.join(__dirname, 'server.js');
 const ALVEO_HERO_IMAGE = '/images/alveoterapia-donna.jpg';
+const heroProductsDataPath = path.join(__dirname, 'hero-products-base64.txt');
+let ALVEO_PRODUCTS_HERO_IMAGE = '';
+try {
+  ALVEO_PRODUCTS_HERO_IMAGE = `data:image/jpeg;base64,${fs.readFileSync(heroProductsDataPath, 'utf8').trim()}`;
+} catch (error) {
+  console.error('[Miele Artigianale] Errore lettura immagine prodotti hero:', error);
+}
 
 try {
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -28,7 +35,15 @@ try {
   html = html.replaceAll(oldLeftTitle, newLeftTitle);
 
   const oldLeftSubtitle = '<p className="text-xl sm:text-2xl text-stone-700 mt-2 max-w-lg">Prodotti esclusivi dei tesori dell\' alveare</p>';
-  const newLeftSubtitle = `<p className="text-2xl sm:text-3xl font-extrabold text-amber-700 mt-2">Alveoterapia integrata</p>\n                                <div className="mt-4 w-44 h-44 sm:w-52 sm:h-52 lg:w-56 lg:h-56 rounded-full overflow-hidden border-4 border-amber-400 shadow-2xl bg-stone-900 flex-shrink-0">\n                                    <img src="${ALVEO_HERO_IMAGE}" alt="Alveoterapia integrata con diffusore" className="w-full h-full object-cover" />\n                                </div>`;
+  const newLeftSubtitle = `<p className="text-2xl sm:text-3xl font-extrabold text-amber-700 mt-2">Alveoterapia integrata</p>
+                                <div className="mt-4 flex flex-wrap items-start gap-4 sm:gap-5">
+                                    <div className="w-44 h-32 sm:w-52 sm:h-36 lg:w-60 lg:h-40 rounded-[999px] overflow-hidden border-4 border-amber-400 shadow-2xl bg-stone-900 flex-shrink-0">
+                                        <img src="${ALVEO_HERO_IMAGE}" alt="Alveoterapia integrata con diffusore" className="w-full h-full object-cover" />
+                                    </div>
+                                    <div className="w-52 h-32 sm:w-60 sm:h-36 lg:w-72 lg:h-40 rounded-[999px] overflow-hidden border-4 border-amber-300 shadow-2xl bg-stone-900 flex-shrink-0">
+                                        <img src="${ALVEO_PRODUCTS_HERO_IMAGE}" alt="Diffusore, capsule e Unguento Apis" className="w-full h-full object-cover" />
+                                    </div>
+                                </div>`;
   html = html.replaceAll(oldLeftSubtitle, newLeftSubtitle);
 
   html = html.replaceAll(
@@ -42,7 +57,7 @@ try {
   );
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Hero Alveoterapia applicato.');
+  console.log('[Miele Artigianale] Hero Alveoterapia applicato con doppio ovale.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore aggiornamento hero Alveoterapia:', error);
 }
