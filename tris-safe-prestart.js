@@ -137,6 +137,12 @@ try {
         optionBox.style.setProperty('box-shadow','none','important');
         optionBox.style.setProperty('filter','saturate(.72) brightness(.94)','important');
         optionBox.style.setProperty('opacity','.92','important');
+
+        optionLeaf.style.setProperty('margin-left','30px','important');
+        optionLeaf.style.setProperty('padding-left','0','important');
+        optionLeaf.style.setProperty('white-space','nowrap','important');
+        optionLeaf.style.setProperty('display','inline-flex','important');
+        optionLeaf.style.setProperty('align-items','center','important');
       }
     }
 
@@ -358,7 +364,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Vasetto singolo reso discreto e CTA tris valorizzata nella scheda prodotto.');
+  console.log('[Miele Artigianale] Spaziatura selettore vasetto corretta: pallino e testo separati.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore gerarchia acquisto prodotto:', error);
 }
