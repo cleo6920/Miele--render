@@ -85,6 +85,26 @@
 #clean-shop-search-slot > *{width:100%!important;max-width:none!important;margin:0!important;transform:none!important;position:static!important}
 #clean-shop-search-slot input{width:100%!important;box-sizing:border-box!important}
 
+#center-home-link{
+  position:fixed;
+  left:16px;
+  bottom:18px;
+  z-index:99999;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 16px;
+  border-radius:999px;
+  border:1px solid rgba(212,175,55,.85);
+  background:rgba(7,55,43,.96);
+  color:#fff;
+  text-decoration:none;
+  font:700 14px/1.1 system-ui,sans-serif;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);
+  backdrop-filter:blur(8px);
+}
+#center-home-link:hover{background:#0b4a39}
+
 @media(max-width:900px){
   #clean-shop-hero{padding:16px 14px 22px}
   #clean-shop-hero .clean-hero-grid{grid-template-columns:1fr;gap:20px}
@@ -95,4 +115,8 @@
   .clean-hero-center,.clean-hero-right{padding-top:0}
   .clean-hero-center-title{white-space:normal;font-size:22px}
   .clean-hero-brand-title{white-space:normal;font-size:24px}
+}
+
+@media(max-width:640px){
+  #center-home-link{left:10px;bottom:12px;padding:10px 13px;font-size:13px}
 }
