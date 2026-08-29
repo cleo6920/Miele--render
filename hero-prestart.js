@@ -51,8 +51,30 @@ try {
     '<h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-amber-900 flex flex-col items-end gap-1 text-3d-effect">'
   );
 
+  const categoryLayoutCss = `<style id="shop-category-layout-tuning">
+@media (min-width: 901px){
+  .wrap{transform:translateY(-82px)!important;margin-bottom:-82px!important;}
+  .category-grid{grid-template-columns:repeat(3,minmax(0,190px))!important;gap:14px!important;justify-content:start!important;align-items:start!important;}
+  .category-grid .card{width:190px!important;min-width:190px!important;max-width:190px!important;height:238px!important;min-height:238px!important;max-height:238px!important;aspect-ratio:auto!important;margin:0!important;border-radius:16px!important;}
+  .category-grid .card h3{font-size:clamp(13px,1.3vw,16px)!important;left:10px!important;right:10px!important;bottom:10px!important;}
+}
+@media (min-width: 641px) and (max-width: 900px){
+  .wrap{transform:translateY(-55px)!important;margin-bottom:-55px!important;}
+  .category-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;justify-content:start!important;align-items:start!important;}
+  .category-grid .card{width:100%!important;max-width:180px!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:4/5!important;margin:0 auto!important;border-radius:15px!important;}
+}
+@media (max-width: 640px){
+  .wrap{transform:translateY(-24px)!important;margin-bottom:-24px!important;}
+  .category-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;}
+  .category-grid .card{width:100%!important;max-width:160px!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:4/5!important;margin:0 auto!important;border-radius:14px!important;}
+}
+</style>`;
+  if (!html.includes('shop-category-layout-tuning')) {
+    html = html.replace('</head>', `${categoryLayoutCss}\n</head>`);
+  }
+
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Hero Alveoterapia con ovali affiancati.');
+  console.log('[Miele Artigianale] Hero invariato; card categorie alzate e ridimensionate.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore aggiornamento hero Alveoterapia:', error);
 }
