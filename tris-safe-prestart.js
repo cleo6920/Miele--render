@@ -11,6 +11,12 @@ try {
 (function(){
   let timer = null;
 
+  function findBackControl(){
+    return Array.from(document.querySelectorAll('button,a')).find(el =>
+      /torna indietro/i.test((el.textContent || '').trim())
+    );
+  }
+
   function findTrisPanel(){
     const badge = Array.from(document.querySelectorAll('div,span,p,h2,h3,h4')).find(el =>
       (el.textContent || '').trim().toLowerCase() === 'scelta tris'
@@ -21,7 +27,7 @@ try {
     for(let i = 0; i < 10 && panel; i++){
       const text = (panel.textContent || '').toLowerCase();
       const r = panel.getBoundingClientRect();
-      if(text.includes('scelta tris') && text.includes('totale tris') && r.width > 300 && r.height > 120){
+      if(text.includes('scelta tris') && text.includes('totale tris') && r.width > 150 && r.height > 100){
         return panel;
       }
       panel = panel.parentElement;
@@ -29,17 +35,31 @@ try {
     return null;
   }
 
+  function findProductRoot(){
+    const backControl = findBackControl();
+    if(!backControl) return null;
+
+    let root = backControl.parentElement;
+    for(let i = 0; i < 7 && root; i++){
+      const r = root.getBoundingClientRect();
+      const text = (root.textContent || '').toLowerCase();
+      if(r.width >= 650 && r.width <= 950 && r.height >= 350 && text.includes('scegli il formato')){
+        return root;
+      }
+      root = root.parentElement;
+    }
+    return null;
+  }
+
   function findProductImage(){
-    const backControl = Array.from(document.querySelectorAll('button,a')).find(el =>
-      /torna indietro/i.test((el.textContent || '').trim())
-    );
+    const backControl = findBackControl();
     if(!backControl) return null;
 
     let root = backControl.parentElement;
     for(let i = 0; i < 7 && root; i++){
       const images = Array.from(root.querySelectorAll('img')).filter(img => {
         const r = img.getBoundingClientRect();
-        return r.width >= 140 && r.height >= 140;
+        return r.width >= 120 && r.height >= 120;
       });
       if(images.length){
         images.sort((a,b) => {
@@ -59,7 +79,16 @@ try {
 
     const panel = findTrisPanel();
     const productImage = findProductImage();
+    const productRoot = findProductRoot();
     if(!panel || !productImage) return;
+
+    if(productRoot){
+      productRoot.style.setProperty('max-width','760px','important');
+      productRoot.style.setProperty('width','100%','important');
+      productRoot.style.setProperty('padding','18px','important');
+      productRoot.style.setProperty('box-sizing','border-box','important');
+      productRoot.style.setProperty('border-radius','18px','important');
+    }
 
     const imageWrap = productImage.parentElement;
     const layoutParent = imageWrap && imageWrap.parentElement;
@@ -72,10 +101,10 @@ try {
       leftCol.style.setProperty('display','flex','important');
       leftCol.style.setProperty('flex-direction','column','important');
       leftCol.style.setProperty('align-items','stretch','important');
-      leftCol.style.setProperty('gap','12px','important');
-      leftCol.style.setProperty('width','190px','important');
-      leftCol.style.setProperty('min-width','190px','important');
-      leftCol.style.setProperty('max-width','190px','important');
+      leftCol.style.setProperty('gap','10px','important');
+      leftCol.style.setProperty('width','170px','important');
+      leftCol.style.setProperty('min-width','170px','important');
+      leftCol.style.setProperty('max-width','170px','important');
       leftCol.style.setProperty('align-self','start','important');
 
       layoutParent.insertBefore(leftCol, imageWrap);
@@ -84,37 +113,42 @@ try {
       leftCol.insertBefore(imageWrap, leftCol.firstChild);
     }
 
+    leftCol.style.setProperty('width','170px','important');
+    leftCol.style.setProperty('min-width','170px','important');
+    leftCol.style.setProperty('max-width','170px','important');
+    leftCol.style.setProperty('gap','10px','important');
+
     if(panel.parentElement !== leftCol){
       leftCol.appendChild(panel);
     }
 
-    imageWrap.style.setProperty('width','190px','important');
-    imageWrap.style.setProperty('min-width','190px','important');
-    imageWrap.style.setProperty('max-width','190px','important');
-    imageWrap.style.setProperty('height','170px','important');
-    imageWrap.style.setProperty('max-height','170px','important');
+    imageWrap.style.setProperty('width','170px','important');
+    imageWrap.style.setProperty('min-width','170px','important');
+    imageWrap.style.setProperty('max-width','170px','important');
+    imageWrap.style.setProperty('height','150px','important');
+    imageWrap.style.setProperty('max-height','150px','important');
     imageWrap.style.setProperty('overflow','hidden','important');
-    imageWrap.style.setProperty('border-radius','12px','important');
+    imageWrap.style.setProperty('border-radius','11px','important');
 
     productImage.style.setProperty('width','100%','important');
     productImage.style.setProperty('height','100%','important');
-    productImage.style.setProperty('max-width','190px','important');
-    productImage.style.setProperty('max-height','170px','important');
+    productImage.style.setProperty('max-width','170px','important');
+    productImage.style.setProperty('max-height','150px','important');
     productImage.style.setProperty('object-fit','contain','important');
     productImage.style.setProperty('display','block','important');
 
-    panel.style.setProperty('width','190px','important');
-    panel.style.setProperty('min-width','190px','important');
-    panel.style.setProperty('max-width','190px','important');
+    panel.style.setProperty('width','170px','important');
+    panel.style.setProperty('min-width','170px','important');
+    panel.style.setProperty('max-width','170px','important');
     panel.style.setProperty('height','auto','important');
     panel.style.setProperty('min-height','0','important');
-    panel.style.setProperty('padding','10px','important');
-    panel.style.setProperty('border-radius','14px','important');
+    panel.style.setProperty('padding','8px','important');
+    panel.style.setProperty('border-radius','12px','important');
     panel.style.setProperty('box-sizing','border-box','important');
     panel.style.setProperty('margin','0','important');
     panel.style.setProperty('display','grid','important');
     panel.style.setProperty('grid-template-columns','1fr','important');
-    panel.style.setProperty('gap','8px','important');
+    panel.style.setProperty('gap','6px','important');
     panel.style.setProperty('align-items','start','important');
 
     Array.from(panel.children).forEach(child => {
@@ -134,10 +168,10 @@ try {
       placeholder.style.setProperty('width','100%','important');
       placeholder.style.setProperty('min-width','0','important');
       placeholder.style.setProperty('max-width','100%','important');
-      placeholder.style.setProperty('height','72px','important');
-      placeholder.style.setProperty('min-height','72px','important');
-      placeholder.style.setProperty('max-height','72px','important');
-      placeholder.style.setProperty('border-radius','10px','important');
+      placeholder.style.setProperty('height','62px','important');
+      placeholder.style.setProperty('min-height','62px','important');
+      placeholder.style.setProperty('max-height','62px','important');
+      placeholder.style.setProperty('border-radius','9px','important');
     }
 
     Array.from(panel.querySelectorAll('h1,h2,h3,h4,div,span,p')).forEach(el => {
@@ -145,32 +179,32 @@ try {
       if(!t) return;
 
       if(t === 'tris dolce risveglio'){
-        el.style.setProperty('font-size','15px','important');
-        el.style.setProperty('line-height','1.05','important');
-        el.style.setProperty('margin','0 0 4px 0','important');
+        el.style.setProperty('font-size','14px','important');
+        el.style.setProperty('line-height','1.04','important');
+        el.style.setProperty('margin','0 0 3px 0','important');
       }
       if(t === 'scelta tris'){
-        el.style.setProperty('font-size','8px','important');
-        el.style.setProperty('padding','3px 6px','important');
+        el.style.setProperty('font-size','7px','important');
+        el.style.setProperty('padding','2px 5px','important');
         el.style.setProperty('line-height','1','important');
       }
       if(t.includes('miele millefiori') || t.includes('bee energy bio') || t.includes('polline italiano')){
-        el.style.setProperty('font-size','10px','important');
-        el.style.setProperty('line-height','1.12','important');
+        el.style.setProperty('font-size','9px','important');
+        el.style.setProperty('line-height','1.1','important');
       }
       if(t.includes('1 sola spedizione')){
-        el.style.setProperty('font-size','9px','important');
-        el.style.setProperty('padding','3px 6px','important');
+        el.style.setProperty('font-size','8px','important');
+        el.style.setProperty('padding','2px 5px','important');
       }
       if(t === '3 prodotti'){
-        el.style.setProperty('font-size','8px','important');
-        el.style.setProperty('padding','3px 6px','important');
+        el.style.setProperty('font-size','7px','important');
+        el.style.setProperty('padding','2px 5px','important');
       }
       if(t === 'totale tris'){
-        el.style.setProperty('font-size','8px','important');
+        el.style.setProperty('font-size','7px','important');
       }
       if(t === '€ 30,00' || t === '€30,00'){
-        el.style.setProperty('font-size','22px','important');
+        el.style.setProperty('font-size','20px','important');
         el.style.setProperty('line-height','1','important');
       }
     });
@@ -197,7 +231,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Card tris spostata sotto la foto prodotto in una colonna sinistra dedicata.');
+  console.log('[Miele Artigianale] Scheda prodotto singolo compattata: foto e tris ridotti, box generale più raccolto.');
 } catch (error) {
-  console.error('[Miele Artigianale] Errore layout tris sotto foto:', error);
+  console.error('[Miele Artigianale] Errore compattazione scheda prodotto:', error);
 }
