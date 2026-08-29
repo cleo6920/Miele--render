@@ -74,6 +74,99 @@ try {
     return null;
   }
 
+  function compactProductDetails(productRoot){
+    if(!productRoot) return;
+
+    productRoot.style.setProperty('margin-top','-42px','important');
+    productRoot.style.setProperty('max-width','760px','important');
+    productRoot.style.setProperty('width','100%','important');
+    productRoot.style.setProperty('padding','16px','important');
+    productRoot.style.setProperty('box-sizing','border-box','important');
+    productRoot.style.setProperty('border-radius','18px','important');
+
+    const headings = Array.from(productRoot.querySelectorAll('h1,h2,h3,h4'));
+    const title = headings.find(el => {
+      const t = (el.textContent || '').trim().toLowerCase();
+      return t && !t.includes('scegli il formato') && !t.includes('scelta tris') && !t.includes('totale tris');
+    });
+    if(title){
+      title.style.setProperty('font-size','32px','important');
+      title.style.setProperty('line-height','1.05','important');
+      title.style.setProperty('margin-bottom','14px','important');
+    }
+
+    const formatLabel = headings.find(el => /scegli il formato/i.test((el.textContent || '').trim()));
+    if(formatLabel){
+      formatLabel.style.setProperty('font-size','18px','important');
+      formatLabel.style.setProperty('line-height','1.1','important');
+      formatLabel.style.setProperty('margin-top','14px','important');
+      formatLabel.style.setProperty('margin-bottom','10px','important');
+    }
+
+    const description = Array.from(productRoot.querySelectorAll('p')).find(el => {
+      const t = (el.textContent || '').trim();
+      const r = el.getBoundingClientRect();
+      return t.length > 100 && r.width > 280 && r.height < 320;
+    });
+    if(description){
+      description.style.setProperty('font-size','16px','important');
+      description.style.setProperty('line-height','1.42','important');
+      description.style.setProperty('margin-bottom','12px','important');
+      description.style.setProperty('max-width','500px','important');
+    }
+
+    const optionLeaf = Array.from(productRoot.querySelectorAll('div,span,label,p')).find(el => {
+      const t = (el.textContent || '').trim().toLowerCase();
+      return /^1 vasetto\s*\(250g\)/i.test(t);
+    });
+    if(optionLeaf){
+      let optionBox = optionLeaf;
+      for(let i = 0; i < 6 && optionBox; i++){
+        const r = optionBox.getBoundingClientRect();
+        if(r.width > 300 && r.height >= 45 && r.height <= 120) break;
+        optionBox = optionBox.parentElement;
+      }
+      if(optionBox && optionBox !== productRoot){
+        optionBox.style.setProperty('width','100%','important');
+        optionBox.style.setProperty('max-width','480px','important');
+        optionBox.style.setProperty('min-height','0','important');
+        optionBox.style.setProperty('height','58px','important');
+        optionBox.style.setProperty('padding','6px 10px','important');
+        optionBox.style.setProperty('box-sizing','border-box','important');
+        optionBox.style.setProperty('border-radius','14px','important');
+      }
+    }
+
+    Array.from(productRoot.querySelectorAll('button')).forEach(btn => {
+      const t = (btn.textContent || '').trim().toLowerCase();
+      if(t.includes('torna indietro')) return;
+      if(t.includes('aggiungi') || t.includes('acquista') || t.includes('carrello')){
+        btn.style.setProperty('width','100%','important');
+        btn.style.setProperty('max-width','480px','important');
+        btn.style.setProperty('min-height','0','important');
+        btn.style.setProperty('height','52px','important');
+        btn.style.setProperty('padding','8px 14px','important');
+        btn.style.setProperty('font-size','17px','important');
+        btn.style.setProperty('border-radius','14px','important');
+      }
+    });
+
+    Array.from(productRoot.querySelectorAll('input[type="number"]')).forEach(input => {
+      input.style.setProperty('width','90px','important');
+      input.style.setProperty('height','42px','important');
+      input.style.setProperty('padding','6px 8px','important');
+      input.style.setProperty('font-size','16px','important');
+    });
+
+    Array.from(productRoot.querySelectorAll('span,strong,b')).forEach(el => {
+      const t = (el.textContent || '').trim();
+      if(/^€\s*5,00$/i.test(t)){
+        el.style.setProperty('font-size','24px','important');
+        el.style.setProperty('line-height','1','important');
+      }
+    });
+  }
+
   function compactAndPlaceTris(){
     if(window.innerWidth < 901) return;
 
@@ -82,13 +175,7 @@ try {
     const productRoot = findProductRoot();
     if(!panel || !productImage) return;
 
-    if(productRoot){
-      productRoot.style.setProperty('max-width','760px','important');
-      productRoot.style.setProperty('width','100%','important');
-      productRoot.style.setProperty('padding','18px','important');
-      productRoot.style.setProperty('box-sizing','border-box','important');
-      productRoot.style.setProperty('border-radius','18px','important');
-    }
+    compactProductDetails(productRoot);
 
     const imageWrap = productImage.parentElement;
     const layoutParent = imageWrap && imageWrap.parentElement;
@@ -231,7 +318,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Scheda prodotto singolo compattata: foto e tris ridotti, box generale più raccolto.');
+  console.log('[Miele Artigianale] Scheda prodotto singolo alzata e dettagli/acquisto compattati in modo locale.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore compattazione scheda prodotto:', error);
 }
