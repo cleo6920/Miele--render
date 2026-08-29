@@ -173,6 +173,75 @@ try {
 })();
 </script>`;
 
+  const singleProductCompactScript = `<script id="shop-single-product-compact">
+(function(){
+  let singleTimer = null;
+
+  function compactSingleProduct(){
+    if(window.innerWidth < 901) return;
+
+    const backControl = Array.from(document.querySelectorAll('button,a')).find(el =>
+      /torna indietro/i.test((el.textContent || '').trim())
+    );
+    if(!backControl) return;
+
+    let root = backControl.parentElement;
+    let detailImage = null;
+
+    for(let i = 0; i < 6 && root; i++){
+      const images = Array.from(root.querySelectorAll('img')).filter(img => {
+        const r = img.getBoundingClientRect();
+        return r.width > 260 && r.height > 260;
+      });
+      if(images.length){
+        detailImage = images.sort((a,b) => {
+          const ar = a.getBoundingClientRect();
+          const br = b.getBoundingClientRect();
+          return (br.width * br.height) - (ar.width * ar.height);
+        })[0];
+        break;
+      }
+      root = root.parentElement;
+    }
+
+    if(!detailImage) return;
+
+    const imageWrap = detailImage.parentElement;
+    if(imageWrap){
+      imageWrap.style.setProperty('width','300px','important');
+      imageWrap.style.setProperty('max-width','300px','important');
+      imageWrap.style.setProperty('min-width','300px','important');
+      imageWrap.style.setProperty('height','300px','important');
+      imageWrap.style.setProperty('max-height','300px','important');
+      imageWrap.style.setProperty('overflow','hidden','important');
+      imageWrap.style.setProperty('border-radius','14px','important');
+      imageWrap.style.setProperty('align-self','start','important');
+    }
+
+    detailImage.style.setProperty('width','100%','important');
+    detailImage.style.setProperty('height','100%','important');
+    detailImage.style.setProperty('max-width','300px','important');
+    detailImage.style.setProperty('max-height','300px','important');
+    detailImage.style.setProperty('object-fit','cover','important');
+    detailImage.style.setProperty('display','block','important');
+  }
+
+  function scheduleSingle(delay){
+    clearTimeout(singleTimer);
+    singleTimer = setTimeout(compactSingleProduct, delay || 80);
+  }
+
+  window.addEventListener('load', function(){ scheduleSingle(120); });
+  window.addEventListener('resize', function(){ scheduleSingle(140); });
+  document.addEventListener('click', function(){ scheduleSingle(100); }, true);
+
+  const observer = new MutationObserver(function(mutations){
+    if(mutations.some(m => m.type === 'childList')) scheduleSingle(80);
+  });
+  observer.observe(document.body, {childList:true, subtree:true});
+})();
+</script>`;
+
   html = html.replace(/<style id="shop-category-grid-compact-final">[\s\S]*?<\/style>/, compactGridCss);
   if (!html.includes('shop-category-grid-compact-final')) {
     html = html.replace('</head>', `${compactGridCss}\n</head>`);
@@ -190,8 +259,14 @@ try {
     html = html.replace('</body>', `${productViewCompactScript}\n</body>`);
   }
 
+  if (/<script id="shop-single-product-compact">[\s\S]*?<\/script>/.test(html)) {
+    html = html.replace(/<script id="shop-single-product-compact">[\s\S]*?<\/script>/, singleProductCompactScript);
+  } else {
+    html = html.replace('</body>', `${singleProductCompactScript}\n</body>`);
+  }
+
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Viste prodotto alzate e card prodotto compattate su desktop; hero invariato.');
+  console.log('[Miele Artigianale] Vista prodotto singolo compattata: immagine ridotta a 300x300 su desktop.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione griglia categorie:', error);
 }
