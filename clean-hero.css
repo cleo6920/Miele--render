@@ -49,9 +49,9 @@
   white-space:nowrap;
 }
 .clean-hero-hives-oval{
-  width:220px;
-  max-width:220px;
-  height:78px;
+  width:190px;
+  max-width:190px;
+  height:100px;
   margin:0 auto;
   overflow:hidden;
   border-radius:999px;
@@ -94,6 +94,5 @@
   .clean-hero-photo{width:min(44vw,174px);height:120px}
   .clean-hero-center,.clean-hero-right{padding-top:0}
   .clean-hero-center-title{white-space:normal;font-size:22px}
-  .clean-hero-hives-oval{width:220px;height:78px;max-width:70vw}
   .clean-hero-brand-title{white-space:normal;font-size:24px}
 }
