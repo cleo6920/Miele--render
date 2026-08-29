@@ -116,6 +116,63 @@ try {
 })();
 </script>`;
 
+  const productViewCompactScript = `<script id="shop-product-view-compact">
+(function(){
+  let productViewTimer = null;
+
+  function compactProductView(){
+    if(window.innerWidth < 901) return;
+
+    const backControl = Array.from(document.querySelectorAll('button,a')).find(el =>
+      /torna alle categor/i.test((el.textContent || '').trim())
+    );
+    if(!backControl) return;
+
+    let viewRoot = backControl.parentElement;
+    let productGrid = null;
+
+    for(let i = 0; i < 6 && viewRoot; i++){
+      productGrid = Array.from(viewRoot.querySelectorAll('.grid')).find(g =>
+        !g.classList.contains('category-grid') && g.children && g.children.length >= 2
+      );
+      if(productGrid) break;
+      viewRoot = viewRoot.parentElement;
+    }
+
+    if(!viewRoot || !productGrid) return;
+
+    viewRoot.style.setProperty('transform','translateY(-85px)','important');
+    viewRoot.style.setProperty('margin-bottom','-85px','important');
+
+    productGrid.style.setProperty('grid-template-columns','repeat(4,minmax(0,1fr))','important');
+    productGrid.style.setProperty('gap','14px','important');
+    productGrid.style.setProperty('max-width','800px','important');
+    productGrid.style.setProperty('align-items','start','important');
+
+    Array.from(productGrid.children).forEach(card => {
+      card.style.setProperty('width','100%','important');
+      card.style.setProperty('max-width','190px','important');
+      card.style.setProperty('min-width','0','important');
+      card.style.setProperty('margin','0','important');
+    });
+  }
+
+  function scheduleCompact(delay){
+    clearTimeout(productViewTimer);
+    productViewTimer = setTimeout(compactProductView, delay || 80);
+  }
+
+  window.addEventListener('load', function(){ scheduleCompact(120); });
+  window.addEventListener('resize', function(){ scheduleCompact(140); });
+  document.addEventListener('click', function(){ scheduleCompact(100); }, true);
+
+  const productObserver = new MutationObserver(function(mutations){
+    if(mutations.some(m => m.type === 'childList')) scheduleCompact(80);
+  });
+  productObserver.observe(document.body, {childList:true, subtree:true});
+})();
+</script>`;
+
   html = html.replace(/<style id="shop-category-grid-compact-final">[\s\S]*?<\/style>/, compactGridCss);
   if (!html.includes('shop-category-grid-compact-final')) {
     html = html.replace('</head>', `${compactGridCss}\n</head>`);
@@ -127,8 +184,14 @@ try {
     html = html.replace('</body>', `${searchRestoreScript}\n</body>`);
   }
 
+  if (/<script id="shop-product-view-compact">[\s\S]*?<\/script>/.test(html)) {
+    html = html.replace(/<script id="shop-product-view-compact">[\s\S]*?<\/script>/, productViewCompactScript);
+  } else {
+    html = html.replace('</body>', `${productViewCompactScript}\n</body>`);
+  }
+
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Barra ricerca ancorata alla posizione hero anche nelle viste categoria.');
+  console.log('[Miele Artigianale] Viste prodotto alzate e card prodotto compattate su desktop; hero invariato.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione griglia categorie:', error);
 }
