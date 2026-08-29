@@ -1,4 +1,13 @@
 @media (min-width: 901px) {
+  /* Il contenitore hero conserva spazio reale anche se i blocchi interni sono assoluti. */
+  .clean-hero-root {
+    position: relative !important;
+    min-height: 315px !important;
+    height: 315px !important;
+    overflow: visible !important;
+    margin-bottom: 24px !important;
+  }
+
   /* Hero stabile: nessuna transizione o trasformazione dinamica. */
   #shop-brand-hives-stack {
     position: absolute !important;
