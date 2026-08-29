@@ -4,6 +4,8 @@ const createCheckoutSession = require('./api/create-checkout-session');
 
 // Prepara una copia statica ripulita dell'HTML una sola volta all'avvio.
 require('./prepare-clean-index.js');
+// Sostituisce interamente il vecchio dettaglio prodotto con la versione pulita approvata.
+require('./clean-product-detail-transform.js');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
