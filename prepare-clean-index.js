@@ -152,7 +152,7 @@ if (!html.includes('/clean-layout.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-layout.css?v=1">\n</head>');
 }
 if (!html.includes('/clean-hero.css')) {
-  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-hero.css?v=2">\n</head>');
+  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-hero.css?v=3">\n</head>');
 }
 if (!html.includes('/clean-categories.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-categories.css?v=1">\n</head>');
