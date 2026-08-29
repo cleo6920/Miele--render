@@ -69,6 +69,8 @@ try {
 
   const searchRestoreScript = `<script id="shop-search-hero-gap-restore">
 (function(){
+  let restoreTimer = null;
+
   function restoreSearch(){
     if(window.innerWidth < 760) return;
     const productSearch = Array.from(document.querySelectorAll('input')).find(el => ((el.getAttribute('placeholder') || '').toLowerCase().includes('cerca miele')));
@@ -97,8 +99,20 @@ try {
       });
     });
   }
-  window.addEventListener('load', function(){ setTimeout(restoreSearch, 80); });
-  window.addEventListener('resize', function(){ clearTimeout(window.__shopSearchRestoreTimer); window.__shopSearchRestoreTimer = setTimeout(restoreSearch, 120); });
+
+  function scheduleRestore(delay){
+    clearTimeout(restoreTimer);
+    restoreTimer = setTimeout(restoreSearch, delay || 60);
+  }
+
+  window.addEventListener('load', function(){ scheduleRestore(80); });
+  window.addEventListener('resize', function(){ scheduleRestore(120); });
+  document.addEventListener('click', function(){ scheduleRestore(80); }, true);
+
+  const observer = new MutationObserver(function(mutations){
+    if(mutations.some(m => m.type === 'childList')) scheduleRestore(50);
+  });
+  observer.observe(document.body, {childList:true, subtree:true});
 })();
 </script>`;
 
@@ -106,12 +120,15 @@ try {
   if (!html.includes('shop-category-grid-compact-final')) {
     html = html.replace('</head>', `${compactGridCss}\n</head>`);
   }
-  if (!html.includes('shop-search-hero-gap-restore')) {
+
+  if (/<script id="shop-search-hero-gap-restore">[\s\S]*?<\/script>/.test(html)) {
+    html = html.replace(/<script id="shop-search-hero-gap-restore">[\s\S]*?<\/script>/, searchRestoreScript);
+  } else {
     html = html.replace('</body>', `${searchRestoreScript}\n</body>`);
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Layout categorie invariato; barra ricerca spostata leggermente a destra.');
+  console.log('[Miele Artigianale] Barra ricerca ancorata alla posizione hero anche nelle viste categoria.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione griglia categorie:', error);
 }
