@@ -89,7 +89,7 @@ try {
       requestAnimationFrame(() => {
         const searchRect = searchWrap.getBoundingClientRect();
         const currentOval = hivesOval.getBoundingClientRect();
-        const desiredLeft = Math.max(360, currentOval.left - 18 - searchRect.width);
+        const desiredLeft = Math.max(372, currentOval.left - 6 - searchRect.width);
         const desiredTop = currentOval.top + ((currentOval.height - searchRect.height) / 2) + 34;
         const dx = desiredLeft - searchRect.left;
         const dy = desiredTop - searchRect.top;
@@ -111,7 +111,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Layout categorie corretto: 5 gruppi in alto, Bacheca larga sotto.');
+  console.log('[Miele Artigianale] Layout categorie invariato; barra ricerca spostata leggermente a destra.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione griglia categorie:', error);
 }
