@@ -191,7 +191,7 @@ try {
     for(let i = 0; i < 6 && root; i++){
       const images = Array.from(root.querySelectorAll('img')).filter(img => {
         const r = img.getBoundingClientRect();
-        return r.width > 260 && r.height > 260;
+        return r.width > 200 && r.height > 200;
       });
       if(images.length){
         detailImage = images.sort((a,b) => {
@@ -208,20 +208,20 @@ try {
 
     const imageWrap = detailImage.parentElement;
     if(imageWrap){
-      imageWrap.style.setProperty('width','300px','important');
-      imageWrap.style.setProperty('max-width','300px','important');
-      imageWrap.style.setProperty('min-width','300px','important');
-      imageWrap.style.setProperty('height','300px','important');
-      imageWrap.style.setProperty('max-height','300px','important');
+      imageWrap.style.setProperty('width','220px','important');
+      imageWrap.style.setProperty('max-width','220px','important');
+      imageWrap.style.setProperty('min-width','220px','important');
+      imageWrap.style.setProperty('height','220px','important');
+      imageWrap.style.setProperty('max-height','220px','important');
       imageWrap.style.setProperty('overflow','hidden','important');
-      imageWrap.style.setProperty('border-radius','14px','important');
+      imageWrap.style.setProperty('border-radius','12px','important');
       imageWrap.style.setProperty('align-self','start','important');
     }
 
     detailImage.style.setProperty('width','100%','important');
     detailImage.style.setProperty('height','100%','important');
-    detailImage.style.setProperty('max-width','300px','important');
-    detailImage.style.setProperty('max-height','300px','important');
+    detailImage.style.setProperty('max-width','220px','important');
+    detailImage.style.setProperty('max-height','220px','important');
     detailImage.style.setProperty('object-fit','cover','important');
     detailImage.style.setProperty('display','block','important');
   }
@@ -266,7 +266,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Vista prodotto singolo compattata: immagine ridotta a 300x300 su desktop.');
+  console.log('[Miele Artigianale] Vista prodotto singolo compattata ulteriormente: immagine ridotta a 220x220 su desktop.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione griglia categorie:', error);
 }
