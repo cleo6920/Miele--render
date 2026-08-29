@@ -52,11 +52,11 @@ try {
 
     brandWrap.style.setProperty('position','absolute','important');
     brandWrap.style.setProperty('left','auto','important');
-    brandWrap.style.setProperty('right','18px','important');
-    brandWrap.style.setProperty('top','10px','important');
+    brandWrap.style.setProperty('right','12px','important');
+    brandWrap.style.setProperty('top','38px','important');
     brandWrap.style.setProperty('transform','none','important');
-    brandWrap.style.setProperty('width','min(330px,28vw)','important');
-    brandWrap.style.setProperty('max-width','330px','important');
+    brandWrap.style.setProperty('width','min(380px,31vw)','important');
+    brandWrap.style.setProperty('max-width','380px','important');
     brandWrap.style.setProperty('margin','0','important');
     brandWrap.style.setProperty('z-index','30','important');
 
@@ -70,12 +70,12 @@ try {
       }
       searchWrap.style.setProperty('position','absolute','important');
       searchWrap.style.setProperty('left','auto','important');
-      searchWrap.style.setProperty('right','18px','important');
-      searchWrap.style.setProperty('top','124px','important');
+      searchWrap.style.setProperty('right','12px','important');
+      searchWrap.style.setProperty('top','154px','important');
       searchWrap.style.setProperty('transform','none','important');
       searchWrap.style.setProperty('margin','0','important');
-      searchWrap.style.setProperty('width','min(330px,28vw)','important');
-      searchWrap.style.setProperty('max-width','330px','important');
+      searchWrap.style.setProperty('width','min(380px,31vw)','important');
+      searchWrap.style.setProperty('max-width','380px','important');
       searchWrap.style.setProperty('z-index','29','important');
       searchWrap.style.setProperty('box-sizing','border-box','important');
     }
@@ -102,7 +102,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Alveari abbassati e barra ricerca posizionata sotto Fabbrica delle Api.');
+  console.log('[Miele Artigianale] Fabbrica delle Api e ricerca abbassate e allargate mantenendo spazio dal blocco alveari.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione hero:', error);
 }
