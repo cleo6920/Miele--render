@@ -117,23 +117,26 @@ try {
 
     const optionLeaf = Array.from(productRoot.querySelectorAll('div,span,label,p')).find(el => {
       const t = (el.textContent || '').trim().toLowerCase();
-      return /^1 vasetto\s*\(250g\)/i.test(t);
+      return /^1 vasetto\\s*\\(250g\\)/i.test(t);
     });
     if(optionLeaf){
       let optionBox = optionLeaf;
       for(let i = 0; i < 6 && optionBox; i++){
         const r = optionBox.getBoundingClientRect();
-        if(r.width > 300 && r.height >= 45 && r.height <= 120) break;
+        if(r.width > 250 && r.height >= 38 && r.height <= 120) break;
         optionBox = optionBox.parentElement;
       }
       if(optionBox && optionBox !== productRoot){
         optionBox.style.setProperty('width','100%','important');
-        optionBox.style.setProperty('max-width','480px','important');
+        optionBox.style.setProperty('max-width','400px','important');
         optionBox.style.setProperty('min-height','0','important');
-        optionBox.style.setProperty('height','58px','important');
-        optionBox.style.setProperty('padding','6px 10px','important');
+        optionBox.style.setProperty('height','46px','important');
+        optionBox.style.setProperty('padding','4px 8px','important');
         optionBox.style.setProperty('box-sizing','border-box','important');
-        optionBox.style.setProperty('border-radius','14px','important');
+        optionBox.style.setProperty('border-radius','10px','important');
+        optionBox.style.setProperty('box-shadow','none','important');
+        optionBox.style.setProperty('filter','saturate(.72) brightness(.94)','important');
+        optionBox.style.setProperty('opacity','.92','important');
       }
     }
 
@@ -160,11 +163,44 @@ try {
 
     Array.from(productRoot.querySelectorAll('span,strong,b')).forEach(el => {
       const t = (el.textContent || '').trim();
-      if(/^€\s*5,00$/i.test(t)){
-        el.style.setProperty('font-size','24px','important');
+      if(/^€\\s*5,00$/i.test(t)){
+        el.style.setProperty('font-size','20px','important');
         el.style.setProperty('line-height','1','important');
+        el.style.setProperty('font-weight','700','important');
       }
     });
+  }
+
+  function styleTrisCta(originalTrisParent, productRoot){
+    if(!originalTrisParent || !productRoot || originalTrisParent === productRoot) return;
+    if(originalTrisParent.contains(document.getElementById('shop-product-left-column'))) return;
+
+    const r = originalTrisParent.getBoundingClientRect();
+    if(r.width < 260 || r.width > 600 || r.height > 130) return;
+
+    originalTrisParent.style.setProperty('width','100%','important');
+    originalTrisParent.style.setProperty('max-width','480px','important');
+    originalTrisParent.style.setProperty('min-height','64px','important');
+    originalTrisParent.style.setProperty('height','auto','important');
+    originalTrisParent.style.setProperty('padding','8px 14px','important');
+    originalTrisParent.style.setProperty('border-radius','15px','important');
+    originalTrisParent.style.setProperty('box-sizing','border-box','important');
+    originalTrisParent.style.setProperty('display','flex','important');
+    originalTrisParent.style.setProperty('align-items','center','important');
+    originalTrisParent.style.setProperty('justify-content','center','important');
+    originalTrisParent.style.setProperty('text-align','center','important');
+    originalTrisParent.style.setProperty('cursor','pointer','important');
+    originalTrisParent.style.setProperty('box-shadow','0 8px 22px rgba(245,158,11,.34)','important');
+    originalTrisParent.style.setProperty('border','2px solid rgba(255,255,255,.55)','important');
+
+    let cta = originalTrisParent.querySelector('#tris-impact-cta-copy');
+    if(!cta){
+      cta = document.createElement('div');
+      cta.id = 'tris-impact-cta-copy';
+      cta.style.pointerEvents = 'none';
+      cta.innerHTML = '<div style="font-weight:900;font-size:17px;line-height:1.05;">🔥 SCEGLI IL TRIS — PORTA A CASA DI PIÙ</div><div style="font-weight:700;font-size:12px;line-height:1.2;margin-top:4px;">3 prodotti selezionati · 1 sola spedizione</div>';
+      originalTrisParent.appendChild(cta);
+    }
   }
 
   function compactAndPlaceTris(){
@@ -180,6 +216,8 @@ try {
     const imageWrap = productImage.parentElement;
     const layoutParent = imageWrap && imageWrap.parentElement;
     if(!imageWrap || !layoutParent || panel.contains(imageWrap)) return;
+
+    const originalTrisParent = panel.parentElement;
 
     let leftCol = document.getElementById('shop-product-left-column');
     if(!leftCol){
@@ -208,6 +246,8 @@ try {
     if(panel.parentElement !== leftCol){
       leftCol.appendChild(panel);
     }
+
+    styleTrisCta(originalTrisParent, productRoot);
 
     imageWrap.style.setProperty('width','170px','important');
     imageWrap.style.setProperty('min-width','170px','important');
@@ -318,7 +358,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Scheda prodotto singolo alzata e dettagli/acquisto compattati in modo locale.');
+  console.log('[Miele Artigianale] Vasetto singolo reso discreto e CTA tris valorizzata nella scheda prodotto.');
 } catch (error) {
-  console.error('[Miele Artigianale] Errore compattazione scheda prodotto:', error);
+  console.error('[Miele Artigianale] Errore gerarchia acquisto prodotto:', error);
 }
