@@ -149,6 +149,64 @@ html = html.replaceAll('src="images/francesco.png"', 'src="/images/francesco.png
 html = html.replaceAll('src="images/alveoterapia.png"', 'src="/images/alveoterapia.png"');
 html = html.replaceAll('src="images/bacheca.png"', 'src="/images/bacheca.png"');
 
+// SOSTITUZIONE REALE DELL'ASSORTIMENTO MIELI.
+// La versione pulita non usa il vecchio filtro DOM di server.js: l'elenco viene normalizzato
+// prima di entrare nello stato React, quindi i mieli dismessi non fanno parte della pagina attiva.
+const honeyHelper = `
+            const applyCleanHoneySelection = (list) => {
+                const approvedIds = ['millefiori','fragola','melone','pesca','arancia','acacia','castagno','eucamiel','balsammiel'];
+                const orderById = {
+                    millefiori: 1,
+                    fragola: 2,
+                    melone: 3,
+                    pesca: 4,
+                    arancia: 5,
+                    acacia: 101,
+                    castagno: 102,
+                    eucamiel: 105,
+                    balsammiel: 107
+                };
+                const nameById = {
+                    millefiori: 'Miele del Busatello Millefiori',
+                    fragola: 'Miele del Busatello alla Fragola',
+                    melone: 'Miele del Busatello al Melone',
+                    pesca: 'Miele del Busatello alla Pesca',
+                    arancia: "Miele del Busatello all’Arancia",
+                    acacia: 'Miele di Acacia',
+                    castagno: 'Miele di Castagno',
+                    eucamiel: 'Euca Miel',
+                    balsammiel: 'Balsam Miel'
+                };
+                return list
+                    .map(product => product.category === 'prelibati' ? { ...product, category: 'busatello' } : product)
+                    .filter(product => product.category !== 'busatello' || approvedIds.includes(product.id))
+                    .map(product => {
+                        if (product.category !== 'busatello') return product;
+                        let normalized = {
+                            ...product,
+                            name: nameById[product.id] || product.name,
+                            order: orderById[product.id] || product.order
+                        };
+                        if (product.id === 'balsammiel') normalized = { ...normalized, image: '/images/balsam-miel.jpg' };
+                        if (product.id === 'acacia') normalized = { ...normalized, image: '/images/acacia-shop.jpg' };
+                        return normalized;
+                    });
+            };
+`;
+
+if (!html.includes('// === STOCK MODE TOGGLE ===')) {
+  throw new Error('[Miele Clean] Punto inserimento assortimento mieli non trovato: sostituzione annullata.');
+}
+html = html.replace('// === STOCK MODE TOGGLE ===', `${honeyHelper}\n            // === STOCK MODE TOGGLE ===`);
+html = html.replaceAll(
+  'staticInitialProducts.filter(p => allowedCategoriesForShop.includes(p.category))',
+  'applyCleanHoneySelection(staticInitialProducts).filter(p => allowedCategoriesForShop.includes(p.category))'
+);
+html = html.replace(
+  'const filtered = mergedProducts.filter(p => allowedCategoriesForShop.includes(p.category));',
+  'const filtered = applyCleanHoneySelection(mergedProducts).filter(p => allowedCategoriesForShop.includes(p.category));'
+);
+
 // SOSTITUZIONE REALE DELLE PAGINE ELENCO PRODOTTI.
 // Il vecchio shop-product-view-compact è stato rimosso sopra: qui la disposizione approvata
 // viene scritta direttamente nel markup React della versione pulita.
@@ -164,6 +222,47 @@ if (!html.includes(legacyProductGrid)) {
 }
 html = html.replace(legacyProductGrid, '<div className="clean-product-grid">');
 
+const legacyProductMap = `{products.filter(p => p.category === selectedCategory).sort((a,b) => a.order - b.order).map(product => (
+                                                <ProductCard key={product.id} product={product} onProductClick={handleProductSelect} />
+                                            ))}`;
+const cleanProductMap = `{products.filter(p => p.category === selectedCategory).sort((a,b) => a.order - b.order).map((product, index) => (
+                                                <React.Fragment key={product.id}>
+                                                    {selectedCategory === 'busatello' && index === 5 && (
+                                                        <div className="clean-selected-honey-divider">
+                                                            <h2>Selezionati per voi</h2>
+                                                            <p>Una selezione speciale di mieli scelti dalla Fabbrica delle Api.</p>
+                                                        </div>
+                                                    )}
+                                                    <ProductCard product={product} onProductClick={handleProductSelect} />
+                                                </React.Fragment>
+                                            ))}
+                                            {selectedCategory === 'busatello' && (
+                                                <>
+                                                    <div className="clean-pending-honey-card">
+                                                        <div className="clean-pending-honey-icon">🍯</div>
+                                                        <h3>Millefiori di Rucas – Alta Montagna</h3>
+                                                        <p>Scheda prodotto in aggiornamento. Foto e prezzo verranno inseriti appena definitivi.</p>
+                                                        <span>Prossimamente disponibile</span>
+                                                    </div>
+                                                    <div className="clean-pending-honey-card">
+                                                        <div className="clean-pending-honey-icon">🍯</div>
+                                                        <h3>Miele di Eucalipto</h3>
+                                                        <p>Scheda prodotto in aggiornamento. Foto e prezzo verranno inseriti appena definitivi.</p>
+                                                        <span>Prossimamente disponibile</span>
+                                                    </div>
+                                                    <div className="clean-pending-honey-card">
+                                                        <div className="clean-pending-honey-icon">🍯</div>
+                                                        <h3>Propol Miel</h3>
+                                                        <p>Scheda prodotto in aggiornamento. Foto e prezzo verranno inseriti appena definitivi.</p>
+                                                        <span>Prossimamente disponibile</span>
+                                                    </div>
+                                                </>
+                                            )}`;
+if (!html.includes(legacyProductMap)) {
+  throw new Error('[Miele Clean] Vecchia mappa prodotti non trovata: pagina mieli non sostituita.');
+}
+html = html.replace(legacyProductMap, cleanProductMap);
+
 if (!html.includes('/clean-layout.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-layout.css?v=1">\n</head>');
 }
@@ -174,11 +273,11 @@ if (!html.includes('/clean-categories.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-categories.css?v=1">\n</head>');
 }
 if (!html.includes('/clean-products.css')) {
-  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-products.css?v=1">\n</head>');
+  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-products.css?v=2">\n</head>');
 }
 if (!html.includes('/clean-layout.js')) {
   html = html.replace('</body>', '  <script src="/clean-layout.js?v=2" defer></script>\n</body>');
 }
 
 fs.writeFileSync(out, html, 'utf8');
-console.log('[Miele Clean] index-clean.html preparato: hero unico, categorie definitive e pagine elenco prodotti importate senza vecchi script runtime.');
+console.log('[Miele Clean] index-clean.html preparato: hero unico, categorie definitive e assortimento mieli approvato senza vecchi filtri runtime.');
