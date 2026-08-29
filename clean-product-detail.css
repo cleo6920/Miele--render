@@ -24,7 +24,7 @@
 .clean-pack-discount{display:flex;align-items:center;gap:7px;margin-top:2px;font-size:12px;color:#78716c}
 .clean-pack-discount-badge{display:inline-block;padding:2px 6px;border-radius:999px;background:#fee2e2;color:#b91c1c;font-weight:800}
 .clean-pack-price{flex:0 0 auto;font-size:20px!important;line-height:1!important;font-weight:700!important}
-.clean-tris-summary{width:170px;min-width:170px;max-width:170px;height:auto;margin:0;padding:8px;box-sizing:border-box;display:grid;grid-template-columns:1fr;gap:6px;align-items:start;border:1px solid rgba(212,175,55,.38);border-radius:12px;background:linear-gradient(145deg,#211d18,#171513);color:#f8e7b0;text-align:left;cursor:pointer}
+.clean-tris-summary{position:relative;width:170px;min-width:170px;max-width:170px;height:auto;margin:0;padding:8px;box-sizing:border-box;display:grid;grid-template-columns:1fr;gap:6px;align-items:start;border:1px solid rgba(212,175,55,.38);border-radius:12px;background:linear-gradient(145deg,#211d18,#171513)!important;color:#f8e7b0!important;text-align:left;cursor:pointer;box-shadow:none!important}
 .clean-tris-summary-placeholder{width:100%;height:62px;min-height:62px;max-height:62px;border-radius:9px;border:1px solid rgba(212,175,55,.32);background:rgba(255,255,255,.035);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#d9a42b;font-size:8px;font-weight:800;text-transform:uppercase}
 .clean-tris-icon{font-size:25px;line-height:1}
 .clean-tris-badge{width:max-content;max-width:100%;padding:2px 5px;border-radius:999px;background:#b45309;color:#fff;font-size:7px;line-height:1;font-weight:900}
@@ -35,8 +35,12 @@
 .clean-tris-mini-tags span{padding:2px 5px;border:1px solid rgba(212,175,55,.38);border-radius:999px;font-size:7px;line-height:1.1;font-weight:800}
 .clean-tris-total-label{font-size:7px;text-transform:uppercase;opacity:.78}
 .clean-tris-total{color:#f5b62e;font-size:20px;line-height:1;font-weight:900}
-.clean-tris-selected{border-color:#facc15!important;box-shadow:0 0 0 2px rgba(250,204,21,.22),0 8px 22px rgba(245,158,11,.2)}
-.clean-tris-cta{width:100%;max-width:480px;min-height:64px;height:auto;margin-top:8px;padding:8px 14px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.55);border-radius:15px;background:linear-gradient(135deg,#f7c843,#f5a524);color:#111;text-align:center;cursor:pointer;box-shadow:0 8px 22px rgba(245,158,11,.34)}
+.clean-tris-selected{border-color:#facc15!important;box-shadow:0 0 0 2px rgba(250,204,21,.22),0 8px 22px rgba(245,158,11,.2)!important}
+.clean-tris-summary.clean-tris-selected{background:linear-gradient(145deg,#4b3716,#211d18)!important}
+.clean-tris-summary.clean-tris-selected::before{content:'✓';position:absolute;right:8px;top:8px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#166534;color:#fff;font-size:14px;font-weight:900;box-shadow:0 0 0 2px rgba(250,204,21,.75);z-index:3}
+.clean-tris-cta{position:relative;width:100%;max-width:480px;min-height:64px;height:auto;margin-top:8px;padding:8px 14px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid rgba(212,175,55,.45);border-radius:15px;background:linear-gradient(135deg,#7a5a1d,#5b4317)!important;color:#f6e8bd!important;text-align:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.22)!important}
+.clean-tris-cta.clean-tris-selected{background:linear-gradient(135deg,#f7c843,#f5a524)!important;color:#111!important;border-color:#fff1b0!important;box-shadow:0 8px 22px rgba(245,158,11,.34)!important}
+.clean-tris-cta.clean-tris-selected::before{content:'✓';position:absolute;left:12px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#166534;color:#fff;font-size:15px;font-weight:900;box-shadow:0 0 0 2px rgba(255,255,255,.7)}
 .clean-tris-cta-title{font-size:17px;line-height:1.05;font-weight:900}
 .clean-tris-cta-sub{margin-top:4px;font-size:12px;line-height:1.2;font-weight:700}
 .clean-purchase-row{width:100%;max-width:500px;margin-top:14px;padding-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
