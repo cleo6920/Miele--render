@@ -16,7 +16,7 @@ try {
     gap:8px!important;
     justify-content:start!important;
     align-items:start!important;
-    grid-auto-flow:row!important;
+    grid-auto-flow:row dense!important;
   }
   .category-grid > .card{
     grid-column:auto!important;
@@ -30,6 +30,18 @@ try {
     aspect-ratio:auto!important;
     margin:0!important;
     border-radius:14px!important;
+  }
+  .category-grid > .card:first-child{
+    grid-column:span 2!important;
+    width:318px!important;
+    min-width:318px!important;
+    max-width:318px!important;
+  }
+  .category-grid > .card:last-child{
+    grid-column:span 2!important;
+    width:318px!important;
+    min-width:318px!important;
+    max-width:318px!important;
   }
   .category-grid > .card h3{
     font-size:13px!important;
@@ -76,6 +88,7 @@ try {
 })();
 </script>`;
 
+  html = html.replace(/<style id="shop-category-grid-compact-final">[\s\S]*?<\/style>/, compactGridCss);
   if (!html.includes('shop-category-grid-compact-final')) {
     html = html.replace('</head>', `${compactGridCss}\n</head>`);
   }
@@ -84,7 +97,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Griglia categorie compatta; barra ricerca ripristinata nello spazio hero.');
+  console.log('[Miele Artigianale] Prima card e Bacheca espanse a due colonne; griglia compatta invariata.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione griglia categorie:', error);
 }
