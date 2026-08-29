@@ -51,7 +51,7 @@ const cleanHero = `
                                         <img src="/images/hero-prodotti-corretta.jpg" alt="Diffusore, capsule e Unguento Apis" />
                                     </div>
                                     <div className="clean-hero-photo">
-                                        <img src="/images/alveoterapia-casetta-hero.jpg" alt="Alveoterapia integrata con diffusore" />
+                                        <img src="/images/unguento-apis.png" alt="Unguento Apis" />
                                     </div>
                                 </div>
                                 {isAuthReady && (
