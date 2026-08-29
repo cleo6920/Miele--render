@@ -1,0 +1,58 @@
+@media (min-width: 901px) {
+  /* Hero stabile: nessuna transizione o trasformazione dinamica. */
+  #shop-brand-hives-stack {
+    position: absolute !important;
+    left: 50% !important;
+    right: auto !important;
+    top: 43px !important;
+    width: min(420px, 34vw) !important;
+    max-width: 420px !important;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    transform: translateX(-50%) !important;
+    transition: none !important;
+    z-index: 28 !important;
+  }
+  #shop-hives-subtitle {
+    width: 100% !important;
+    text-align: center !important;
+    padding-left: 0 !important;
+    margin: 4px 0 5px !important;
+  }
+  #busatello-hives-oval {
+    width: 100% !important;
+    max-width: 420px !important;
+    margin: 0 auto !important;
+  }
+  .shop-brand-wrap {
+    position: absolute !important;
+    left: auto !important;
+    right: 12px !important;
+    top: 38px !important;
+    width: min(380px, 31vw) !important;
+    max-width: 380px !important;
+    margin: 0 !important;
+    transform: none !important;
+    transition: none !important;
+    z-index: 30 !important;
+  }
+  .clean-search-anchor {
+    position: absolute !important;
+    left: auto !important;
+    right: 12px !important;
+    top: 154px !important;
+    width: min(380px, 31vw) !important;
+    max-width: 380px !important;
+    margin: 0 !important;
+    transform: none !important;
+    transition: none !important;
+    box-sizing: border-box !important;
+    z-index: 29 !important;
+  }
+
+  /* Nella versione pulita la scheda prodotto non viene più tirata verso l'alto. */
+  .clean-single-product-root {
+    transform: none !important;
+    margin-top: 0 !important;
+  }
+}
