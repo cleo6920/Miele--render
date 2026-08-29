@@ -48,10 +48,10 @@ const cleanHero = `
                                 <div className="clean-hero-left-subtitle">Alveoterapia integrata</div>
                                 <div className="clean-hero-photo-row">
                                     <div className="clean-hero-photo">
-                                        <img src="/images/alveoterapia-casetta-hero.jpg" alt="Alveoterapia integrata con diffusore" />
+                                        <img src="/images/hero-prodotti-corretta.jpg" alt="Diffusore, capsule e Unguento Apis" />
                                     </div>
                                     <div className="clean-hero-photo">
-                                        <img src="/images/hero-prodotti-corretta.jpg" alt="Diffusore, capsule e Unguento Apis" />
+                                        <img src="/images/alveoterapia-casetta-hero.jpg" alt="Alveoterapia integrata con diffusore" />
                                     </div>
                                 </div>
                                 {isAuthReady && (
