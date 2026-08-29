@@ -10,7 +10,7 @@
   width:min(1280px,100%);
   margin:0 auto;
   display:grid;
-  grid-template-columns:minmax(300px,1fr) minmax(360px,1.15fr) minmax(300px,1fr);
+  grid-template-columns:minmax(300px,1fr) minmax(300px,1fr) minmax(300px,1fr);
   gap:22px;
   align-items:start;
 }
@@ -49,9 +49,9 @@
   white-space:nowrap;
 }
 .clean-hero-hives-oval{
-  width:300px;
-  max-width:300px;
-  height:105px;
+  width:220px;
+  max-width:220px;
+  height:78px;
   margin:0 auto;
   overflow:hidden;
   border-radius:999px;
@@ -94,6 +94,6 @@
   .clean-hero-photo{width:min(44vw,174px);height:120px}
   .clean-hero-center,.clean-hero-right{padding-top:0}
   .clean-hero-center-title{white-space:normal;font-size:22px}
-  .clean-hero-hives-oval{width:250px;height:88px;max-width:78vw}
+  .clean-hero-hives-oval{width:220px;height:78px;max-width:70vw}
   .clean-hero-brand-title{white-space:normal;font-size:24px}
 }
