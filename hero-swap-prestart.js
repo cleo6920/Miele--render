@@ -26,7 +26,7 @@ try {
     hivesStack.style.setProperty('position','absolute','important');
     hivesStack.style.setProperty('left','50%','important');
     hivesStack.style.setProperty('right','auto','important');
-    hivesStack.style.setProperty('top','8px','important');
+    hivesStack.style.setProperty('top','43px','important');
     hivesStack.style.setProperty('transform','translateX(-50%)','important');
     hivesStack.style.setProperty('margin','0','important');
     hivesStack.style.setProperty('padding-top','0','important');
@@ -59,6 +59,26 @@ try {
     brandWrap.style.setProperty('max-width','330px','important');
     brandWrap.style.setProperty('margin','0','important');
     brandWrap.style.setProperty('z-index','30','important');
+
+    const productSearch = Array.from(document.querySelectorAll('input')).find(el =>
+      ((el.getAttribute('placeholder') || '').toLowerCase().includes('cerca miele'))
+    );
+    if(productSearch && productSearch.parentElement && heroParent){
+      const searchWrap = productSearch.parentElement;
+      if(searchWrap.parentElement !== heroParent){
+        heroParent.appendChild(searchWrap);
+      }
+      searchWrap.style.setProperty('position','absolute','important');
+      searchWrap.style.setProperty('left','auto','important');
+      searchWrap.style.setProperty('right','18px','important');
+      searchWrap.style.setProperty('top','124px','important');
+      searchWrap.style.setProperty('transform','none','important');
+      searchWrap.style.setProperty('margin','0','important');
+      searchWrap.style.setProperty('width','min(330px,28vw)','important');
+      searchWrap.style.setProperty('max-width','330px','important');
+      searchWrap.style.setProperty('z-index','29','important');
+      searchWrap.style.setProperty('box-sizing','border-box','important');
+    }
   }
 
   function scheduleSwap(delay){
@@ -82,7 +102,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Blocco alveari centrato e Fabbrica delle Api spostata a destra.');
+  console.log('[Miele Artigianale] Alveari abbassati e barra ricerca posizionata sotto Fabbrica delle Api.');
 } catch (error) {
-  console.error('[Miele Artigianale] Errore scambio blocchi hero:', error);
+  console.error('[Miele Artigianale] Errore regolazione hero:', error);
 }
