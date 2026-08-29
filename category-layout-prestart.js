@@ -41,12 +41,50 @@ try {
 }
 </style>`;
 
+  const searchRestoreScript = `<script id="shop-search-hero-gap-restore">
+(function(){
+  function restoreSearch(){
+    if(window.innerWidth < 760) return;
+    const productSearch = Array.from(document.querySelectorAll('input')).find(el => ((el.getAttribute('placeholder') || '').toLowerCase().includes('cerca miele')));
+    const hivesOval = document.getElementById('busatello-hives-oval');
+    if(!productSearch || !productSearch.parentElement || !hivesOval) return;
+    const searchWrap = productSearch.parentElement;
+    requestAnimationFrame(() => {
+      const ovalRect = hivesOval.getBoundingClientRect();
+      const targetWidth = Math.min(460, Math.max(380, ovalRect.left - 390));
+      searchWrap.style.setProperty('position','relative','important');
+      searchWrap.style.setProperty('z-index','20','important');
+      searchWrap.style.setProperty('width', targetWidth + 'px','important');
+      searchWrap.style.setProperty('max-width', targetWidth + 'px','important');
+      searchWrap.style.setProperty('margin-left','0','important');
+      searchWrap.style.setProperty('margin-right','0','important');
+      searchWrap.style.setProperty('margin-top','0','important');
+      searchWrap.style.setProperty('transform','none','important');
+      requestAnimationFrame(() => {
+        const searchRect = searchWrap.getBoundingClientRect();
+        const currentOval = hivesOval.getBoundingClientRect();
+        const desiredLeft = Math.max(360, currentOval.left - 18 - searchRect.width);
+        const desiredTop = currentOval.top + ((currentOval.height - searchRect.height) / 2) + 34;
+        const dx = desiredLeft - searchRect.left;
+        const dy = desiredTop - searchRect.top;
+        searchWrap.style.setProperty('transform','translate(' + Math.round(dx) + 'px,' + Math.round(dy) + 'px)','important');
+      });
+    });
+  }
+  window.addEventListener('load', function(){ setTimeout(restoreSearch, 80); });
+  window.addEventListener('resize', function(){ clearTimeout(window.__shopSearchRestoreTimer); window.__shopSearchRestoreTimer = setTimeout(restoreSearch, 120); });
+})();
+</script>`;
+
   if (!html.includes('shop-category-grid-compact-final')) {
     html = html.replace('</head>', `${compactGridCss}\n</head>`);
   }
+  if (!html.includes('shop-search-hero-gap-restore')) {
+    html = html.replace('</body>', `${searchRestoreScript}\n</body>`);
+  }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Griglia categorie: 4 card compatte senza span vuoti.');
+  console.log('[Miele Artigianale] Griglia categorie compatta; barra ricerca ripristinata nello spazio hero.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione griglia categorie:', error);
 }
