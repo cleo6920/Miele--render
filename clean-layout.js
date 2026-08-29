@@ -9,13 +9,15 @@
     if (!brand) return;
     const heroParent = brand.parentElement;
     if (!heroParent) return;
-    heroParent.style.position = 'relative';
+
+    heroParent.classList.add('clean-hero-root');
 
     const input = Array.from(document.querySelectorAll('input')).find(el =>
       ((el.getAttribute('placeholder') || '').toLowerCase().includes('cerca miele'))
     );
     if (!input || !input.parentElement) return;
     const wrap = input.parentElement;
+
     if (wrap.parentElement !== heroParent) heroParent.appendChild(wrap);
     wrap.classList.add('clean-search-anchor');
   }
@@ -41,11 +43,9 @@
   }
 
   onReady(() => {
+    // Solo inizializzazione controllata: nessun riallineamento dopo click/focus/digitazione.
     apply();
-    // Niente MutationObserver: solo un riallineamento controllato dopo navigazioni/click SPA.
-    document.addEventListener('click', () => {
-      requestAnimationFrame(() => setTimeout(apply, 80));
-    }, true);
-    window.addEventListener('resize', apply, { passive: true });
+    window.setTimeout(apply, 180);
+    window.setTimeout(apply, 650);
   });
 })();
