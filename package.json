@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "echo \"No build needed\"",
-    "start": "node category-layout-prestart.js"
+    "start": "node tris-layout-prestart.js"
   },
   "engines": {
     "node": ">=20.0.0 <22.0.0"
