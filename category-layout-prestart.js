@@ -12,8 +12,8 @@ try {
   const compactGridCss = `<style id="shop-category-grid-compact-final">
 @media (min-width: 901px){
   .category-grid{
-    grid-template-columns:repeat(4,minmax(0,128px))!important;
-    grid-template-rows:repeat(3,160px)!important;
+    grid-template-columns:repeat(6,minmax(0,128px))!important;
+    grid-template-rows:repeat(2,160px)!important;
     gap:6px!important;
     justify-content:start!important;
     align-items:start!important;
@@ -33,7 +33,7 @@ try {
     border-radius:12px!important;
   }
 
-  /* Riga 1: Mieli larghi a sinistra, Francesco + Alveoterapia a destra */
+  /* Riga 1: Mieli larghi + Tesori + Leccornie + Francesco + Alveoterapia */
   .category-grid > .card:nth-child(1){
     grid-column:1 / span 2!important;
     grid-row:1!important;
@@ -41,23 +41,21 @@ try {
     min-width:262px!important;
     max-width:262px!important;
   }
-  .category-grid > .card:nth-child(6){grid-column:3!important;grid-row:1!important;}
-  .category-grid > .card:nth-child(7){grid-column:4!important;grid-row:1!important;}
+  .category-grid > .card:nth-child(2){grid-column:3!important;grid-row:1!important;}
+  .category-grid > .card:nth-child(3){grid-column:4!important;grid-row:1!important;}
+  .category-grid > .card:nth-child(6){grid-column:5!important;grid-row:1!important;}
+  .category-grid > .card:nth-child(7){grid-column:6!important;grid-row:1!important;}
 
-  /* Riga 2: categorie a sinistra, Bacheca larga su entrambe le colonne di destra */
-  .category-grid > .card:nth-child(2){grid-column:1!important;grid-row:2!important;}
-  .category-grid > .card:nth-child(3){grid-column:2!important;grid-row:2!important;}
+  /* Riga 2: Terapia + Cosmesi + Bacheca larga sulle quattro colonne restanti */
+  .category-grid > .card:nth-child(4){grid-column:1!important;grid-row:2!important;}
+  .category-grid > .card:nth-child(5){grid-column:2!important;grid-row:2!important;}
   .category-grid > .card:nth-child(8){
-    grid-column:3 / span 2!important;
+    grid-column:3 / span 4!important;
     grid-row:2!important;
-    width:262px!important;
-    min-width:262px!important;
-    max-width:262px!important;
+    width:530px!important;
+    min-width:530px!important;
+    max-width:530px!important;
   }
-
-  /* Riga 3: ultime due categorie a sinistra */
-  .category-grid > .card:nth-child(4){grid-column:1!important;grid-row:3!important;}
-  .category-grid > .card:nth-child(5){grid-column:2!important;grid-row:3!important;}
 
   .category-grid > .card h3{
     font-size:12px!important;
@@ -113,7 +111,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Layout categorie: Francesco + Alveoterapia in alto a destra, Bacheca larga sotto.');
+  console.log('[Miele Artigianale] Layout categorie corretto: 5 gruppi in alto, Bacheca larga sotto.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione griglia categorie:', error);
 }
