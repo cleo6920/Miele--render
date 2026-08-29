@@ -1,0 +1,92 @@
+/* Griglia categorie definitiva: una sola implementazione, nessun override legacy. */
+.clean-category-wrap{
+  width:100%;
+  max-width:800px;
+  margin:0;
+  padding:8px 8px 18px;
+  box-sizing:border-box;
+}
+.clean-category-grid{
+  display:grid;
+  grid-template-columns:repeat(6,128px);
+  grid-template-rows:repeat(2,160px);
+  gap:6px;
+  align-items:start;
+  justify-content:start;
+}
+.clean-category-card{
+  position:relative;
+  display:block;
+  width:128px;
+  height:160px;
+  overflow:hidden;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:#181818;
+  text-decoration:none;
+  box-sizing:border-box;
+}
+.clean-category-card img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.clean-category-card .clean-category-shade{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,.18) 55%,rgba(0,0,0,0));
+}
+.clean-category-card h3{
+  position:absolute;
+  z-index:2;
+  left:7px;
+  right:7px;
+  bottom:7px;
+  margin:0;
+  font:800 12px/1.06 Arial,sans-serif;
+  text-shadow:0 2px 5px rgba(0,0,0,.95);
+  -webkit-text-stroke:.35px rgba(0,0,0,.8);
+}
+.clean-cat-honey{grid-column:1 / span 2;grid-row:1;width:262px}
+.clean-cat-tesori{grid-column:3;grid-row:1}
+.clean-cat-leccornie{grid-column:4;grid-row:1}
+.clean-cat-francesco{grid-column:5;grid-row:1}
+.clean-cat-alveoterapia{grid-column:6;grid-row:1}
+.clean-cat-terapia{grid-column:1;grid-row:2}
+.clean-cat-cosmesi{grid-column:2;grid-row:2}
+.clean-cat-bacheca{grid-column:3 / span 4;grid-row:2;width:530px}
+.clean-cat-honey h3,.clean-cat-francesco h3{color:#facc15}
+.clean-cat-tesori h3{color:#fde047}
+.clean-cat-leccornie h3{color:#86efac}
+.clean-cat-alveoterapia h3,.clean-cat-bacheca h3{color:#fb7185}
+.clean-cat-terapia h3{color:#f97316}
+.clean-cat-cosmesi h3{color:#93c5fd}
+
+@media(max-width:900px){
+  .clean-category-wrap{max-width:none;padding:10px 14px 20px}
+  .clean-category-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-rows:none;
+    gap:10px;
+  }
+  .clean-category-card,
+  .clean-cat-honey,
+  .clean-cat-tesori,
+  .clean-cat-leccornie,
+  .clean-cat-francesco,
+  .clean-cat-alveoterapia,
+  .clean-cat-terapia,
+  .clean-cat-cosmesi,
+  .clean-cat-bacheca{
+    grid-column:auto;
+    grid-row:auto;
+    width:100%;
+    height:auto;
+    aspect-ratio:4/5;
+  }
+  .clean-cat-honey,.clean-cat-bacheca{grid-column:1 / -1;aspect-ratio:2.1/1}
+  .clean-category-card h3{font-size:14px;left:10px;right:10px;bottom:10px}
+}
