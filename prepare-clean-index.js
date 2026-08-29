@@ -14,7 +14,8 @@ const removeById = (tag, id) => {
 [
   'shop-product-search-restore',
   'shop-hero-center-swap',
-  'shop-product-details-safe-compact'
+  'shop-product-details-safe-compact',
+  'shop-product-view-compact'
 ].forEach(id => removeById('script', id));
 
 // La vecchia implementazione categorie non deve convivere con quella nuova.
@@ -148,6 +149,21 @@ html = html.replaceAll('src="images/francesco.png"', 'src="/images/francesco.png
 html = html.replaceAll('src="images/alveoterapia.png"', 'src="/images/alveoterapia.png"');
 html = html.replaceAll('src="images/bacheca.png"', 'src="/images/bacheca.png"');
 
+// SOSTITUZIONE REALE DELLE PAGINE ELENCO PRODOTTI.
+// Il vecchio shop-product-view-compact è stato rimosso sopra: qui la disposizione approvata
+// viene scritta direttamente nel markup React della versione pulita.
+const legacyBackClass = 'className="rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-800 font-semibold px-4 py-2"';
+if (!html.includes(legacyBackClass)) {
+  throw new Error('[Miele Clean] Pulsante ritorno categorie non trovato: import elenco prodotti annullato per sicurezza.');
+}
+html = html.replace(legacyBackClass, 'className="clean-product-back rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-800 font-semibold px-4 py-2"');
+
+const legacyProductGrid = '<div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">';
+if (!html.includes(legacyProductGrid)) {
+  throw new Error('[Miele Clean] Vecchia griglia prodotti non trovata: import elenco prodotti annullato per sicurezza.');
+}
+html = html.replace(legacyProductGrid, '<div className="clean-product-grid">');
+
 if (!html.includes('/clean-layout.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-layout.css?v=1">\n</head>');
 }
@@ -157,9 +173,12 @@ if (!html.includes('/clean-hero.css')) {
 if (!html.includes('/clean-categories.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-categories.css?v=1">\n</head>');
 }
+if (!html.includes('/clean-products.css')) {
+  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-products.css?v=1">\n</head>');
+}
 if (!html.includes('/clean-layout.js')) {
   html = html.replace('</body>', '  <script src="/clean-layout.js?v=2" defer></script>\n</body>');
 }
 
 fs.writeFileSync(out, html, 'utf8');
-console.log('[Miele Clean] index-clean.html preparato: hero unico e vecchia griglia categorie sostituita dalla griglia definitiva.');
+console.log('[Miele Clean] index-clean.html preparato: hero unico, categorie definitive e pagine elenco prodotti importate senza vecchi script runtime.');
