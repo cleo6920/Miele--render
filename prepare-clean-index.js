@@ -5,6 +5,12 @@ const src = path.join(__dirname, 'index.html');
 const out = path.join(__dirname, 'index-clean.html');
 let html = fs.readFileSync(src, 'utf8');
 
+// Asset approvati: Acacia viene incorporata direttamente, Balsam usa il file finale.
+// Nessun alias ricostruito o copiato a runtime dal server.
+const cleanAcaciaBase64 = fs.readFileSync(path.join(__dirname, 'images', 'acacia-tiny-valid.b64'), 'utf8').replace(/\s+/g, '');
+const cleanAcaciaImage = `data:image/jpeg;base64,${cleanAcaciaBase64}`;
+const cleanBalsamImage = '/images/balsam-miel-final.jpg?v=approved-20260829';
+
 const removeById = (tag, id) => {
   const re = new RegExp(`<${tag}\\s+id=["']${id}["'][^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi');
   html = html.replace(re, '');
@@ -187,8 +193,8 @@ const honeyHelper = `
                             name: nameById[product.id] || product.name,
                             order: orderById[product.id] || product.order
                         };
-                        if (product.id === 'balsammiel') normalized = { ...normalized, image: '/images/balsam-miel.jpg' };
-                        if (product.id === 'acacia') normalized = { ...normalized, image: '/images/acacia-shop.jpg' };
+                        if (product.id === 'balsammiel') normalized = { ...normalized, image: ${JSON.stringify(cleanBalsamImage)} };
+                        if (product.id === 'acacia') normalized = { ...normalized, image: ${JSON.stringify(cleanAcaciaImage)} };
                         return normalized;
                     });
             };
