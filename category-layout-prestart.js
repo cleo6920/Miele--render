@@ -13,10 +13,11 @@ try {
 @media (min-width: 901px){
   .category-grid{
     grid-template-columns:repeat(4,minmax(0,128px))!important;
+    grid-template-rows:repeat(3,160px)!important;
     gap:6px!important;
     justify-content:start!important;
     align-items:start!important;
-    grid-auto-flow:row dense!important;
+    grid-auto-flow:row!important;
   }
   .category-grid > .card{
     grid-column:auto!important;
@@ -31,18 +32,33 @@ try {
     margin:0!important;
     border-radius:12px!important;
   }
-  .category-grid > .card:first-child{
-    grid-column:span 2!important;
+
+  /* Riga 1: Mieli larghi a sinistra, Francesco + Alveoterapia a destra */
+  .category-grid > .card:nth-child(1){
+    grid-column:1 / span 2!important;
+    grid-row:1!important;
     width:262px!important;
     min-width:262px!important;
     max-width:262px!important;
   }
-  .category-grid > .card:last-child{
-    grid-column:span 2!important;
+  .category-grid > .card:nth-child(6){grid-column:3!important;grid-row:1!important;}
+  .category-grid > .card:nth-child(7){grid-column:4!important;grid-row:1!important;}
+
+  /* Riga 2: categorie a sinistra, Bacheca larga su entrambe le colonne di destra */
+  .category-grid > .card:nth-child(2){grid-column:1!important;grid-row:2!important;}
+  .category-grid > .card:nth-child(3){grid-column:2!important;grid-row:2!important;}
+  .category-grid > .card:nth-child(8){
+    grid-column:3 / span 2!important;
+    grid-row:2!important;
     width:262px!important;
     min-width:262px!important;
     max-width:262px!important;
   }
+
+  /* Riga 3: ultime due categorie a sinistra */
+  .category-grid > .card:nth-child(4){grid-column:1!important;grid-row:3!important;}
+  .category-grid > .card:nth-child(5){grid-column:2!important;grid-row:3!important;}
+
   .category-grid > .card h3{
     font-size:12px!important;
     left:7px!important;
@@ -97,7 +113,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Card categorie ulteriormente ridotte; card Mieli e Bacheca restano su due colonne.');
+  console.log('[Miele Artigianale] Layout categorie: Francesco + Alveoterapia in alto a destra, Bacheca larga sotto.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione griglia categorie:', error);
 }
