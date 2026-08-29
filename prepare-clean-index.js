@@ -42,6 +42,7 @@ const legacyHero = /<header className="relative w-full py-8 sm:py-12 bg-gradient
 
 const cleanHero = `
                     <header id="clean-shop-hero">
+                        <a id="center-home-link" href="/" aria-label="Torna alla Home del Centro">← Home Centro</a>
                         <div className="clean-hero-grid">
                             <div className="clean-hero-left">
                                 <h1 className="clean-hero-left-title">
@@ -273,7 +274,7 @@ if (!html.includes('/clean-layout.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-layout.css?v=1">\n</head>');
 }
 if (!html.includes('/clean-hero.css')) {
-  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-hero.css?v=7">\n</head>');
+  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-hero.css?v=8">\n</head>');
 }
 if (!html.includes('/clean-categories.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-categories.css?v=1">\n</head>');
