@@ -12,8 +12,8 @@ try {
   const compactGridCss = `<style id="shop-category-grid-compact-final">
 @media (min-width: 901px){
   .category-grid{
-    grid-template-columns:repeat(4,minmax(0,155px))!important;
-    gap:8px!important;
+    grid-template-columns:repeat(4,minmax(0,128px))!important;
+    gap:6px!important;
     justify-content:start!important;
     align-items:start!important;
     grid-auto-flow:row dense!important;
@@ -21,34 +21,34 @@ try {
   .category-grid > .card{
     grid-column:auto!important;
     grid-row:auto!important;
-    width:155px!important;
-    min-width:155px!important;
-    max-width:155px!important;
-    height:194px!important;
-    min-height:194px!important;
-    max-height:194px!important;
+    width:128px!important;
+    min-width:128px!important;
+    max-width:128px!important;
+    height:160px!important;
+    min-height:160px!important;
+    max-height:160px!important;
     aspect-ratio:auto!important;
     margin:0!important;
-    border-radius:14px!important;
+    border-radius:12px!important;
   }
   .category-grid > .card:first-child{
     grid-column:span 2!important;
-    width:318px!important;
-    min-width:318px!important;
-    max-width:318px!important;
+    width:262px!important;
+    min-width:262px!important;
+    max-width:262px!important;
   }
   .category-grid > .card:last-child{
     grid-column:span 2!important;
-    width:318px!important;
-    min-width:318px!important;
-    max-width:318px!important;
+    width:262px!important;
+    min-width:262px!important;
+    max-width:262px!important;
   }
   .category-grid > .card h3{
-    font-size:13px!important;
-    left:8px!important;
-    right:8px!important;
-    bottom:8px!important;
-    line-height:1.08!important;
+    font-size:12px!important;
+    left:7px!important;
+    right:7px!important;
+    bottom:7px!important;
+    line-height:1.06!important;
   }
 }
 </style>`;
@@ -97,7 +97,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Prima card e Bacheca espanse a due colonne; griglia compatta invariata.');
+  console.log('[Miele Artigianale] Card categorie ulteriormente ridotte; card Mieli e Bacheca restano su due colonne.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore regolazione griglia categorie:', error);
 }
