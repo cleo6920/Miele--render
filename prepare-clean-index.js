@@ -16,11 +16,21 @@ const removeById = (tag, id) => {
   'shop-hero-center-swap',
   'shop-product-details-safe-compact'
 ].forEach(id => removeById('script', id));
-removeById('style', 'card-force-small');
 
-// SOSTITUZIONE REALE DELL'HERO:
-// rimuove il vecchio header React + la vecchia barra di ricerca esterna
-// e inserisce un solo hero definitivo nello stesso punto del render React.
+// La vecchia implementazione categorie non deve convivere con quella nuova.
+[
+  'card-force-small',
+  'grid-inline-fix',
+  'shop-category-grid-compact-final',
+  'shop-category-layout-tuning',
+  'category-wide-css',
+  'category-wide-fullrow',
+  'lift-mieli-transform-css',
+  'titles-stroke-all',
+  'category-title-colors-override'
+].forEach(id => removeById('style', id));
+
+// SOSTITUZIONE REALE DELL'HERO.
 const legacyHero = /<header className="relative w-full py-8 sm:py-12 bg-gradient-to-br from-amber-200 to-amber-50 shadow-lg mb-8">[\s\S]*?<\/header>\s*<div className="max-w-7xl mx-auto w-full px-4 mb-4">\s*<GlobalProductSearch allProducts=\{products\} onProductSelect=\{handleProductSearchSelect\} \/>\s*<\/div>/;
 
 const cleanHero = `
@@ -98,15 +108,58 @@ if (!legacyHero.test(html)) {
 }
 html = html.replace(legacyHero, cleanHero);
 
+// SOSTITUZIONE DELLA GRIGLIA CATEGORIE NELLO STESSO COMPONENTE REACT.
+const legacyCategoryStart = '<div className="wrap">\n      <div className="grid category-grid">';
+if (!html.includes(legacyCategoryStart)) {
+  throw new Error('[Miele Clean] Vecchia griglia categorie non trovata: sostituzione annullata per sicurezza.');
+}
+html = html.replace(legacyCategoryStart, '<div className="clean-category-wrap">\n      <div className="clean-category-grid">');
+
+// Elimina davvero la seconda vecchia card mieli: la selezione mieli è ora una sola categoria.
+html = html.replace(/\s*<a className="card" href="#" onClick=\{\(e\) => \{ e\.preventDefault\(\); onSelectCategory\('prelibati'\); \}\}>[\s\S]*?<\/a>/, '');
+
+const categoryClassReplacements = [
+  ["onSelectCategory('busatello')", 'clean-category-card clean-cat-honey'],
+  ["onSelectCategory('tesori')", 'clean-category-card clean-cat-tesori'],
+  ["onSelectCategory('leccornie')", 'clean-category-card clean-cat-leccornie'],
+  ["onSelectCategory('terapia')", 'clean-category-card clean-cat-terapia'],
+  ["onSelectCategory('cosmesi')", 'clean-category-card clean-cat-cosmesi'],
+  ["onSelectCategory('7')", 'clean-category-card clean-cat-francesco'],
+  ["onSelectCategory('alveoterapia')", 'clean-category-card clean-cat-alveoterapia']
+];
+for (const [handler, cls] of categoryClassReplacements) {
+  const re = new RegExp(`<a className="card" href="#" onClick=\\{\\(e\\) => \\{ e\\.preventDefault\\(\\); ${handler.replace(/[()']/g, m => '\\' + m)}; \\}\\}>`);
+  html = html.replace(re, `<a className="${cls}" href="#" onClick={(e) => { e.preventDefault(); ${handler}; }}>`);
+}
+
+html = html.replace(
+  '<a className="card category-wide" style={{gridColumn:\'1 / -1\'}} href="#" onClick={(e) => { e.preventDefault(); onSelectCategory(\'bacheca\'); }}>',
+  '<a className="clean-category-card clean-cat-bacheca" href="#" onClick={(e) => { e.preventDefault(); onSelectCategory(\'bacheca\'); }}>'
+);
+
+// Testi e immagini categorie: usa asset locali, non il vecchio hosting Vercel.
+html = html.replaceAll('alt="I mieli del Busatello"', 'alt="La selezione di mieli della Fabbrica delle Api"');
+html = html.replaceAll('>I mieli del Busatello</h3>', '>La selezione di mieli della Fabbrica delle Api</h3>');
+html = html.replaceAll('https://miele-backend-omega.vercel.app/images/tesori.png', '/images/tesori.png');
+html = html.replaceAll('https://miele-backend-omega.vercel.app/images/leccornie.png', '/images/leccornie.png');
+html = html.replaceAll('https://miele-backend-omega.vercel.app/images/terapia.png', '/images/terapia.png');
+html = html.replaceAll('https://miele-backend-omega.vercel.app/images/cosmesi.png', '/images/cosmesi.png');
+html = html.replaceAll('src="images/francesco.png"', 'src="/images/francesco.png"');
+html = html.replaceAll('src="images/alveoterapia.png"', 'src="/images/alveoterapia.png"');
+html = html.replaceAll('src="images/bacheca.png"', 'src="/images/bacheca.png"');
+
 if (!html.includes('/clean-layout.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-layout.css?v=1">\n</head>');
 }
 if (!html.includes('/clean-hero.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-hero.css?v=2">\n</head>');
 }
+if (!html.includes('/clean-categories.css')) {
+  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-categories.css?v=1">\n</head>');
+}
 if (!html.includes('/clean-layout.js')) {
   html = html.replace('</body>', '  <script src="/clean-layout.js?v=2" defer></script>\n</body>');
 }
 
 fs.writeFileSync(out, html, 'utf8');
-console.log('[Miele Clean] index-clean.html preparato: vecchio hero rimosso e sostituito dal nuovo hero statico React.');
+console.log('[Miele Clean] index-clean.html preparato: hero unico e vecchia griglia categorie sostituita dalla griglia definitiva.');
