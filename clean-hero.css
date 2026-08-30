@@ -29,8 +29,29 @@
   color:#c66008;
   font:800 clamp(22px,2.3vw,32px)/1.05 Arial,sans-serif;
 }
-.clean-hero-photo-row{display:flex;gap:14px;align-items:center;flex-wrap:nowrap}
+.clean-hero-photo-row{display:flex;gap:14px;align-items:flex-start;flex-wrap:nowrap}
+.clean-hero-product-link{
+  width:174px;
+  flex:0 0 174px;
+  margin:0;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:inherit;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:7px;
+  cursor:pointer;
+  text-align:center;
+}
+.clean-hero-product-link:focus-visible{
+  outline:2px solid #f1bd28;
+  outline-offset:4px;
+  border-radius:18px;
+}
 .clean-hero-photo{
+  display:block;
   width:174px;
   height:128px;
   flex:0 0 auto;
@@ -39,7 +60,24 @@
   border:4px solid #f1bd28;
   background:#181818;
   box-shadow:0 8px 20px rgba(0,0,0,.3);
+  transition:transform .18s ease,box-shadow .18s ease;
 }
+.clean-hero-product-link:hover .clean-hero-photo{
+  transform:translateY(-2px);
+  box-shadow:0 10px 24px rgba(0,0,0,.42);
+}
+.clean-hero-photo-cta{
+  min-height:35px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1px;
+  color:#f4b13b;
+  font:700 12px/1.05 Arial,sans-serif;
+}
+.clean-hero-photo-cta strong{font-size:12px;font-weight:800}
+.clean-hero-photo-cta small{color:#f5f5f4;font-size:11px;font-weight:700;text-decoration:underline;text-underline-offset:2px}
 .clean-hero-photo img,.clean-hero-hives-oval img{width:100%;height:100%;display:block;object-fit:cover}
 .clean-hero-center{padding-top:52px;text-align:center;min-width:0}
 .clean-hero-center-title{
@@ -111,7 +149,11 @@
   .clean-hero-left-title{white-space:normal;font-size:34px}
   .clean-hero-left-subtitle{font-size:26px}
   .clean-hero-photo-row{justify-content:flex-start}
-  .clean-hero-photo{width:min(44vw,174px);height:120px}
+  .clean-hero-product-link{width:min(44vw,174px);flex-basis:min(44vw,174px)}
+  .clean-hero-photo{width:100%;height:120px}
+  .clean-hero-photo-cta{font-size:11px}
+  .clean-hero-photo-cta strong{font-size:11px}
+  .clean-hero-photo-cta small{font-size:10px}
   .clean-hero-center,.clean-hero-right{padding-top:0}
   .clean-hero-center-title{white-space:normal;font-size:22px}
   .clean-hero-brand-title{white-space:normal;font-size:24px}
