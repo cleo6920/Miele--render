@@ -9,7 +9,7 @@
 .clean-selected-honey-divider{
   grid-column:1 / -1;
   width:100%;
-  max-width:680px;
+  max-width:716px;
   margin:8px 0 2px;
   padding:14px 16px;
   box-sizing:border-box;
@@ -31,10 +31,10 @@
 
 .clean-pending-honey-card{
   width:100%;
-  min-height:220px;
-  padding:14px;
+  min-height:200px;
+  padding:12px;
   box-sizing:border-box;
-  border-radius:16px;
+  border-radius:14px;
   border:1px solid rgba(212,175,55,.42);
   background:linear-gradient(145deg,#30291f,#1f1b17);
   display:flex;
@@ -44,25 +44,25 @@
   text-align:center;
   box-shadow:0 10px 24px rgba(0,0,0,.25);
 }
-.clean-pending-honey-icon{font-size:40px;line-height:1;margin-bottom:8px}
+.clean-pending-honey-icon{font-size:36px;line-height:1;margin-bottom:7px}
 .clean-pending-honey-card h3{
-  margin:0 0 7px;
+  margin:0 0 6px;
   color:#f5c75d;
-  font:800 16px/1.15 Georgia,'Times New Roman',serif;
+  font:800 15px/1.15 Georgia,'Times New Roman',serif;
 }
 .clean-pending-honey-card p{
   margin:0;
   color:#e7e5e4;
-  font:500 11px/1.35 system-ui,sans-serif;
+  font:500 10px/1.35 system-ui,sans-serif;
 }
 .clean-pending-honey-card span{
-  margin-top:10px;
+  margin-top:9px;
   display:inline-block;
-  padding:5px 8px;
+  padding:5px 7px;
   border-radius:999px;
   border:1px solid rgba(212,175,55,.42);
   color:#ffe49a;
-  font-size:9px;
+  font-size:8px;
   font-weight:800;
   text-transform:uppercase;
   letter-spacing:.04em;
@@ -81,24 +81,48 @@
   }
 
   .clean-product-grid{
-    grid-template-columns:repeat(4,160px);
-    gap:10px;
-    max-width:670px;
+    grid-template-columns:repeat(4,170px);
+    gap:12px;
+    max-width:716px;
     align-items:start;
     justify-content:start;
   }
 
   .clean-product-grid > *{
-    width:160px;
-    max-width:160px;
+    width:170px;
+    max-width:170px;
     min-width:0;
     margin:0;
+  }
+
+  /* Riduzione proporzionale della vera ProductCard: non solo larghezza esterna. */
+  .clean-product-grid > div:not(.clean-selected-honey-divider):not(.clean-pending-honey-card){
+    min-height:0!important;
+    padding:12px!important;
+    border-radius:14px!important;
+    box-sizing:border-box!important;
+  }
+
+  .clean-product-grid > div:not(.clean-selected-honey-divider):not(.clean-pending-honey-card) > img{
+    width:128px!important;
+    height:128px!important;
+    max-width:128px!important;
+    max-height:128px!important;
+    margin-bottom:10px!important;
+    border-radius:10px!important;
+    object-fit:cover!important;
+  }
+
+  .clean-product-grid > div:not(.clean-selected-honey-divider):not(.clean-pending-honey-card) > h3{
+    margin:0!important;
+    font-size:18px!important;
+    line-height:1.15!important;
   }
 
   .clean-product-grid > .clean-selected-honey-divider{
     grid-column:1 / -1;
     width:100%;
-    max-width:670px;
+    max-width:716px;
     margin:8px 0 2px;
   }
 }
