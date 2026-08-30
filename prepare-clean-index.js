@@ -55,12 +55,34 @@ const cleanHero = `
                                 </h1>
                                 <div className="clean-hero-left-subtitle">Alveoterapia integrata</div>
                                 <div className="clean-hero-photo-row">
-                                    <div className="clean-hero-photo">
-                                        <img src="/images/hero-prodotti-corretta.jpg" alt="Diffusore, capsule e Unguento Apis" />
-                                    </div>
-                                    <div className="clean-hero-photo">
-                                        <img src="/images/unguento-apis.png" alt="Unguento Apis" />
-                                    </div>
+                                    <button
+                                        type="button"
+                                        className="clean-hero-product-link"
+                                        onClick={() => handleProductSearchSelect('propolterapy-professional')}
+                                        aria-label="Scopri PropolTerapy Professional"
+                                    >
+                                        <span className="clean-hero-photo">
+                                            <img src="/images/hero-prodotti-corretta.jpg" alt="Diffusore PropolTerapy Professional" />
+                                        </span>
+                                        <span className="clean-hero-photo-cta">
+                                            <strong>PropolTerapy Professional</strong>
+                                            <small>Scopri di più</small>
+                                        </span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="clean-hero-product-link"
+                                        onClick={() => handleProductSearchSelect('unguento-apis')}
+                                        aria-label="Scopri Unguento Apis"
+                                    >
+                                        <span className="clean-hero-photo">
+                                            <img src="/images/unguento-apis.png" alt="Unguento Apis" />
+                                        </span>
+                                        <span className="clean-hero-photo-cta">
+                                            <strong>Unguento Apis</strong>
+                                            <small>Scopri di più</small>
+                                        </span>
+                                    </button>
                                 </div>
                                 {isAuthReady && (
                                     <div className="mt-3">
@@ -274,7 +296,7 @@ if (!html.includes('/clean-layout.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-layout.css?v=1">\n</head>');
 }
 if (!html.includes('/clean-hero.css')) {
-  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-hero.css?v=8">\n</head>');
+  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-hero.css?v=9">\n</head>');
 }
 if (!html.includes('/clean-categories.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-categories.css?v=1">\n</head>');
