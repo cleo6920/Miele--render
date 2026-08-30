@@ -16,26 +16,43 @@ const removeScriptById = (id) => {
   'shop-single-product-right-compact'
 ].forEach(removeScriptById);
 
-// Porta il Tris Dolce Risveglio direttamente nei dati statici del Millefiori.
-// Il vecchio pacco 12 vasetti viene realmente sostituito, non affiancato.
-const oldMillefioriPromo = '{ id: "p12", label: "12 vasetti (250g cad.)", jars: 12, price: 55.00, originalPrice: 12 * 5.00 },';
-const trisPack = '{ id: "p-tris-dolce-risveglio", label: "Tris Dolce Risveglio", jars: 1, price: 30.00, isTris: true, trisBadge: "SCELTA TRIS", trisProducts: ["Miele Millefiori", "Bee Energy BIO", "Polline Italiano"], trisShipping: "1 sola spedizione", trisImage: "" },';
+// Prima tranche della tabella valida 27-Tris: sostituisce davvero i vecchi formati multipli.
+// Ogni miele mantiene il primo formato singolo e riceve un solo Tris dedicato.
+const honeyTrisMigrations = [
+  {
+    productId: 'millefiori',
+    oldPack: '{ id: "p12", label: "12 vasetti (250g cad.)", jars: 12, price: 55.00, originalPrice: 12 * 5.00 },',
+    trisPack: '{ id: "p-tris-millefiori", label: "Tris Millefiori", jars: 1, price: 33.00, isTris: true, trisBadge: "SCELTA TRIS", trisProducts: ["Miele Millefiori", "Spray Gola di Propoli BIO", "Shampoo Aloe e Propoli"], trisShipping: "1 sola spedizione", trisImage: "" },'
+  },
+  {
+    productId: 'fragola',
+    oldPack: '{ id: "fr12", label: "12 vasetti (250g cad.)", jars: 12, price: 65.00, originalPrice: 12 * 6.00 },',
+    trisPack: '{ id: "fr-tris", label: "Tris Fragola", jars: 1, price: 31.00, isTris: true, trisBadge: "SCELTA TRIS", trisProducts: ["Miele Fragola", "Bee Energy – Tonico BIO", "Bagnodoccia"], trisShipping: "1 sola spedizione", trisImage: "" },'
+  },
+  {
+    productId: 'melone',
+    oldPack: '{ id: "me12", label: "12 vasetti (250g cad.)", jars: 12, price: 65.00, originalPrice: 12 * 6.00 },',
+    trisPack: '{ id: "me-tris", label: "Tris Melone", jars: 1, price: 31.00, isTris: true, trisBadge: "SCELTA TRIS", trisProducts: ["Miele Melone", "Pappa Reale Fresca BIO", "Bagnodoccia"], trisShipping: "1 sola spedizione", trisImage: "" },'
+  }
+];
 
-if (!html.includes(oldMillefioriPromo)) {
-  throw new Error('[Miele Clean] Vecchio pacco Millefiori 12 vasetti non trovato: migrazione dettaglio annullata.');
+for (const migration of honeyTrisMigrations) {
+  if (!html.includes(migration.oldPack)) {
+    throw new Error(`[Miele Clean] Vecchio formato multiplo non trovato per ${migration.productId}: migrazione Tris annullata.`);
+  }
+  html = html.replaceAll(migration.oldPack, migration.trisPack);
+
+  const trisPackEnd = `${migration.trisPack}\n                    ],`;
+  const trisPackWithHint = `${migration.trisPack}\n                    ],\n                    shippingHints: [\n                        { packId: "${migration.productId}-tris-shipping", label: "3 prodotti · 1 sola spedizione" }\n                    ],`;
+  // La scheda Tris mostra già la spedizione; non interrompiamo la build se il punto non è univoco.
+  if (html.includes(trisPackEnd)) {
+    html = html.replaceAll(trisPackEnd, trisPackWithHint.replace(`${migration.productId}-tris-shipping`, migration.trisPack.match(/id: \"([^\"]+)/)?.[1] || `${migration.productId}-tris`));
+  }
 }
-html = html.replaceAll(oldMillefioriPromo, trisPack);
 
-const trisPackEnd = `${trisPack}\n                    ],`;
-const trisPackWithHint = `${trisPack}\n                    ],\n                    shippingHints: [\n                        { packId: "p-tris-dolce-risveglio", label: "3 prodotti · 1 sola spedizione" }\n                    ],`;
-if (!html.includes(trisPackEnd)) {
-  throw new Error('[Miele Clean] Punto shipping Tris non trovato: migrazione dettaglio annullata.');
-}
-html = html.replaceAll(trisPackEnd, trisPackWithHint);
-
-// Firestore non deve poter ripristinare il vecchio pacco 12 vasetti del Millefiori.
+// Firestore non deve poter ripristinare i vecchi formati multipli dei mieli già migrati.
 const mergeNeedle = `? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id) }\n                                : staticProduct;`;
-const mergeReplacement = `? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id), image: staticProduct.image, ...(staticProduct.id === 'millefiori' ? { packs: staticProduct.packs, shippingHints: staticProduct.shippingHints } : {}) }\n                                : staticProduct;`;
+const mergeReplacement = `? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id), image: staticProduct.image, ...(['millefiori','fragola','melone'].includes(staticProduct.id) ? { packs: staticProduct.packs, shippingHints: staticProduct.shippingHints } : {}) }\n                                : staticProduct;`;
 if (!html.includes(mergeNeedle)) {
   throw new Error('[Miele Clean] Merge prodotti legacy non trovato: migrazione dettaglio annullata.');
 }
@@ -281,4 +298,4 @@ if (!html.includes('/clean-product-detail.css')) {
 }
 
 fs.writeFileSync(indexPath, html, 'utf8');
-console.log('[Miele Clean] Dettaglio prodotto migrato: Tris nativo, foto e contenuti compatti senza vecchie riscritture DOM.');
+console.log('[Miele Clean] Dettaglio prodotto migrato: Tris nativo per i primi mieli, foto e contenuti compatti senza vecchie riscritture DOM.');
