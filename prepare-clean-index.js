@@ -302,7 +302,7 @@ if (!html.includes('/clean-categories.css')) {
   html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-categories.css?v=1">\n</head>');
 }
 if (!html.includes('/clean-products.css')) {
-  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-products.css?v=2">\n</head>');
+  html = html.replace('</head>', '  <link rel="stylesheet" href="/clean-products.css?v=3">\n</head>');
 }
 if (!html.includes('/clean-layout.js')) {
   html = html.replace('</body>', '  <script src="/clean-layout.js?v=2" defer></script>\n</body>');
