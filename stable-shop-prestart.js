@@ -25,12 +25,21 @@ try {
   html = html.replace(/<style id="shop-final-layout-css">[\s\S]*?<\/style>\s*/g, '');
 
   const css = `<style id="shop-final-layout-css">
-/* Unica geometria finale della home. Nessun translate negativo sulle categorie. */
+/* Unica geometria finale della home e delle viste categoria. */
 .wrap{transform:none!important;margin-top:4px!important;margin-bottom:0!important;position:relative!important;z-index:1!important;}
 .category-grid{transform:none!important;position:relative!important;z-index:1!important;}
 #alveoterapia-hero-actions{position:relative!important;z-index:12!important;}
+.shop-category-view-stable{position:relative!important;margin-top:0!important;padding-top:0!important;}
+.shop-category-title-stable{position:absolute!important;top:2px!important;left:190px!important;right:0!important;margin:0!important;text-align:center!important;line-height:1.05!important;z-index:4!important;}
+.shop-category-back-stable{position:absolute!important;top:0!important;left:0!important;margin:0!important;z-index:5!important;}
+.shop-category-products-stable{margin-top:58px!important;}
 @media (min-width:901px){
   #busatello-hives-oval{height:170px!important;}
+}
+@media (max-width:900px){
+  .shop-category-title-stable{position:relative!important;top:auto!important;left:auto!important;right:auto!important;margin:10px 0 12px!important;text-align:center!important;}
+  .shop-category-back-stable{position:relative!important;top:auto!important;left:auto!important;display:inline-flex!important;}
+  .shop-category-products-stable{margin-top:0!important;}
 }
 </style>`;
   html = html.replace('</head>', `${css}\n</head>`);
@@ -59,6 +68,49 @@ try {
         if((node.style.marginBottom || '').startsWith('-')) node.style.removeProperty('margin-bottom');
       }
     }
+  }
+
+  function applyCategoryView(){
+    const back = Array.from(document.querySelectorAll('button,a')).find(function(el){
+      return /torna alle categor/i.test((el.textContent || '').trim());
+    });
+    if(!back) return;
+
+    let root = back.parentElement;
+    let grid = null;
+    let title = null;
+
+    for(let i=0; i<7 && root; i++, root=root.parentElement){
+      const grids = Array.from(root.querySelectorAll('.grid')).filter(function(g){
+        return !g.classList.contains('category-grid') && g.children && g.children.length >= 1;
+      });
+      const headings = Array.from(root.querySelectorAll('h1,h2,h3')).filter(function(h){
+        const t = (h.textContent || '').trim();
+        return t && !/torna alle categor/i.test(t);
+      });
+      if(grids.length && headings.length){
+        grid = grids[0];
+        // Preferisci il titolo visivamente più vicino al pulsante indietro.
+        const br = back.getBoundingClientRect();
+        title = headings.sort(function(a,b){
+          return Math.abs(a.getBoundingClientRect().top - br.top) - Math.abs(b.getBoundingClientRect().top - br.top);
+        })[0];
+        break;
+      }
+    }
+
+    if(!root || !grid || !title) return;
+
+    root.classList.add('shop-category-view-stable');
+    back.classList.add('shop-category-back-stable');
+    title.classList.add('shop-category-title-stable');
+    grid.classList.add('shop-category-products-stable');
+
+    // Elimina residui inline delle vecchie patch senza introdurre offset negativi.
+    root.style.removeProperty('transform');
+    root.style.removeProperty('margin-bottom');
+    grid.style.removeProperty('transform');
+    grid.style.removeProperty('margin-bottom');
   }
 
   function applyHome(){
@@ -113,7 +165,6 @@ try {
     brand.style.setProperty('z-index','30','important');
 
     // Barra ricerca: resta figlia del nodo React originale, ma viene tolta dal flusso.
-    // Così non allunga la hero e non serve appendChild/reparenting.
     if(search && search.parentElement){
       const wrap = search.parentElement;
       wrap.style.setProperty('position','absolute','important');
@@ -142,6 +193,7 @@ try {
   function apply(){
     resetProductRuntimeOffsets();
     applyHome();
+    applyCategoryView();
   }
 
   function schedule(delay){
@@ -167,7 +219,7 @@ try {
 
   html = html.replace('</body>', `${controller}\n</body>`);
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Layout finale stabilizzato: ricerca assoluta senza reparenting; observer prodotto legacy rimossi.');
+  console.log('[Miele Artigianale] Layout stabile aggiornato: titolo categoria centrato e prodotti più in alto, senza controller concorrenti.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore stabilizzazione finale shop:', error);
 }
