@@ -25,12 +25,12 @@ try {
                                     </div>
                                 </div>`;
 
-  const newBlock = `<div id="alveoterapia-hero-actions" className="mt-4 flex flex-nowrap items-start gap-3 sm:gap-5 ml-0 sm:ml-0 lg:ml-0 pb-3">
+  const newBlock = `<div id="alveoterapia-hero-actions" className="mt-4 flex flex-nowrap items-start gap-3 sm:gap-5 ml-0 sm:ml-0 lg:ml-0 pb-1">
                                     <button type="button" aria-label="Scopri PropolTerapy Professional" onClick={() => document.dispatchEvent(new CustomEvent('shop:open-product', { detail: { productId: 'propolterapy-professional', category: 'alveoterapia' } }))} className="group flex-shrink-0 w-36 sm:w-40 lg:w-44 flex flex-col items-center text-center cursor-pointer focus:outline-none">
                                         <div className="w-36 h-28 sm:w-40 sm:h-28 lg:w-44 lg:h-32 rounded-[999px] overflow-hidden border-4 border-amber-300 shadow-2xl bg-stone-900">
                                             <img src="/images/hero-prodotti-corretta.jpg" alt="PropolTerapy Professional" className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />
                                         </div>
-                                        <div className="mt-2 text-[13px] sm:text-sm font-extrabold leading-tight text-amber-300">PropolTerapy Professional</div>
+                                        <div className="mt-2 text-[11px] sm:text-[12px] lg:text-[13px] font-extrabold leading-none text-amber-300 whitespace-nowrap">PropolTerapy Professional</div>
                                         <div className="mt-1 inline-flex items-center justify-center rounded-full bg-black/70 border border-amber-300 px-3 py-1 text-[11px] sm:text-xs font-extrabold text-amber-300 group-hover:bg-black/90">Scopri di più</div>
                                     </button>
                                     <button type="button" aria-label="Scopri Unguento Apis" onClick={() => document.dispatchEvent(new CustomEvent('shop:open-product', { detail: { productId: 'unguento-apis', category: 'cosmesi' } }))} className="group flex-shrink-0 w-36 sm:w-40 lg:w-44 flex flex-col items-center text-center cursor-pointer focus:outline-none">
@@ -42,11 +42,9 @@ try {
                                     </button>
                                 </div>`;
 
-  // La sorgente Git contiene il blocco vecchio: lo rimpiazziamo, non lo affianchiamo.
   if (html.includes(oldBlock)) {
     html = html.replace(oldBlock, newBlock);
   } else {
-    // Se un precedente prestart ha già creato il blocco custom, sostituisci l'intero blocco tramite confini noti.
     const start = html.indexOf('<div id="alveoterapia-hero-actions"');
     const nextAdmin = html.indexOf('{isAuthReady && (', start);
     if (start >= 0 && nextAdmin > start) {
@@ -56,15 +54,14 @@ try {
     }
   }
 
-  // Spazio strutturale stabile: le card categorie devono iniziare sotto tutto il contenuto hero,
-  // compresi nome prodotto e CTA. Nessun translate negativo o sovrapposizione.
+  // Mantieni un distacco visibile ma compatto fra hero e card categorie.
   const spacingCss = `<style id="alveoterapia-hero-spacing-v2">
 #alveoterapia-hero-actions{position:relative!important;z-index:12!important;}
-.wrap{transform:none!important;margin-top:28px!important;margin-bottom:0!important;position:relative!important;z-index:1!important;}
+.wrap{transform:none!important;margin-top:10px!important;margin-bottom:0!important;position:relative!important;z-index:1!important;}
 .category-grid{transform:none!important;position:relative!important;z-index:1!important;}
 @media (max-width:640px){
-  #alveoterapia-hero-actions{padding-bottom:10px!important;}
-  .wrap{margin-top:22px!important;}
+  #alveoterapia-hero-actions{padding-bottom:2px!important;}
+  .wrap{margin-top:8px!important;}
 }
 </style>`;
 
@@ -75,7 +72,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Hero: nomi prodotti + Scopri di più ripristinati; categorie separate dalla hero.');
+  console.log('[Miele Artigianale] Hero: PropolTerapy su una riga; categorie riavvicinate senza overlap.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore hero Alveoterapia:', error);
 }
