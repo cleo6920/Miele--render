@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "echo \"No build needed\"",
-    "start": "node final-shop-cleanup.js"
+    "start": "node restore-alveoterapia-hero.js"
   },
   "engines": {
     "node": ">=20.0.0 <22.0.0"
