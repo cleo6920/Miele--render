@@ -128,4 +128,4 @@ try {
   console.error('[Miele Artigianale] Errore applicazione offerte tris PDF:', error);
 }
 
-require('./start.js');
+require('./hero-swap-prestart.js');
