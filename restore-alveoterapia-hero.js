@@ -54,22 +54,24 @@ try {
     }
   }
 
-  // Hero compatta: ovale alveari più alto verso il basso e categorie ancora più vicine.
+  // Hero compatta: ovale alveari più alto e card categorie rialzate nel solo spazio vuoto residuo.
   const spacingCss = `<style id="alveoterapia-hero-spacing-v2">
 #alveoterapia-hero-actions{position:relative!important;z-index:12!important;}
-.wrap{transform:none!important;margin-top:0!important;margin-bottom:0!important;position:relative!important;z-index:1!important;}
-.category-grid{transform:none!important;position:relative!important;z-index:1!important;}
+.wrap{margin-bottom:0!important;position:relative!important;z-index:1!important;}
+.category-grid{position:relative!important;z-index:1!important;}
 .shop-admin-hero-shortcut{position:absolute!important;left:44px!important;top:76px!important;z-index:45!important;margin:0!important;padding:0!important;width:auto!important;height:auto!important;}
 .shop-admin-hero-shortcut button,.shop-admin-hero-shortcut a{margin:0!important;padding:3px 8px!important;font-size:11px!important;line-height:1.1!important;white-space:nowrap!important;}
 @media (min-width:901px){
   #busatello-hives-oval{height:170px!important;}
+  .wrap{transform:translateY(-55px)!important;margin-top:0!important;}
 }
 @media (max-width:900px){
+  .wrap{transform:translateY(-22px)!important;margin-top:0!important;}
   .shop-admin-hero-shortcut{left:18px!important;top:72px!important;}
 }
 @media (max-width:640px){
   #alveoterapia-hero-actions{padding-bottom:0!important;}
-  .wrap{margin-top:2px!important;}
+  .wrap{transform:none!important;margin-top:2px!important;}
   .shop-admin-hero-shortcut{position:relative!important;left:auto!important;top:auto!important;margin-top:6px!important;align-self:flex-start!important;}
 }
 </style>`;
@@ -113,7 +115,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Ovale alveari più alto e categorie ancora più vicine alla hero.');
+  console.log('[Miele Artigianale] Card categorie rialzate di 55px nel vuoto residuo sotto la hero.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore hero Alveoterapia:', error);
 }
