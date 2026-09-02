@@ -54,14 +54,20 @@ try {
     }
   }
 
-  // Mantieni un distacco visibile ma compatto fra hero e card categorie.
+  // Hero molto più compatta: il link Admin viene portato in alto e tolto dal flusso verticale.
   const spacingCss = `<style id="alveoterapia-hero-spacing-v2">
 #alveoterapia-hero-actions{position:relative!important;z-index:12!important;}
-.wrap{transform:none!important;margin-top:10px!important;margin-bottom:0!important;position:relative!important;z-index:1!important;}
+.wrap{transform:none!important;margin-top:4px!important;margin-bottom:0!important;position:relative!important;z-index:1!important;}
 .category-grid{transform:none!important;position:relative!important;z-index:1!important;}
+.shop-admin-hero-shortcut{position:absolute!important;left:44px!important;top:76px!important;z-index:45!important;margin:0!important;padding:0!important;width:auto!important;height:auto!important;}
+.shop-admin-hero-shortcut button,.shop-admin-hero-shortcut a{margin:0!important;padding:3px 8px!important;font-size:11px!important;line-height:1.1!important;white-space:nowrap!important;}
+@media (max-width:900px){
+  .shop-admin-hero-shortcut{left:18px!important;top:72px!important;}
+}
 @media (max-width:640px){
-  #alveoterapia-hero-actions{padding-bottom:2px!important;}
-  .wrap{margin-top:8px!important;}
+  #alveoterapia-hero-actions{padding-bottom:0!important;}
+  .wrap{margin-top:4px!important;}
+  .shop-admin-hero-shortcut{position:relative!important;left:auto!important;top:auto!important;margin-top:6px!important;align-self:flex-start!important;}
 }
 </style>`;
 
@@ -71,8 +77,40 @@ try {
     html = html.replace('</head>', `${spacingCss}\n</head>`);
   }
 
+  const adminMover = `<script id="shop-admin-hero-mover">
+(function(){
+  let timer=null;
+  function moveAdmin(){
+    const candidates=Array.from(document.querySelectorAll('button,a,div,span'));
+    const admin=candidates.find(el=>((el.textContent||'').trim()==='Accedi come Admin'));
+    if(!admin) return;
+    let box=admin;
+    if(admin.parentElement && ((admin.parentElement.textContent||'').trim()==='Accedi come Admin')) box=admin.parentElement;
+    box.classList.add('shop-admin-hero-shortcut');
+    const heroActions=document.getElementById('alveoterapia-hero-actions');
+    if(heroActions){
+      const heroRoot=heroActions.closest('header') || heroActions.parentElement?.parentElement || heroActions.parentElement;
+      if(heroRoot) heroRoot.style.setProperty('position','relative','important');
+    }
+  }
+  function schedule(){clearTimeout(timer);timer=setTimeout(moveAdmin,80);}
+  window.addEventListener('load',schedule);
+  window.addEventListener('resize',schedule);
+  document.addEventListener('click',schedule,true);
+  const obs=new MutationObserver(schedule);
+  obs.observe(document.body,{childList:true,subtree:true});
+  schedule();
+})();
+</script>`;
+
+  if (/<script id="shop-admin-hero-mover">[\s\S]*?<\/script>/.test(html)) {
+    html = html.replace(/<script id="shop-admin-hero-mover">[\s\S]*?<\/script>/, adminMover);
+  } else {
+    html = html.replace('</body>', `${adminMover}\n</body>`);
+  }
+
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Hero: PropolTerapy su una riga; categorie riavvicinate senza overlap.');
+  console.log('[Miele Artigianale] Hero compattata: Admin spostato in alto e categorie avvicinate.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore hero Alveoterapia:', error);
 }
