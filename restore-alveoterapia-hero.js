@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-// Esegue prima tutta la catena esistente. Quando torna, il server è già avviato
+// Esegue prima tutta la catena catalogo/hero esistente. Quando torna, il server è già avviato
 // ma index.html può ancora essere rifinito: express lo servirà dal file aggiornato.
-require('./tris-catalog-prestart.js');
+require('./apinfiore-products-prestart.js');
 
 try {
   const indexPath = path.join(__dirname, 'index.html');
