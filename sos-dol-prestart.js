@@ -9,8 +9,9 @@ try {
   let html = fs.readFileSync(indexPath, 'utf8');
 
   const officialSosDolImage = 'https://www.apinfiore.com/wp-content/uploads/2023/03/SOS-Doll_web-5.jpg.webp';
+  const premiumHeroImage = '/images/sos-dol-hero-premium.jpg';
 
-  // Immagine: stessa referenza ufficiale SOS DOL 15 ml per scheda prodotto e hero.
+  // Immagine ufficiale SOS DOL 15 ml per la scheda prodotto.
   const imageMatches = (html.match(/(?:\/)?images\/unguento-apis\.png/g) || []).length;
   if (imageMatches > 0) {
     html = html.replace(/(?:\/)?images\/unguento-apis\.png/g, officialSosDolImage);
@@ -19,8 +20,7 @@ try {
   // Nome prodotto concordato.
   html = html.replaceAll('Unguento Apis – 15 ml', 'SOS DOL – Unguento Apis – 15 ml');
 
-  // Descrizione: aderente alla composizione/uso cosmetico Apinfiore, con enfasi su sollievo e comfort,
-  // senza formulazioni mediche o farmaceutiche.
+  // Descrizione cosmetica, senza formulazioni mediche o farmaceutiche.
   const oldDescription = "Novità assoluta: unguento con veleno d'api, cera d'api, olio di mandorle dolci, burro di karité ed erbe lenitive. Dona sollievo alle zone doloranti come ginocchia, mani e piedi.";
   const newDescription = "Novità assoluta: unguento da massaggio con veleno d'api e cera d'api, arricchito con olio di mandorle dolci, burro di karité e oli essenziali naturali. Dona una piacevole sensazione di sollievo e comfort alle zone più affaticate, ideale per il massaggio di ginocchia, mani e piedi.";
   if (html.includes(oldDescription)) html = html.replaceAll(oldDescription, newDescription);
@@ -38,26 +38,26 @@ try {
   html = html.replaceAll('>Unguento Apis</div>', '>SOS DOL – Unguento Apis – 15 ml</div>');
   html = html.replaceAll('>SOS DOL – Unguento Apis</div>', '>SOS DOL – Unguento Apis – 15 ml</div>');
 
-  // Solo la label SOS DOL della hero: più piccola e senza ritorno a capo.
   html = html.replace(
     '<div className="mt-2 text-[13px] sm:text-sm font-extrabold leading-tight text-amber-300">SOS DOL – Unguento Apis – 15 ml</div>',
     '<div className="mt-2 text-[10px] sm:text-[11px] lg:text-[12px] font-extrabold leading-none text-amber-300 whitespace-nowrap">SOS DOL – Unguento Apis – 15 ml</div>'
   );
 
-  // Hero SOS DOL: la foto ufficiale ha uno sfondo lilla incorporato.
-  // Nella sola hero lo fondiamo con un fondale miele/crema tramite blend + maschera ovale,
-  // così il rettangolo catalogo viene fortemente attenuato senza alterare la foto nella scheda prodotto.
+  // Hero SOS DOL: usa la nuova foto premium creata apposta per la hero.
+  // La scheda prodotto continua a usare la foto ufficiale Apinfiore.
   const simpleHeroImage = `<img src="${officialSosDolImage}" alt="SOS DOL – Unguento Apis 15 ml" className="w-full h-full object-contain bg-white transition-transform duration-200 group-hover:scale-105" />`;
   const oldWarmHeroImage = `<div className="w-full h-full p-2 bg-gradient-to-br from-amber-50 via-orange-100 to-amber-200 flex items-center justify-center"><img src="${officialSosDolImage}" alt="SOS DOL – Unguento Apis 15 ml" className="w-full h-full object-contain rounded-[999px] shadow-inner transition-transform duration-200 group-hover:scale-105" /></div>`;
   const blendedHeroImage = `<div className="relative w-full h-full overflow-hidden rounded-[999px] bg-gradient-to-br from-[#fff9df] via-[#f7d98d] to-[#d99b2b] flex items-center justify-center shadow-inner"><div className="absolute inset-[7px] rounded-[999px] bg-[radial-gradient(circle_at_35%_28%,rgba(255,255,255,.95),rgba(255,239,188,.82)_38%,rgba(221,157,48,.70)_100%)]"></div><img src="${officialSosDolImage}" alt="SOS DOL – Unguento Apis 15 ml" className="relative z-10 w-[78%] h-[78%] object-contain rounded-[42%] transition-transform duration-200 group-hover:scale-105" style={{mixBlendMode:'multiply',filter:'saturate(.68) contrast(.90) brightness(1.10)',WebkitMaskImage:'radial-gradient(ellipse 72% 76% at 50% 50%, black 60%, transparent 100%)',maskImage:'radial-gradient(ellipse 72% 76% at 50% 50%, black 60%, transparent 100%)'}} /></div>`;
+  const newHeroImage = `<img src="${premiumHeroImage}" alt="SOS DOL – Unguento Apis 15 ml" className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />`;
 
-  if (html.includes(oldWarmHeroImage)) {
-    html = html.replace(oldWarmHeroImage, blendedHeroImage);
+  if (html.includes(blendedHeroImage)) {
+    html = html.replace(blendedHeroImage, newHeroImage);
+  } else if (html.includes(oldWarmHeroImage)) {
+    html = html.replace(oldWarmHeroImage, newHeroImage);
   } else if (html.includes(simpleHeroImage)) {
-    html = html.replace(simpleHeroImage, blendedHeroImage);
+    html = html.replace(simpleHeroImage, newHeroImage);
   }
 
-  // Controlli finali sui punti concordati.
   if (html.includes('3 confezioni 15 ml (sconto 11,67%)')) {
     throw new Error('Vecchio sconto SOS DOL ancora presente');
   }
@@ -69,7 +69,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] SOS DOL aggiornato: descrizione cosmetica, tris €99,90, hero una riga e foto fusa nello sfondo premium.');
+  console.log('[Miele Artigianale] SOS DOL aggiornato: nuova foto premium applicata alla hero.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore aggiornamento SOS DOL:', error);
 }
