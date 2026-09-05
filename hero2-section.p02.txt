@@ -1,34 +1,34 @@
            </p>
-                                <div className="mt-5 rounded-2xl bg-[#0d4d3e] px-4 py-3 text-center text-base sm:text-lg font-black text-white">
+                                <div className="mt-4 rounded-xl bg-[#0d4d3e] px-4 py-2 text-center text-sm sm:text-base font-black text-white">
                                   Oasi del Busatello – Capitale della Natura
                                 </div>
                               </div>
                             </article>
 
-                            <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-amber-200 bg-white shadow-lg">
-                              <div className="px-5 sm:px-6 pt-6 pb-4">
-                                <div className="text-xs sm:text-sm font-black tracking-[0.14em] text-amber-700 uppercase">Linea Alveoterapia</div>
-                                <h3 className="mt-2 text-3xl font-black text-stone-900">Alveoterapia con diffusori</h3>
-                                <p className="mt-1 text-lg sm:text-xl font-extrabold text-[#0d4d3e]">Con diffusore e capsule</p>
+                            <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-amber-200 bg-white shadow-md">
+                              <div className="px-4 sm:px-5 pt-4 pb-3">
+                                <div className="text-xs font-black tracking-[0.14em] text-amber-700 uppercase">Linea Alveoterapia</div>
+                                <h3 className="mt-1 text-2xl font-black text-stone-900">Alveoterapia con diffusori</h3>
+                                <p className="mt-1 text-base sm:text-lg font-extrabold text-[#0d4d3e]">Con diffusore e capsule</p>
                               </div>
 
-                              <div className="mx-4 sm:mx-5 overflow-hidden rounded-2xl border border-stone-200 bg-stone-100 shadow-inner">
-                                <img src="/images/hero2-marco-diffusore.jpg" alt="Marco Zago utilizza il diffusore nel Centro di Alveoterapia Integrata" className="w-full aspect-[16/9] object-contain bg-[#f4ecdf]" />
+                              <div className="mx-4 sm:mx-5 overflow-hidden rounded-xl border border-stone-200 bg-stone-100 shadow-inner">
+                                <img src="/images/hero2-marco-diffusore.jpg" alt="Marco Zago utilizza il diffusore nel Centro di Alveoterapia Integrata" className="w-full h-52 sm:h-56 lg:h-60 object-contain bg-[#f4ecdf]" />
                               </div>
 
-                              <div className="flex-1 px-5 sm:px-6 pt-5 pb-6">
-                                <div className="inline-flex rounded-full bg-amber-50 px-3 py-1 text-sm font-extrabold text-amber-800">Diffusore + capsule dedicate</div>
-                                <p className="mt-4 text-base sm:text-lg leading-relaxed font-semibold text-stone-700">
+                              <div className="flex-1 px-4 sm:px-5 pt-4 pb-4">
+                                <div className="inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs sm:text-sm font-extrabold text-amber-800">Diffusore + capsule dedicate</div>
+                                <p className="mt-3 text-sm sm:text-base leading-relaxed font-semibold text-stone-700">
                                   La Linea Alveoterapia utilizza diffusori professionali alimentati da capsule dedicate. Le capsule contengono estratti concentrati delle sostanze dell'alveare, dal polline alla propoli, e consentono di vivere l'esperienza in un ambiente dedicato in modo pratico e confortevole.
                                 </p>
-                                <div className="mt-5 rounded-2xl bg-amber-100 px-4 py-3 text-center text-base sm:text-lg font-black text-amber-900">
+                                <div className="mt-4 rounded-xl bg-amber-100 px-4 py-2 text-center text-sm sm:text-base font-black text-amber-900">
                                   Centro di Alveoterapia Integrata – Castel d'Ario (MN)
                                 </div>
                               </div>
                             </article>
                           </div>
 
-                          <div className="border-t border-amber-200 bg-white/70 px-5 sm:px-8 py-4 text-center text-sm sm:text-base font-bold text-stone-600">
+                          <div className="border-t border-amber-200 bg-white/70 px-5 sm:px-7 py-3 text-center text-sm font-bold text-stone-600">
                             Due modalità diverse e complementari: una nasce direttamente dall'ambiente degli alveari, l'altra utilizza diffusori e capsule dedicate.
                           </div>
                         </div>

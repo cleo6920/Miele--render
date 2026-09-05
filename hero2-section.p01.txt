@@ -1,33 +1,33 @@
 
                     {!selectedCategory && !selectedProductId && (
-                      <section id="alveoterapia-integrata-hero2" className="max-w-7xl mx-auto w-full px-4 mb-8" aria-labelledby="alveoterapia-integrata-hero2-title">
-                        <div className="overflow-hidden rounded-[28px] border border-amber-200 bg-gradient-to-b from-amber-50 via-white to-stone-50 shadow-xl">
-                          <div className="px-5 sm:px-8 lg:px-10 pt-8 pb-6 text-center">
-                            <div className="inline-flex items-center rounded-full bg-[#0d4d3e] px-4 py-1.5 text-xs sm:text-sm font-extrabold tracking-[0.14em] text-amber-100 uppercase">
+                      <section id="alveoterapia-integrata-hero2" className="max-w-7xl mx-auto w-full px-4 mb-5" aria-labelledby="alveoterapia-integrata-hero2-title">
+                        <div className="overflow-hidden rounded-[24px] border border-amber-200 bg-gradient-to-b from-amber-50 via-white to-stone-50 shadow-lg">
+                          <div className="px-5 sm:px-7 lg:px-8 pt-4 pb-4 text-center">
+                            <div className="inline-flex items-center rounded-full bg-[#0d4d3e] px-4 py-1 text-xs sm:text-sm font-extrabold tracking-[0.14em] text-amber-100 uppercase">
                               Alveoterapia Integrata
                             </div>
-                            <h2 id="alveoterapia-integrata-hero2-title" className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#173f35]">
+                            <h2 id="alveoterapia-integrata-hero2-title" className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-[#173f35]">
                               Due modalità complementari
                             </h2>
-                            <p className="mx-auto mt-3 max-w-4xl text-base sm:text-lg font-semibold leading-relaxed text-stone-700">
+                            <p className="mx-auto mt-2 max-w-3xl text-sm sm:text-base font-semibold leading-snug text-stone-700">
                               L'esperienza naturale con le api e la Linea Alveoterapia con diffusori: due modi diversi per conoscere il mondo dell'alveare e vivere un percorso dedicato al benessere.
                             </p>
                           </div>
 
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6 px-4 sm:px-6 lg:px-8 pb-8">
-                            <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-emerald-200 bg-white shadow-lg">
-                              <div className="px-5 sm:px-6 pt-6 pb-4">
-                                <div className="text-xs sm:text-sm font-black tracking-[0.14em] text-[#0d4d3e] uppercase">Alveoterapia naturale</div>
-                                <h3 className="mt-2 text-3xl font-black text-stone-900">Con le api</h3>
-                                <p className="mt-1 text-lg sm:text-xl font-extrabold text-amber-700">Alveoterapia all'Oasi del Busatello</p>
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 sm:px-5 lg:px-6 pb-5">
+                            <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-emerald-200 bg-white shadow-md">
+                              <div className="px-4 sm:px-5 pt-4 pb-3">
+                                <div className="text-xs font-black tracking-[0.14em] text-[#0d4d3e] uppercase">Alveoterapia naturale</div>
+                                <h3 className="mt-1 text-2xl font-black text-stone-900">Con le api</h3>
+                                <p className="mt-1 text-base sm:text-lg font-extrabold text-amber-700">Alveoterapia all'Oasi del Busatello</p>
                               </div>
 
-                              <div className="mx-4 sm:mx-5 overflow-hidden rounded-2xl border border-stone-200 bg-stone-100 shadow-inner">
-                                <img src="/images/hero2-marco-oasi.jpg" alt="Marco Zago durante una seduta di alveoterapia naturale all'Oasi del Busatello" className="w-full aspect-[16/9] object-cover" />
+                              <div className="mx-4 sm:mx-5 overflow-hidden rounded-xl border border-stone-200 bg-stone-100 shadow-inner">
+                                <img src="/images/hero2-marco-oasi.jpg" alt="Marco Zago durante una seduta di alveoterapia naturale all'Oasi del Busatello" className="w-full h-52 sm:h-56 lg:h-60 object-cover" />
                               </div>
 
-                              <div className="flex-1 px-5 sm:px-6 pt-5 pb-6">
-                                <div className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-sm font-extrabold text-[#0d4d3e]">Con api reali</div>
-                                <p className="mt-4 text-base sm:text-lg leading-relaxed font-semibold text-stone-700">
+                              <div className="flex-1 px-4 sm:px-5 pt-4 pb-4">
+                                <div className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs sm:text-sm font-extrabold text-[#0d4d3e]">Con api reali</div>
+                                <p className="mt-3 text-sm sm:text-base leading-relaxed font-semibold text-stone-700">
                                   La modalità naturale si svolge con api reali. Una postazione dedicata permette di respirare l'aria proveniente direttamente dagli alveari, senza contatto diretto con le api, vivendo un'esperienza immersiva nel loro ambiente naturale.
                       
