@@ -2,16 +2,13 @@
                     {!selectedCategory && !selectedProductId && (
                       <section id="alveoterapia-integrata-hero2" className="max-w-7xl mx-auto w-full px-4 mb-5" aria-labelledby="alveoterapia-integrata-hero2-title">
                         <div className="overflow-hidden rounded-[24px] border border-amber-200 bg-gradient-to-b from-amber-50 via-white to-stone-50 shadow-lg">
-                          <div className="px-5 sm:px-7 lg:px-8 pt-4 pb-4 text-center">
+                          <div className="px-5 sm:px-7 lg:px-8 pt-3 pb-2 text-center">
                             <div className="inline-flex items-center rounded-full bg-[#0d4d3e] px-4 py-1 text-xs sm:text-sm font-extrabold tracking-[0.14em] text-amber-100 uppercase">
                               Alveoterapia Integrata
                             </div>
-                            <h2 id="alveoterapia-integrata-hero2-title" className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-[#173f35]">
-                              Due modalità complementari
+                            <h2 id="alveoterapia-integrata-hero2-title" className="mt-1 text-xl sm:text-2xl font-black tracking-tight" style={{color:'#173f35'}}>
+                              Due modalità complementari: con le api e con diffusori
                             </h2>
-                            <p className="mx-auto mt-2 max-w-3xl text-sm sm:text-base font-semibold leading-snug text-stone-700">
-                              L'esperienza naturale con le api e la Linea Alveoterapia con diffusori: due modi diversi per conoscere il mondo dell'alveare e vivere un percorso dedicato al benessere.
-                            </p>
                           </div>
 
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 sm:px-5 lg:px-6 pb-5">
