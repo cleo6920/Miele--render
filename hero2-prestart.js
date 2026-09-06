@@ -69,6 +69,31 @@ try {
 
 require('./hero2-inject.js');
 
+// Prezzo pubblico autoritativo Capsule P+B: €19,90 IVA compresa.
+// Aggiorna sia il fallback statico sia il prodotto dopo il merge con Firestore,
+// evitando che un eventuale vecchio prezzo a €15,00 torni sul sito.
+try {
+  const indexPath = path.join(__dirname, 'index.html');
+  let html = fs.readFileSync(indexPath, 'utf8');
+
+  const oldCapsulePack = '{ id: "box5pb", label: "Scatola 5 capsule P+B", jars: 1, price: 15.00 }';
+  const newCapsulePack = '{ id: "box5pb", label: "Scatola 5 capsule P+B", jars: 1, price: 19.90 }';
+  if (html.includes(oldCapsulePack)) {
+    html = html.replaceAll(oldCapsulePack, newCapsulePack);
+  }
+
+  const mergeTail = '                        updatedProducts.forEach(fp => {';
+  if (html.includes(mergeTail) && !html.includes("const capsulePbIndex = mergedProducts.findIndex(p => p.id === 'capsule-pb')")) {
+    const authoritativeCapsulePrice = `                        const capsulePbIndex = mergedProducts.findIndex(p => p.id === 'capsule-pb');\n                        if (capsulePbIndex !== -1) {\n                            mergedProducts[capsulePbIndex] = {\n                                ...mergedProducts[capsulePbIndex],\n                                packs: [{ id: 'box5pb', label: 'Scatola 5 capsule P+B', jars: 1, price: 19.90 }]\n                            };\n                        }\n`;
+    html = html.replace(mergeTail, authoritativeCapsulePrice + mergeTail);
+  }
+
+  fs.writeFileSync(indexPath, html, 'utf8');
+  console.log('[Miele Artigianale] Capsule P+B fissate a €19,90 IVA compresa.');
+} catch (error) {
+  console.error('[Miele Artigianale] Errore aggiornamento prezzo Capsule P+B:', error);
+}
+
 // Solo lato browser sostituisce l'immagine del secondo pulsante Hero 1 con la foto
 // ufficiale del prodotto SOS DOL. Non modifica nessun'altra immagine o asset locale.
 try {
