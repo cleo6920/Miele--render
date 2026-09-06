@@ -15,10 +15,10 @@
                                 <p className="text-sm leading-snug font-semibold text-stone-100">
                                   Diffusore professionale con capsule dedicate contenenti sostanze dell'alveare, per un'esperienza pratica e confortevole in ambiente dedicato.
                                 </p>
-                                <div className="mt-2 flex justify-center sm:justify-start">
-                                  <div className="inline-flex w-fit max-w-[230px] rounded-lg bg-amber-100 px-3 py-1.5 text-center text-xs font-black leading-tight text-amber-900">
-                                    Centro di Alveoterapia Integrata – Castel d'Ario (MN)
-                                  </div>
+                                <div className="mt-2 text-[11px] sm:text-xs leading-snug font-bold text-amber-100">
+                                  <div className="text-[10px] font-black tracking-[0.10em] text-amber-500 uppercase">Dove trovarci</div>
+                                  <div className="mt-0.5">Centro di Alveoterapia Integrata – Farmacia delle Api</div>
+                                  <div>Via XX Settembre 20/A – 46033 Castel d'Ario (MN)</div>
                                 </div>
                               </div>
                             </div>

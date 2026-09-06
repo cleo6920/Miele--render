@@ -33,6 +33,28 @@ try {
     console.log('[Miele Artigianale] Hero 2 aggiornata in modo autoritativo alla versione corrente.');
   }
 
+  // Linea Alveoterapia: gli altri diffusori restano nel codice come backup,
+  // ma sul sito pubblico sono visibili solo Professional e le sue capsule P+B dedicate.
+  const visibleAlveoterapiaIds = "['propolterapy-professional','capsule-pb']";
+
+  const gridNeedle = "{products.filter(p => p.category === selectedCategory).sort((a,b) => a.order - b.order).map(product => (";
+  const gridReplacement = `{products.filter(p => p.category === selectedCategory && (selectedCategory !== 'alveoterapia' || ${visibleAlveoterapiaIds}.includes(p.id))).sort((a,b) => a.order - b.order).map(product => (`;
+  if (html.includes(gridNeedle)) {
+    html = html.replaceAll(gridNeedle, gridReplacement);
+    console.log('[Miele Artigianale] Catalogo Alveoterapia pubblico limitato a Professional + capsule P+B.');
+  } else if (!html.includes("selectedCategory !== 'alveoterapia' || ['propolterapy-professional','capsule-pb'].includes(p.id)")) {
+    console.warn('[Miele Artigianale] Renderer catalogo Alveoterapia non trovato: filtro pubblico non applicato.');
+  }
+
+  const searchNeedle = '<GlobalProductSearch allProducts={products} onProductSelect={handleProductSearchSelect} />';
+  const searchReplacement = `<GlobalProductSearch allProducts={products.filter(p => p.category !== 'alveoterapia' || ${visibleAlveoterapiaIds}.includes(p.id))} onProductSelect={handleProductSearchSelect} />`;
+  if (html.includes(searchNeedle)) {
+    html = html.replaceAll(searchNeedle, searchReplacement);
+    console.log('[Miele Artigianale] Ricerca globale: diffusori di backup esclusi dai risultati pubblici.');
+  } else if (!html.includes("allProducts={products.filter(p => p.category !== 'alveoterapia' || ['propolterapy-professional','capsule-pb'].includes(p.id))}")) {
+    console.warn('[Miele Artigianale] Ricerca globale non trovata: filtro Alveoterapia non applicato.');
+  }
+
   fs.writeFileSync(indexPath, html, 'utf8');
 } catch (error) {
   console.error('[Miele Artigianale] Errore Hero 2 Alveoterapia Integrata:', error);
