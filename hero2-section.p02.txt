@@ -20,6 +20,14 @@
                                   <div className="mt-0.5">Centro di Alveoterapia Integrata – Farmacia delle Api</div>
                                   <div>Via XX Settembre 20/A – 46033 Castel d'Ario (MN)</div>
                                 </div>
+                                <button
+                                  type="button"
+                                  onClick={() => { setSelectedProductId(null); setSelectedCategory('alveoterapia'); }}
+                                  className="mt-2 inline-flex items-center justify-center rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs sm:text-sm font-black text-stone-950 shadow-sm transition-colors"
+                                  aria-label="Scopri la Linea Alveoterapia"
+                                >
+                                  Scopri di più
+                                </button>
                               </div>
                             </div>
                           </article>
