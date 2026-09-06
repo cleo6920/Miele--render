@@ -55,6 +55,45 @@ try {
     console.warn('[Miele Artigianale] Ricerca globale non trovata: filtro Alveoterapia non applicato.');
   }
 
+  // Offerta pubblica autoritativa del PropolTerapy Professional.
+  // Il prezzo e le 5 capsule comprese vengono mantenuti anche se Firestore contiene ancora dati precedenti.
+  const professionalDescription = "Diffusore professionale per alveoterapia con doppia funzione: PROGRAMMA AMBIENTE e PROGRAMMA MASCHERA AEROSOL. Il sistema è dotato di ionizzatore e ventola con copertura fino a 60 m². In dotazione: maschera adulti, mascherina pediatrica e tubo di raccordo. Pacchetto Alveoterapia: 5 capsule BIO P+B comprese gratuitamente. Prezzo al pubblico €180,00 IVA compresa.";
+  const oldProfessionalDescription = "Diffusore professionale per alveoterapia con doppia funzione: PROGRAMMA AMBIENTE per la sanificazione degli ambienti con frazioni volatili di propoli, e PROGRAMMA MASCHERA AEROSOL per la respirazione diretta della propoli italiana di alta qualità. Il sistema è dotato di ionizzatore e ventola con copertura fino a 60 m². In dotazione: maschera adulti, mascherina pediatrica e tubo di raccordo. Confezione iniziale con 5 capsule P+B incluse (Propoli italiana 95% e Boswellia Serrata 5%, sinergia naturale che potenzia le proprietà della propoli e favorisce il benessere respiratorio).";
+  const oldProfessionalPack = '{ id: "pp1", label: "Professional", jars: 1, price: 170.00 }';
+  const newProfessionalPack = '{ id: "pp1", label: "Pacchetto Alveoterapia – Professional + 5 capsule BIO comprese", jars: 1, price: 180.00 }';
+
+  if (html.includes(oldProfessionalDescription)) {
+    html = html.replace(oldProfessionalDescription, professionalDescription);
+  }
+  if (html.includes(oldProfessionalPack)) {
+    html = html.replace(oldProfessionalPack, newProfessionalPack);
+  }
+
+  const mergeNeedle = `const mergedProducts = staticInitialProducts.map(staticProduct => {
+                            return firestoreProductsMap.has(staticProduct.id)
+                                ? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id) }
+                                : staticProduct;
+                        });`;
+  const mergeReplacement = `const mergedProducts = staticInitialProducts.map(staticProduct => {
+                            const mergedProduct = firestoreProductsMap.has(staticProduct.id)
+                                ? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id) }
+                                : staticProduct;
+                            return mergedProduct.id === 'propolterapy-professional'
+                                ? {
+                                    ...mergedProduct,
+                                    description: ${JSON.stringify(professionalDescription)},
+                                    packs: [{ id: 'pp1', label: 'Pacchetto Alveoterapia – Professional + 5 capsule BIO comprese', jars: 1, price: 180.00 }]
+                                  }
+                                : mergedProduct;
+                        });`;
+
+  if (html.includes(mergeNeedle)) {
+    html = html.replace(mergeNeedle, mergeReplacement);
+    console.log('[Miele Artigianale] Offerta Professional fissata a €180 IVA compresa con 5 capsule BIO incluse.');
+  } else if (!html.includes("Pacchetto Alveoterapia – Professional + 5 capsule BIO comprese")) {
+    console.warn('[Miele Artigianale] Merge Firestore Professional non trovato: override autoritativo non applicato.');
+  }
+
   // Pagina dedicata, compatta e responsive della Linea Alveoterapia.
   // I due pulsanti portano direttamente alle schede acquistabili del diffusore e delle capsule.
   if (!html.includes('id="linea-alveoterapia-page"')) {
