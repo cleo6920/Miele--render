@@ -34,8 +34,8 @@ try {
   }
 
   // Linea Alveoterapia: gli altri diffusori restano nel codice come backup,
-  // ma sul sito pubblico sono visibili solo Professional e le sue capsule P+B dedicate.
-  const visibleAlveoterapiaIds = "['propolterapy-professional','capsule-pb']";
+  // ma sul sito pubblico sono visibili Professional e i due tipi di capsule dedicate.
+  const visibleAlveoterapiaIds = "['propolterapy-professional','capsule-pb','capsule-propolit']";
 
   // Prima composizione della nuova Linea Benessere Veleno d’Api.
   // Per ora raccoglie i prodotti al veleno già realmente presenti nel catalogo del sito.
@@ -55,8 +55,15 @@ try {
   if (html.includes(searchNeedle)) {
     html = html.replaceAll(searchNeedle, searchReplacement);
     console.log('[Miele Artigianale] Ricerca globale: diffusori di backup esclusi dai risultati pubblici.');
-  } else if (!html.includes("allProducts={products.filter(p => p.category !== 'alveoterapia' || ['propolterapy-professional','capsule-pb'].includes(p.id))}")) {
+  } else if (!html.includes("allProducts={products.filter(p => p.category !== 'alveoterapia' || ['propolterapy-professional','capsule-pb','capsule-propolit'].includes(p.id))}")) {
     console.warn('[Miele Artigianale] Ricerca globale non trovata: filtro Alveoterapia non applicato.');
+  }
+
+  // Ripristina dal catalogo/backup la seconda scatola di capsule dedicata e la porta a €19,90.
+  const oldPropolitPack = '{ id: "box5pl", label: "Scatola 5 capsule PROPOLIT", jars: 1, price: 20.00 }';
+  const newPropolitPack = '{ id: "box5pl", label: "Scatola 5 capsule PROPOLIT", jars: 1, price: 19.90 }';
+  if (html.includes(oldPropolitPack)) {
+    html = html.replaceAll(oldPropolitPack, newPropolitPack);
   }
 
   // Offerta pubblica autoritativa del PropolTerapy Professional.
@@ -82,18 +89,26 @@ try {
                             const mergedProduct = firestoreProductsMap.has(staticProduct.id)
                                 ? { ...staticProduct, ...firestoreProductsMap.get(staticProduct.id) }
                                 : staticProduct;
-                            return mergedProduct.id === 'propolterapy-professional'
-                                ? {
+                            if (mergedProduct.id === 'propolterapy-professional') {
+                                return {
                                     ...mergedProduct,
                                     description: ${JSON.stringify(professionalDescription)},
                                     packs: [{ id: 'pp1', label: 'Pacchetto Alveoterapia – Professional + 5 capsule BIO comprese', jars: 1, price: 180.00 }]
-                                  }
-                                : mergedProduct;
+                                };
+                            }
+                            if (mergedProduct.id === 'capsule-propolit') {
+                                return {
+                                    ...mergedProduct,
+                                    category: 'alveoterapia',
+                                    packs: [{ id: 'box5pl', label: 'Scatola 5 capsule PROPOLIT', jars: 1, price: 19.90 }]
+                                };
+                            }
+                            return mergedProduct;
                         });`;
 
   if (html.includes(mergeNeedle)) {
     html = html.replace(mergeNeedle, mergeReplacement);
-    console.log('[Miele Artigianale] Offerta Professional fissata a €180 IVA compresa con 5 capsule BIO incluse.');
+    console.log('[Miele Artigianale] Offerta Professional e seconda scatola capsule Alveoterapia fissate correttamente.');
   } else if (!html.includes("Pacchetto Alveoterapia – Professional + 5 capsule BIO comprese")) {
     console.warn('[Miele Artigianale] Merge Firestore Professional non trovato: override autoritativo non applicato.');
   }
@@ -110,7 +125,7 @@ try {
                                               </h2>
                                               <div className="mt-0.5 text-sm sm:text-base font-extrabold text-amber-400">Alveoterapia con diffusori</div>
                                               <p className="mt-1 max-w-3xl text-xs sm:text-sm leading-snug font-semibold text-stone-300">
-                                                L'esperienza dell'alveare in un ambiente dedicato, con PropolTerapy Professional e capsule P+B.
+                                                L'esperienza dell'alveare in un ambiente dedicato, con PropolTerapy Professional e capsule dedicate.
                                               </p>
                                             </div>
 
@@ -128,7 +143,7 @@ try {
                                                   <div className="rounded-lg border border-emerald-500/25 bg-emerald-950/25 p-3">
                                                     <h3 className="text-sm sm:text-base font-black text-emerald-300">Come funziona</h3>
                                                     <p className="mt-1 text-xs sm:text-sm leading-snug text-stone-200">
-                                                      Il diffusore utilizza capsule P+B dedicate con propoli italiana e Boswellia per un'esperienza pratica in ambiente attrezzato.
+                                                      Il diffusore utilizza capsule dedicate per un'esperienza pratica in ambiente attrezzato; nella linea trovi entrambi i tipi disponibili.
                                                     </p>
                                                   </div>
 
@@ -156,10 +171,10 @@ try {
                                                   </button>
                                                   <button
                                                     type="button"
-                                                    onClick={() => { setSelectedProductId('capsule-pb'); setTimeout(() => document.getElementById('product-detail-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); }}
+                                                    onClick={() => { setSelectedProductId(null); setTimeout(() => document.querySelector('.shop-category-products-stable')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); }}
                                                     className="inline-flex min-h-[42px] items-center justify-center rounded-lg bg-emerald-600 hover:bg-emerald-500 px-3 py-2 text-sm font-black text-white transition-colors"
                                                   >
-                                                    Scopri come ottenere le Capsule P+B
+                                                    Scopri le capsule dedicate
                                                   </button>
                                                 </div>
                                               </div>
