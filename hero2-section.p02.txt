@@ -74,7 +74,7 @@
                               </div>
                               <button
                                 type="button"
-                                onClick={() => { setSelectedProductId(null); setSelectedCategory('terapia'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                onClick={() => { setSelectedProductId(null); setSelectedCategory('veleno-api'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                                 className="mt-4 inline-flex w-fit items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-400 px-5 py-2.5 text-sm sm:text-base font-black text-stone-950 shadow-md transition-colors"
                                 aria-label="Scopri la Linea Benessere Veleno d'Api"
                               >
