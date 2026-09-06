@@ -72,6 +72,7 @@ try {
 }
 
 require('./hero2-inject.js');
+require('./veleno-line-prestart.js');
 
 // Categoria e prezzo autoritativi Capsule P+B: Linea Alveoterapia, €19,90 IVA compresa.
 // Aggiorna sia il fallback statico sia il prodotto dopo il merge con Firestore,
