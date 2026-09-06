@@ -34,17 +34,12 @@ try {
 require('./sos-dol-prestart.js');
 
 // Correzione finale e deterministica della foto SOS DOL nella Hero 1.
-// Usa l'asset locale corretto del nuovo SOS DOL Apifiore e impedisce il ritorno
-// del vecchio Unguento Apis nella seconda immagine della Hero.
+// La foto premium è ambientata e nell'ovale mostra soprattutto lo sfondo:
+// qui usiamo direttamente la foto ufficiale del prodotto Apinfiore, centrata e intera.
 try {
   const indexPath = path.join(__dirname, 'index.html');
-  const localHeroImage = '/images/sos-dol-hero-premium.jpg';
-  const localHeroPath = path.join(__dirname, 'images', 'sos-dol-hero-premium.jpg');
+  const officialHeroImage = 'https://www.apinfiore.com/wp-content/uploads/2023/03/SOS-Doll_web-5.jpg.webp';
   let html = fs.readFileSync(indexPath, 'utf8');
-
-  if (!fs.existsSync(localHeroPath)) {
-    throw new Error('Asset locale SOS DOL Apifiore non trovato');
-  }
 
   const marker = 'aria-label="Scopri SOS DOL – Unguento Apis – 15 ml"';
   const markerIndex = html.indexOf(marker);
@@ -59,12 +54,12 @@ try {
   const imgPattern = /<img\s+src="[^"]+"[^>]*\/>/;
   if (!imgPattern.test(button)) throw new Error('Tag immagine SOS DOL Hero 1 non trovato');
 
-  const img = `<img src="${localHeroImage}" alt="SOS DOL – Unguento Apis 15 ml" className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />`;
+  const img = `<img src="${officialHeroImage}" alt="SOS DOL – Unguento Apis 15 ml" className="w-full h-full object-contain bg-white p-1 transition-transform duration-200 group-hover:scale-105" />`;
   button = button.replace(imgPattern, img);
   html = html.slice(0, buttonStart) + button + html.slice(endExclusive);
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Hero 1 SOS DOL: immagine locale Apifiore corretta ripristinata.');
+  console.log('[Miele Artigianale] Hero 1 SOS DOL: foto ufficiale prodotto centrata e visibile.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore ripristino foto SOS DOL Hero 1:', error);
 }
