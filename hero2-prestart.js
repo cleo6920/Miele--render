@@ -15,7 +15,7 @@ try {
     },
     {
       output: 'linea-benessere-veleno-api.jpg',
-      parts: ['linea-benessere-veleno-api.b64']
+      parts: ['linea-benessere-veleno-api.p01.b64', 'linea-benessere-veleno-api.p02.b64', 'linea-benessere-veleno-api.p03.b64', 'linea-benessere-veleno-api.p04.b64']
     }
   ];
 
