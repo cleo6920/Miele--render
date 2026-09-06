@@ -37,13 +37,17 @@ try {
   // ma sul sito pubblico sono visibili solo Professional e le sue capsule P+B dedicate.
   const visibleAlveoterapiaIds = "['propolterapy-professional','capsule-pb']";
 
+  // Prima composizione della nuova Linea Benessere Veleno d’Api.
+  // Per ora raccoglie i prodotti al veleno già realmente presenti nel catalogo del sito.
+  const visibleVelenoIds = "['unguento-apis','bagnodoccia-veleno-oro']";
+
   const gridNeedle = "{products.filter(p => p.category === selectedCategory).sort((a,b) => a.order - b.order).map(product => (";
-  const gridReplacement = `{products.filter(p => p.category === selectedCategory && (selectedCategory !== 'alveoterapia' || ${visibleAlveoterapiaIds}.includes(p.id))).sort((a,b) => a.order - b.order).map(product => (`;
+  const gridReplacement = `{products.filter(p => selectedCategory === 'veleno-api' ? ${visibleVelenoIds}.includes(p.id) : (p.category === selectedCategory && (selectedCategory !== 'alveoterapia' || ${visibleAlveoterapiaIds}.includes(p.id)))).sort((a,b) => a.order - b.order).map(product => (`;
   if (html.includes(gridNeedle)) {
     html = html.replaceAll(gridNeedle, gridReplacement);
-    console.log('[Miele Artigianale] Catalogo Alveoterapia pubblico limitato a Professional + capsule P+B.');
-  } else if (!html.includes("selectedCategory !== 'alveoterapia' || ['propolterapy-professional','capsule-pb'].includes(p.id)")) {
-    console.warn('[Miele Artigianale] Renderer catalogo Alveoterapia non trovato: filtro pubblico non applicato.');
+    console.log('[Miele Artigianale] Cataloghi Linea Alveoterapia e Linea Benessere Veleno d’Api instradati correttamente.');
+  } else if (!html.includes("selectedCategory === 'veleno-api' ? ['unguento-apis','bagnodoccia-veleno-oro'].includes(p.id)")) {
+    console.warn('[Miele Artigianale] Renderer catalogo linee non trovato: filtro pubblico non applicato.');
   }
 
   const searchNeedle = '<GlobalProductSearch allProducts={products} onProductSelect={handleProductSearchSelect} />';
@@ -95,7 +99,7 @@ try {
   }
 
   // Pagina dedicata, compatta e responsive della Linea Alveoterapia.
-  // I due pulsanti portano direttamente alle schede acquistabili del diffusore e delle capsule.
+  // La stessa area gestisce anche la nuova pagina dedicata della Linea Benessere Veleno d’Api.
   if (!html.includes('id="linea-alveoterapia-page"')) {
     const categoryIntroPattern = /\{selectedCategory === 'alveoterapia' && \([\s\S]*?<\/p>\s*\)\}\s*<h2 className="text-3xl font-bold text-stone-800">[\s\S]*?<\/h2>/;
     const dedicatedPage = `{selectedCategory === 'alveoterapia' ? (
@@ -161,17 +165,36 @@ try {
                                               </div>
                                             </div>
                                           </section>
+                                        ) : selectedCategory === 'veleno-api' ? (
+                                          <section id="linea-benessere-veleno-api-page" className="w-full overflow-hidden rounded-xl border border-amber-400/30 bg-stone-950 shadow-lg">
+                                            <div className="grid grid-cols-1 md:grid-cols-[190px_minmax(0,1fr)] items-stretch">
+                                              <div className="overflow-hidden bg-black">
+                                                <img
+                                                  src="/images/linea-benessere-veleno-api.jpg"
+                                                  alt="Linea Benessere Veleno d'Api"
+                                                  className="block w-full aspect-square md:h-full md:aspect-auto object-cover"
+                                                />
+                                              </div>
+                                              <div className="p-3 sm:p-4 flex flex-col justify-center">
+                                                <div className="inline-flex w-fit rounded-full bg-amber-500 px-3 py-1 text-[10px] sm:text-xs font-black tracking-[0.12em] text-stone-950 uppercase">Esclusiva</div>
+                                                <h2 className="mt-2 text-xl sm:text-2xl font-black leading-tight text-white uppercase tracking-wide">Linea Benessere Veleno d’Api</h2>
+                                                <p className="mt-1.5 max-w-3xl text-xs sm:text-sm leading-snug font-semibold text-stone-300">
+                                                  Una linea distintiva dedicata al veleno d’api. Qui trovi i prodotti della linea già presenti nel catalogo, con accesso diretto alle rispettive schede prodotto.
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </section>
                                         ) : (
                                           <h2 className="text-3xl font-bold text-stone-800">
-                                            {({ busatello: 'Mieli del Busatello', prelibati: 'Mieli Prelibati', tesori: "I tesori dell' alveare", leccornie: 'Le leccornie', terapia: 'La terapia', cosmesi: 'La cosmesi' })[selectedCategory] || 'Selezione'}
+                                            {({ busatello: 'Mieli del Busatello', prelibati: 'Mieli Prelibati', tesori: "I tesori dell' alveare", leccornie: 'Le leccornie', terapia: 'La terapia', cosmesi: 'La cosmesi', 'veleno-api': 'Linea Benessere Veleno d’Api' })[selectedCategory] || 'Selezione'}
                                           </h2>
                                         )}`;
 
     if (categoryIntroPattern.test(html)) {
       html = html.replace(categoryIntroPattern, dedicatedPage);
-      console.log('[Miele Artigianale] Pagina Linea Alveoterapia compatta con accesso diretto ai prodotti inserita.');
+      console.log('[Miele Artigianale] Pagine dedicate Linea Alveoterapia e Linea Benessere Veleno d’Api inserite.');
     } else {
-      console.warn('[Miele Artigianale] Blocco introduttivo categoria Alveoterapia non trovato: pagina dedicata non inserita.');
+      console.warn('[Miele Artigianale] Blocco introduttivo categorie dedicate non trovato.');
     }
   }
 
