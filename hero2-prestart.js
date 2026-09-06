@@ -33,9 +33,7 @@ try {
 // Mantiene intatta la catena shop approvata; Hero 2 viene applicata per ultima.
 require('./sos-dol-prestart.js');
 
-// Correzione finale e deterministica della foto SOS DOL nella Hero 1.
-// Usa l'asset locale corretto del nuovo SOS DOL Apifiore e impedisce il ritorno
-// del vecchio Unguento Apis nella seconda immagine della Hero.
+// Mantiene come fallback locale la foto SOS DOL già usata nello stato stabile.
 try {
   const indexPath = path.join(__dirname, 'index.html');
   const localHeroImage = '/images/sos-dol-hero-premium.jpg';
@@ -64,9 +62,26 @@ try {
   html = html.slice(0, buttonStart) + button + html.slice(endExclusive);
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Hero 1 SOS DOL: immagine locale Apifiore corretta ripristinata.');
+  console.log('[Miele Artigianale] Hero 1 SOS DOL: fallback locale stabile mantenuto.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore ripristino foto SOS DOL Hero 1:', error);
 }
 
 require('./hero2-inject.js');
+
+// Solo lato browser sostituisce l'immagine del secondo pulsante Hero 1 con la foto
+// ufficiale del prodotto SOS DOL. Non modifica nessun'altra immagine o asset locale.
+try {
+  const indexPath = path.join(__dirname, 'index.html');
+  let html = fs.readFileSync(indexPath, 'utf8');
+  const runtimeId = 'sos-dol-hero-product-only';
+
+  if (!html.includes(`id="${runtimeId}"`)) {
+    const runtimeScript = `<script id="${runtimeId}">(()=>{const productImage='https://www.apinfiore.com/wp-content/uploads/2023/03/SOS-Doll_web-5.jpg.webp';const apply=()=>{const button=document.querySelector('button[aria-label="Scopri SOS DOL – Unguento Apis – 15 ml"]');if(!button)return;const img=button.querySelector('img');if(!img||img.dataset.sosDolProductOnly==='1')return;img.dataset.sosDolProductOnly='1';img.referrerPolicy='no-referrer';img.src=productImage;img.style.objectFit='contain';img.style.objectPosition='center';img.style.backgroundColor='#e6d8ef';img.style.padding='2px';img.style.transform='scale(1.12)';};const start=()=>{apply();new MutationObserver(apply).observe(document.body,{childList:true,subtree:true});};document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start,{once:true}):start();})();</script>`;
+    html = html.replace('</body>', `${runtimeScript}</body>`);
+    fs.writeFileSync(indexPath, html, 'utf8');
+    console.log('[Miele Artigianale] Hero 1 SOS DOL: override browser isolato applicato.');
+  }
+} catch (error) {
+  console.error('[Miele Artigianale] Errore override browser SOS DOL Hero 1:', error);
+}
