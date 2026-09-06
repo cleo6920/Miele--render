@@ -33,10 +33,10 @@
                               Alveoterapia Integrata
                             </div>
                             <h2 id="alveoterapia-integrata-hero2-title" className="mt-1.5 text-base sm:text-lg lg:text-base xl:text-lg font-black leading-tight tracking-tight text-amber-100">
-                              Due modalità complementari
+                              Respira il mondo delle api
                             </h2>
                             <p className="mt-1 text-xs sm:text-sm lg:text-xs xl:text-sm font-bold leading-snug text-stone-300">
-                              Con le api e con diffusori
+                              Con le api nella natura, con i diffusori nel nostro Centro
                             </p>
                           </div>
 

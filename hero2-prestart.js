@@ -32,4 +32,30 @@ try {
 
 // Mantiene intatta la catena shop approvata; Hero 2 viene applicata per ultima.
 require('./sos-dol-prestart.js');
+
+// Correzione finale e deterministica della foto SOS DOL nella Hero 1.
+// La catena precedente può lasciare il link esterno Apinfiore; qui forziamo
+// l'asset locale già presente nel repository, evitando ovali vuoti se l'hotlink fallisce.
+try {
+  const indexPath = path.join(__dirname, 'index.html');
+  const premiumHeroImage = '/images/sos-dol-hero-premium.jpg';
+  const premiumHeroPath = path.join(__dirname, 'images', 'sos-dol-hero-premium.jpg');
+  let html = fs.readFileSync(indexPath, 'utf8');
+
+  if (!fs.existsSync(premiumHeroPath)) {
+    throw new Error('Asset SOS DOL Hero 1 non trovato');
+  }
+
+  const sosHeroImagePattern = /(<button type="button" aria-label="Scopri SOS DOL – Unguento Apis – 15 ml"[\s\S]*?<img src=")[^"]+("[^>]*>)/;
+  if (!sosHeroImagePattern.test(html)) {
+    throw new Error('Immagine SOS DOL Hero 1 non individuata');
+  }
+
+  html = html.replace(sosHeroImagePattern, `$1${premiumHeroImage}$2`);
+  fs.writeFileSync(indexPath, html, 'utf8');
+  console.log('[Miele Artigianale] Hero 1 SOS DOL: foto locale ripristinata.');
+} catch (error) {
+  console.error('[Miele Artigianale] Errore ripristino foto SOS DOL Hero 1:', error);
+}
+
 require('./hero2-inject.js');
