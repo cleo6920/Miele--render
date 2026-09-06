@@ -109,14 +109,14 @@ try {
                                                     onClick={() => { setSelectedProductId('propolterapy-professional'); setTimeout(() => document.getElementById('product-detail-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); }}
                                                     className="inline-flex min-h-[42px] items-center justify-center rounded-lg bg-amber-500 hover:bg-amber-400 px-3 py-2 text-sm font-black text-stone-950 transition-colors"
                                                   >
-                                                    Vai al diffusore
+                                                    Scopri PropolTherapy Professional
                                                   </button>
                                                   <button
                                                     type="button"
                                                     onClick={() => { setSelectedProductId('capsule-pb'); setTimeout(() => document.getElementById('product-detail-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); }}
                                                     className="inline-flex min-h-[42px] items-center justify-center rounded-lg bg-emerald-600 hover:bg-emerald-500 px-3 py-2 text-sm font-black text-white transition-colors"
                                                   >
-                                                    Vai alle capsule P+B
+                                                    Scopri come ottenere le Capsule P+B
                                                   </button>
                                                 </div>
                                               </div>
