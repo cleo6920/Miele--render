@@ -94,6 +94,36 @@ try {
   console.error('[Miele Artigianale] Errore aggiornamento prezzo Capsule P+B:', error);
 }
 
+// ProductDetailPage null-safe: evita il crash React se il prodotto è temporaneamente
+// non disponibile durante un aggiornamento asincrono di Firestore/stato.
+try {
+  const indexPath = path.join(__dirname, 'index.html');
+  let html = fs.readFileSync(indexPath, 'utf8');
+
+  const selectedPackNeedle = '            const [selectedPack, setSelectedPack] = useState(product.packs?.[0]);';
+  const selectedPackReplacement = `            const safeProduct = product || { packs: [], stock: 0, inStock: false };\n            const [selectedPack, setSelectedPack] = useState(safeProduct.packs?.[0] || null);`;
+  if (html.includes(selectedPackNeedle)) html = html.replace(selectedPackNeedle, selectedPackReplacement);
+
+  const stockInitNeedle = '            const [manualStockInput, setManualStockInput] = useState(product.stock);';
+  if (html.includes(stockInitNeedle)) html = html.replace(stockInitNeedle, '            const [manualStockInput, setManualStockInput] = useState(safeProduct.stock);');
+
+  const stockEffectNeedle = '                setManualStockInput(product.stock);';
+  if (html.includes(stockEffectNeedle)) html = html.replace(stockEffectNeedle, '                setManualStockInput(safeProduct.stock);');
+
+  const memoStartNeedle = `            const isAddToCartDisabled = useMemo(() => {\n                if (!product.inStock || !selectedPack) {`;
+  const memoStartReplacement = `            const isAddToCartDisabled = useMemo(() => {\n                if (!product || !safeProduct.inStock || !selectedPack) {`;
+  if (html.includes(memoStartNeedle)) html = html.replace(memoStartNeedle, memoStartReplacement);
+
+  const memoTailNeedle = `                const totalJarsRequested = quantity * selectedPack.jars;\n                return totalJarsRequested <= 0 || product.stock < totalJarsRequested;\n            }, [product.inStock, product.stock, selectedPack, quantity]);`;
+  const memoTailReplacement = `                const totalJarsRequested = quantity * selectedPack.jars;\n                return totalJarsRequested <= 0 || safeProduct.stock < totalJarsRequested;\n            }, [product, safeProduct.inStock, safeProduct.stock, selectedPack, quantity]);`;
+  if (html.includes(memoTailNeedle)) html = html.replace(memoTailNeedle, memoTailReplacement);
+
+  fs.writeFileSync(indexPath, html, 'utf8');
+  console.log('[Miele Artigianale] ProductDetailPage protetta da product undefined temporaneo.');
+} catch (error) {
+  console.error('[Miele Artigianale] Errore hardening ProductDetailPage:', error);
+}
+
 // Solo lato browser sostituisce l'immagine del secondo pulsante Hero 1 con la foto
 // ufficiale del prodotto SOS DOL. Non modifica nessun'altra immagine o asset locale.
 try {
