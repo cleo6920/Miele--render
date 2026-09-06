@@ -1,38 +1,42 @@
 
                     {!selectedCategory && !selectedProductId && (
                       <section id="alveoterapia-integrata-hero2" className="max-w-7xl mx-auto w-full px-4 mb-3" aria-labelledby="alveoterapia-integrata-hero2-title">
-                        <div className="overflow-hidden rounded-[20px] border border-amber-200 bg-gradient-to-b from-amber-50 via-white to-stone-50 shadow-md">
-                          <div className="px-4 sm:px-5 pt-2 pb-1.5 text-center">
-                            <div className="inline-flex items-center rounded-full bg-[#0d4d3e] px-3 py-0.5 text-[11px] sm:text-xs font-extrabold tracking-[0.12em] text-amber-100 uppercase">
-                              Alveoterapia Integrata
-                            </div>
-                            <h2 id="alveoterapia-integrata-hero2-title" className="mt-1 text-lg sm:text-xl font-black tracking-tight" style={{color:'#173f35'}}>
-                              Due modalità complementari: con le api e con diffusori
-                            </h2>
-                          </div>
-
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-8 xl:gap-10 px-3 sm:px-4 lg:px-10 xl:px-16 pb-3">
-                            <article className="overflow-hidden rounded-xl border border-emerald-200 bg-white shadow-sm">
-                              <div className="px-3 pt-2 pb-2">
-                                <div className="text-[11px] font-black tracking-[0.12em] text-[#0d4d3e] uppercase">Alveoterapia naturale</div>
-                                <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                                  <h3 className="text-lg sm:text-xl font-black text-stone-900">Con le api</h3>
-                                  <span className="text-sm font-extrabold text-amber-700">Alveoterapia all'Oasi del Busatello</span>
-                                </div>
+                        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-center gap-3 lg:gap-5 xl:gap-6">
+                          <article className="order-2 lg:order-1 w-full lg:w-[430px] xl:w-[440px] overflow-hidden rounded-xl border border-emerald-200 bg-[#121212] shadow-sm">
+                            <div className="px-3 pt-2 pb-2">
+                              <div className="text-[11px] font-black tracking-[0.12em] text-[#23b38f] uppercase">Alveoterapia naturale</div>
+                              <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                                <h3 className="text-lg sm:text-xl font-black text-white">Con le api</h3>
+                                <span className="text-sm font-extrabold text-amber-500">Alveoterapia all'Oasi del Busatello</span>
                               </div>
+                            </div>
 
-                              <div className="grid grid-cols-1 sm:grid-cols-[150px_minmax(0,1fr)] gap-2.5 px-3 pb-3 items-start">
-                                <div className="overflow-hidden rounded-lg border border-stone-200 bg-stone-100 shadow-inner">
-                                  <img src="/images/hero2-marco-oasi.jpg" alt="Marco Zago durante una seduta di alveoterapia naturale all'Oasi del Busatello" className="w-full aspect-square object-cover" />
-                                </div>
-                                <div className="min-w-0">
-                                  <p className="text-sm leading-snug font-semibold text-stone-700">
-                                    Respirazione dell'aria proveniente dagli alveari, senza contatto diretto con le api, in un'esperienza immersiva nella natura.
-                                  </p>
-                                  <div className="mt-2 rounded-lg bg-[#0d4d3e] px-2.5 py-1.5 text-center text-xs font-black text-white">
+                            <div className="grid grid-cols-1 sm:grid-cols-[150px_minmax(0,1fr)] gap-2.5 px-3 pb-3 items-start">
+                              <div className="overflow-hidden rounded-lg border border-stone-200 bg-stone-100 shadow-inner">
+                                <img src="/images/hero2-marco-oasi.jpg" alt="Marco Zago durante una seduta di alveoterapia naturale all'Oasi del Busatello" className="w-full aspect-square object-cover" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-sm leading-snug font-semibold text-stone-100">
+                                  Respirazione dell'aria proveniente dagli alveari, senza contatto diretto con le api, in un'esperienza immersiva nella natura.
+                                </p>
+                                <div className="mt-2 flex justify-center sm:justify-start">
+                                  <div className="inline-flex w-fit max-w-[220px] rounded-lg bg-[#0d6b55] px-3 py-1.5 text-center text-xs font-black leading-tight text-white">
                                     Oasi del Busatello – Capitale della Natura
                                   </div>
                                 </div>
                               </div>
-                            </article>
+                            </div>
+                          </article>
+
+                          <div className="order-1 lg:order-2 lg:w-[180px] xl:w-[200px] shrink-0 self-center lg:self-start text-center lg:pt-5">
+                            <div className="inline-flex items-center rounded-full bg-[#0d4d3e] px-3 py-0.5 text-[11px] sm:text-xs font-extrabold tracking-[0.12em] text-amber-100 uppercase">
+                              Alveoterapia Integrata
+                            </div>
+                            <h2 id="alveoterapia-integrata-hero2-title" className="mt-1.5 text-base sm:text-lg lg:text-base xl:text-lg font-black leading-tight tracking-tight text-amber-100">
+                              Due modalità complementari
+                            </h2>
+                            <p className="mt-1 text-xs sm:text-sm lg:text-xs xl:text-sm font-bold leading-snug text-stone-300">
+                              Con le api e con diffusori
+                            </p>
+                          </div>
 

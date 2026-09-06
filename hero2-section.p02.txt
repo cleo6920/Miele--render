@@ -1,27 +1,28 @@
-                            <article className="overflow-hidden rounded-xl border border-amber-200 bg-white shadow-sm">
-                              <div className="px-3 pt-2 pb-2">
-                                <div className="text-[11px] font-black tracking-[0.12em] text-amber-700 uppercase">Linea Alveoterapia</div>
-                                <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                                  <h3 className="text-lg sm:text-xl font-black text-stone-900">Alveoterapia con diffusori</h3>
-                                  <span className="text-sm font-extrabold text-[#0d4d3e]">Con diffusore e capsule</span>
-                                </div>
+                          <article className="order-3 lg:order-3 w-full lg:w-[430px] xl:w-[440px] overflow-hidden rounded-xl border border-amber-200 bg-[#121212] shadow-sm">
+                            <div className="px-3 pt-2 pb-2">
+                              <div className="text-[11px] font-black tracking-[0.12em] text-amber-500 uppercase">Linea Alveoterapia</div>
+                              <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                                <h3 className="text-lg sm:text-xl font-black text-white">Alveoterapia con diffusori</h3>
+                                <span className="text-sm font-extrabold text-[#23b38f]">Con diffusore e capsule</span>
                               </div>
+                            </div>
 
-                              <div className="grid grid-cols-1 sm:grid-cols-[150px_minmax(0,1fr)] gap-2.5 px-3 pb-3 items-start">
-                                <div className="overflow-hidden rounded-lg border border-stone-200 bg-[#f4ecdf] shadow-inner">
-                                  <img src="/images/hero2-marco-diffusore.jpg" alt="Marco Zago utilizza il diffusore nel Centro di Alveoterapia Integrata" className="w-full aspect-square object-cover" />
-                                </div>
-                                <div className="min-w-0">
-                                  <p className="text-sm leading-snug font-semibold text-stone-700">
-                                    Diffusore professionale con capsule dedicate contenenti sostanze dell'alveare, per un'esperienza pratica e confortevole in ambiente dedicato.
-                                  </p>
-                                  <div className="mt-2 rounded-lg bg-amber-100 px-2.5 py-1.5 text-center text-xs font-black text-amber-900">
+                            <div className="grid grid-cols-1 sm:grid-cols-[150px_minmax(0,1fr)] gap-2.5 px-3 pb-3 items-start">
+                              <div className="overflow-hidden rounded-lg border border-stone-200 bg-[#f4ecdf] shadow-inner">
+                                <img src="/images/hero2-marco-diffusore.jpg" alt="Marco Zago utilizza il diffusore nel Centro di Alveoterapia Integrata" className="w-full aspect-square object-cover" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-sm leading-snug font-semibold text-stone-100">
+                                  Diffusore professionale con capsule dedicate contenenti sostanze dell'alveare, per un'esperienza pratica e confortevole in ambiente dedicato.
+                                </p>
+                                <div className="mt-2 flex justify-center sm:justify-start">
+                                  <div className="inline-flex w-fit max-w-[230px] rounded-lg bg-amber-100 px-3 py-1.5 text-center text-xs font-black leading-tight text-amber-900">
                                     Centro di Alveoterapia Integrata – Castel d'Ario (MN)
                                   </div>
                                 </div>
                               </div>
-                            </article>
-                          </div>
+                            </div>
+                          </article>
                         </div>
                       </section>
                     )}
