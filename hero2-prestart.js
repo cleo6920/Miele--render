@@ -34,26 +34,37 @@ try {
 require('./sos-dol-prestart.js');
 
 // Correzione finale e deterministica della foto SOS DOL nella Hero 1.
-// La catena precedente può lasciare il link esterno Apinfiore; qui forziamo
-// l'asset locale già presente nel repository, evitando ovali vuoti se l'hotlink fallisce.
+// Usiamo l'asset PNG locale originale, già presente nel repository, con sfondo bianco
+// e object-contain: in questo modo l'ovale non può restare vuoto per hotlink o crop errati.
 try {
   const indexPath = path.join(__dirname, 'index.html');
-  const premiumHeroImage = '/images/sos-dol-hero-premium.jpg';
-  const premiumHeroPath = path.join(__dirname, 'images', 'sos-dol-hero-premium.jpg');
+  const localHeroImage = '/images/unguento-apis.png';
+  const localHeroPath = path.join(__dirname, 'images', 'unguento-apis.png');
   let html = fs.readFileSync(indexPath, 'utf8');
 
-  if (!fs.existsSync(premiumHeroPath)) {
-    throw new Error('Asset SOS DOL Hero 1 non trovato');
+  if (!fs.existsSync(localHeroPath)) {
+    throw new Error('Asset locale SOS DOL non trovato');
   }
 
-  const sosHeroImagePattern = /(<button type="button" aria-label="Scopri SOS DOL – Unguento Apis – 15 ml"[\s\S]*?<img src=")[^"]+("[^>]*>)/;
-  if (!sosHeroImagePattern.test(html)) {
-    throw new Error('Immagine SOS DOL Hero 1 non individuata');
-  }
+  const marker = 'aria-label="Scopri SOS DOL – Unguento Apis – 15 ml"';
+  const markerIndex = html.indexOf(marker);
+  if (markerIndex === -1) throw new Error('Pulsante SOS DOL Hero 1 non individuato');
 
-  html = html.replace(sosHeroImagePattern, `$1${premiumHeroImage}$2`);
+  const buttonStart = html.lastIndexOf('<button', markerIndex);
+  const buttonEnd = html.indexOf('</button>', markerIndex);
+  if (buttonStart === -1 || buttonEnd === -1) throw new Error('Blocco SOS DOL Hero 1 non valido');
+
+  const endExclusive = buttonEnd + '</button>'.length;
+  let button = html.slice(buttonStart, endExclusive);
+  const imgPattern = /<img\s+src="[^"]+"[^>]*\/>/;
+  if (!imgPattern.test(button)) throw new Error('Tag immagine SOS DOL Hero 1 non trovato');
+
+  const img = `<img src="${localHeroImage}" alt="SOS DOL – Unguento Apis 15 ml" className="w-full h-full object-contain bg-white p-1 transition-transform duration-200 group-hover:scale-105" />`;
+  button = button.replace(imgPattern, img);
+  html = html.slice(0, buttonStart) + button + html.slice(endExclusive);
+
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Hero 1 SOS DOL: foto locale ripristinata.');
+  console.log('[Miele Artigianale] Hero 1 SOS DOL: immagine PNG locale visibile ripristinata.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore ripristino foto SOS DOL Hero 1:', error);
 }
