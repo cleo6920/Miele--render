@@ -1,4 +1,4 @@
-                          <article className="order-3 lg:order-3 w-full lg:w-[430px] xl:w-[440px] overflow-hidden rounded-xl border border-amber-200 bg-[#121212] shadow-sm">
+                          <article className="order-3 lg:order-3 w-full lg:w-[500px] xl:w-[530px] overflow-hidden rounded-xl border border-amber-200 bg-[#121212] shadow-sm">
                             <div className="px-3 pt-2 pb-2">
                               <div className="text-[11px] font-black tracking-[0.12em] text-amber-500 uppercase">Linea Alveoterapia</div>
                               <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">

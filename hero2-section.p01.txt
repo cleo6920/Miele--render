@@ -2,7 +2,7 @@
                     {!selectedCategory && !selectedProductId && (
                       <section id="alveoterapia-integrata-hero2" className="max-w-7xl mx-auto w-full px-4 mb-3" aria-labelledby="alveoterapia-integrata-hero2-title">
                         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-center gap-3 lg:gap-5 xl:gap-6">
-                          <article className="order-2 lg:order-1 w-full lg:w-[430px] xl:w-[440px] overflow-hidden rounded-xl border border-emerald-200 bg-[#121212] shadow-sm">
+                          <article className="order-2 lg:order-1 w-full lg:w-[395px] xl:w-[405px] overflow-hidden rounded-xl border border-emerald-200 bg-[#121212] shadow-sm">
                             <div className="px-3 pt-2 pb-2">
                               <div className="text-[11px] font-black tracking-[0.12em] text-[#23b38f] uppercase">Alveoterapia naturale</div>
                               <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
