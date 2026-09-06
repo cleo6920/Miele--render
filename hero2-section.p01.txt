@@ -1,36 +1,35 @@
 
                     {!selectedCategory && !selectedProductId && (
-                      <section id="alveoterapia-integrata-hero2" className="max-w-7xl mx-auto w-full px-4 mb-4" aria-labelledby="alveoterapia-integrata-hero2-title">
-                        <div className="overflow-hidden rounded-[22px] border border-amber-200 bg-gradient-to-b from-amber-50 via-white to-stone-50 shadow-lg">
-                          <div className="px-4 sm:px-6 pt-3 pb-2 text-center">
-                            <div className="inline-flex items-center rounded-full bg-[#0d4d3e] px-4 py-1 text-xs sm:text-sm font-extrabold tracking-[0.14em] text-amber-100 uppercase">
+                      <section id="alveoterapia-integrata-hero2" className="max-w-7xl mx-auto w-full px-4 mb-3" aria-labelledby="alveoterapia-integrata-hero2-title">
+                        <div className="overflow-hidden rounded-[20px] border border-amber-200 bg-gradient-to-b from-amber-50 via-white to-stone-50 shadow-md">
+                          <div className="px-4 sm:px-5 pt-2 pb-1.5 text-center">
+                            <div className="inline-flex items-center rounded-full bg-[#0d4d3e] px-3 py-0.5 text-[11px] sm:text-xs font-extrabold tracking-[0.12em] text-amber-100 uppercase">
                               Alveoterapia Integrata
                             </div>
-                            <h2 id="alveoterapia-integrata-hero2-title" className="mt-1 text-xl sm:text-2xl font-black tracking-tight" style={{color:'#173f35'}}>
+                            <h2 id="alveoterapia-integrata-hero2-title" className="mt-1 text-lg sm:text-xl font-black tracking-tight" style={{color:'#173f35'}}>
                               Due modalità complementari: con le api e con diffusori
                             </h2>
                           </div>
 
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 px-3 sm:px-4 lg:px-5 pb-4">
-                            <article className="overflow-hidden rounded-2xl border border-emerald-200 bg-white shadow-md">
-                              <div className="px-4 pt-3 pb-2">
-                                <div className="text-xs font-black tracking-[0.14em] text-[#0d4d3e] uppercase">Alveoterapia naturale</div>
-                                <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                                  <h3 className="text-xl sm:text-2xl font-black text-stone-900">Con le api</h3>
-                                  <span className="text-sm sm:text-base font-extrabold text-amber-700">Alveoterapia all'Oasi del Busatello</span>
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 px-3 sm:px-4 pb-3">
+                            <article className="overflow-hidden rounded-xl border border-emerald-200 bg-white shadow-sm">
+                              <div className="px-3 pt-2 pb-2">
+                                <div className="text-[11px] font-black tracking-[0.12em] text-[#0d4d3e] uppercase">Alveoterapia naturale</div>
+                                <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                                  <h3 className="text-lg sm:text-xl font-black text-stone-900">Con le api</h3>
+                                  <span className="text-sm font-extrabold text-amber-700">Alveoterapia all'Oasi del Busatello</span>
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] gap-3 px-4 pb-4 items-start">
-                                <div className="overflow-hidden rounded-xl border border-stone-200 bg-stone-100 shadow-inner">
+                              <div className="grid grid-cols-1 sm:grid-cols-[150px_minmax(0,1fr)] gap-2.5 px-3 pb-3 items-start">
+                                <div className="overflow-hidden rounded-lg border border-stone-200 bg-stone-100 shadow-inner">
                                   <img src="/images/hero2-marco-oasi.jpg" alt="Marco Zago durante una seduta di alveoterapia naturale all'Oasi del Busatello" className="w-full aspect-square object-cover" />
                                 </div>
                                 <div className="min-w-0">
-                                  <div className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs sm:text-sm font-extrabold text-[#0d4d3e]">Con api reali</div>
-                                  <p className="mt-2 text-sm sm:text-base leading-relaxed font-semibold text-stone-700">
-                                    La postazione permette di respirare l'aria proveniente direttamente dagli alveari, senza contatto diretto con le api, vivendo un'esperienza immersiva nella natura.
+                                  <p className="text-sm leading-snug font-semibold text-stone-700">
+                                    Respirazione dell'aria proveniente dagli alveari, senza contatto diretto con le api, in un'esperienza immersiva nella natura.
                                   </p>
-                                  <div className="mt-3 rounded-xl bg-[#0d4d3e] px-3 py-2 text-center text-xs sm:text-sm font-black text-white">
+                                  <div className="mt-2 rounded-lg bg-[#0d4d3e] px-2.5 py-1.5 text-center text-xs font-black text-white">
                                     Oasi del Busatello – Capitale della Natura
                                   </div>
                                 </div>
