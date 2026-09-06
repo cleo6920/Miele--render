@@ -34,16 +34,16 @@ try {
 require('./sos-dol-prestart.js');
 
 // Correzione finale e deterministica della foto SOS DOL nella Hero 1.
-// Usiamo l'asset PNG locale originale, già presente nel repository, con sfondo bianco
-// e object-contain: in questo modo l'ovale non può restare vuoto per hotlink o crop errati.
+// Usa l'asset locale corretto del nuovo SOS DOL Apifiore e impedisce il ritorno
+// del vecchio Unguento Apis nella seconda immagine della Hero.
 try {
   const indexPath = path.join(__dirname, 'index.html');
-  const localHeroImage = '/images/unguento-apis.png';
-  const localHeroPath = path.join(__dirname, 'images', 'unguento-apis.png');
+  const localHeroImage = '/images/sos-dol-hero-premium.jpg';
+  const localHeroPath = path.join(__dirname, 'images', 'sos-dol-hero-premium.jpg');
   let html = fs.readFileSync(indexPath, 'utf8');
 
   if (!fs.existsSync(localHeroPath)) {
-    throw new Error('Asset locale SOS DOL non trovato');
+    throw new Error('Asset locale SOS DOL Apifiore non trovato');
   }
 
   const marker = 'aria-label="Scopri SOS DOL – Unguento Apis – 15 ml"';
@@ -59,12 +59,12 @@ try {
   const imgPattern = /<img\s+src="[^"]+"[^>]*\/>/;
   if (!imgPattern.test(button)) throw new Error('Tag immagine SOS DOL Hero 1 non trovato');
 
-  const img = `<img src="${localHeroImage}" alt="SOS DOL – Unguento Apis 15 ml" className="w-full h-full object-contain bg-white p-1 transition-transform duration-200 group-hover:scale-105" />`;
+  const img = `<img src="${localHeroImage}" alt="SOS DOL – Unguento Apis 15 ml" className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />`;
   button = button.replace(imgPattern, img);
   html = html.slice(0, buttonStart) + button + html.slice(endExclusive);
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Hero 1 SOS DOL: immagine PNG locale visibile ripristinata.');
+  console.log('[Miele Artigianale] Hero 1 SOS DOL: immagine locale Apifiore corretta ripristinata.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore ripristino foto SOS DOL Hero 1:', error);
 }
