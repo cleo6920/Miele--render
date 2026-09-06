@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// Ricostruisce le due fotografie reali usate nella Hero 2 prima di avviare il server.
+// Ricostruisce le fotografie/immagini usate dalla Hero 2 e dalle nuove linee prima di avviare il server.
 try {
   const imageDir = path.join(__dirname, 'images');
   const imageSets = [
@@ -12,6 +12,10 @@ try {
     {
       output: 'hero2-marco-diffusore.jpg',
       parts: ['hero2-diffusore.p01.b64', 'hero2-diffusore.p02.b64', 'hero2-diffusore.p03.b64', 'hero2-diffusore.p04.b64', 'hero2-diffusore.p05.b64', 'hero2-diffusore.p06.b64', 'hero2-diffusore.p07.b64']
+    },
+    {
+      output: 'linea-benessere-veleno-api.jpg',
+      parts: ['linea-benessere-veleno-api.b64']
     }
   ];
 
@@ -21,13 +25,13 @@ try {
       .join('');
     const image = Buffer.from(encoded, 'base64');
     if (image.length < 1000 || image[0] !== 0xff || image[1] !== 0xd8) {
-      throw new Error(`Immagine Hero 2 non valida: ${set.output}`);
+      throw new Error(`Immagine non valida: ${set.output}`);
     }
     fs.writeFileSync(path.join(imageDir, set.output), image);
   }
-  console.log('[Miele Artigianale] Fotografie Hero 2 ricostruite correttamente.');
+  console.log('[Miele Artigianale] Immagini Hero 2 e Linea Benessere Veleno d’Api ricostruite correttamente.');
 } catch (error) {
-  console.error('[Miele Artigianale] Errore ricostruzione fotografie Hero 2:', error);
+  console.error('[Miele Artigianale] Errore ricostruzione immagini Hero 2/linee:', error);
 }
 
 // Mantiene intatta la catena shop approvata; Hero 2 viene applicata per ultima.
