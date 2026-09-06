@@ -73,9 +73,9 @@ try {
 
 require('./hero2-inject.js');
 
-// Prezzo pubblico autoritativo Capsule P+B: €19,90 IVA compresa.
+// Categoria e prezzo autoritativi Capsule P+B: Linea Alveoterapia, €19,90 IVA compresa.
 // Aggiorna sia il fallback statico sia il prodotto dopo il merge con Firestore,
-// evitando che un eventuale vecchio prezzo a €15,00 torni sul sito.
+// evitando che una vecchia categoria o un eventuale prezzo a €15,00 tornino sul sito.
 try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -88,14 +88,14 @@ try {
 
   const mergeTail = '                        updatedProducts.forEach(fp => {';
   if (html.includes(mergeTail) && !html.includes("const capsulePbIndex = mergedProducts.findIndex(p => p.id === 'capsule-pb')")) {
-    const authoritativeCapsulePrice = `                        const capsulePbIndex = mergedProducts.findIndex(p => p.id === 'capsule-pb');\n                        if (capsulePbIndex !== -1) {\n                            mergedProducts[capsulePbIndex] = {\n                                ...mergedProducts[capsulePbIndex],\n                                packs: [{ id: 'box5pb', label: 'Scatola 5 capsule P+B', jars: 1, price: 19.90 }]\n                            };\n                        }\n`;
+    const authoritativeCapsulePrice = `                        const capsulePbIndex = mergedProducts.findIndex(p => p.id === 'capsule-pb');\n                        if (capsulePbIndex !== -1) {\n                            mergedProducts[capsulePbIndex] = {\n                                ...mergedProducts[capsulePbIndex],\n                                category: 'alveoterapia',\n                                packs: [{ id: 'box5pb', label: 'Scatola 5 capsule P+B', jars: 1, price: 19.90 }]\n                            };\n                        }\n`;
     html = html.replace(mergeTail, authoritativeCapsulePrice + mergeTail);
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Capsule P+B fissate a €19,90 IVA compresa.');
+  console.log('[Miele Artigianale] Capsule P+B mantenute nella Linea Alveoterapia a €19,90 IVA compresa.');
 } catch (error) {
-  console.error('[Miele Artigianale] Errore aggiornamento prezzo Capsule P+B:', error);
+  console.error('[Miele Artigianale] Errore aggiornamento Capsule P+B:', error);
 }
 
 // ProductDetailPage null-safe: evita il crash React se il prodotto è temporaneamente
