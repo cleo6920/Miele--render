@@ -55,26 +55,24 @@ try {
     console.warn('[Miele Artigianale] Ricerca globale non trovata: filtro Alveoterapia non applicato.');
   }
 
-  // Pagina editoriale dedicata alla Linea Alveoterapia.
-  // Nessun posizionamento assoluto: la struttura usa solo grid/flex responsive per evitare sovrapposizioni.
+  // Pagina dedicata, compatta e responsive della Linea Alveoterapia.
+  // I due pulsanti portano direttamente alle schede acquistabili del diffusore e delle capsule.
   if (!html.includes('id="linea-alveoterapia-page"')) {
     const categoryIntroPattern = /\{selectedCategory === 'alveoterapia' && \([\s\S]*?<\/p>\s*\)\}\s*<h2 className="text-3xl font-bold text-stone-800">[\s\S]*?<\/h2>/;
     const dedicatedPage = `{selectedCategory === 'alveoterapia' ? (
-                                          <section id="linea-alveoterapia-page" className="w-full overflow-hidden rounded-2xl border border-amber-400/30 bg-gradient-to-b from-stone-900 via-stone-950 to-black shadow-xl">
-                                            <div className="px-4 py-4 sm:px-6 sm:py-5 border-b border-white/10">
-                                              <div className="inline-flex rounded-full bg-amber-500 px-3 py-1 text-[11px] sm:text-xs font-black tracking-[0.12em] text-stone-950 uppercase">
+                                          <section id="linea-alveoterapia-page" className="w-full overflow-hidden rounded-xl border border-amber-400/25 bg-stone-950 shadow-lg">
+                                            <div className="px-3 py-3 sm:px-4 sm:py-3 border-b border-white/10">
+                                              <h2 className="text-xl sm:text-2xl font-black leading-tight text-white uppercase tracking-wide">
                                                 Linea Alveoterapia
-                                              </div>
-                                              <h2 className="mt-2 text-3xl sm:text-4xl font-black leading-tight text-white">
-                                                Alveoterapia con diffusori
                                               </h2>
-                                              <p className="mt-2 max-w-3xl text-sm sm:text-base leading-relaxed font-semibold text-stone-200">
-                                                Un percorso dedicato che porta l'esperienza dell'alveare in un ambiente attrezzato, attraverso PropolTerapy Professional e le capsule P+B dedicate.
+                                              <div className="mt-0.5 text-sm sm:text-base font-extrabold text-amber-400">Alveoterapia con diffusori</div>
+                                              <p className="mt-1 max-w-3xl text-xs sm:text-sm leading-snug font-semibold text-stone-300">
+                                                L'esperienza dell'alveare in un ambiente dedicato, con PropolTerapy Professional e capsule P+B.
                                               </p>
                                             </div>
 
-                                            <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] gap-5 p-4 sm:p-6 items-start">
-                                              <div className="overflow-hidden rounded-2xl border border-amber-300/40 bg-stone-900">
+                                            <div className="grid grid-cols-1 md:grid-cols-[170px_minmax(0,1fr)] gap-3 p-3 sm:p-4 items-start">
+                                              <div className="overflow-hidden rounded-lg border border-amber-300/30 bg-stone-900">
                                                 <img
                                                   src="/images/hero2-marco-diffusore.jpg"
                                                   alt="Alveoterapia con diffusore nel Centro di Alveoterapia Integrata"
@@ -82,35 +80,45 @@ try {
                                                 />
                                               </div>
 
-                                              <div className="min-w-0 space-y-4">
-                                                <div className="rounded-xl border border-emerald-500/25 bg-emerald-950/30 p-4">
-                                                  <h3 className="text-lg font-black text-emerald-300">Come funziona</h3>
-                                                  <p className="mt-1 text-sm sm:text-base leading-relaxed text-stone-200">
-                                                    Il diffusore professionale utilizza capsule P+B dedicate con propoli italiana e Boswellia. Il sistema consente di vivere l'esperienza dell'alveare in un ambiente dedicato e confortevole.
-                                                  </p>
+                                              <div className="min-w-0 space-y-2.5">
+                                                <div className="grid grid-cols-1 xl:grid-cols-2 gap-2.5">
+                                                  <div className="rounded-lg border border-emerald-500/25 bg-emerald-950/25 p-3">
+                                                    <h3 className="text-sm sm:text-base font-black text-emerald-300">Come funziona</h3>
+                                                    <p className="mt-1 text-xs sm:text-sm leading-snug text-stone-200">
+                                                      Il diffusore utilizza capsule P+B dedicate con propoli italiana e Boswellia per un'esperienza pratica in ambiente attrezzato.
+                                                    </p>
+                                                  </div>
+
+                                                  <div className="rounded-lg border border-amber-400/25 bg-amber-950/15 p-3">
+                                                    <h3 className="text-sm sm:text-base font-black text-amber-300">In continuità con la natura</h3>
+                                                    <p className="mt-1 text-xs sm:text-sm leading-snug text-stone-200">
+                                                      Completa l'esperienza naturale con le api, rendendola disponibile anche nel nostro Centro con diffusore e capsule dedicate.
+                                                    </p>
+                                                  </div>
                                                 </div>
 
-                                                <div className="rounded-xl border border-amber-400/25 bg-amber-950/20 p-4">
-                                                  <h3 className="text-lg font-black text-amber-300">Complementare all'Alveoterapia naturale</h3>
-                                                  <p className="mt-1 text-sm sm:text-base leading-relaxed text-stone-200">
-                                                    Nell'Alveoterapia naturale l'esperienza avviene vicino agli alveari e con le api; con i diffusori può proseguire nel nostro Centro attraverso il dispositivo e le capsule dedicate.
-                                                  </p>
+                                                <div className="rounded-lg border border-white/15 bg-white/5 p-3">
+                                                  <div className="text-[10px] font-black tracking-[0.10em] text-amber-400 uppercase">Dove trovarci</div>
+                                                  <div className="mt-0.5 text-xs sm:text-sm font-black text-white">Centro di Alveoterapia Integrata – Farmacia delle Api</div>
+                                                  <div className="text-xs sm:text-sm font-semibold text-stone-300">Via XX Settembre 20/A – 46033 Castel d'Ario (MN)</div>
                                                 </div>
 
-                                                <div className="rounded-xl border border-white/15 bg-white/5 p-4">
-                                                  <div className="text-[11px] font-black tracking-[0.12em] text-amber-400 uppercase">Dove trovarci</div>
-                                                  <div className="mt-1 text-base font-black text-white">Centro di Alveoterapia Integrata – Farmacia delle Api</div>
-                                                  <div className="mt-1 text-sm font-semibold text-stone-200">Via XX Settembre 20/A – 46033 Castel d'Ario (MN)</div>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                  <button
+                                                    type="button"
+                                                    onClick={() => { setSelectedProductId('propolterapy-professional'); setTimeout(() => document.getElementById('product-detail-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); }}
+                                                    className="inline-flex min-h-[42px] items-center justify-center rounded-lg bg-amber-500 hover:bg-amber-400 px-3 py-2 text-sm font-black text-stone-950 transition-colors"
+                                                  >
+                                                    Vai al diffusore
+                                                  </button>
+                                                  <button
+                                                    type="button"
+                                                    onClick={() => { setSelectedProductId('capsule-pb'); setTimeout(() => document.getElementById('product-detail-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); }}
+                                                    className="inline-flex min-h-[42px] items-center justify-center rounded-lg bg-emerald-600 hover:bg-emerald-500 px-3 py-2 text-sm font-black text-white transition-colors"
+                                                  >
+                                                    Vai alle capsule P+B
+                                                  </button>
                                                 </div>
-                                              </div>
-                                            </div>
-
-                                            <div className="px-4 pb-5 sm:px-6 sm:pb-6">
-                                              <div className="rounded-xl bg-amber-50 px-4 py-3 text-stone-900">
-                                                <h3 className="text-xl font-black">Prodotti della Linea Alveoterapia</h3>
-                                                <p className="mt-1 text-sm font-semibold leading-relaxed">
-                                                  Qui sotto trovi il PropolTerapy Professional e le capsule P+B dedicate. Le relative schede di acquisto restano disponibili e saranno aggiornate con prezzi e contenuti definitivi.
-                                                </p>
                                               </div>
                                             </div>
                                           </section>
@@ -122,7 +130,7 @@ try {
 
     if (categoryIntroPattern.test(html)) {
       html = html.replace(categoryIntroPattern, dedicatedPage);
-      console.log('[Miele Artigianale] Pagina dedicata Linea Alveoterapia inserita senza layout sovrapposti.');
+      console.log('[Miele Artigianale] Pagina Linea Alveoterapia compatta con accesso diretto ai prodotti inserita.');
     } else {
       console.warn('[Miele Artigianale] Blocco introduttivo categoria Alveoterapia non trovato: pagina dedicata non inserita.');
     }
