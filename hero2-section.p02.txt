@@ -43,39 +43,39 @@
                             display: none !important;
                           }
                         `}</style>
-                        <article className="overflow-hidden rounded-2xl border border-amber-400/40 bg-[#101010] shadow-xl">
-                          <div className="grid grid-cols-1 md:grid-cols-[320px_minmax(0,1fr)] lg:grid-cols-[360px_minmax(0,1fr)] items-stretch">
+                        <article className="mx-auto w-full max-w-[1040px] overflow-hidden rounded-2xl border border-amber-400/40 bg-[#101010] shadow-xl">
+                          <div className="grid grid-cols-1 md:grid-cols-[260px_minmax(0,1fr)] lg:grid-cols-[280px_minmax(0,1fr)] items-stretch">
                             <div className="relative overflow-hidden bg-black">
                               <img
                                 src="/images/linea-benessere-veleno-api.jpg"
                                 alt="Immagine rappresentativa della Linea Benessere Veleno d'Api"
-                                className="block w-full aspect-square md:h-full md:aspect-auto object-cover"
+                                className="block w-full h-[230px] sm:h-[250px] md:h-full object-cover object-center"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none"></div>
                             </div>
 
-                            <div className="flex flex-col justify-center p-4 sm:p-5 lg:p-6 bg-gradient-to-br from-[#17120a] via-[#111111] to-[#0d0d0d]">
+                            <div className="flex flex-col justify-center p-4 sm:p-4 lg:p-5 bg-gradient-to-br from-[#17120a] via-[#111111] to-[#0d0d0d]">
                               <div className="inline-flex w-fit items-center rounded-full border border-amber-300/60 bg-amber-500 px-3 py-1 text-[11px] sm:text-xs font-black tracking-[0.14em] text-stone-950 uppercase shadow-sm">
                                 Esclusiva
                               </div>
-                              <div className="mt-2 text-[11px] sm:text-xs font-extrabold tracking-[0.12em] text-amber-300 uppercase">
+                              <div className="mt-1.5 text-[11px] sm:text-xs font-extrabold tracking-[0.12em] text-amber-300 uppercase">
                                 Uno dei punti di forza del nostro Centro
                               </div>
-                              <h2 id="linea-benessere-veleno-api-title" className="mt-1.5 text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-white">
+                              <h2 id="linea-benessere-veleno-api-title" className="mt-1 text-2xl sm:text-3xl lg:text-3xl font-black leading-tight text-white">
                                 Linea Benessere Veleno d’Api
                               </h2>
-                              <p className="mt-2 max-w-3xl text-sm sm:text-base leading-relaxed font-semibold text-stone-200">
+                              <p className="mt-1.5 max-w-3xl text-sm leading-snug font-semibold text-stone-200">
                                 Una selezione esclusiva dedicata al veleno d’api, con trattamenti per viso, corpo e massaggio scelti per rappresentare una delle linee più distintive della Fabbrica delle Api.
                               </p>
-                              <div className="mt-3 flex flex-wrap gap-2 text-xs sm:text-sm font-extrabold">
-                                <span className="rounded-full border border-amber-400/35 bg-amber-950/35 px-3 py-1.5 text-amber-200">Viso</span>
-                                <span className="rounded-full border border-amber-400/35 bg-amber-950/35 px-3 py-1.5 text-amber-200">Corpo</span>
-                                <span className="rounded-full border border-amber-400/35 bg-amber-950/35 px-3 py-1.5 text-amber-200">Massaggio</span>
+                              <div className="mt-2 flex flex-wrap gap-2 text-xs sm:text-sm font-extrabold">
+                                <span className="rounded-full border border-amber-400/35 bg-amber-950/35 px-3 py-1 text-amber-200">Viso</span>
+                                <span className="rounded-full border border-amber-400/35 bg-amber-950/35 px-3 py-1 text-amber-200">Corpo</span>
+                                <span className="rounded-full border border-amber-400/35 bg-amber-950/35 px-3 py-1 text-amber-200">Massaggio</span>
                               </div>
                               <button
                                 type="button"
                                 onClick={() => { setSelectedProductId(null); setSelectedCategory('veleno-api'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                                className="mt-4 inline-flex w-fit items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-400 px-5 py-2.5 text-sm sm:text-base font-black text-stone-950 shadow-md transition-colors"
+                                className="mt-3 inline-flex w-fit items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-400 px-5 py-2 text-sm font-black text-stone-950 shadow-md transition-colors"
                                 aria-label="Scopri la Linea Benessere Veleno d'Api"
                               >
                                 Scopri la linea
