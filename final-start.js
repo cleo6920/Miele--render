@@ -4,6 +4,10 @@ const path = require('path');
 // Esegue integralmente la catena di startup approvata.
 require('./hero2-prestart.js');
 
+// Sezione Linea Alimenti: aggiunge soltanto la vista virtuale della gamma alimentare.
+// Non interviene sulla Linea Veleno d'Api né sulle sue immagini.
+require('./linea-alimenti-prestart.js');
+
 // Ultimo controllo: la nuova Linea Benessere Veleno d'Api deve essere una categoria
 // pubblica dello shop, altrimenti i suoi prodotti vengono filtrati prima del rendering.
 try {
