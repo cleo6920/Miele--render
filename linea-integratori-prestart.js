@@ -69,7 +69,7 @@ try {
       name:'Soluzione Propoli 30% Spray',
       description:'Preparazione a base di propoli al 30% in soluzione alcolica, con pratico erogatore spray reclinabile. Pensata per il benessere del cavo orale e della gola, con applicazione semplice e mirata.',
       image:'images/spray.png',
-      packs:[{id:'ps30',label:'1 flacone spray - 20 ml',jars:1,price:7.70}],
+      packs:[{id:'ps30',label:'1 flacone spray - 20 ml',jars:1,price:7.90}],
       order:3, category:'integratori', inStock:true, stock:100
     },
     {
