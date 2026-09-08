@@ -98,12 +98,12 @@ try {
     },
     'polline-italiano': {
       name: 'Polline Italiano - 125 g',
-      image: '/images/polline.png',
+      image: '/images/polline-apinfiore-premium.jpg',
       packs: [{ id: 'pol1', label: '1 confezione (125 g)', jars: 1, price: 10.90 }], order: 12
     },
     'pappa-reale-italiana-bio': {
       name: 'Pappa Reale - 10 g',
-      image: '/images/pappa.png',
+      image: '/images/pappa-reale-apinfiore-premium.jpg',
       packs: [{ id: 'pr1', label: '1 confezione (10 g)', jars: 1, price: 6.90 }], order: 13
     },
     'orsetti-gommosi': {
@@ -113,8 +113,8 @@ try {
 
   for (const id of foodIds) {
     const present = [
-      `id: \"${id}\"`, `id:\"${id}\"`, `id: '${id}'`, `id:'${id}'`,
-      `\"id\": \"${id}\"`, `\"id\":\"${id}\"`
+      `id: "${id}"`, `id:"${id}"`, `id: '${id}'`, `id:'${id}'`,
+      `"id": "${id}"`, `"id":"${id}"`
     ].some(marker => html.includes(marker));
     if (!present) throw new Error(`Referenza Linea Alimenti non trovata nel catalogo: ${id}`);
   }
@@ -130,7 +130,7 @@ try {
   }
 
   // Categoria virtuale Linea Alimenti: usa esclusivamente i 14 ID della brochure.
-  const foodIdsLiteral = JSON.stringify(foodIds).replace(/\"/g, "'");
+  const foodIdsLiteral = JSON.stringify(foodIds).replace(/"/g, "'");
   const rendererNeedle = "{products.filter(p => selectedCategory === 'veleno-api' ?";
   if (html.includes(rendererNeedle) && !html.includes("selectedCategory === 'alimenti' ?")) {
     html = html.replaceAll(
