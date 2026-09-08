@@ -8,6 +8,10 @@ require('./hero2-prestart.js');
 // Non interviene sulla Linea Veleno d'Api né sulle sue immagini.
 require('./linea-alimenti-prestart.js');
 
+// Linea Integratori: aggiunge i 5 prodotti della brochure, il box di presentazione
+// e prepara un nuovo box "Linea in allestimento" per la prossima linea.
+require('./linea-integratori-prestart.js');
+
 // Ultimo controllo: la nuova Linea Benessere Veleno d'Api deve essere una categoria
 // pubblica dello shop, altrimenti i suoi prodotti vengono filtrati prima del rendering.
 try {
@@ -21,8 +25,9 @@ try {
     html = html.replaceAll(oldAllowed, newAllowed);
   }
 
-  if (!html.includes(newAllowed)) {
-    throw new Error("Categoria veleno-api non presente tra le categorie pubbliche dello shop");
+  // La lista può contenere anche Integratori, aggiunta dal prestart dedicato.
+  if (!html.includes("'veleno-api'") || !html.includes("'integratori'")) {
+    throw new Error("Categorie veleno-api/integratori non presenti tra le categorie pubbliche dello shop");
   }
 
   const requiredIds = [
@@ -40,8 +45,8 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Linea Veleno d’Api: categoria pubblica abilitata e 6 prodotti verificati.');
+  console.log('[Miele Artigianale] Linee Veleno d’Api e Integratori abilitate e verificate.');
 } catch (error) {
-  console.error('[Miele Artigianale] Errore visibilità finale Linea Veleno d’Api:', error);
+  console.error('[Miele Artigianale] Errore visibilità finale linee:', error);
   process.exitCode = 1;
 }
