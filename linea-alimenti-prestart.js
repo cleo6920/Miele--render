@@ -1,6 +1,32 @@
 const fs = require('fs');
 const path = require('path');
 
+// Ricostruisce come JPEG locale l'immagine approvata della Linea Alimenti.
+try {
+  const imageDir = path.join(__dirname, 'images');
+  const imageSets = [
+    {
+      output: 'linea-alimenti-home.jpg',
+      parts: ['linea-alimenti-home.p01.b64', 'linea-alimenti-home.p02.b64', 'linea-alimenti-home.p03.b64', 'linea-alimenti-home.p04.b64', 'linea-alimenti-home.p05.b64']
+    }
+  ];
+
+  for (const set of imageSets) {
+    const encoded = set.parts
+      .map(part => fs.readFileSync(path.join(imageDir, part), 'utf8').trim())
+      .join('');
+    const image = Buffer.from(encoded, 'base64');
+    if (image.length < 1000 || image[0] !== 0xff || image[1] !== 0xd8) {
+      throw new Error(`Immagine Linea Alimenti non valida: ${set.output}`);
+    }
+    fs.writeFileSync(path.join(imageDir, set.output), image);
+  }
+  console.log('[Miele Artigianale] Immagine presentazione Linea Alimenti ricostruita in alta qualità.');
+} catch (error) {
+  console.error('[Miele Artigianale] Errore ricostruzione immagini Linea Alimenti:', error);
+  process.exitCode = 1;
+}
+
 // Linea Alimenti - fonte autoritativa: brochure/referenze scelte dall'utente.
 // Mantiene nel sorgente i prodotti storici come backup, ma la vetrina pubblica
 // espone soltanto le linee gia pronte: Alveoterapia, Alimenti e Veleno d'Api.
@@ -25,9 +51,9 @@ try {
   ];
   const currentPublicIds = [...alveoterapiaIds, ...foodIds, ...velenoIds];
 
-  // Per le referenze gia esistenti manteniamo fotografie e testi correnti.
-  // Sovrascriviamo soltanto prezzo/formato/ordine quando la brochure lo richiede.
-  // Balsamico e Acacia 40 g richiedono anche il nome/formato pubblico corretto.
+  // Per le referenze gia esistenti manteniamo testi correnti e prezzi della brochure.
+  // Castagno, Polline 125 g e Pappa Reale 10 g usano le foto ufficiali APINFIORE
+  // corrispondenti alle referenze selezionate nella brochure.
   const foodOverrides = {
     millefiori: {
       packs: [{ id: 'p1', label: '1 vasetto (250 g)', jars: 1, price: 4.90 }], order: 1
@@ -45,6 +71,7 @@ try {
       packs: [{ id: 'ar1', label: '1 vasetto (250 g)', jars: 1, price: 4.90 }], order: 5
     },
     castagno: {
+      image: 'https://www.apinfiore.com/app/uploads/2023/03/Miele-Italiano-di-Castagno_web-24.jpg',
       packs: [{ id: 'c1', label: '1 vasetto (250 g)', jars: 1, price: 6.90 }], order: 6
     },
     'acacia-zenzero-apinfiore': {
@@ -69,10 +96,12 @@ try {
     },
     'polline-italiano': {
       name: 'Polline Italiano - 125 g',
+      image: 'https://www.apinfiore.com/app/uploads/2023/03/Polline-Italiano_125g_web-18.jpg',
       packs: [{ id: 'pol1', label: '1 confezione (125 g)', jars: 1, price: 10.90 }], order: 12
     },
     'pappa-reale-italiana-bio': {
       name: 'Pappa Reale - 10 g',
+      image: 'https://www.apinfiore.com/wp-content/uploads/2023/03/Pappa-Reale_web-21.jpg.webp',
       packs: [{ id: 'pr1', label: '1 confezione (10 g)', jars: 1, price: 6.90 }], order: 13
     },
     'orsetti-gommosi': {
@@ -88,7 +117,7 @@ try {
     if (!present) throw new Error(`Referenza Linea Alimenti non trovata nel catalogo: ${id}`);
   }
 
-  // Prezzi/formati della brochure prevalgono anche su eventuali dati Firestore vecchi.
+  // Prezzi/formati/foto della brochure prevalgono anche su eventuali dati Firestore vecchi.
   // Il filtro viene applicato DOPO il merge Firestore: le referenze storiche restano
   // nel codice/backup, ma non possono riapparire nella vetrina pubblica.
   const filteredNeedle = '                        const filtered = mergedProducts.filter(p => allowedCategoriesForShop.includes(p.category));';
@@ -98,8 +127,7 @@ try {
     html = html.replace(filteredNeedle, runtimeOverride);
   }
 
-  // Categoria virtuale Linea Alimenti: usa esclusivamente i 14 ID della brochure,
-  // senza riconoscimenti fragili basati su parole nel nome.
+  // Categoria virtuale Linea Alimenti: usa esclusivamente i 14 ID della brochure.
   const foodIdsLiteral = JSON.stringify(foodIds).replace(/\"/g, "'");
   const rendererNeedle = "{products.filter(p => selectedCategory === 'veleno-api' ?";
   if (html.includes(rendererNeedle) && !html.includes("selectedCategory === 'alimenti' ?")) {
@@ -118,7 +146,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Linea Alimenti: 14 referenze brochure, prezzi autoritativi e backup esclusi dalla vetrina pubblica.');
+  console.log('[Miele Artigianale] Linea Alimenti: 14 referenze brochure, prezzi e foto autoritativi, backup esclusi dalla vetrina pubblica.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore Linea Alimenti:', error);
   process.exitCode = 1;
