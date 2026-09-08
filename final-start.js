@@ -15,6 +15,9 @@ require('./linea-integratori-prestart.js');
 // Correzione isolata: usa per la Propoli 30% Spray la foto corretta della brochure.
 require('./propoli-spray-image-prestart.js');
 
+// Correzione isolata del formato: "20 ml" deve stare sotto a sinistra e separato dal prezzo.
+require('./propoli-spray-format-layout-prestart.js');
+
 // Ultimo controllo: la nuova Linea Benessere Veleno d'Api deve essere una categoria
 // pubblica dello shop, altrimenti i suoi prodotti vengono filtrati prima del rendering.
 try {
