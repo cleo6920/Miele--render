@@ -12,6 +12,10 @@ require('./linea-alimenti-prestart.js');
 // e prepara un nuovo box "Linea in allestimento" per la prossima linea.
 require('./linea-integratori-prestart.js');
 
+// Su un deploy pulito il prestart Integratori può consumare il placeholder esistente:
+// lo ripristiniamo in modo isolato prima di costruire la linea successiva.
+require('./linea-placeholder-prestart.js');
+
 // Linea Cosmesi e Tesori in Cera d'Api: aggiunge 8 nuove card, immagini locali,
 // trasforma il box successivo agli Integratori e ricrea il placeholder per la prossima linea.
 require('./linea-cosmesi-cera-prestart.js');
