@@ -75,9 +75,11 @@ try {
       packs: [{ id: 'c1', label: '1 vasetto (250 g)', jars: 1, price: 6.90 }], order: 6
     },
     'acacia-zenzero-apinfiore': {
+      image: '/images/acacia-zenzero-premium.jpg',
       packs: [{ id: 'az1', label: '1 vasetto (200 g)', jars: 1, price: 7.90 }], order: 7
     },
     'miele-eucalipto-apinfiore': {
+      image: '/images/eucalipto-premium.jpg',
       packs: [{ id: 'euca1', label: '1 vasetto (250 g)', jars: 1, price: 6.90 }], order: 8
     },
     balsammiel: {
