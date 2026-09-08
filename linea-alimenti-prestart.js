@@ -52,8 +52,8 @@ try {
   const currentPublicIds = [...alveoterapiaIds, ...foodIds, ...velenoIds];
 
   // Per le referenze gia esistenti manteniamo testi correnti e prezzi della brochure.
-  // Castagno, Polline 125 g e Pappa Reale 10 g usano le foto ufficiali APINFIORE
-  // corrispondenti alle referenze selezionate nella brochure.
+  // Castagno, Polline 125 g e Pappa Reale 10 g usano immagini locali del repository,
+  // cosi restano stabili, nitide e senza dipendenze da URL esterni.
   const foodOverrides = {
     millefiori: {
       packs: [{ id: 'p1', label: '1 vasetto (250 g)', jars: 1, price: 4.90 }], order: 1
@@ -71,7 +71,7 @@ try {
       packs: [{ id: 'ar1', label: '1 vasetto (250 g)', jars: 1, price: 4.90 }], order: 5
     },
     castagno: {
-      image: 'https://www.apinfiore.com/app/uploads/2023/03/Miele-Italiano-di-Castagno_web-24.jpg',
+      image: '/images/castagno.png',
       packs: [{ id: 'c1', label: '1 vasetto (250 g)', jars: 1, price: 6.90 }], order: 6
     },
     'acacia-zenzero-apinfiore': {
@@ -96,12 +96,12 @@ try {
     },
     'polline-italiano': {
       name: 'Polline Italiano - 125 g',
-      image: 'https://www.apinfiore.com/app/uploads/2023/03/Polline-Italiano_125g_web-18.jpg',
+      image: '/images/polline.png',
       packs: [{ id: 'pol1', label: '1 confezione (125 g)', jars: 1, price: 10.90 }], order: 12
     },
     'pappa-reale-italiana-bio': {
       name: 'Pappa Reale - 10 g',
-      image: 'https://www.apinfiore.com/wp-content/uploads/2023/03/Pappa-Reale_web-21.jpg.webp',
+      image: '/images/pappa.png',
       packs: [{ id: 'pr1', label: '1 confezione (10 g)', jars: 1, price: 6.90 }], order: 13
     },
     'orsetti-gommosi': {
