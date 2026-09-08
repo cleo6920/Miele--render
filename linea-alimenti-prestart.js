@@ -113,8 +113,8 @@ try {
 
   for (const id of foodIds) {
     const present = [
-      `id: "${id}"`, `id:"${id}"`, `id: '${id}'`, `id:'${id}'`,
-      `"id": "${id}"`, `"id":"${id}"`
+      `id: \"${id}\"`, `id:\"${id}\"`, `id: '${id}'`, `id:'${id}'`,
+      `\"id\": \"${id}\"`, `\"id\":\"${id}\"`
     ].some(marker => html.includes(marker));
     if (!present) throw new Error(`Referenza Linea Alimenti non trovata nel catalogo: ${id}`);
   }
@@ -130,7 +130,7 @@ try {
   }
 
   // Categoria virtuale Linea Alimenti: usa esclusivamente i 14 ID della brochure.
-  const foodIdsLiteral = JSON.stringify(foodIds).replace(/"/g, "'");
+  const foodIdsLiteral = JSON.stringify(foodIds).replace(/\"/g, "'");
   const rendererNeedle = "{products.filter(p => selectedCategory === 'veleno-api' ?";
   if (html.includes(rendererNeedle) && !html.includes("selectedCategory === 'alimenti' ?")) {
     html = html.replaceAll(
