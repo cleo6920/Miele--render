@@ -98,12 +98,12 @@ try {
     },
     'polline-italiano': {
       name: 'Polline Italiano - 125 g',
-      image: '/images/polline-apinfiore-premium.jpg',
+      image: '/images/polline-stable.svg',
       packs: [{ id: 'pol1', label: '1 confezione (125 g)', jars: 1, price: 10.90 }], order: 12
     },
     'pappa-reale-italiana-bio': {
       name: 'Pappa Reale - 10 g',
-      image: '/images/pappa-reale-apinfiore-premium.jpg',
+      image: '/images/pappa-reale-stable.svg',
       packs: [{ id: 'pr1', label: '1 confezione (10 g)', jars: 1, price: 6.90 }], order: 13
     },
     'orsetti-gommosi': {
