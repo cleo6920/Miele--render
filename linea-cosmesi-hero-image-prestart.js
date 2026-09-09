@@ -3,10 +3,22 @@ const path = require('path');
 
 try {
   const partsDir = path.join(__dirname, '.cosmesi-hero');
-  const base64 = Array.from({ length: 7 }, (_, i) => {
-    const name = `chunk${String(i + 1).padStart(2, '0')}.b64`;
-    return fs.readFileSync(path.join(partsDir, name), 'utf8').trim();
-  }).join('');
+  const parts = [
+    'fix01a.b64',
+    'fix01b.b64',
+    'fix02a.b64',
+    'fix02b.b64',
+    'chunk03.b64',
+    'chunk04.b64',
+    'chunk05.b64',
+    'fix06a.b64',
+    'fix06b.b64',
+    'chunk07.b64'
+  ];
+
+  const base64 = parts
+    .map(name => fs.readFileSync(path.join(partsDir, name), 'utf8').trim())
+    .join('');
 
   const image = Buffer.from(base64, 'base64');
 
