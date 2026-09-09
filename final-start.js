@@ -20,6 +20,9 @@ require('./linea-placeholder-prestart.js');
 // trasforma il box successivo agli Integratori e ricrea il placeholder per la prossima linea.
 require('./linea-cosmesi-cera-prestart.js');
 
+// Applica la foto di presentazione nitida approvata senza modificare prodotti o prezzi.
+require('./linea-cosmesi-hero-image-prestart.js');
+
 // Correzione isolata: usa per la Propoli 30% Spray la foto corretta della brochure.
 require('./propoli-spray-image-prestart.js');
 
