@@ -1,0 +1,29 @@
+name: Fetch approved Cosmesi hero
+
+on:
+  push:
+    branches:
+      - feature/cosmesi-hero-approved-temp
+    paths:
+      - .github/workflows/fetch-cosmesi-hero.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download approved image
+        run: |
+          curl -L --fail 'https://d2jqrm6oza8nb6.cloudfront.net/datasets/aee76719-e0fa-4a76-9b03-9cb4224b24d3.jpg?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODlmYWU0NDBiMzQyYTg4NyIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc4OTA5MDYyNH0.bZv5Hlufw25Kdbl-TWSgk8_pEvz4HDhxTRZJOClWa8A' -o images/linea-cosmesi-cera-home.jpg
+          file images/linea-cosmesi-cera-home.jpg
+          test -s images/linea-cosmesi-cera-home.jpg
+      - name: Commit image only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add images/linea-cosmesi-cera-home.jpg
+          git diff --cached --quiet || git commit -m 'Use approved Cosmesi hero image'
+          git push
