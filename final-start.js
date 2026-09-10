@@ -23,14 +23,17 @@ require('./linea-cosmesi-cera-prestart.js');
 // Applica la foto di presentazione nitida approvata senza modificare prodotti o prezzi.
 require('./linea-cosmesi-hero-image-prestart.js');
 
+// Linea I Tesori di Francesco: aggiunge la nuova sezione e le 3 card acquistabili
+// usando immagini ricavate dalla brochure e prezzo al pubblico di 5,90 euro.
+require('./linea-tesori-francesco-prestart.js');
+
 // Correzione isolata: usa per la Propoli 30% Spray la foto corretta della brochure.
 require('./propoli-spray-image-prestart.js');
 
 // Correzione isolata del formato: "20 ml" deve stare sotto a sinistra e separato dal prezzo.
 require('./propoli-spray-format-layout-prestart.js');
 
-// Ultimo controllo: la nuova Linea Benessere Veleno d'Api deve essere una categoria
-// pubblica dello shop, altrimenti i suoi prodotti vengono filtrati prima del rendering.
+// Ultimo controllo delle categorie pubbliche e delle referenze principali.
 try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -42,9 +45,8 @@ try {
     html = html.replaceAll(oldAllowed, newAllowed);
   }
 
-  // La lista può contenere anche Integratori e Cosmesi/Cera, aggiunte dai prestart dedicati.
-  if (!html.includes("'veleno-api'") || !html.includes("'integratori'") || !html.includes("'cosmesi-cera'")) {
-    throw new Error("Categorie veleno-api/integratori/cosmesi-cera non presenti tra le categorie pubbliche dello shop");
+  if (!html.includes("'veleno-api'") || !html.includes("'integratori'") || !html.includes("'cosmesi-cera'") || !html.includes("'tesori-francesco'")) {
+    throw new Error("Categorie veleno-api/integratori/cosmesi-cera/tesori-francesco non presenti tra le categorie pubbliche dello shop");
   }
 
   const requiredIds = [
@@ -53,16 +55,19 @@ try {
     'apis2-siero-viso-veleno-api',
     'apis4-crema-corpo-veleno-api-manuka',
     'apis5-gommage-veleno-api-manuka',
-    'bagnodoccia-veleno-oro'
+    'bagnodoccia-veleno-oro',
+    'tesori-limoncello',
+    'tesori-liquore-caffe',
+    'tesori-castagne-rum'
   ];
 
   for (const id of requiredIds) {
     const present = html.includes(`\"id\": \"${id}\"`) || html.includes(`id: \"${id}\"`) || html.includes(`id: '${id}'`);
-    if (!present) throw new Error(`Prodotto Veleno d'Api mancante dal catalogo finale: ${id}`);
+    if (!present) throw new Error(`Prodotto mancante dal catalogo finale: ${id}`);
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Linee Veleno d’Api, Integratori e Cosmesi/Cera abilitate e verificate.');
+  console.log('[Miele Artigianale] Linee Veleno d’Api, Integratori, Cosmesi/Cera e I Tesori di Francesco abilitate e verificate.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore visibilità finale linee:', error);
   process.exitCode = 1;
