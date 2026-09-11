@@ -27,6 +27,10 @@ require('./linea-cosmesi-cera-prestart.js');
 // Applica la foto di presentazione nitida approvata senza modificare prodotti o prezzi.
 require('./linea-cosmesi-hero-image-prestart.js');
 
+// Correzione visuale isolata: Crema Mani e i due Burrocacao restano interamente
+// contenuti nel riquadro immagine delle rispettive card.
+require('./cosmesi-card-image-fit-prestart.js');
+
 // Linea I Tesori di Francesco: aggiunge la nuova sezione e le 3 card acquistabili
 // usando immagini ricavate dalla brochure e prezzo al pubblico di 5,90 euro.
 require('./linea-tesori-francesco-prestart.js');
