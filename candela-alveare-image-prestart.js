@@ -3,25 +3,15 @@ const path = require('path');
 
 try {
   const indexPath = path.join(__dirname, 'index.html');
-  const imageDir = path.join(__dirname, 'images');
-  const imagePath = path.join(imageDir, 'candela-alveare-brochure.jpg');
-  const b64Path = path.join(imageDir, 'candela-alveare-brochure.b64');
-
-  if (!fs.existsSync(b64Path)) throw new Error('Asset base64 candela mancante');
-  fs.mkdirSync(imageDir, { recursive: true });
-
-  const imageBuffer = Buffer.from(fs.readFileSync(b64Path, 'utf8').trim(), 'base64');
-  const isJpeg = imageBuffer.length >= 15000 &&
-    imageBuffer[0] === 0xFF && imageBuffer[1] === 0xD8 &&
-    imageBuffer[imageBuffer.length - 2] === 0xFF && imageBuffer[imageBuffer.length - 1] === 0xD9;
-  if (!isJpeg) {
-    throw new Error(`Asset candela non e un JPEG completo: ${imageBuffer.length} byte`);
-  }
-  fs.writeFileSync(imagePath, imageBuffer);
-
   let html = fs.readFileSync(indexPath, 'utf8');
+
+  // Versione 4x ripulita della foto reale estratta dalla brochure.
+  // La fonte brochure resta il riferimento visivo del prodotto; l'enhancement elimina
+  // la forte sgranatura visibile nelle card e nella scheda acquisto.
+  const enhancedImageUrl = 'https://gcdn.picsart.com/cloud-storage/847c91a5-74e2-4658-acde-a86ba813dfee.png';
   const id = 'cosmesi-candela-alveare-cera-api';
   const markers = [`id: '${id}'`, `id: "${id}"`, `"id": "${id}"`];
+
   let p = -1;
   for (const marker of markers) {
     const q = html.indexOf(marker);
@@ -49,16 +39,16 @@ try {
 
   let obj = html.slice(start, end);
   const before = obj;
-  obj = obj.replace(/image\s*:\s*(['"])[^'"]*\1/, "image: '/images/candela-alveare-brochure.jpg'");
+  obj = obj.replace(/image\s*:\s*(['"])[^'"]*\1/, `image: '${enhancedImageUrl}'`);
   if (obj === before) throw new Error('Campo image candela non trovato');
 
   html = html.slice(0, start) + obj + html.slice(end);
-  if (!html.includes("/images/candela-alveare-brochure.jpg")) {
-    throw new Error('Percorso JPEG candela non inserito');
+  if (!html.includes(enhancedImageUrl)) {
+    throw new Error('URL immagine candela migliorata non inserito');
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log(`[Miele Artigianale] Candela Alveare Grande: JPEG brochure valido (${imageBuffer.length} byte) applicato.`);
+  console.log('[Miele Artigianale] Candela Alveare Grande: foto brochure migliorata 4x applicata.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore fix immagine candela:', error);
   process.exitCode = 1;
