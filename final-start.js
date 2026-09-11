@@ -61,15 +61,10 @@ try {
 
   const mandatoryCategories = ['veleno-api', 'integratori', 'cosmesi-cera', 'tesori-francesco'];
 
-  // Aggiorna OGNI definizione di allowedCategoriesForShop senza dipendere da una stringa esatta.
   let allowedDefinitionCount = 0;
   html = html.replace(/const allowedCategoriesForShop = \[([^\]]*)\];/g, (full, inside) => {
     allowedDefinitionCount++;
-    const values = inside
-      .split(',')
-      .map(v => v.trim())
-      .filter(Boolean);
-
+    const values = inside.split(',').map(v => v.trim()).filter(Boolean);
     const normalized = new Set(values.map(v => v.replace(/^['\"]|['\"]$/g, '')));
     for (const category of mandatoryCategories) {
       if (!normalized.has(category)) {
@@ -80,11 +75,8 @@ try {
     return `const allowedCategoriesForShop = [${values.join(', ')}];`;
   });
 
-  if (!allowedDefinitionCount) {
-    throw new Error('Nessuna definizione allowedCategoriesForShop trovata');
-  }
+  if (!allowedDefinitionCount) throw new Error('Nessuna definizione allowedCategoriesForShop trovata');
 
-  // Se esiste il filtro autoritativo IDs, assicura che le 6 referenze Veleno non vengano eliminate.
   const velenoIds = [
     'unguento-apis',
     'apis1-crema-viso-veleno-api',
@@ -123,8 +115,6 @@ try {
     }
   }
 
-  // Guardia contro il bug che ha nascosto le card Veleno: nessuna regola globale puo'
-  // nascondere tutte le card di una category-grid. Il backup home deve essere scoped per ID.
   if (html.includes('.category-grid > .card {\n  display: none !important;')) {
     throw new Error('CSS globale pericoloso sulle card categoria/prodotto rilevato');
   }
@@ -134,12 +124,12 @@ try {
   if (!html.includes('object-contain rounded-xl mb-4 shadow-md bg-white p-2')) {
     throw new Error('Fit renderer ProductCard non presente nel sorgente finale');
   }
-  if (!html.includes('/images/candela-alveare-brochure.webp')) {
-    throw new Error('Foto realistica della Candela Alveare Grande non presente nel catalogo finale');
+  if (!html.includes('/images/candela-alveare-brochure.jpg')) {
+    throw new Error('Foto JPEG realistica della Candela Alveare Grande non presente nel catalogo finale');
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, 6 card Veleno preservate, backup home isolato, fit ProductCard attivo e candela aggiornata.');
+  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, 6 card Veleno preservate, backup home isolato, fit ProductCard attivo e candela JPEG aggiornata.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore controllo finale shop:', error);
   process.exitCode = 1;
