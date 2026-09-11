@@ -5,12 +5,13 @@ try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
 
-  // 1) Card prodotto: alcune foto verticali devono essere contenute e non ritagliate.
+  // 1) Card prodotto: alcune foto verticali o di prodotto intero devono essere contenute e non ritagliate.
   const oldCardClass = 'className="w-48 h-48 object-cover rounded-xl mb-4 shadow-md"';
   const newCardClass = `className={[
                           'cosmesi-crema-mani',
                           'cosmesi-burrocacao-propoli-aloe',
                           'cosmesi-burrocacao-miele-pappa-reale',
+                          'cosmesi-candela-alveare-cera-api',
                           'tesori-limoncello',
                           'tesori-liquore-caffe'
                         ].includes(product.id)
@@ -33,7 +34,7 @@ try {
   }
   html = html.replace(oldDetailClass, newDetailClass);
 
-  if (!html.includes("'cosmesi-crema-mani'") || !html.includes('object-contain rounded-xl mb-4 shadow-md bg-white p-2')) {
+  if (!html.includes("'cosmesi-crema-mani'") || !html.includes("'cosmesi-candela-alveare-cera-api'") || !html.includes('object-contain rounded-xl mb-4 shadow-md bg-white p-2')) {
     throw new Error('Fix renderer ProductCard non inserito correttamente');
   }
   if (!html.includes('max-w-xs h-auto max-h-[380px] object-contain rounded-xl shadow-lg bg-white p-2')) {
@@ -41,7 +42,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Renderer immagini: card corrette e scheda prodotto limitata a max 320x380 px.');
+  console.log('[Miele Artigianale] Renderer immagini: card corrette, candela contenuta e scheda prodotto limitata a max 320x380 px.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore fix renderer immagini:', error);
   process.exitCode = 1;
