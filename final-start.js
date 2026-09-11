@@ -27,6 +27,10 @@ require('./linea-cosmesi-hero-image-prestart.js');
 // usando immagini ricavate dalla brochure e prezzo al pubblico di 5,90 euro.
 require('./linea-tesori-francesco-prestart.js');
 
+// Offerte Tris: aggiunge alle 30 referenze vendibili la scelta singola oppure tris,
+// con composizioni e totali del PDF commerciale e una sola spedizione per il tris.
+require('./tris-offerte-prestart.js');
+
 // Correzione isolata: usa per la Propoli 30% Spray la foto corretta della brochure.
 require('./propoli-spray-image-prestart.js');
 
