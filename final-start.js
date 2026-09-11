@@ -8,6 +8,10 @@ require('./hero2-prestart.js');
 // Non interviene sulla Linea Veleno d'Api né sulle sue immagini.
 require('./linea-alimenti-prestart.js');
 
+// Fix immagini Linea Alimenti: rende autoritative le foto brochure per tutte le 14 referenze
+// ed elimina la dipendenza dai vecchi URL esterni delle card storiche.
+require('./alimenti-images-fix-prestart.js');
+
 // Linea Integratori: aggiunge i 5 prodotti della brochure, il box di presentazione
 // e prepara un nuovo box "Linea in allestimento" per la prossima linea.
 require('./linea-integratori-prestart.js');
