@@ -27,17 +27,13 @@ require('./linea-cosmesi-cera-prestart.js');
 // Applica la foto di presentazione nitida approvata senza modificare prodotti o prezzi.
 require('./linea-cosmesi-hero-image-prestart.js');
 
-// Correzione visuale isolata: Crema Mani e i due Burrocacao restano interamente
-// contenuti nel riquadro immagine delle rispettive card.
-require('./cosmesi-card-image-fit-prestart.js');
-
 // Linea I Tesori di Francesco: aggiunge la nuova sezione e le 3 card acquistabili
 // usando immagini ricavate dalla brochure e prezzo al pubblico di 5,90 euro.
 require('./linea-tesori-francesco-prestart.js');
 
-// Correzione visuale isolata: Limoncello e Liquore al Caffe restano interamente
-// contenuti nel riquadro immagine delle rispettive card.
-require('./tesori-card-image-fit-prestart.js');
+// Fit immagini applicato direttamente nel renderer ProductCard per le referenze che
+// devono essere mostrate interamente, senza dipendere da CSS o URL immagine.
+require('./product-card-render-fit-prestart.js');
 
 // Offerte Tris: aggiunge alle 30 referenze vendibili la scelta singola oppure tris,
 // con composizioni e totali del PDF commerciale e una sola spedizione per il tris.
@@ -131,9 +127,12 @@ try {
   if (!html.includes('#legacy-category-grid-backup > .card')) {
     throw new Error('CSS backup home non correttamente scoped');
   }
+  if (!html.includes('object-contain rounded-xl mb-4 shadow-md bg-white p-2')) {
+    throw new Error('Fit renderer ProductCard non presente nel sorgente finale');
+  }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, 6 card Veleno preservate, backup home isolato.');
+  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, 6 card Veleno preservate, backup home isolato e fit ProductCard attivo.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore controllo finale shop:', error);
   process.exitCode = 1;
