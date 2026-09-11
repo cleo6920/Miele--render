@@ -36,7 +36,7 @@ require('./linea-tesori-francesco-prestart.js');
 require('./tris-offerte-prestart.js');
 
 // Le vecchie card categoria restano nel codice come backup; nella griglia pubblica
-// rimane soltanto La Bacheca della Galena delle Api.
+// rimane soltanto La Bacheca della Galena delle Api. Il CSS e' limitato alla home.
 require('./legacy-category-backup-prestart.js');
 
 // Correzione isolata: usa per la Propoli 30% Spray la foto corretta della brochure.
@@ -45,29 +45,57 @@ require('./propoli-spray-image-prestart.js');
 // Correzione isolata del formato: "20 ml" deve stare sotto a sinistra e separato dal prezzo.
 require('./propoli-spray-format-layout-prestart.js');
 
-// Ultimo controllo delle categorie pubbliche e delle referenze principali.
+// Controllo finale autoritativo: categorie e referenze essenziali devono restare pubbliche
+// indipendentemente dall'ordine in cui i prestart precedenti hanno esteso gli array.
 try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
 
-  const oldAllowed = "const allowedCategoriesForShop = ['busatello','prelibati','tesori','leccornie','terapia','cosmesi', 'alveoterapia'];";
-  const newAllowed = "const allowedCategoriesForShop = ['busatello','prelibati','tesori','leccornie','terapia','cosmesi', 'alveoterapia', 'veleno-api'];";
+  const mandatoryCategories = ['veleno-api', 'integratori', 'cosmesi-cera', 'tesori-francesco'];
 
-  if (html.includes(oldAllowed)) {
-    html = html.replaceAll(oldAllowed, newAllowed);
+  // Aggiorna OGNI definizione di allowedCategoriesForShop senza dipendere da una stringa esatta.
+  let allowedDefinitionCount = 0;
+  html = html.replace(/const allowedCategoriesForShop = \[([^\]]*)\];/g, (full, inside) => {
+    allowedDefinitionCount++;
+    const values = inside
+      .split(',')
+      .map(v => v.trim())
+      .filter(Boolean);
+
+    const normalized = new Set(values.map(v => v.replace(/^['\"]|['\"]$/g, '')));
+    for (const category of mandatoryCategories) {
+      if (!normalized.has(category)) {
+        values.push(`'${category}'`);
+        normalized.add(category);
+      }
+    }
+    return `const allowedCategoriesForShop = [${values.join(', ')}];`;
+  });
+
+  if (!allowedDefinitionCount) {
+    throw new Error('Nessuna definizione allowedCategoriesForShop trovata');
   }
 
-  if (!html.includes("'veleno-api'") || !html.includes("'integratori'") || !html.includes("'cosmesi-cera'") || !html.includes("'tesori-francesco'")) {
-    throw new Error("Categorie veleno-api/integratori/cosmesi-cera/tesori-francesco non presenti tra le categorie pubbliche dello shop");
-  }
-
-  const requiredIds = [
+  // Se esiste il filtro autoritativo IDs, assicura che le 6 referenze Veleno non vengano eliminate.
+  const velenoIds = [
     'unguento-apis',
     'apis1-crema-viso-veleno-api',
     'apis2-siero-viso-veleno-api',
     'apis4-crema-corpo-veleno-api-manuka',
     'apis5-gommage-veleno-api-manuka',
-    'bagnodoccia-veleno-oro',
+    'bagnodoccia-veleno-oro'
+  ];
+
+  html = html.replace(/const currentPublicCatalogIds = new Set\((\[[^;]*?\])\);/g, (full, arrayText) => {
+    const missing = velenoIds.filter(id => !arrayText.includes(id));
+    if (!missing.length) return full;
+    const trimmed = arrayText.trim().replace(/\]$/, '');
+    const separator = trimmed.endsWith('[') ? '' : ',';
+    return `const currentPublicCatalogIds = new Set(${trimmed}${separator}${missing.map(id => JSON.stringify(id)).join(',')}]);`;
+  });
+
+  const requiredIds = [
+    ...velenoIds,
     'tesori-limoncello',
     'tesori-liquore-caffe',
     'tesori-castagne-rum'
@@ -78,9 +106,27 @@ try {
     if (!present) throw new Error(`Prodotto mancante dal catalogo finale: ${id}`);
   }
 
+  const allowedDefinitions = html.match(/const allowedCategoriesForShop = \[([^\]]*)\];/g) || [];
+  for (const definition of allowedDefinitions) {
+    for (const category of mandatoryCategories) {
+      if (!definition.includes(`'${category}'`) && !definition.includes(`\"${category}\"`)) {
+        throw new Error(`Categoria ${category} assente da una definizione finale allowedCategoriesForShop`);
+      }
+    }
+  }
+
+  // Guardia contro il bug che ha nascosto le card Veleno: nessuna regola globale puo'
+  // nascondere tutte le card di una category-grid. Il backup home deve essere scoped per ID.
+  if (html.includes('.category-grid > .card {\n  display: none !important;')) {
+    throw new Error('CSS globale pericoloso sulle card categoria/prodotto rilevato');
+  }
+  if (!html.includes('#legacy-category-grid-backup > .card')) {
+    throw new Error('CSS backup home non correttamente scoped');
+  }
+
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Linee Veleno d’Api, Integratori, Cosmesi/Cera e I Tesori di Francesco abilitate e verificate.');
+  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, 6 card Veleno preservate, backup home isolato.');
 } catch (error) {
-  console.error('[Miele Artigianale] Errore visibilità finale linee:', error);
+  console.error('[Miele Artigianale] Errore controllo finale shop:', error);
   process.exitCode = 1;
 }
