@@ -4,12 +4,17 @@ const path = require('path');
 try {
   const indexPath = path.join(__dirname, 'index.html');
   const imageDir = path.join(__dirname, 'images');
-  const imagePath = path.join(imageDir, 'candela-alveare-brochure.webp');
-  const b64Path = path.join(__dirname, 'candela-alveare-brochure.webp.b64');
+  const imagePath = path.join(imageDir, 'candela-alveare-brochure.jpg');
+  const b64Path = path.join(imageDir, 'candela-alveare-brochure.b64');
 
   if (!fs.existsSync(b64Path)) throw new Error('Asset base64 candela mancante');
   fs.mkdirSync(imageDir, { recursive: true });
-  fs.writeFileSync(imagePath, Buffer.from(fs.readFileSync(b64Path, 'utf8').trim(), 'base64'));
+
+  const imageBuffer = Buffer.from(fs.readFileSync(b64Path, 'utf8').trim(), 'base64');
+  if (imageBuffer.length < 1000 || imageBuffer[0] !== 0xFF || imageBuffer[1] !== 0xD8) {
+    throw new Error('Asset candela decodificato non e un JPEG valido');
+  }
+  fs.writeFileSync(imagePath, imageBuffer);
 
   let html = fs.readFileSync(indexPath, 'utf8');
   const id = 'cosmesi-candela-alveare-cera-api';
@@ -41,13 +46,16 @@ try {
 
   let obj = html.slice(start, end);
   const before = obj;
-  obj = obj.replace(/image\s*:\s*(['"])[^'"]*\1/, "image: '/images/candela-alveare-brochure.webp'");
+  obj = obj.replace(/image\s*:\s*(['"])[^'"]*\1/, "image: '/images/candela-alveare-brochure.jpg'");
   if (obj === before) throw new Error('Campo image candela non trovato');
 
   html = html.slice(0, start) + obj + html.slice(end);
-  fs.writeFileSync(indexPath, html, 'utf8');
+  if (!html.includes("/images/candela-alveare-brochure.jpg")) {
+    throw new Error('Percorso JPEG candela non inserito');
+  }
 
-  console.log('[Miele Artigianale] Candela Alveare Grande: foto realistica della brochure applicata.');
+  fs.writeFileSync(indexPath, html, 'utf8');
+  console.log('[Miele Artigianale] Candela Alveare Grande: JPEG reale della brochure applicato.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore fix immagine candela:', error);
   process.exitCode = 1;
