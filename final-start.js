@@ -130,3 +130,5 @@ try {
   console.error('[Miele Artigianale] Errore controllo finale shop:', error);
   process.exitCode = 1;
 }
+
+// Guard finale intenzionalmente unico: eventuali future modifiche alla home non devono alterare le griglie prodotto.
