@@ -11,8 +11,11 @@ try {
   fs.mkdirSync(imageDir, { recursive: true });
 
   const imageBuffer = Buffer.from(fs.readFileSync(b64Path, 'utf8').trim(), 'base64');
-  if (imageBuffer.length < 1000 || imageBuffer[0] !== 0xFF || imageBuffer[1] !== 0xD8) {
-    throw new Error('Asset candela decodificato non e un JPEG valido');
+  const isJpeg = imageBuffer.length >= 15000 &&
+    imageBuffer[0] === 0xFF && imageBuffer[1] === 0xD8 &&
+    imageBuffer[imageBuffer.length - 2] === 0xFF && imageBuffer[imageBuffer.length - 1] === 0xD9;
+  if (!isJpeg) {
+    throw new Error(`Asset candela non e un JPEG completo: ${imageBuffer.length} byte`);
   }
   fs.writeFileSync(imagePath, imageBuffer);
 
@@ -55,7 +58,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Candela Alveare Grande: JPEG reale della brochure applicato.');
+  console.log(`[Miele Artigianale] Candela Alveare Grande: JPEG brochure valido (${imageBuffer.length} byte) applicato.`);
 } catch (error) {
   console.error('[Miele Artigianale] Errore fix immagine candela:', error);
   process.exitCode = 1;
