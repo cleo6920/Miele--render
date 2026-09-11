@@ -35,6 +35,10 @@ require('./linea-tesori-francesco-prestart.js');
 // con composizioni e totali del PDF commerciale e una sola spedizione per il tris.
 require('./tris-offerte-prestart.js');
 
+// Fix finale regressioni shop: ripristina la foto dell'ovale Busatello e rende
+// realmente pubbliche le 6 card della Linea Benessere Veleno d'Api.
+require('./shop-regression-fix-prestart.js');
+
 // Correzione isolata: usa per la Propoli 30% Spray la foto corretta della brochure.
 require('./propoli-spray-image-prestart.js');
 
@@ -46,12 +50,12 @@ try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
 
-  const oldAllowed = "const allowedCategoriesForShop = ['busatello','prelibati','tesori','leccornie','terapia','cosmesi', 'alveoterapia'];";
-  const newAllowed = "const allowedCategoriesForShop = ['busatello','prelibati','tesori','leccornie','terapia','cosmesi', 'alveoterapia', 'veleno-api'];";
-
-  if (html.includes(oldAllowed)) {
-    html = html.replaceAll(oldAllowed, newAllowed);
-  }
+  // Mantiene veleno-api anche se le altre linee hanno già esteso l'elenco categorie.
+  html = html.replace(/const allowedCategoriesForShop = \[([^\]]*)\];/g, (full, inside) => {
+    if (/['\"]veleno-api['\"]/.test(inside)) return full;
+    const cleaned = inside.trim().replace(/,\s*$/, '');
+    return `const allowedCategoriesForShop = [${cleaned}${cleaned ? ', ' : ''}'veleno-api'];`;
+  });
 
   if (!html.includes("'veleno-api'") || !html.includes("'integratori'") || !html.includes("'cosmesi-cera'") || !html.includes("'tesori-francesco'")) {
     throw new Error("Categorie veleno-api/integratori/cosmesi-cera/tesori-francesco non presenti tra le categorie pubbliche dello shop");
@@ -72,6 +76,11 @@ try {
   for (const id of requiredIds) {
     const present = html.includes(`\"id\": \"${id}\"`) || html.includes(`id: \"${id}\"`) || html.includes(`id: '${id}'`);
     if (!present) throw new Error(`Prodotto mancante dal catalogo finale: ${id}`);
+  }
+
+  const allowedDefinitions = html.match(/const allowedCategoriesForShop = \[([^\]]*)\];/g) || [];
+  if (!allowedDefinitions.length || allowedDefinitions.some(def => !def.includes("'veleno-api'"))) {
+    throw new Error('veleno-api non abilitata in tutti gli elenchi categorie finali');
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
