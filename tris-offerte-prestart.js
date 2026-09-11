@@ -5,136 +5,202 @@ try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
 
-  // Fonte autoritativa: PDF "OFFERTE TRIS - PRODOTTI DELLA FABBRICA DELLE API".
-  // Ogni referenza vendibile ha una proposta dedicata composta da tre prodotti.
-  // L'offerta non applica sconti ai prodotti: il vantaggio commerciale e' sfruttare
-  // un'unica spedizione per tre articoli dello stesso ordine.
+  // OFFERTA TRIS - implementazione isolata.
+  // IMPORTANTE: non modifica prodotti, packs, immagini, prezzi o logica di spedizione.
+  // Il pulsante del tris aggiunge al carrello tre prodotti REALI gia' presenti nello shop.
+  // In questo modo le card restano identiche a prima e la spedizione viene calcolata
+  // naturalmente come ordine di 3 articoli (attualmente 10 euro fuori consegna locale).
   const trisOffers = {
-    'millefiori': { price: 25.70, items: ['Millefiori €4,90', 'Castagne al rum €5,90', 'Bee Energy €14,90'] },
-    'melone': { price: 25.70, items: ['Melone €4,90', 'Propol Active €10,90', 'Shampoo €9,90'] },
-    'fragola': { price: 25.70, items: ['Fragola €4,90', 'Propol Active €10,90', 'Crema Mani €9,90'] },
-    'pesca': { price: 25.70, items: ['Pesca €4,90', 'Bee Energy €14,90', 'Candela Alveare €5,90'] },
-    'arancia': { price: 29.70, items: ['Arancia €4,90', 'Bee Energy €14,90', 'Crema Mani €9,90'] },
-    'castagno': { price: 27.70, items: ['Castagno €6,90', 'Propol Active €10,90', 'Shampoo €9,90'] },
-    'acacia-zenzero-apinfiore': { price: 25.70, items: ['Acacia e Zenzero €7,90', 'Propoli spray €7,90', 'Crema Mani €9,90'] },
-    'miele-eucalipto-apinfiore': { price: 25.70, items: ['Eucalipto €6,90', 'Bee Energy €14,90', 'Saponetta Aloe €3,90'] },
-    'balsammiel': { price: 27.70, items: ['Balsamico Italiano €11,90', 'Propoli analcolica €5,90', 'Shampoo €9,90'] },
-    'acacia': { price: 27.70, items: ['Acacia 40 g €2,90', 'Bee Energy €14,90', 'Crema Mani €9,90'] },
-    'favo-integrale-bio': { price: 27.70, items: ['Acacia in Favo €11,90', 'Propoli analcolica €5,90', 'Shampoo €9,90'] },
-    'polline-italiano': { price: 26.70, items: ['Polline €10,90', 'Propoli alcolica contagocce €5,90', 'Crema Mani €9,90'] },
-    'orsetti-gommosi': { price: 28.70, items: ['Orsetti €3,90', 'Bee Energy €14,90', 'Crema Mani €9,90'] },
-    'pappa-reale-italiana-bio': { price: 26.70, items: ['Pappa Reale €6,90', 'Bee Energy €14,90', 'Burrocacao Miele/Pappa Reale €4,90'] },
-
-    'bee-energy-bio': { price: 27.70, items: ['Bee Energy €14,90', 'Castagno €6,90', 'Candela Alveare €5,90'] },
-    'propol-active-bio': { price: 26.70, items: ['Propol Active €10,90', 'Polline €10,90', 'Burrocacao Miele/Pappa Reale €4,90'] },
-    'propoli-30-spray-integratore': { price: 28.70, items: ['Propoli spray €7,90', 'Polline €10,90', 'Crema Mani €9,90'] },
-    'propoli-30-alcolica-integratore': { price: 27.70, items: ['Propoli alcolica contagocce €5,90', 'Balsamico Italiano €11,90', 'Shampoo €9,90'] },
-    'propoli-analcolica-integratore': { price: 26.70, items: ['Propoli analcolica €5,90', 'Polline €10,90', 'Shampoo €9,90'] },
-
-    'cosmesi-crema-mani': { price: 27.70, items: ['Crema Mani €9,90', 'Acacia in Favo €11,90', 'Propoli analcolica €5,90'] },
-    'cosmesi-burrocacao-propoli-aloe': { price: 27.70, items: ['Burrocacao Propoli + Aloe €4,90', 'Balsamico Italiano €11,90', 'Propol Active €10,90'] },
-    'cosmesi-burrocacao-miele-pappa-reale': { price: 27.70, items: ['Burrocacao Miele + Pappa Reale €4,90', 'Acacia in Favo €11,90', 'Propol Active €10,90'] },
-    'cosmesi-shampoo-multivitaminico': { price: 27.70, items: ['Shampoo €9,90', 'Acacia in Favo €11,90', 'Propoli alcolica contagocce €5,90'] },
-    'cosmesi-saponetta-frutti-bosco': { price: 25.70, items: ['Saponetta Frutti di Bosco €3,90', 'Polline €10,90', 'Propol Active €10,90'] },
-    'cosmesi-saponetta-lavanda': { price: 25.70, items: ['Saponetta Lavanda €3,90', 'Castagno €6,90', 'Bee Energy €14,90'] },
-    'cosmesi-saponetta-aloe-vera': { price: 26.70, items: ['Saponetta Aloe €3,90', 'Acacia in Favo €11,90', 'Propol Active €10,90'] },
-    'cosmesi-candela-alveare-cera-api': { price: 25.70, items: ['Candela Alveare €5,90', 'Balsamico Italiano €11,90', 'Propoli spray €7,90'] },
-
-    'tesori-limoncello': { price: 27.70, items: ['Limoncello €5,90', 'Acacia in Favo €11,90', 'Shampoo €9,90'] },
-    'tesori-liquore-caffe': { price: 27.70, items: ['Liquore al Caffè €5,90', 'Balsamico Italiano €11,90', 'Crema Mani €9,90'] },
-    'tesori-castagne-rum': { price: 25.70, items: ['Castagne al Rum €5,90', 'Balsamico Italiano €11,90', 'Propoli spray €7,90'] }
+    'millefiori': { total: 25.70, items: [
+      { productId:'millefiori', packId:'p1', label:'Millefiori €4,90' },
+      { productId:'tesori-castagne-rum', packId:'tf-rum-1', label:'Castagne al rum €5,90' },
+      { productId:'bee-energy-bio', packId:'be1', label:'Bee Energy €14,90' }
+    ]},
+    'melone': { total: 25.70, items: [
+      { productId:'melone', packId:'me1', label:'Melone €4,90' },
+      { productId:'propol-active-bio', packId:'pa1', label:'Propol Active €10,90' },
+      { productId:'cosmesi-shampoo-multivitaminico', packId:'shm1', label:'Shampoo €9,90' }
+    ]},
+    'fragola': { total: 25.70, items: [
+      { productId:'fragola', packId:'fr1', label:'Fragola €4,90' },
+      { productId:'propol-active-bio', packId:'pa1', label:'Propol Active €10,90' },
+      { productId:'cosmesi-crema-mani', packId:'cm1', label:'Crema Mani €9,90' }
+    ]},
+    'pesca': { total: 25.70, items: [
+      { productId:'pesca', packId:'pe1', label:'Pesca €4,90' },
+      { productId:'bee-energy-bio', packId:'be1', label:'Bee Energy €14,90' },
+      { productId:'cosmesi-candela-alveare-cera-api', packId:'ca1', label:'Candela Alveare €5,90' }
+    ]},
+    'arancia': { total: 29.70, items: [
+      { productId:'arancia', packId:'ar1', label:'Arancia €4,90' },
+      { productId:'bee-energy-bio', packId:'be1', label:'Bee Energy €14,90' },
+      { productId:'cosmesi-crema-mani', packId:'cm1', label:'Crema Mani €9,90' }
+    ]},
+    'castagno': { total: 27.70, items: [
+      { productId:'castagno', packId:'c1', label:'Castagno €6,90' },
+      { productId:'propol-active-bio', packId:'pa1', label:'Propol Active €10,90' },
+      { productId:'cosmesi-shampoo-multivitaminico', packId:'shm1', label:'Shampoo €9,90' }
+    ]},
+    'acacia-zenzero-apinfiore': { total: 25.70, items: [
+      { productId:'acacia-zenzero-apinfiore', packId:'az1', label:'Acacia e Zenzero €7,90' },
+      { productId:'propoli-30-spray-integratore', packId:'ps30', label:'Propoli spray €7,90' },
+      { productId:'cosmesi-crema-mani', packId:'cm1', label:'Crema Mani €9,90' }
+    ]},
+    'miele-eucalipto-apinfiore': { total: 25.70, items: [
+      { productId:'miele-eucalipto-apinfiore', packId:'euca1', label:'Eucalipto €6,90' },
+      { productId:'bee-energy-bio', packId:'be1', label:'Bee Energy €14,90' },
+      { productId:'cosmesi-saponetta-aloe-vera', packId:'sav1', label:'Saponetta Aloe €3,90' }
+    ]},
+    'balsammiel': { total: 27.70, items: [
+      { productId:'balsammiel', packId:'ba1', label:'Balsamico Italiano €11,90' },
+      { productId:'propoli-analcolica-integratore', packId:'pan1', label:'Propoli analcolica €5,90' },
+      { productId:'cosmesi-shampoo-multivitaminico', packId:'shm1', label:'Shampoo €9,90' }
+    ]},
+    'acacia': { total: 27.70, items: [
+      { productId:'acacia', packId:'a40', label:'Acacia 40 g €2,90' },
+      { productId:'bee-energy-bio', packId:'be1', label:'Bee Energy €14,90' },
+      { productId:'cosmesi-crema-mani', packId:'cm1', label:'Crema Mani €9,90' }
+    ]},
+    'favo-integrale-bio': { total: 27.70, items: [
+      { productId:'favo-integrale-bio', packId:'favo200', label:'Acacia in Favo €11,90' },
+      { productId:'propoli-analcolica-integratore', packId:'pan1', label:'Propoli analcolica €5,90' },
+      { productId:'cosmesi-shampoo-multivitaminico', packId:'shm1', label:'Shampoo €9,90' }
+    ]},
+    'polline-italiano': { total: 26.70, items: [
+      { productId:'polline-italiano', packId:'pol1', label:'Polline €10,90' },
+      { productId:'propoli-30-alcolica-integratore', packId:'pal30', label:'Propoli alcolica contagocce €5,90' },
+      { productId:'cosmesi-crema-mani', packId:'cm1', label:'Crema Mani €9,90' }
+    ]},
+    'orsetti-gommosi': { total: 28.70, items: [
+      { productId:'orsetti-gommosi', packId:'ors-gom-1', label:'Orsetti €3,90' },
+      { productId:'bee-energy-bio', packId:'be1', label:'Bee Energy €14,90' },
+      { productId:'cosmesi-crema-mani', packId:'cm1', label:'Crema Mani €9,90' }
+    ]},
+    'pappa-reale-italiana-bio': { total: 26.70, items: [
+      { productId:'pappa-reale-italiana-bio', packId:'pr1', label:'Pappa Reale €6,90' },
+      { productId:'bee-energy-bio', packId:'be1', label:'Bee Energy €14,90' },
+      { productId:'cosmesi-burrocacao-miele-pappa-reale', packId:'bmp1', label:'Burrocacao Miele/Pappa Reale €4,90' }
+    ]},
+    'bee-energy-bio': { total: 27.70, items: [
+      { productId:'bee-energy-bio', packId:'be1', label:'Bee Energy €14,90' },
+      { productId:'castagno', packId:'c1', label:'Castagno €6,90' },
+      { productId:'cosmesi-candela-alveare-cera-api', packId:'ca1', label:'Candela Alveare €5,90' }
+    ]},
+    'propol-active-bio': { total: 26.70, items: [
+      { productId:'propol-active-bio', packId:'pa1', label:'Propol Active €10,90' },
+      { productId:'polline-italiano', packId:'pol1', label:'Polline €10,90' },
+      { productId:'cosmesi-burrocacao-miele-pappa-reale', packId:'bmp1', label:'Burrocacao Miele/Pappa Reale €4,90' }
+    ]},
+    'propoli-30-spray-integratore': { total: 28.70, items: [
+      { productId:'propoli-30-spray-integratore', packId:'ps30', label:'Propoli spray €7,90' },
+      { productId:'polline-italiano', packId:'pol1', label:'Polline €10,90' },
+      { productId:'cosmesi-crema-mani', packId:'cm1', label:'Crema Mani €9,90' }
+    ]},
+    'propoli-30-alcolica-integratore': { total: 27.70, items: [
+      { productId:'propoli-30-alcolica-integratore', packId:'pal30', label:'Propoli alcolica contagocce €5,90' },
+      { productId:'balsammiel', packId:'ba1', label:'Balsamico Italiano €11,90' },
+      { productId:'cosmesi-shampoo-multivitaminico', packId:'shm1', label:'Shampoo €9,90' }
+    ]},
+    'propoli-analcolica-integratore': { total: 26.70, items: [
+      { productId:'propoli-analcolica-integratore', packId:'pan1', label:'Propoli analcolica €5,90' },
+      { productId:'polline-italiano', packId:'pol1', label:'Polline €10,90' },
+      { productId:'cosmesi-shampoo-multivitaminico', packId:'shm1', label:'Shampoo €9,90' }
+    ]},
+    'cosmesi-crema-mani': { total: 27.70, items: [
+      { productId:'cosmesi-crema-mani', packId:'cm1', label:'Crema Mani €9,90' },
+      { productId:'favo-integrale-bio', packId:'favo200', label:'Acacia in Favo €11,90' },
+      { productId:'propoli-analcolica-integratore', packId:'pan1', label:'Propoli analcolica €5,90' }
+    ]},
+    'cosmesi-burrocacao-propoli-aloe': { total: 27.70, items: [
+      { productId:'cosmesi-burrocacao-propoli-aloe', packId:'bpa1', label:'Burrocacao Propoli + Aloe €4,90' },
+      { productId:'balsammiel', packId:'ba1', label:'Balsamico Italiano €11,90' },
+      { productId:'propol-active-bio', packId:'pa1', label:'Propol Active €10,90' }
+    ]},
+    'cosmesi-burrocacao-miele-pappa-reale': { total: 27.70, items: [
+      { productId:'cosmesi-burrocacao-miele-pappa-reale', packId:'bmp1', label:'Burrocacao Miele + Pappa Reale €4,90' },
+      { productId:'favo-integrale-bio', packId:'favo200', label:'Acacia in Favo €11,90' },
+      { productId:'propol-active-bio', packId:'pa1', label:'Propol Active €10,90' }
+    ]},
+    'cosmesi-shampoo-multivitaminico': { total: 27.70, items: [
+      { productId:'cosmesi-shampoo-multivitaminico', packId:'shm1', label:'Shampoo €9,90' },
+      { productId:'favo-integrale-bio', packId:'favo200', label:'Acacia in Favo €11,90' },
+      { productId:'propoli-30-alcolica-integratore', packId:'pal30', label:'Propoli alcolica contagocce €5,90' }
+    ]},
+    'cosmesi-saponetta-frutti-bosco': { total: 25.70, items: [
+      { productId:'cosmesi-saponetta-frutti-bosco', packId:'sfb1', label:'Saponetta Frutti di Bosco €3,90' },
+      { productId:'polline-italiano', packId:'pol1', label:'Polline €10,90' },
+      { productId:'propol-active-bio', packId:'pa1', label:'Propol Active €10,90' }
+    ]},
+    'cosmesi-saponetta-lavanda': { total: 25.70, items: [
+      { productId:'cosmesi-saponetta-lavanda', packId:'sl1', label:'Saponetta Lavanda €3,90' },
+      { productId:'castagno', packId:'c1', label:'Castagno €6,90' },
+      { productId:'bee-energy-bio', packId:'be1', label:'Bee Energy €14,90' }
+    ]},
+    'cosmesi-saponetta-aloe-vera': { total: 26.70, items: [
+      { productId:'cosmesi-saponetta-aloe-vera', packId:'sav1', label:'Saponetta Aloe €3,90' },
+      { productId:'favo-integrale-bio', packId:'favo200', label:'Acacia in Favo €11,90' },
+      { productId:'propol-active-bio', packId:'pa1', label:'Propol Active €10,90' }
+    ]},
+    'cosmesi-candela-alveare-cera-api': { total: 25.70, items: [
+      { productId:'cosmesi-candela-alveare-cera-api', packId:'ca1', label:'Candela Alveare €5,90' },
+      { productId:'balsammiel', packId:'ba1', label:'Balsamico Italiano €11,90' },
+      { productId:'propoli-30-spray-integratore', packId:'ps30', label:'Propoli spray €7,90' }
+    ]},
+    'tesori-limoncello': { total: 27.70, items: [
+      { productId:'tesori-limoncello', packId:'tf-lim-1', label:'Limoncello €5,90' },
+      { productId:'favo-integrale-bio', packId:'favo200', label:'Acacia in Favo €11,90' },
+      { productId:'cosmesi-shampoo-multivitaminico', packId:'shm1', label:'Shampoo €9,90' }
+    ]},
+    'tesori-liquore-caffe': { total: 27.70, items: [
+      { productId:'tesori-liquore-caffe', packId:'tf-caf-1', label:'Liquore al Caffè €5,90' },
+      { productId:'balsammiel', packId:'ba1', label:'Balsamico Italiano €11,90' },
+      { productId:'cosmesi-crema-mani', packId:'cm1', label:'Crema Mani €9,90' }
+    ]},
+    'tesori-castagne-rum': { total: 25.70, items: [
+      { productId:'tesori-castagne-rum', packId:'tf-rum-1', label:'Castagne al Rum €5,90' },
+      { productId:'balsammiel', packId:'ba1', label:'Balsamico Italiano €11,90' },
+      { productId:'propoli-30-spray-integratore', packId:'ps30', label:'Propoli spray €7,90' }
+    ]}
   };
 
-  if (Object.keys(trisOffers).length !== 30) {
-    throw new Error(`Numero offerte tris non valido: ${Object.keys(trisOffers).length}`);
+  if (Object.keys(trisOffers).length !== 30) throw new Error('Le offerte tris devono essere 30');
+
+  // Costante UI inserita nel medesimo scope React, senza toccare l'array products.
+  if (!html.includes('const SHOP_TRIS_OFFERS =')) {
+    const marker = '        // Componente per visualizzare una singola carta prodotto (solo nome e immagine)';
+    const pos = html.indexOf(marker);
+    if (pos === -1) throw new Error('Punto inserimento costante tris non trovato');
+    const js = `        const SHOP_TRIS_OFFERS = ${JSON.stringify(trisOffers)};\n\n`;
+    html = html.slice(0, pos) + js + html.slice(pos);
   }
 
-  const brochureTrisOffers = Object.fromEntries(
-    Object.entries(trisOffers).map(([productId, offer]) => [productId, {
-      id: `tris-${productId}`,
-      label: 'OFFERTA TRIS',
-      marketingLabel: '3 prodotti, un’unica spedizione',
-      trisSummary: offer.items.join(' + '),
-      jars: 1,
-      shippingUnits: 3,
-      stockUnits: 1,
-      price: offer.price,
-      isTris: true
-    }])
-  );
-
-  // Applica i tris DOPO tutti gli override brochure gia' esistenti, cosi' nessuna linea
-  // puo' cancellare la seconda scelta di acquisto.
-  if (!html.includes('const brochureTrisOffers =')) {
-    const filteredRegex = /const filtered = brochureReadyProducts\.filter\(p => allowedCategoriesForShop\.includes\(p\.category\)\);/;
-    if (!filteredRegex.test(html)) {
-      throw new Error('Punto filtro catalogo brochureReadyProducts non trovato');
-    }
-
-    const injection = `const brochureTrisOffers = ${JSON.stringify(brochureTrisOffers)};\n                        const trisReadyProducts = brochureReadyProducts.map(p => {\n                            const trisOffer = brochureTrisOffers[p.id];\n                            if (!trisOffer) return p;\n                            const normalPacks = Array.isArray(p.packs) ? p.packs.filter(pack => !pack.isTris) : [];\n                            return { ...p, packs: [...normalPacks, trisOffer] };\n                        });\n                        const filtered = trisReadyProducts.filter(p => allowedCategoriesForShop.includes(p.category));`;
-
-    html = html.replace(filteredRegex, injection);
-  }
-
-  // Per il tris le 3 unita' servono alla logica di spedizione, mentre lo stock della
-  // referenza principale deve scalare come una sola confezione del pack.
-  html = html.replaceAll(
-    'const totalJarsRequested = quantity * selectedPack.jars;',
-    'const totalJarsRequested = quantity * (selectedPack.stockUnits || selectedPack.jars);'
-  );
-  html = html.replaceAll(
-    'jarsInCartAlreadyEquivalent = existingCartItem.quantity * existingPack.jars;',
-    'jarsInCartAlreadyEquivalent = existingCartItem.quantity * (existingPack.stockUnits || existingPack.jars);'
-  );
-  html = html.replaceAll(
-    'const totalJarsRequestedEquivalent = newQuantity * selectedPack.jars;',
-    'const totalJarsRequestedEquivalent = newQuantity * (selectedPack.stockUnits || selectedPack.jars);'
-  );
-
-  // La spedizione deve leggere 3 prodotti per ogni OFFERTA TRIS.
-  html = html.replaceAll(
-    'totalItemJars: item.quantity * pack.jars, currentStock: product.stock',
-    'totalItemJars: item.quantity * (pack.shippingUnits || pack.jars), currentStock: product.stock'
-  );
-
-  // Nel carrello/checkout il pack mantiene anche la composizione completa del tris,
-  // utile per preparare correttamente l'ordine.
-  html = html.replaceAll(
-    'quantity: item.quantity, productName: product.name, packLabel: pack.label,',
-    "quantity: item.quantity, productName: product.name, packLabel: pack.isTris ? `${pack.label} - ${pack.trisSummary}` : pack.label,"
-  );
-
-  // Badge compatto direttamente sulla card prodotto.
+  // Badge sulla card: solo visuale, nessun cambiamento a product.image o product.packs.
   const cardNameNeedle = '<h3 className="text-2xl font-bold text-amber-700">{product.name}</h3>';
   if (html.includes(cardNameNeedle) && !html.includes('OFFERTA TRIS DISPONIBILE')) {
-    html = html.replaceAll(
-      cardNameNeedle,
-      `${cardNameNeedle}\n                    {product.packs?.some(pack => pack.isTris) && (\n                        <div className="mt-3 rounded-full border border-amber-400 bg-amber-100 px-3 py-1.5 text-xs font-black tracking-wide text-amber-900">\n                            OFFERTA TRIS DISPONIBILE · 3 prodotti, un’unica spedizione\n                        </div>\n                    )}`
+    html = html.replaceAll(cardNameNeedle,
+      `${cardNameNeedle}\n                    {SHOP_TRIS_OFFERS[product.id] && (\n                        <div className="mt-3 rounded-full border border-amber-400 bg-amber-100 px-3 py-1.5 text-xs font-black tracking-wide text-amber-900">\n                            OFFERTA TRIS DISPONIBILE · 3 prodotti, un’unica spedizione\n                        </div>\n                    )}`
     );
   }
 
-  // Dentro la scheda dettaglio, sotto "OFFERTA TRIS", mostra esattamente i tre prodotti.
-  const packLabelNeedle = '<div className="font-semibold text-xl">{pack.label}</div>';
-  if (html.includes(packLabelNeedle) && !html.includes('{pack.trisSummary}')) {
-    html = html.replaceAll(
-      packLabelNeedle,
-      `${packLabelNeedle}\n                                                {pack.isTris && (\n                                                    <div className="mt-2">\n                                                        <div className="text-sm font-bold text-amber-800">3 prodotti, un’unica spedizione</div>\n                                                        <div className="mt-1 text-sm leading-snug text-stone-700">{pack.trisSummary}</div>\n                                                    </div>\n                                                )}`
-    );
+  // Box Offerta Tris nella scheda dettaglio. Il click aggiunge i tre prodotti reali,
+  // quindi carrello, stock, checkout e spedizione continuano a usare la logica esistente.
+  const addButtonBlock = `                                <button\n                                    onClick={() => onAddToCart(product.id, selectedPack.id, quantity)}\n                                    disabled={isAddToCartDisabled}\n                                    className={\`flex-grow rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-semibold px-6 py-3 shadow-md transition-all duration-300 button-press-effect pack-option \${isAddToCartDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg transform hover:-translate-y-0.5'}\`}\n                                >\n                                    {isAddToCartDisabled && !product.inStock ? \"Non Disponibile\" : isAddToCartDisabled ? \"Esaurito / Stock Insuff.\" : \"➕ Aggiungi al carrello\"}\n                                </button>\n                            </div>`;
+
+  if (html.includes(addButtonBlock) && !html.includes('Aggiungi il tris al carrello')) {
+    const trisBox = `${addButtonBlock}\n\n                            {SHOP_TRIS_OFFERS[product.id] && (\n                                <div className="rounded-2xl border-2 border-amber-400 bg-amber-50 p-4 shadow-md">\n                                    <div className="text-lg font-black text-amber-900">OFFERTA TRIS</div>\n                                    <div className="mt-1 text-sm font-bold text-amber-800">3 prodotti, un’unica spedizione</div>\n                                    <div className="mt-2 space-y-1 text-sm text-stone-700">\n                                        {SHOP_TRIS_OFFERS[product.id].items.map((item, idx) => (\n                                            <div key={item.productId + '-' + idx}>• {item.label}</div>\n                                        ))}\n                                    </div>\n                                    <div className="mt-3 flex items-center justify-between gap-3">\n                                        <div className="text-xl font-black text-amber-900">€ {fmt(SHOP_TRIS_OFFERS[product.id].total)}</div>\n                                        <button\n                                            type="button"\n                                            onClick={() => {\n                                                SHOP_TRIS_OFFERS[product.id].items.forEach(item => onAddToCart(item.productId, item.packId, 1));\n                                            }}\n                                            className="rounded-xl bg-amber-600 hover:bg-amber-700 px-4 py-3 text-sm font-black text-white shadow-md button-press-effect"\n                                        >\n                                            Aggiungi il tris al carrello\n                                        </button>\n                                    </div>\n                                </div>\n                            )}`;
+    html = html.replaceAll(addButtonBlock, trisBox);
   }
 
-  // Verifiche circoscritte: 30 offerte presenti, badge UI presente, spedizione pack=3.
-  for (const productId of Object.keys(trisOffers)) {
-    if (!html.includes(`\"${productId}\":{\"id\":\"tris-${productId}\"`) &&
-        !html.includes(`\"${productId}\": {\"id\":\"tris-${productId}\"`)) {
-      // JSON.stringify non inserisce spazi: questo controllo intercetta regressioni nel mapping.
-      if (!html.includes(`tris-${productId}`)) throw new Error(`Offerta tris mancante per ${productId}`);
-    }
+  if (!html.includes('SHOP_TRIS_OFFERS[product.id]')) throw new Error('UI tris non collegata');
+  if (!html.includes('Aggiungi il tris al carrello')) throw new Error('Pulsante tris non inserito');
+
+  // Guardia di sicurezza: questa patch NON deve mai modificare le immagini o i packs.
+  if (html.includes('trisReadyProducts') || html.includes('shippingUnits') || html.includes('stockUnits')) {
+    throw new Error('Rilevata vecchia implementazione invasiva del tris');
   }
-  if (!html.includes('OFFERTA TRIS DISPONIBILE')) throw new Error('Badge Offerta Tris non inserito nelle card');
-  if (!html.includes('pack.shippingUnits || pack.jars')) throw new Error('Logica spedizione Offerta Tris non collegata');
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] OFFERTE TRIS pronte: 30 referenze, scelta singola + tris, composizioni PDF e spedizione unica.');
+  console.log('[Miele Artigianale] OFFERTE TRIS isolate: card/immagini/packs originali invariati; tris aggiunge 3 prodotti reali al carrello.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore OFFERTE TRIS:', error);
   process.exitCode = 1;
