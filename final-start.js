@@ -27,8 +27,7 @@ require('./linea-cosmesi-cera-prestart.js');
 // Applica la foto di presentazione nitida approvata senza modificare prodotti o prezzi.
 require('./linea-cosmesi-hero-image-prestart.js');
 
-// Candela Alveare Grande: sostituisce la vecchia immagine artefatta con il ritaglio
-// realistico estratto direttamente dalla brochure ufficiale.
+// Candela Alveare Grande: usa la foto reale della brochure ripulita e migliorata 4x.
 require('./candela-alveare-image-prestart.js');
 
 // Linea I Tesori di Francesco: aggiunge la nuova sezione e le 3 card acquistabili
@@ -124,12 +123,15 @@ try {
   if (!html.includes('object-contain rounded-xl mb-4 shadow-md bg-white p-2')) {
     throw new Error('Fit renderer ProductCard non presente nel sorgente finale');
   }
-  if (!html.includes('/images/candela-alveare-brochure.jpg')) {
-    throw new Error('Foto JPEG realistica della Candela Alveare Grande non presente nel catalogo finale');
+  if (!html.includes("'cosmesi-candela-alveare-cera-api'")) {
+    throw new Error('Candela non inclusa nel fit contain delle card');
+  }
+  if (!html.includes('https://gcdn.picsart.com/cloud-storage/847c91a5-74e2-4658-acde-a86ba813dfee.png')) {
+    throw new Error('Foto migliorata della Candela Alveare Grande non presente nel catalogo finale');
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, 6 card Veleno preservate, backup home isolato, fit ProductCard attivo e candela JPEG aggiornata.');
+  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, 6 card Veleno preservate, backup home isolato, fit ProductCard attivo e candela migliorata 4x.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore controllo finale shop:', error);
   process.exitCode = 1;
