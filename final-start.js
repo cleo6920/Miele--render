@@ -35,6 +35,10 @@ require('./linea-tesori-francesco-prestart.js');
 // con composizioni e totali del PDF commerciale e una sola spedizione per il tris.
 require('./tris-offerte-prestart.js');
 
+// Le vecchie card categoria restano nel codice come backup; nella griglia pubblica
+// rimane soltanto La Bacheca della Galena delle Api.
+require('./legacy-category-backup-prestart.js');
+
 // Correzione isolata: usa per la Propoli 30% Spray la foto corretta della brochure.
 require('./propoli-spray-image-prestart.js');
 
