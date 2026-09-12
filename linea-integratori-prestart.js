@@ -51,7 +51,7 @@ try {
     {
       id:'bee-energy-bio',
       name:'Bee Energy BIO',
-      description:'Integratore alimentare biologico con miele italiano, pappa reale, polline, propoli, mirtillo, limone e rosmarino. Indicato nei periodi di maggiore affaticamento fisico e mentale.',
+      description:'Integratore alimentare biologico con miele italiano, pappa reale, polline, propoli, mirtillo, limone e rosmarino, proposto in pratici flaconcini.',
       image:'images/bee-energy.png',
       packs:[{id:'be1',label:'1 confezione - 12 flaconcini da 10 ml',jars:1,price:14.90}],
       order:1, category:'integratori', inStock:true, stock:100
@@ -59,7 +59,7 @@ try {
     {
       id:'propol-active-bio',
       name:'Propol Active BIO',
-      description:'Integratore in compresse masticabili a base di propoli italiana biologica al 20%. Ogni compressa da 500 mg contiene 100 mg di propoli. Pensato soprattutto per i cambi di stagione e per il benessere del cavo orale.',
+      description:'Integratore in compresse masticabili a base di propoli italiana biologica al 20%. Ogni compressa da 500 mg contiene 100 mg di propoli.',
       image:'images/propol-active.png',
       packs:[{id:'pa1',label:'1 confezione - 30 compresse masticabili',jars:1,price:10.90}],
       order:2, category:'integratori', inStock:true, stock:100
@@ -67,7 +67,7 @@ try {
     {
       id:'propoli-30-spray-integratore',
       name:'Soluzione Propoli 30% Spray',
-      description:'Preparazione a base di propoli al 30% in soluzione alcolica, con pratico erogatore spray reclinabile. Pensata per il benessere del cavo orale e della gola, con applicazione semplice e mirata.',
+      description:'Preparazione a base di propoli al 30% in soluzione alcolica, con pratico erogatore spray reclinabile per un’applicazione semplice e pratica.',
       image:'images/spray.png',
       packs:[{id:'ps30',label:'1 flacone spray - 20 ml',jars:1,price:7.90}],
       order:3, category:'integratori', inStock:true, stock:100
@@ -165,7 +165,7 @@ try {
                                 <img src="https://gcdn.picsart.com/editing-temp/e721a4c8-1129-4ae9-b0d6-9b9fac485388.jpeg" alt="Presentazione della Linea Integratori" className="block w-full h-[170px] sm:h-full min-h-[170px] object-cover object-center" />
                               </div>
                               <div className="min-w-0 flex flex-col justify-center">
-                                <p className="text-sm leading-snug font-semibold text-stone-100">Integratori e preparazioni a base di prodotti dell’alveare, selezionati per accompagnare il benessere quotidiano.</p>
+                                <p className="text-sm leading-snug font-semibold text-stone-100">Integratori e preparazioni a base di prodotti dell’alveare, selezionati per un uso semplice e quotidiano.</p>
                                 <button type="button" onClick={() => { setSelectedProductId(null); setSelectedCategory('integratori'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="mt-3 inline-flex w-fit items-center justify-center rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs sm:text-sm font-black text-stone-950 shadow-sm transition-colors" aria-label="Scopri la gamma della Linea Integratori">Scopri la gamma</button>
                               </div>
                             </div>
