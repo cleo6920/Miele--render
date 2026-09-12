@@ -85,7 +85,7 @@ try {
     },
     balsammiel: {
       name: 'Balsamico Italiano - 200 g',
-      description: 'Preparazione alimentare a base di miele di Eucalipto, Pino Mugo e Menta, dal sapore intenso, fresco e caratteristico.',
+      description: 'Specialità alimentare dal gusto fresco e intensamente balsamico, preparata con miele di eucalipto e soluzioni idroalcoliche di pino mugo, eucalipto e menta, con eucaliptolo e mentolo. È pensata soprattutto per chi apprezza sapori aromatici e freschi, particolarmente gradevoli nella stagione fredda. Può essere consumata da sola oppure sciolta in un infuso o in una tisana, come indicato dal produttore Apinfiore.',
       image: '/images/balsam-miel-final.jpg',
       packs: [{ id: 'ba1', label: '1 vasetto (200 g)', jars: 1, price: 11.90 }], order: 9
     },
