@@ -101,8 +101,8 @@ try {
     },
     {
       id: 'cosmesi-shampoo-multivitaminico',
-      name: 'Shampoo Multivitaminico Stimolante',
-      description: 'Shampoo formulato con proteine del frumento, rosmarino e pappa reale, pensato per capelli danneggiati o tendenti alla caduta. Aiuta a nutrire e rinforzare la fibra capillare, lasciando i capelli più curati e vitali.',
+      name: 'Shampoo Multivitaminico',
+      description: 'Shampoo formulato con proteine del frumento, rosmarino e pappa reale, pensato per capelli fragili, stressati o spenti. Aiuta a nutrire e rinforzare la fibra capillare, lasciando i capelli più curati e vitali.',
       image: '/images/cosmesi-shampoo-multivitaminico.jpg',
       packs: [{ id: 'shm1', label: '1 flacone - 250 ml', jars: 1, price: 9.90 }],
       order: 6004, category, inStock: true, stock: 100
@@ -225,14 +225,14 @@ try {
     const cosmesiHome = `<article id="linea-cosmesi-cera-home" className="overflow-hidden rounded-xl border border-emerald-300/35 bg-[#121212] shadow-lg">
                             <div className="px-3 pt-2 pb-2">
                               <div className="text-[11px] font-black tracking-[0.12em] text-emerald-400 uppercase">Linea Cosmesi e Tesori in Cera d’Api</div>
-                              <h2 className="mt-0.5 text-lg sm:text-xl font-black leading-tight text-white">Cura quotidiana e creazioni in cera d’api</h2>
+                              <h2 className="mt-0.5 text-lg sm:text-xl font-black leading-tight text-white">Bellezza e trattamento quotidiano per il corpo e creazioni in cera d’api</h2>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-[210px_minmax(0,1fr)] gap-2.5 px-3 pb-3 items-stretch">
                               <div className="overflow-hidden rounded-lg border border-amber-200/40 bg-[#f4ecdf] shadow-inner">
                                 <img src="/images/linea-cosmesi-cera-home.jpg" alt="Presentazione della Linea Cosmesi e Tesori in Cera d’Api" className="block w-full h-[170px] sm:h-full min-h-[170px] object-cover object-center" />
                               </div>
                               <div className="min-w-0 flex flex-col justify-center">
-                                <p className="text-sm leading-snug font-semibold text-stone-100">Cosmesi con ingredienti dell’alveare, saponette per la cura quotidiana e creazioni artigianali in cera d’api.</p>
+                                <p className="text-sm leading-snug font-semibold text-stone-100">Cosmesi con ingredienti dell’alveare, saponette per la detersione quotidiana e creazioni artigianali in cera d’api.</p>
                                 <button type="button" onClick={() => { setSelectedProductId(null); setSelectedCategory('cosmesi-cera'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="mt-3 inline-flex w-fit items-center justify-center rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs sm:text-sm font-black text-stone-950 shadow-sm transition-colors" aria-label="Scopri la gamma della Linea Cosmesi e Tesori in Cera d’Api">Scopri la gamma</button>
                               </div>
                             </div>
