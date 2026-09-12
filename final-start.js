@@ -64,6 +64,44 @@ try {
   html = html.replaceAll('Cura quotidiana', 'Bellezza e trattamento quotidiano per il corpo');
   html = html.replaceAll('Routine quotidiana', 'Bellezza e trattamento quotidiano per il corpo');
   html = html.replaceAll('saponette per la cura quotidiana', 'saponette per la detersione quotidiana');
+  html = html.replaceAll('La terapia delle api', 'I prodotti delle api');
+
+  // Neutralizza in modo mirato la descrizione pubblica del diffusore per alveoterapia,
+  // senza modificare nome, prezzo, disponibilità o dati tecnici del prodotto.
+  function replaceDescriptionForProduct(source, id, newDescription) {
+    const markers = [`id: \"${id}\"`, `id:\"${id}\"`, `id: '${id}'`, `id:'${id}'`, `\"id\": \"${id}\"`, `\"id\":\"${id}\"`];
+    let p = -1;
+    for (const marker of markers) {
+      const q = source.indexOf(marker);
+      if (q !== -1 && (p === -1 || q < p)) p = q;
+    }
+    if (p < 0) return source;
+    const start = source.lastIndexOf('{', p);
+    if (start < 0) return source;
+    let depth = 0, quote = null, escaped = false, end = -1;
+    for (let i = start; i < source.length; i++) {
+      const ch = source[i];
+      if (quote) {
+        if (escaped) escaped = false;
+        else if (ch === '\\') escaped = true;
+        else if (ch === quote) quote = null;
+        continue;
+      }
+      if (ch === '"' || ch === "'" || ch === '`') { quote = ch; continue; }
+      if (ch === '{') depth++;
+      else if (ch === '}' && --depth === 0) { end = i + 1; break; }
+    }
+    if (end < 0) return source;
+    const block = source.slice(start, end);
+    const next = block.replace(/(["']?description["']?\s*:\s*)("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')/, `$1${JSON.stringify(newDescription)}`);
+    return source.slice(0, start) + next + source.slice(end);
+  }
+
+  html = replaceDescriptionForProduct(
+    html,
+    'propolterapy-professional',
+    'Diffusore professionale per alveoterapia con doppia modalità di utilizzo: diffusione nell’ambiente e utilizzo con maschera dedicata. Il sistema è dotato di ionizzatore e ventola con copertura fino a 60 m². In dotazione: maschera adulti, mascherina pediatrica e tubo di raccordo. Confezione iniziale con 5 capsule P+B incluse, a base di propoli italiana 95% e Boswellia Serrata 5%.'
+  );
 
   const mandatoryCategories = ['veleno-api', 'integratori', 'cosmesi-cera', 'tesori-francesco'];
 
@@ -138,7 +176,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, 6 card Veleno preservate, backup home isolato, fit ProductCard attivo e candela migliorata 4x.');
+  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, testi promozionali più neutri, 6 card Veleno preservate, backup home isolato, fit ProductCard attivo e candela migliorata 4x.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore controllo finale shop:', error);
   process.exitCode = 1;
