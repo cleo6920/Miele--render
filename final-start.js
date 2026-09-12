@@ -59,8 +59,11 @@ try {
   let html = fs.readFileSync(indexPath, 'utf8');
 
   // Linguaggio cosmetico più neutro: evita "cura" e "benessere" come intestazioni promozionali.
+  html = html.replaceAll('Cura quotidiana e creazioni in cera d’api', 'Bellezza e trattamento quotidiano per il corpo e creazioni in cera d’api');
+  html = html.replaceAll('Routine quotidiana e creazioni in cera d’api', 'Bellezza e trattamento quotidiano per il corpo e creazioni in cera d’api');
   html = html.replaceAll('Cura quotidiana', 'Bellezza e trattamento quotidiano per il corpo');
   html = html.replaceAll('Routine quotidiana', 'Bellezza e trattamento quotidiano per il corpo');
+  html = html.replaceAll('saponette per la cura quotidiana', 'saponette per la detersione quotidiana');
 
   const mandatoryCategories = ['veleno-api', 'integratori', 'cosmesi-cera', 'tesori-francesco'];
 
