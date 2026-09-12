@@ -58,6 +58,9 @@ try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
 
+  // Linguaggio cosmetico più neutro: evita "cura" come intestazione promozionale.
+  html = html.replaceAll('Cura quotidiana', 'Routine quotidiana');
+
   const mandatoryCategories = ['veleno-api', 'integratori', 'cosmesi-cera', 'tesori-francesco'];
 
   let allowedDefinitionCount = 0;
