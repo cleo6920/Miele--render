@@ -67,7 +67,7 @@ try {
     {
       id:'propoli-30-spray-integratore',
       name:'Soluzione Propoli 30% Spray',
-      description:'Preparazione a base di propoli al 30% in soluzione alcolica, con pratico erogatore spray reclinabile per un’applicazione semplice e pratica.',
+      description:'Estratto di propoli al 30% in soluzione alcolica con pratico erogatore spray reclinabile, pensato per un’applicazione semplice e mirata nel cavo orale. Ingredienti indicati da Apinfiore: propoli 30%, alcool 80% e acqua. Senza glutine. Modo d’uso del produttore: 5-6 nebulizzazioni, 2-3 volte al giorno o al bisogno; può essere applicato direttamente oppure assunto con un po’ di miele, zucchero o un alimento. Per l’elevato contenuto alcolico non è adatto ai bambini o a chi non può assumere alcool; in gravidanza o allattamento è indicato chiedere consiglio al medico.',
       image:'images/spray.png',
       packs:[{id:'ps30',label:'1 flacone spray - 20 ml',jars:1,price:7.90}],
       order:3, category:'integratori', inStock:true, stock:100
@@ -75,7 +75,7 @@ try {
     {
       id:'propoli-30-alcolica-integratore',
       name:'Soluzione Propoli 30% con Contagocce - Alcolica',
-      description:'Preparazione a base di propoli al 30% in soluzione alcolica. Il contagocce permette un dosaggio pratico e preciso, goccia a goccia.',
+      description:'Integratore alimentare per adulti a base di propoli al 30% in soluzione alcolica. Ingredienti indicati da Apinfiore: propoli 30%, alcool 80% e acqua. Senza glutine. Il contagocce permette un dosaggio preciso e versatile. Modo d’uso del produttore: 10-15 gocce, 2-3 volte al giorno o al bisogno, da assumere con miele, zucchero, pane o biscotto oppure direttamente. Per l’elevato contenuto alcolico non è adatto ai bambini o a chi non può assumere alcool; in gravidanza o allattamento è indicato chiedere consiglio al medico.',
       image:'https://gcdn.picsart.com/editing-temp/321c26f4-a7f5-46b9-9be1-2280480fae28.jpeg',
       packs:[{id:'pal30',label:'1 flacone con contagocce - 20 ml',jars:1,price:5.90}],
       order:4, category:'integratori', inStock:true, stock:100
@@ -83,7 +83,7 @@ try {
     {
       id:'propoli-analcolica-integratore',
       name:'Soluzione Propoli con Contagocce Analcolica',
-      description:'Preparazione liquida a base di propoli senza alcol. Il contagocce permette un dosaggio pratico e preciso, goccia a goccia.',
+      description:'Estratto di propoli al 30% in soluzione idroglicerica senza alcool. Ingredienti indicati da Apinfiore: propoli 30%, gliceroli, acqua e aromi naturali. Senza glutine. Il produttore la indica anche per bambini sopra i 3 anni. Modo d’uso: 10-20 gocce sciolte in un cucchiaio di miele o in una bevanda, 2 volte al giorno e preferibilmente lontano dai pasti. Non utilizzare nei bambini di età inferiore ai 3 anni.',
       image:'https://gcdn.picsart.com/editing-temp/d6ff7610-e304-4b5a-8aa9-135c41e5eeba.jpeg',
       packs:[{id:'pan1',label:'1 flacone con contagocce - 20 ml',jars:1,price:5.90}],
       order:5, category:'integratori', inStock:true, stock:100
