@@ -57,7 +57,7 @@ try {
     {
       id: 'tesori-limoncello',
       name: 'Limoncello “I Tesori di Francesco”',
-      description: 'Un liquore autentico che racchiude la freschezza e l’intensità del limone. Nasce da un’infusione accurata di scorze selezionate, lavorate per ottenere un gusto pieno, equilibrato e persistente.',
+      description: 'Limoncello della linea I Tesori di Francesco, dal profilo fresco e intensamente agrumato. Nasce da un’infusione di scorze di limone selezionate per ottenere un gusto pieno, equilibrato e persistente. È piacevole servito ben fresco a fine pasto oppure come piccolo liquore da degustazione. La bottiglia da 250 ml è adatta anche come idea regalo.',
       image: 'https://gcdn.picsart.com/editing-temp/f429f239-7de8-4c42-aa2f-04f65142268c.jpeg',
       packs: [{ id: 'tf-lim-1', label: '1 bottiglia - 250 ml', jars: 1, price: 5.90 }],
       order: 7001, category, inStock: true, stock: 100
@@ -65,7 +65,7 @@ try {
     {
       id: 'tesori-liquore-caffe',
       name: 'Liquore di Caffè “I Tesori di Francesco”',
-      description: 'Un liquore intenso e avvolgente, pensato per gli amanti del vero caffè. La selezione accurata del caffè crea un equilibrio piacevole tra aroma, dolcezza e carattere.',
+      description: 'Liquore al caffè della linea I Tesori di Francesco, dal gusto intenso e avvolgente. L’aroma del caffè si unisce alla dolcezza del liquore creando un profilo pieno e persistente. Si può servire fresco o a temperatura ambiente, da solo oppure in abbinamento a dessert. Formato da 250 ml, adatto anche come piccolo regalo gastronomico.',
       image: 'https://gcdn.picsart.com/editing-temp/96c84958-6021-4843-bac1-b7306310ca21.jpeg',
       packs: [{ id: 'tf-caf-1', label: '1 bottiglia - 250 ml', jars: 1, price: 5.90 }],
       order: 7002, category, inStock: true, stock: 100
@@ -73,7 +73,7 @@ try {
     {
       id: 'tesori-castagne-rum',
       name: 'Castagne al Rum “I Tesori di Francesco”',
-      description: 'Un’eccellenza dal gusto intenso e avvolgente, dove la dolcezza naturale delle castagne incontra il carattere deciso del rum.',
+      description: 'Castagne al rum della linea I Tesori di Francesco, una specialità dal gusto ricco in cui la dolcezza naturale delle castagne incontra le note aromatiche del rum. Sono pensate come prodotto da degustazione e si prestano bene a essere servite a fine pasto o insieme a dessert. Il formato compatto le rende adatte anche come idea regalo gastronomica.',
       image: 'https://gcdn.picsart.com/editing-temp/fff1598b-570b-4181-be5a-383b4912a569.jpeg',
       packs: [{ id: 'tf-rum-1', label: '1 confezione - 250 ml', jars: 1, price: 5.90 }],
       order: 7003, category, inStock: true, stock: 100
@@ -152,7 +152,7 @@ try {
   if (!html.includes("setSelectedCategory('tesori-francesco')")) throw new Error('Pulsante Scopri la gamma non collegato');
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Linea I Tesori di Francesco pronta: 3 card acquistabili, prezzo 5,90 e immagini brochure.');
+  console.log('[Miele Artigianale] Linea I Tesori di Francesco pronta: descrizioni complete e autoritative, prezzo 5,90 e immagini brochure.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore Linea I Tesori di Francesco:', error);
   process.exitCode = 1;
