@@ -38,10 +38,6 @@ require('./linea-tesori-francesco-prestart.js');
 // devono essere mostrate interamente, senza dipendere da CSS o URL immagine.
 require('./product-card-render-fit-prestart.js');
 
-// Offerte Tris: aggiunge alle 30 referenze vendibili la scelta singola oppure tris,
-// con composizioni e totali del PDF commerciale e una sola spedizione per il tris.
-require('./tris-offerte-prestart.js');
-
 // Le vecchie card categoria restano nel codice come backup; nella griglia pubblica
 // rimane soltanto La Bacheca della Galena delle Api. Il CSS e' limitato alla home.
 require('./legacy-category-backup-prestart.js');
