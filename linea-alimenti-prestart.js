@@ -56,6 +56,7 @@ try {
   // cosi restano stabili, nitide e senza dipendenze da URL esterni.
   const foodOverrides = {
     millefiori: {
+      description: 'Il Millefiori dell’Oasi del Busatello è un miele dal gusto dolce e armonico, ottenuto dalla varietà di fioriture spontanee presenti nell’oasi.',
       packs: [{ id: 'p1', label: '1 vasetto (250 g)', jars: 1, price: 4.90 }], order: 1
     },
     melone: {
