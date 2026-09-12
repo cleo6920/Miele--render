@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// Linea Benessere – Veleno d’Api.
+// Linea Cosmetica al Veleno d’Api.
 // Fonte autoritativa: report vetrina aggiornato fornito dall'utente.
 // Mantiene esattamente 6 referenze; APIS3 è intenzionalmente escluso.
 try {
@@ -214,10 +214,13 @@ try {
   const allVelenoIds = "['unguento-apis','apis1-crema-viso-veleno-api','apis2-siero-viso-veleno-api','apis4-crema-corpo-veleno-api-manuka','apis5-gommage-veleno-api-manuka','bagnodoccia-veleno-oro']";
   html = html.replaceAll("['unguento-apis','bagnodoccia-veleno-oro'].includes(p.id)", `${allVelenoIds}.includes(p.id)`);
 
+  // Titolo della vetrina: usa una dicitura cosmetica più precisa e prudente.
+  html = html.replaceAll('Linea Benessere Veleno d’Api', 'LINEA COSMETICA AL VELENO D’API');
+
   // Testo introduttivo aggiornato alla linea completa.
   html = html.replaceAll(
     'Una linea distintiva dedicata al veleno d’api. Qui trovi i prodotti della linea già presenti nel catalogo, con accesso diretto alle rispettive schede prodotto.',
-    'La LINEA BENESSERE – VELENO D’API comprende 6 prodotti esclusivi. Apri ogni scheda per consultare descrizione completa e prezzo della selezione aggiornata.'
+    'La LINEA COSMETICA AL VELENO D’API comprende 6 prodotti esclusivi. Apri ogni scheda per consultare descrizione completa e prezzo della selezione aggiornata.'
   );
 
   // Badge ESCLUSIVA ad alto impatto su ogni card della categoria, senza toccare le altre card.
@@ -228,8 +231,8 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Linea Benessere Veleno d’Api completa: 6 prodotti autoritativi, prezzi/report completi e badge ESCLUSIVA.');
+  console.log('[Miele Artigianale] Linea Cosmetica al Veleno d’Api completa: 6 prodotti autoritativi, prezzi/report completi e badge ESCLUSIVA.');
 } catch (error) {
-  console.error('[Miele Artigianale] Errore Linea Benessere Veleno d’Api:', error);
+  console.error('[Miele Artigianale] Errore Linea Cosmetica al Veleno d’Api:', error);
   throw error;
 }
