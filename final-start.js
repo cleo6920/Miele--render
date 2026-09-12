@@ -52,6 +52,9 @@ require('./propoli-spray-image-prestart.js');
 // Correzione isolata del formato: "20 ml" deve stare sotto a sinistra e separato dal prezzo.
 require('./propoli-spray-format-layout-prestart.js');
 
+// Arricchisce tutte le schede pubbliche che risultano ancora troppo sintetiche.
+require('./description-enrichment-prestart.js');
+
 // Controllo finale autoritativo: categorie e referenze essenziali devono restare pubbliche
 // indipendentemente dall'ordine in cui i prestart precedenti hanno esteso gli array.
 try {
@@ -182,7 +185,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, testi promozionali più neutri, 6 card Veleno preservate, backup home isolato, fit ProductCard attivo e candela migliorata 4x.');
+  console.log('[Miele Artigianale] Controllo finale PASS: categorie pubbliche stabili, testi promozionali più neutri, descrizioni prodotto arricchite, 6 card Veleno preservate, backup home isolato, fit ProductCard attivo e candela migliorata 4x.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore controllo finale shop:', error);
   process.exitCode = 1;
