@@ -30,8 +30,9 @@ try {
 // Nuova linea autonoma: I Tris dell’Alveare, con 30 offerte già definite.
 require('./linea-tris-alveare-prestart.js');
 
-// Slogan mostrato solo all'interno della pagina della linea I Tris dell’Alveare.
-require('./tris-slogan-prestart.js');
+// Aggiunge lo slogan direttamente nel box visibile I Tris dell’Alveare,
+// lasciando invariati foto, titolo, descrizione e pulsante già approvati.
+require('./tris-home-slogan-prestart.js');
 
 // Ultimo intervento: sistema SOLO la parte alta della home dopo tutte le altre patch.
 // Non modifica le viste delle linee né le schede prodotto.
