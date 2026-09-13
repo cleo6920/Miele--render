@@ -10,28 +10,38 @@ try {
   const sloganText = 'Vivi un’esperienza a 360° e ottimizza la spedizione con i nostri tris.';
 
   function applyTrisSlogan(){
-    const headings = Array.from(document.querySelectorAll('h1,h2,h3'));
-    const title = headings.find(el => {
+    if (document.querySelector('[data-tris-category-slogan="true"]')) return;
+
+    const allTextNodes = Array.from(document.querySelectorAll('h1,h2,h3,h4,p,span,div,button,a'));
+    const hasTrisProducts = allTextNodes.some(el => {
+      if (el.closest('#linea-tris-alveare-home')) return false;
       const text = (el.textContent || '').trim();
-      return text === 'I Tris dell’Alveare' && !el.closest('#linea-tris-alveare-home');
+      return text.includes('Tris dell’Alveare –');
     });
-    if (!title) return;
-    if (title.parentElement && title.parentElement.querySelector('[data-tris-category-slogan="true"]')) return;
+    if (!hasTrisProducts) return;
+
+    const backControl = Array.from(document.querySelectorAll('button,a')).find(el =>
+      /torna alle categor/i.test((el.textContent || '').trim())
+    );
+    if (!backControl || !backControl.parentElement) return;
 
     const p = document.createElement('p');
     p.setAttribute('data-tris-category-slogan', 'true');
     p.textContent = sloganText;
-    p.style.marginTop = '6px';
-    p.style.marginBottom = '14px';
-    p.style.fontWeight = '700';
+    p.style.marginTop = '10px';
+    p.style.marginBottom = '16px';
+    p.style.fontWeight = '800';
+    p.style.fontSize = '18px';
     p.style.lineHeight = '1.35';
     p.style.color = '#f59e0b';
-    title.insertAdjacentElement('afterend', p);
+
+    backControl.insertAdjacentElement('afterend', p);
   }
 
-  window.addEventListener('load', applyTrisSlogan);
-  document.addEventListener('click', () => setTimeout(applyTrisSlogan, 60), true);
-  new MutationObserver(applyTrisSlogan).observe(document.body, { childList: true, subtree: true });
+  function schedule(){ setTimeout(applyTrisSlogan, 80); }
+  window.addEventListener('load', schedule);
+  document.addEventListener('click', schedule, true);
+  new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
 })();
 </script>`;
 
@@ -41,7 +51,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Slogan I Tris dell’Alveare aggiunto solo alla pagina categoria.');
+  console.log('[Miele Artigianale] Slogan I Tris dell’Alveare agganciato alla vista reale della categoria.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore slogan I Tris dell’Alveare:', error);
   process.exitCode = 1;
