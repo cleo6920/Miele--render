@@ -86,17 +86,18 @@ try {
     html = html.replace(selectedCategoryState, customTrisState);
   }
 
-  const productListMarker = 'products.filter(p => p.category === selectedCategory)';
-  const productListCount = html.split(productListMarker).length - 1;
-  if (productListCount !== 1) {
-    throw new Error(`Lista prodotti standard non univoca: ${productListCount}`);
+  const productCardMarker = '<ProductCard key={product.id} product={product} onProductClick={handleProductSelect} />';
+  const productCardCount = html.split(productCardMarker).length - 1;
+  if (productCardCount !== 1) {
+    throw new Error(`Renderer lista prodotti non univoco: ${productCardCount}`);
   }
 
-  const productListPos = html.indexOf(productListMarker);
-  const expressionStart = html.lastIndexOf('{', productListPos);
+  const productCardPos = html.indexOf(productCardMarker);
+  const mapStart = html.lastIndexOf('.map(product => (', productCardPos);
+  const expressionStart = html.lastIndexOf('{', mapStart);
   const expressionEndMarker = '))}';
-  const expressionEndStart = html.indexOf(expressionEndMarker, productListPos);
-  if (expressionStart === -1 || expressionEndStart === -1) {
+  const expressionEndStart = html.indexOf(expressionEndMarker, productCardPos);
+  if (mapStart === -1 || expressionStart === -1 || expressionEndStart === -1) {
     throw new Error('Espressione lista prodotti standard non delimitata');
   }
   const expressionEnd = expressionEndStart + expressionEndMarker.length;
