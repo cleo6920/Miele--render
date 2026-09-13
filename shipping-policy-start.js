@@ -31,5 +31,8 @@ try {
 // Non modifica le viste delle linee né le schede prodotto.
 require('./home-layout-final.js');
 
+// Integra SOLO nelle due schede capsule la durata indicativa per capsula e confezione da 5.
+require('./capsule-duration-prestart.js');
+
 // Mantiene il servizio web attivo dopo i prestart.
 require('./server.js');
