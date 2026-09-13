@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// HOME/HERO AUTORITATIVA - prova candidata 558743fb.
-// Riferimento: "Restore product search to hero gap" (29/08).
+// HOME/HERO AUTORITATIVA - prova candidata cd4fdc97.
+// Riferimento storico: alveari centrati, Fabbrica a destra, ricerca sotto la Fabbrica.
 try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -48,27 +48,19 @@ try {
     const hero=brand.parentElement||hives.parentElement;if(!hero)return;hero.style.setProperty('position','relative','important');
 
     ensureBrand(brand);
-    brand.style.setProperty('position','absolute','important');brand.style.setProperty('left','50%','important');brand.style.setProperty('right','auto','important');brand.style.setProperty('top','10px','important');brand.style.setProperty('transform','translateX(-50%)','important');brand.style.setProperty('width','min(360px,30vw)','important');brand.style.setProperty('min-width','0','important');brand.style.setProperty('max-width','360px','important');brand.style.setProperty('height','auto','important');brand.style.setProperty('min-height','0','important');brand.style.setProperty('margin','0','important');brand.style.setProperty('padding','8px 14px 10px','important');brand.style.setProperty('border-radius','20px','important');brand.style.setProperty('z-index','30','important');
+    // Candidato cd4fdc97: Fabbrica a destra.
+    brand.style.setProperty('position','absolute','important');brand.style.setProperty('left','auto','important');brand.style.setProperty('right','18px','important');brand.style.setProperty('top','10px','important');brand.style.setProperty('transform','none','important');brand.style.setProperty('width','min(330px,28vw)','important');brand.style.setProperty('max-width','330px','important');brand.style.setProperty('margin','0','important');brand.style.setProperty('padding','8px 14px 10px','important');brand.style.setProperty('border-radius','20px','important');brand.style.setProperty('z-index','30','important');
 
-    hives.style.setProperty('position','absolute','important');hives.style.setProperty('left','auto','important');hives.style.setProperty('right','0px','important');hives.style.setProperty('top','48px','important');hives.style.setProperty('transform','none','important');hives.style.setProperty('width','min(420px,34vw)','important');hives.style.setProperty('max-width','420px','important');hives.style.setProperty('margin','0','important');hives.style.setProperty('padding','0','important');hives.style.setProperty('z-index','28','important');hives.style.setProperty('display','flex','important');hives.style.setProperty('flex-direction','column','important');hives.style.setProperty('align-items','center','important');
+    // Alveari centrati e abbassati.
+    hives.style.setProperty('position','absolute','important');hives.style.setProperty('left','50%','important');hives.style.setProperty('right','auto','important');hives.style.setProperty('top','43px','important');hives.style.setProperty('transform','translateX(-50%)','important');hives.style.setProperty('width','min(420px,34vw)','important');hives.style.setProperty('max-width','420px','important');hives.style.setProperty('margin','0','important');hives.style.setProperty('padding','0','important');hives.style.setProperty('z-index','28','important');hives.style.setProperty('display','flex','important');hives.style.setProperty('flex-direction','column','important');hives.style.setProperty('align-items','center','important');
     if(subtitle){subtitle.style.setProperty('width','100%','important');subtitle.style.setProperty('text-align','left','important');subtitle.style.setProperty('padding-left','8px','important');subtitle.style.setProperty('margin','10px 0 5px','important');subtitle.style.setProperty('white-space','nowrap','important');}
     oval.style.setProperty('width','100%','important');oval.style.setProperty('max-width','420px','important');oval.style.setProperty('height','145px','important');oval.style.setProperty('margin','0 auto','important');
 
-    // Geometria esatta del commit 558743fb: barra ricerca nel varco hero.
+    // Barra ricerca sotto la Fabbrica, come nel commit storico cd4fdc97.
     if(search&&search.parentElement){
       const wrap=search.parentElement;
-      wrap.style.setProperty('position','relative','important');wrap.style.setProperty('z-index','29','important');wrap.style.setProperty('margin-top','0','important');wrap.style.setProperty('transform','none','important');
-      requestAnimationFrame(function(){
-        const ovalRect=oval.getBoundingClientRect();
-        const targetWidth=Math.min(460,Math.max(380,ovalRect.left-390));
-        wrap.style.setProperty('width',targetWidth+'px','important');wrap.style.setProperty('max-width',targetWidth+'px','important');wrap.style.setProperty('margin-left','0','important');wrap.style.setProperty('margin-right','0','important');
-        requestAnimationFrame(function(){
-          const searchRect=wrap.getBoundingClientRect();const currentOval=oval.getBoundingClientRect();
-          const desiredLeft=Math.max(360,currentOval.left-18-searchRect.width);
-          const desiredTop=currentOval.top+((currentOval.height-searchRect.height)/2)+34;
-          wrap.style.setProperty('transform','translate('+Math.round(desiredLeft-searchRect.left)+'px,'+Math.round(desiredTop-searchRect.top)+'px)','important');
-        });
-      });
+      if(wrap.parentElement!==hero)hero.appendChild(wrap);
+      wrap.style.setProperty('position','absolute','important');wrap.style.setProperty('left','auto','important');wrap.style.setProperty('right','18px','important');wrap.style.setProperty('top','124px','important');wrap.style.setProperty('transform','none','important');wrap.style.setProperty('margin','0','important');wrap.style.setProperty('width','min(330px,28vw)','important');wrap.style.setProperty('max-width','330px','important');wrap.style.setProperty('z-index','29','important');wrap.style.setProperty('box-sizing','border-box','important');
     }
 
     const leftTitle=Array.from(document.querySelectorAll('h1')).find(function(el){return /L['’]\\s*Italiano Miele/i.test(el.textContent||'');});
@@ -79,5 +71,5 @@ try {
 })();
 </script>`;
 
-  html=html.replace('</body>',`${controller}\n</body>`);fs.writeFileSync(indexPath,html,'utf8');console.log('[Miele Artigianale] Prova home 558743fb: ricerca ripristinata nel varco hero.');
-} catch(error){console.error('[Miele Artigianale] Errore prova home 558743fb:',error);process.exitCode=1;}
+  html=html.replace('</body>',`${controller}\n</body>`);fs.writeFileSync(indexPath,html,'utf8');console.log('[Miele Artigianale] Prova home cd4fdc97: alveari centrati, Fabbrica a destra, ricerca sotto Fabbrica.');
+} catch(error){console.error('[Miele Artigianale] Errore prova home cd4fdc97:',error);process.exitCode=1;}
