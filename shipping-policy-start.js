@@ -27,5 +27,9 @@ try {
   process.exitCode = 1;
 }
 
+// Ultimo intervento: sistema SOLO la parte alta della home dopo tutte le altre patch.
+// Non modifica le viste delle linee né le schede prodotto.
+require('./home-layout-final.js');
+
 // Mantiene il servizio web attivo dopo i prestart.
 require('./server.js');
