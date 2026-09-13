@@ -1,9 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// Introduzione alle linee prodotto subito dopo la sezione Alveoterapia.
-// La scheda introduttiva funziona come pagina di ingresso; le linee vengono
-// mostrate solo dopo il click e possono essere richiuse tornando alla presentazione.
+// Pagina introduttiva alle linee prodotto.
+// La presentazione resta visibile finché l'utente non apre la vista con tutte le linee.
 try {
   const indexPath = path.join(__dirname, 'index.html');
   const imagePath = path.join(__dirname, 'images', 'intro-prodotti-coupon-api.jpg');
@@ -11,7 +10,6 @@ try {
 
   let html = fs.readFileSync(indexPath, 'utf8');
   const runtimeId = 'prodotti-linee-intro-runtime';
-
   const oldRuntime = new RegExp(`<script id="${runtimeId}">[\\s\\S]*?<\\/script>\\s*`, 'g');
   html = html.replace(oldRuntime, '');
 
@@ -29,9 +27,8 @@ try {
     '#prodotti-linee-intro-home .pli-coupon p{margin:7px 0 5px;color:#fff;font-size:15px;font-weight:700;line-height:1.35;}',
     '#prodotti-linee-intro-home .pli-coupon strong{display:block;color:#fde68a;font-size:17px;line-height:1.3;font-weight:900;}',
     '#prodotti-linee-intro-home .pli-actions{margin-top:16px;}',
-    '#prodotti-linee-intro-home .pli-lines-button{display:flex;width:100%;min-height:52px;align-items:center;justify-content:center;border:0;border-radius:13px;background:#f59e0b;color:#111827;font-size:15px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 20px rgba(245,158,11,.20);transition:transform .15s ease,background .15s ease,box-shadow .15s ease;}',
-    '#prodotti-linee-intro-home .pli-lines-button:hover{background:#fbbf24;box-shadow:0 10px 24px rgba(245,158,11,.28);}',
-    '#prodotti-linee-intro-home .pli-lines-button:active{transform:scale(.985);}',
+    '#prodotti-linee-intro-home .pli-lines-button{display:flex;width:100%;min-height:52px;align-items:center;justify-content:center;border:0;border-radius:13px;background:#f59e0b;color:#111827;font-size:15px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 20px rgba(245,158,11,.20);}',
+    '#prodotti-linee-intro-home .pli-lines-button:hover{background:#fbbf24;}',
     '#prodotti-linee-intro-home .pli-lines-view{display:none;border-radius:18px;border:1px solid rgba(245,158,11,.30);background:#111;padding:18px 20px;box-shadow:0 12px 28px rgba(0,0,0,.22);}',
     '#prodotti-linee-intro-home .pli-lines-view-top{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;}',
     '#prodotti-linee-intro-home .pli-lines-view h2{margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(24px,3vw,34px);font-weight:900;color:#fff;}',
@@ -77,19 +74,15 @@ try {
   var lineLabels=[
     'LINEA ALIMENTI',
     'LINEA COSMETICA AL VELENO D’API',
-    'LINEA COSMETICA AL VELENO D API',
     'LINEA BENESSERE VELENO D’API',
-    'LINEA BENESSERE VELENO D API',
     'LINEA INTEGRATORI',
     'LINEA COSMESI E TESORI IN CERA D’API',
-    'LINEA COSMESI E TESORI IN CERA D API',
     'LINEA I TESORI DI FRANCESCO',
-    'I TRIS DELL’ALVEARE',
-    'I TRIS DELL ALVEARE'
+    'I TRIS DELL’ALVEARE'
   ];
 
   function normalizeText(value){
-    return String(value||'').toUpperCase().replace(/[’‘`´]/g,"'").replace(/\\s+/g,' ').trim();
+    return String(value||'').toUpperCase().replace(/[’‘´]/g,"'").trim();
   }
 
   var normalizedLabels=lineLabels.map(normalizeText);
@@ -115,9 +108,7 @@ try {
       section.setAttribute('aria-label','Introduzione alle linee prodotto e Coupon delle Api');
       section.innerHTML=introHtml;
     }
-    if(hero.nextElementSibling!==section){
-      hero.insertAdjacentElement('afterend',section);
-    }
+    if(hero.nextElementSibling!==section) hero.insertAdjacentElement('afterend',section);
   }
 
   function isProductLineArticle(article){
@@ -135,12 +126,8 @@ try {
     var articles=document.querySelectorAll('article');
     for(var i=0;i<articles.length;i++){
       if(isProductLineArticle(articles[i])) articles[i].setAttribute('data-pli-product-line','1');
+      else articles[i].removeAttribute('data-pli-product-line');
     }
-  }
-
-  function firstLineTarget(){
-    markProductLines();
-    return document.querySelector('[data-pli-product-line="1"]');
   }
 
   function openLines(){
@@ -149,13 +136,7 @@ try {
     var button=document.querySelector('[data-open-product-lines]');
     if(button) button.setAttribute('aria-expanded','true');
     var section=document.getElementById(sectionId);
-    setTimeout(function(){
-      if(section) section.scrollIntoView({behavior:'smooth',block:'start'});
-      else {
-        var target=firstLineTarget();
-        if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
-      }
-    },60);
+    setTimeout(function(){if(section) section.scrollIntoView({behavior:'smooth',block:'start'});},60);
   }
 
   function closeLines(){
@@ -182,17 +163,9 @@ try {
     new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
     document.addEventListener('click',function(event){
       var openButton=event.target && event.target.closest ? event.target.closest('[data-open-product-lines]') : null;
-      if(openButton){
-        event.preventDefault();
-        openLines();
-        return;
-      }
+      if(openButton){event.preventDefault();openLines();return;}
       var closeButton=event.target && event.target.closest ? event.target.closest('[data-close-product-lines]') : null;
-      if(closeButton){
-        event.preventDefault();
-        closeLines();
-        return;
-      }
+      if(closeButton){event.preventDefault();closeLines();return;}
       setTimeout(schedule,80);
     },true);
     window.addEventListener('popstate',function(){closeLines();schedule();});
