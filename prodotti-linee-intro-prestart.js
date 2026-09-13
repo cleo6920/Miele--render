@@ -31,6 +31,7 @@ try {
     '#prodotti-linee-intro-home .pli-lines-button{display:flex;width:100%;min-height:52px;align-items:center;justify-content:center;border:0;border-radius:13px;background:#f59e0b;color:#111827;font-size:15px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 20px rgba(245,158,11,.20);transition:transform .15s ease,background .15s ease,box-shadow .15s ease;}',
     '#prodotti-linee-intro-home .pli-lines-button:hover{background:#fbbf24;box-shadow:0 10px 24px rgba(245,158,11,.28);}',
     '#prodotti-linee-intro-home .pli-lines-button:active{transform:scale(.985);}',
+    'body:not(.pli-lines-open) [id^="linea-"][id$="-home"]:not(#linea-alveoterapia-home){display:none!important;}',
     '@media (max-width:760px){#prodotti-linee-intro-home{padding:0 12px;margin-bottom:18px;}#prodotti-linee-intro-home .pli-card{grid-template-columns:1fr;}#prodotti-linee-intro-home .pli-photo,#prodotti-linee-intro-home .pli-photo img{min-height:0;aspect-ratio:16/11;}#prodotti-linee-intro-home .pli-copy{padding:18px 17px 20px;}#prodotti-linee-intro-home .pli-lead{font-size:15px;}#prodotti-linee-intro-home .pli-coupon strong{font-size:16px;}#prodotti-linee-intro-home .pli-lines-button{min-height:50px;font-size:14px;}}'
   ].join('\n');
 
@@ -46,7 +47,7 @@ try {
     '      <p>Accumula i Coupon delle Api con i tuoi acquisti.</p>',
     '      <strong>Raggiungi 100 api e richiedi il tuo Cesto dell’Alveare in omaggio.</strong>',
     '    </div>',
-    '    <div class="pli-actions"><button type="button" class="pli-lines-button" data-open-product-lines>Scopri tutte le linee</button></div>',
+    '    <div class="pli-actions"><button type="button" class="pli-lines-button" data-open-product-lines aria-expanded="false">Scopri tutte le linee</button></div>',
     '  </div>',
     '</div>'
   ].join('');
@@ -85,16 +86,20 @@ try {
     }
   }
 
-  function goToLines(){
-    var section=document.getElementById(sectionId);
-    if(!section) return;
-    var target=document.getElementById('linea-alimenti-home') ||
+  function firstLineTarget(){
+    return document.getElementById('linea-alimenti-home') ||
       document.getElementById('linea-benessere-veleno-api-home') ||
-      document.querySelector('[id*="linea-alimenti"]') ||
-      section.nextElementSibling;
-    if(target && target!==section){
-      target.scrollIntoView({behavior:'smooth',block:'start'});
-    }
+      document.querySelector('[id^="linea-"][id$="-home"]:not(#linea-alveoterapia-home)');
+  }
+
+  function openLines(){
+    document.body.classList.add('pli-lines-open');
+    var button=document.querySelector('[data-open-product-lines]');
+    if(button) button.setAttribute('aria-expanded','true');
+    setTimeout(function(){
+      var target=firstLineTarget();
+      if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+    },80);
   }
 
   function schedule(){
@@ -110,7 +115,7 @@ try {
       var button=event.target && event.target.closest ? event.target.closest('[data-open-product-lines]') : null;
       if(button){
         event.preventDefault();
-        goToLines();
+        openLines();
         return;
       }
       setTimeout(schedule,80);
@@ -118,6 +123,7 @@ try {
     window.addEventListener('popstate',schedule);
   }
 
+  ensureStyle();
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
 })();
@@ -125,7 +131,7 @@ try {
 
   html = html.replace('</body>', `${runtime}\n</body>`);
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Introduzione linee prodotto e Coupon delle Api pronta con accesso diretto a tutte le linee.');
+  console.log('[Miele Artigianale] Linee prodotto nascoste fino al click su Scopri tutte le linee.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore introduzione linee prodotto:', error);
   process.exitCode = 1;
