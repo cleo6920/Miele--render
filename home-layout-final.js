@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // HOME/HERO AUTORITATIVA - geometria cd4fdc97 preservata.
-// Blocco sinistro: struttura 775eb5aa + immagine SOS DOL corretta dal commit 0f0aafe1.
+// Blocco sinistro: struttura 775eb5aa + centratura SOS DOL dal commit fe49cd96.
 try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -21,7 +21,7 @@ try {
   #alveoterapia-hero-actions .hero-oval{width:176px!important;height:128px!important;border-radius:999px!important;overflow:hidden!important;border:4px solid #fbbf24!important;box-shadow:0 12px 28px rgba(0,0,0,.32)!important;background:#111!important;}
   #alveoterapia-hero-actions .hero-oval img{width:100%!important;height:100%!important;display:block!important;}
   #alveoterapia-hero-actions .hero-action:first-child img{object-fit:cover!important;}
-  #alveoterapia-hero-actions .hero-action:last-child img{object-fit:cover!important;background:transparent!important;}
+  #alveoterapia-hero-actions .hero-action:last-child img{object-fit:contain!important;object-position:center!important;background:#e6d8ef!important;padding:2px!important;transform:scale(1.12)!important;}
   #alveoterapia-hero-actions .hero-name{margin-top:7px!important;font-size:13px!important;line-height:1!important;font-weight:800!important;color:#fbbf24!important;white-space:nowrap!important;}
   #alveoterapia-hero-actions .hero-more{margin-top:5px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:999px!important;background:rgba(0,0,0,.78)!important;padding:4px 11px!important;font-size:11px!important;line-height:1!important;font-weight:800!important;color:#fbbf24!important;border:1px solid #fbbf24!important;white-space:nowrap!important;}
 }
@@ -48,9 +48,9 @@ try {
       wrap=document.createElement('div');subtitle.insertAdjacentElement('afterend',wrap);
     }
     wrap.id='alveoterapia-hero-actions';
-    if(wrap.dataset.variant!=='labels-775eb5aa-sos-0f0aafe1'){
-      wrap.dataset.variant='labels-775eb5aa-sos-0f0aafe1';
-      wrap.innerHTML='<button type="button" class="hero-action" aria-label="Scopri PropolTerapy Professional"><div class="hero-oval"><img src="/images/hero-prodotti-corretta.jpg" alt="PropolTerapy Professional"></div><div class="hero-name">PropolTerapy Professional</div><div class="hero-more">Scopri di più</div></button><button type="button" class="hero-action" aria-label="Scopri SOS DOL – Unguento Apis – 15 ml"><div class="hero-oval"><img src="/images/sos-dol-hero-premium.jpg" alt="SOS DOL – Unguento Apis 15 ml"></div><div class="hero-name">SOS DOL – Unguento Apis – 15 ml</div><div class="hero-more">Scopri di più</div></button>';
+    if(wrap.dataset.variant!=='labels-775eb5aa-sos-fe49cd96'){
+      wrap.dataset.variant='labels-775eb5aa-sos-fe49cd96';
+      wrap.innerHTML='<button type="button" class="hero-action" aria-label="Scopri PropolTerapy Professional"><div class="hero-oval"><img src="/images/hero-prodotti-corretta.jpg" alt="PropolTerapy Professional"></div><div class="hero-name">PropolTerapy Professional</div><div class="hero-more">Scopri di più</div></button><button type="button" class="hero-action" aria-label="Scopri SOS DOL – Unguento Apis – 15 ml"><div class="hero-oval"><img src="https://www.apinfiore.com/wp-content/uploads/2023/03/SOS-Doll_web-5.jpg.webp" alt="SOS DOL – Unguento Apis 15 ml" referrerpolicy="no-referrer"></div><div class="hero-name">SOS DOL – Unguento Apis – 15 ml</div><div class="hero-more">Scopri di più</div></button>';
       const buttons=wrap.querySelectorAll('.hero-action');
       if(buttons[0])buttons[0].addEventListener('click',function(){openProduct('propolterapy-professional','alveoterapia');});
       if(buttons[1])buttons[1].addEventListener('click',function(){openProduct('unguento-apis','veleno-api');});
@@ -85,5 +85,5 @@ try {
 })();
 </script>`;
 
-  html=html.replace('</body>',`${controller}\n</body>`);fs.writeFileSync(indexPath,html,'utf8');console.log('[Miele Artigianale] Home: geometria preservata; foto SOS DOL ripristinata esattamente dal commit 0f0aafe1.');
-} catch(error){console.error('[Miele Artigianale] Errore home SOS DOL 0f0aafe1:',error);process.exitCode=1;}
+  html=html.replace('</body>',`${controller}\n</body>`);fs.writeFileSync(indexPath,html,'utf8');console.log('[Miele Artigianale] Home: geometria preservata; centratura SOS DOL ripristinata dal commit fe49cd96.');
+} catch(error){console.error('[Miele Artigianale] Errore home SOS DOL fe49cd96:',error);process.exitCode=1;}
