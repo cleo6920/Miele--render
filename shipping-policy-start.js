@@ -27,6 +27,9 @@ try {
   process.exitCode = 1;
 }
 
+// Nuova linea autonoma: I Tris dell’Alveare, con 30 offerte già definite.
+require('./linea-tris-alveare-prestart.js');
+
 // Ultimo intervento: sistema SOLO la parte alta della home dopo tutte le altre patch.
 // Non modifica le viste delle linee né le schede prodotto.
 require('./home-layout-final.js');
