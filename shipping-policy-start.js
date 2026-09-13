@@ -30,6 +30,9 @@ try {
 // Nuova linea autonoma: I Tris dell’Alveare, con 30 offerte già definite.
 require('./linea-tris-alveare-prestart.js');
 
+// Ripristina la foto pulita della presentazione prodotti prima di costruire la pagina.
+require('./intro-photo-rebuild.js');
+
 // Pagina introduttiva alle linee prodotto: usa la foto del Centro e presenta
 // il programma Coupon delle Api prima delle linee già esistenti.
 require('./prodotti-linee-intro-prestart.js');
