@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Rifinitura finale delle descrizioni pubbliche prodotto:
-// - elimina riferimenti ai fornitori Apifiore/Apinfiore/KONTAK
+// - elimina riferimenti ai fornitori Apifiore/Apinfiore/KONTAK SOLO nelle descrizioni
 // - rende non ambigue le misure della candela
 try {
   const indexPath = path.join(__dirname, 'index.html');
@@ -23,13 +23,20 @@ try {
     html = html.replaceAll(item.oldText, item.newText);
   }
 
-  // Rimuove eventuali citazioni residue dei fornitori solo come testo visibile nelle descrizioni.
-  html = html
-    .replace(/\bApinfiore\b/gi, '')
-    .replace(/\bApifiore\b/gi, '')
-    .replace(/\bKONTAK\b/gi, '')
-    .replace(/\s{2,}/g, ' ')
-    .replace(/\s+([,.;:])/g, '$1');
+  function cleanDescription(value) {
+    return value
+      .replace(/\bApinfiore\b/gi, '')
+      .replace(/\bApifiore\b/gi, '')
+      .replace(/\bKONTAK\b/gi, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/\s+([,.;:])/g, '$1')
+      .trim();
+  }
+
+  // Pulisce solo i valori dei campi description/descrizione presenti nei dati prodotto.
+  html = html.replace(/((?:\"?description\"?|\"?descrizione\"?)\s*:\s*\")([^\"]*)(\")/gi,
+    (match, prefix, value, suffix) => prefix + cleanDescription(value) + suffix
+  );
 
   fs.writeFileSync(indexPath, html, 'utf8');
   console.log('[Miele Artigianale] Descrizioni ripulite da riferimenti fornitori; misure candela chiarite.');
