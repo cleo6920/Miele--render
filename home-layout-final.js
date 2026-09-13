@@ -5,167 +5,75 @@ try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
 
+  // Elimina i tentativi runtime precedenti: questa versione lavora direttamente sul JSX
+  // prima che il server venga avviato, così React renderizza già la home corretta.
   html = html.replace(/<script id="shop-home-layout-final">[\s\S]*?<\/script>\s*/g, '');
+  html = html.replace(/<style id="shop-home-header-authoritative">[\s\S]*?<\/style>\s*/g, '');
 
-  const script = `<script id="shop-home-layout-final">
-(function(){
-  let timer=null;
+  // Identifica in modo stabile la struttura superiore della home.
+  html = html.replace(
+    '<header className="relative w-full py-8 sm:py-12 bg-gradient-to-br from-amber-200 to-amber-50 shadow-lg mb-8">',
+    '<header id="shop-home-header" className="relative w-full py-3 sm:py-4 bg-gradient-to-br from-amber-200 to-amber-50 shadow-lg mb-2">'
+  );
+  html = html.replace(
+    '<div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between z-10 relative">',
+    '<div id="shop-home-inner" className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-start justify-between z-10 relative">'
+  );
+  html = html.replace(
+    '<div className="flex-grow flex flex-col items-start text-center sm:text-left">',
+    '<div id="shop-home-left" className="flex-grow flex flex-col items-start text-left">'
+  );
+  html = html.replace(
+    '<div className="flex-shrink-0 flex flex-col items-end mt-8 sm:mt-0 ml-auto text-right">',
+    '<div id="shop-home-brand" className="flex-shrink-0 flex flex-col items-center mt-0 ml-0 text-center">'
+  );
 
-  const hasBack=()=>Array.from(document.querySelectorAll('button,a')).some(el=>/torna alle categor|torna indietro/i.test((el.textContent||'').trim()));
-  const isHome=()=>!hasBack() && /\/shop\/?$/i.test(location.pathname);
-  const findSearch=()=>Array.from(document.querySelectorAll('input')).find(el=>((el.getAttribute('placeholder')||'').toLowerCase().includes('cerca miele')));
-  const findTitle=()=>Array.from(document.querySelectorAll('h1,h2')).find(el=>/L['’]\s*Italiano/i.test(el.textContent||''));
-  const findBrand=()=>document.querySelector('.shop-brand-wrap') || Array.from(document.querySelectorAll('div')).find(el=>/La Fabbrica delle Api/i.test((el.textContent||'').trim()) && el.children.length>0);
+  // Titolo sinistro e blocco Alveoterapia.
+  html = html.replace(" L' Italiano</h1>", " L' Italiano Miele</h1>");
+  html = html.replace(
+    /<p className="text-xl sm:text-2xl text-stone-700 mt-2 max-w-lg">Prodotti esclusivi dei tesori dell' alveare<\/p>/,
+    `<p id="shop-home-alveo-title" className="text-2xl sm:text-3xl font-extrabold text-amber-700 mt-2">Alveoterapia integrata</p>\n                                <div id="shop-home-alveo-images" className="mt-4 flex flex-nowrap items-start gap-4">\n                                    <div className="w-40 h-28 lg:w-44 lg:h-32 rounded-[999px] overflow-hidden border-4 border-amber-400 shadow-2xl bg-stone-900 flex-shrink-0"><img src="/images/alveoterapia-casetta-hero.jpg" alt="Alveoterapia integrata" className="w-full h-full object-cover" /></div>\n                                    <div className="w-40 h-28 lg:w-44 lg:h-32 rounded-[999px] overflow-hidden border-4 border-amber-300 shadow-2xl bg-stone-900 flex-shrink-0"><img src="/images/hero-prodotti-corretta.jpg" alt="Prodotti per alveoterapia" className="w-full h-full object-cover" /></div>\n                                </div>`
+  );
 
-  function commonAncestor(a,b){
-    if(!a||!b)return null;
-    let n=a;
-    while(n){ if(n.contains(b)) return n; n=n.parentElement; }
-    return null;
+  // Il blocco destro originario diventa il box centrale della Fabbrica delle Api.
+  html = html.replace(/\bL'Italiano\b/g, 'LA FABBRICA DELLE API');
+
+  // Inserisce la sezione alveari come terzo elemento della hero, se non esiste già.
+  if (!html.includes('id="shop-home-hives"')) {
+    html = html.replace(
+      /(<p className="text-2xl sm:text-3xl text-stone-800 italic mt-2">I Mieli Artigianali<\/p>\s*<\/div>)(\s*<\/div>\s*<\/header>)/,
+      `$1\n                            <div id="shop-home-hives">\n                                <div id="shop-home-hives-title">Mieli e prodotti dell'alveare</div>\n                                <div id="shop-home-hives-oval"><img src="/images/alveari-busatello.jpg" alt="Alveari dell'Oasi del Busatello" /></div>\n                            </div>$2`
+    );
   }
 
-  function styleTitle(title){
-    if(!title)return;
-    title.innerHTML='<svg aria-label="Bandiera italiana" role="img" width="44" height="30" viewBox="0 0 30 20" style="flex:none"><rect x="0" y="0" width="10" height="20" fill="green"></rect><rect x="10" y="0" width="10" height="20" fill="white"></rect><rect x="20" y="0" width="10" height="20" fill="red"></rect></svg><span>L\' Italiano Miele</span>';
-    title.style.setProperty('font-size','clamp(30px,3.2vw,46px)','important');
-    title.style.setProperty('line-height','1','important');
-    title.style.setProperty('white-space','nowrap','important');
-    title.style.setProperty('display','flex','important');
-    title.style.setProperty('align-items','center','important');
-    title.style.setProperty('gap','10px','important');
-    title.style.setProperty('margin','0','important');
-  }
+  const css = `<style id="shop-home-header-authoritative">
+@media (min-width:901px){
+  #shop-home-header{height:315px!important;min-height:315px!important;padding:0!important;margin-bottom:2px!important;overflow:visible!important;}
+  #shop-home-inner{height:315px!important;min-height:315px!important;max-width:1280px!important;position:relative!important;display:block!important;padding:0 18px!important;}
+  #shop-home-left{position:absolute!important;left:18px!important;top:24px!important;width:390px!important;max-width:36vw!important;margin:0!important;align-items:flex-start!important;text-align:left!important;z-index:40!important;}
+  #shop-home-left h1{font-size:clamp(30px,3.2vw,46px)!important;line-height:1!important;white-space:nowrap!important;margin:0!important;}
+  #shop-home-alveo-title{font-size:clamp(22px,2.4vw,31px)!important;line-height:1.05!important;margin:8px 0 10px!important;color:#d96b16!important;}
+  #shop-home-alveo-images{margin-top:8px!important;gap:18px!important;}
+  #shop-home-brand{position:absolute!important;left:50%!important;right:auto!important;top:20px!important;transform:translateX(-50%)!important;width:340px!important;max-width:31vw!important;height:100px!important;min-height:100px!important;margin:0!important;padding:8px 14px 10px!important;border-radius:20px!important;overflow:hidden!important;align-items:center!important;justify-content:center!important;text-align:center!important;z-index:41!important;background:linear-gradient(135deg,rgba(7,55,43,.72),rgba(5,18,14,.25))!important;border:1px solid rgba(212,175,55,.45)!important;}
+  #shop-home-brand.shop-brand-wrap{width:340px!important;max-width:31vw!important;margin:0!important;padding:8px 14px 10px!important;position:absolute!important;overflow:hidden!important;}
+  #shop-home-brand h2,#shop-home-brand .shop-brand-title{font-size:clamp(20px,1.9vw,28px)!important;line-height:.95!important;white-space:nowrap!important;margin:0!important;text-align:center!important;animation:none!important;transform:none!important;}
+  #shop-home-brand p{display:none!important;}
+  #shop-home-hives{position:absolute!important;right:18px!important;top:74px!important;width:340px!important;max-width:32vw!important;margin:0!important;padding:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;z-index:39!important;}
+  #shop-home-hives-title{width:100%!important;text-align:center!important;font-family:Arial,sans-serif!important;font-size:clamp(18px,2vw,27px)!important;font-style:italic!important;font-weight:700!important;color:#fff6e3!important;line-height:1.05!important;white-space:nowrap!important;margin:0 0 6px!important;}
+  #shop-home-hives-oval{width:100%!important;height:136px!important;border-radius:999px!important;overflow:hidden!important;border:4px solid #d4af37!important;box-shadow:0 12px 28px rgba(0,0,0,.32)!important;background:#111!important;}
+  #shop-home-hives-oval img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;display:block!important;}
+  #shop-home-header + div{position:relative!important;z-index:50!important;}
+}
+@media (max-width:900px){
+  #shop-home-hives{display:none!important;}
+  #shop-home-brand{position:relative!important;left:auto!important;top:auto!important;transform:none!important;width:calc(100% - 32px)!important;max-width:calc(100% - 32px)!important;margin:12px auto!important;}
+}
+</style>`;
+  html = html.replace('</head>', `${css}\n</head>`);
 
-  function ensureLeft(left,title){
-    if(!left||!title)return;
-    styleTitle(title);
-    let subtitle=Array.from(left.querySelectorAll('p')).find(el=>/Prodotti esclusivi dei tesori|Alveoterapia integrata/i.test(el.textContent||''));
-    if(!subtitle){ subtitle=document.createElement('p'); title.insertAdjacentElement('afterend',subtitle); }
-    subtitle.textContent='Alveoterapia integrata';
-    subtitle.style.cssText='font-size:clamp(22px,2.5vw,32px)!important;font-weight:800!important;color:#d96b16!important;margin:8px 0 12px!important;line-height:1.05!important;';
-
-    let row=document.getElementById('home-alveo-actions-final');
-    if(!row){
-      row=document.createElement('div');
-      row.id='home-alveo-actions-final';
-      row.innerHTML='<div style="width:172px;height:126px;border-radius:999px;overflow:hidden;border:4px solid #f3b51b;background:#111"><img src="/images/alveoterapia-casetta-hero.jpg" alt="Alveoterapia integrata" style="width:100%;height:100%;object-fit:cover;display:block"></div><div style="width:172px;height:126px;border-radius:999px;overflow:hidden;border:4px solid #f3b51b;background:#111"><img src="/images/hero-prodotti-corretta.jpg" alt="Prodotti per alveoterapia" style="width:100%;height:100%;object-fit:cover;display:block"></div>';
-      subtitle.insertAdjacentElement('afterend',row);
-    }
-    row.style.cssText='display:flex!important;gap:18px!important;align-items:flex-start!important;justify-content:flex-start!important;margin:0!important;';
-  }
-
-  function ensureBrand(brand){
-    if(!brand)return;
-    Array.from(brand.children).forEach(ch=>{ if(ch.id!=='shop-custom-brand-center-final') ch.style.setProperty('display','none','important'); });
-    let center=document.getElementById('shop-custom-brand-center-final');
-    if(!center){
-      center=document.createElement('div');
-      center.id='shop-custom-brand-center-final';
-      center.innerHTML='<div style="font-family:Georgia,Times New Roman,serif;font-size:clamp(21px,2vw,28px);font-weight:900;line-height:.95;text-transform:uppercase;color:#f2b63d;text-shadow:1px 1px 0 #7c3a00,2px 2px 0 #b85f00;text-align:center;white-space:nowrap">LA FABBRICA DELLE API</div><svg aria-label="Bandiera italiana" role="img" width="34" height="23" viewBox="0 0 30 20" style="display:block;margin:5px auto 0"><rect x="0" y="0" width="10" height="20" fill="green"></rect><rect x="10" y="0" width="10" height="20" fill="white"></rect><rect x="20" y="0" width="10" height="20" fill="red"></rect></svg>';
-      brand.appendChild(center);
-    }
-    center.style.cssText='display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;height:78px!important;min-height:78px!important;';
-  }
-
-  function ensureHives(hero){
-    let hives=document.getElementById('shop-brand-hives-stack');
-    if(!hives){
-      hives=document.createElement('div');
-      hives.id='shop-brand-hives-stack';
-      hives.innerHTML='<div id="shop-hives-subtitle">Mieli e prodotti dell\'alveare</div><div id="busatello-hives-oval"><img src="/images/alveari-busatello.jpg" alt="Alveari dell Oasi del Busatello" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block"></div>';
-      hero.appendChild(hives);
-    }
-    return hives;
-  }
-
-  function apply(){
-    if(!isHome()||window.innerWidth<901)return;
-    const title=findTitle();
-    const brand=findBrand();
-    const search=findSearch();
-    if(!title||!brand)return;
-
-    const left=title.parentElement;
-    let hero=commonAncestor(left,brand) || brand.parentElement || left.parentElement;
-    if(!hero)return;
-
-    hero.style.setProperty('position','relative','important');
-    hero.style.setProperty('height','315px','important');
-    hero.style.setProperty('min-height','315px','important');
-    hero.style.setProperty('overflow','visible','important');
-
-    left.style.setProperty('position','absolute','important');
-    left.style.setProperty('left','18px','important');
-    left.style.setProperty('top','24px','important');
-    left.style.setProperty('width','370px','important');
-    left.style.setProperty('max-width','36vw','important');
-    left.style.setProperty('margin','0','important');
-    left.style.setProperty('z-index','40','important');
-    ensureLeft(left,title);
-
-    ensureBrand(brand);
-    brand.style.setProperty('position','absolute','important');
-    brand.style.setProperty('left','50%','important');
-    brand.style.setProperty('right','auto','important');
-    brand.style.setProperty('top','22px','important');
-    brand.style.setProperty('transform','translateX(-50%)','important');
-    brand.style.setProperty('width','360px','important');
-    brand.style.setProperty('max-width','31vw','important');
-    brand.style.setProperty('height','100px','important');
-    brand.style.setProperty('min-height','100px','important');
-    brand.style.setProperty('padding','8px 14px 10px','important');
-    brand.style.setProperty('margin','0','important');
-    brand.style.setProperty('overflow','hidden','important');
-    brand.style.setProperty('z-index','41','important');
-
-    const hives=ensureHives(hero);
-    hives.style.setProperty('position','absolute','important');
-    hives.style.setProperty('left','auto','important');
-    hives.style.setProperty('right','18px','important');
-    hives.style.setProperty('top','74px','important');
-    hives.style.setProperty('transform','none','important');
-    hives.style.setProperty('width','340px','important');
-    hives.style.setProperty('max-width','32vw','important');
-    hives.style.setProperty('margin','0','important');
-    hives.style.setProperty('padding','0','important');
-    hives.style.setProperty('z-index','39','important');
-    hives.style.setProperty('display','flex','important');
-    hives.style.setProperty('flex-direction','column','important');
-    hives.style.setProperty('align-items','center','important');
-
-    const hs=document.getElementById('shop-hives-subtitle');
-    if(hs) hs.style.cssText='width:100%!important;text-align:center!important;font-family:Arial,sans-serif!important;font-size:clamp(18px,2vw,27px)!important;font-style:italic!important;font-weight:700!important;color:#fff6e3!important;line-height:1.05!important;white-space:nowrap!important;margin:0 0 6px!important;padding:0!important;';
-    const oval=document.getElementById('busatello-hives-oval');
-    if(oval) oval.style.cssText='width:100%!important;max-width:340px!important;height:136px!important;margin:0!important;border-radius:999px!important;overflow:hidden!important;border:4px solid #d4af37!important;box-shadow:0 12px 28px rgba(0,0,0,.32)!important;background:#111!important;';
-
-    if(search&&search.parentElement){
-      const wrap=search.parentElement;
-      const r=wrap.getBoundingClientRect();
-      const targetLeft=(window.innerWidth-460)/2;
-      const heroRect=hero.getBoundingClientRect();
-      const targetTop=heroRect.top+218;
-      wrap.style.setProperty('position','relative','important');
-      wrap.style.setProperty('width','460px','important');
-      wrap.style.setProperty('max-width','46vw','important');
-      wrap.style.setProperty('margin','0','important');
-      wrap.style.setProperty('z-index','45','important');
-      wrap.style.setProperty('transition','none','important');
-      wrap.style.setProperty('transform','translate('+Math.round(targetLeft-r.left)+'px,'+Math.round(targetTop-r.top)+'px)','important');
-    }
-  }
-
-  function schedule(d){clearTimeout(timer);timer=setTimeout(apply,d||60);}
-  window.addEventListener('load',()=>[20,80,180,350,700].forEach(d=>setTimeout(apply,d)));
-  window.addEventListener('resize',()=>schedule(100));
-  document.addEventListener('click',()=>schedule(80),true);
-  new MutationObserver(ms=>{if(ms.some(m=>m.type==='childList'))schedule(60);}).observe(document.body,{childList:true,subtree:true});
-  schedule(20);
-})();
-</script>`;
-
-  html = html.replace('</body>', `${script}\n</body>`);
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Layout alto HOME autoritativo applicato.');
+  console.log('[Miele Artigianale] Home alta ricostruita staticamente nel JSX: sinistra Alveoterapia, centro Fabbrica, destra alveari.');
 } catch (error) {
-  console.error('[Miele Artigianale] Errore layout alto HOME:', error);
+  console.error('[Miele Artigianale] Errore ricostruzione statica home alta:', error);
+  process.exitCode = 1;
 }
