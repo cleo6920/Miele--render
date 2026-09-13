@@ -86,20 +86,31 @@ try {
     html = html.replace(selectedCategoryState, customTrisState);
   }
 
-  const productGridPattern = /<div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">\s*\{products\.filter\(p => p\.category === selectedCategory\)\.sort\(\(a,b\) => a\.order - b\.order\)\.map\(product => \(\s*<ProductCard key=\{product\.id\} product=\{product\} onProductClick=\{handleProductSelect\} \/>\s*\)\)\}\s*<\/div>/;
+  const productListMarker = 'products.filter(p => p.category === selectedCategory)';
+  const productListCount = html.split(productListMarker).length - 1;
+  if (productListCount !== 1) {
+    throw new Error(`Lista prodotti standard non univoca: ${productListCount}`);
+  }
+
+  const productListPos = html.indexOf(productListMarker);
+  const expressionStart = html.lastIndexOf('{', productListPos);
+  const expressionEndMarker = '))}';
+  const expressionEndStart = html.indexOf(expressionEndMarker, productListPos);
+  if (expressionStart === -1 || expressionEndStart === -1) {
+    throw new Error('Espressione lista prodotti standard non delimitata');
+  }
+  const expressionEnd = expressionEndStart + expressionEndMarker.length;
 
   const customTrisGrid = `{selectedCategory === 'tris-alveare' ? (
                                             <>
-                                                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                                                    {products
-                                                        .filter(p => p.category === 'tris-alveare' && p.order >= 8001 && p.order <= 8010)
-                                                        .sort((a,b) => a.order - b.order)
-                                                        .map(product => (
-                                                            <ProductCard key={product.id} product={product} onProductClick={handleProductSelect} />
-                                                        ))}
-                                                </div>
+                                                {products
+                                                    .filter(p => p.category === 'tris-alveare' && p.order >= 8001 && p.order <= 8010)
+                                                    .sort((a,b) => a.order - b.order)
+                                                    .map(product => (
+                                                        <ProductCard key={product.id} product={product} onProductClick={handleProductSelect} />
+                                                    ))}
 
-                                                <section className="mt-10 rounded-2xl border border-amber-400/40 bg-stone-900 p-4 sm:p-6 shadow-xl">
+                                                <section className="sm:col-span-2 xl:col-span-3 mt-4 rounded-2xl border border-amber-400/40 bg-stone-900 p-4 sm:p-6 shadow-xl">
                                                     <div className="text-center">
                                                         <h3 className="text-2xl sm:text-3xl font-black text-amber-400">Scegli il tuo tris personalizzato</h3>
                                                         <p className="mt-2 text-stone-200 font-semibold">Seleziona 3 prodotti tra quelli disponibili qui sotto.</p>
@@ -183,15 +194,12 @@ try {
                                                 </section>
                                             </>
                                         ) : (
-                                            <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                                                {products.filter(p => p.category === selectedCategory).sort((a,b) => a.order - b.order).map(product => (
-                                                    <ProductCard key={product.id} product={product} onProductClick={handleProductSelect} />
-                                                ))}
-                                            </div>
+                                            products.filter(p => p.category === selectedCategory).sort((a,b) => a.order - b.order).map(product => (
+                                                <ProductCard key={product.id} product={product} onProductClick={handleProductSelect} />
+                                            ))
                                         )}`;
 
-  if (!productGridPattern.test(html)) throw new Error('Griglia prodotti standard non trovata');
-  html = html.replace(productGridPattern, customTrisGrid);
+  html = html.slice(0, expressionStart) + customTrisGrid + html.slice(expressionEnd);
 
   if (!html.includes('Scegli il tuo tris personalizzato')) throw new Error('Selettore tris personalizzato non inserito');
   if (!html.includes('customTrisSelection.length === 3')) throw new Error('Regola di selezione 3 prodotti mancante');
