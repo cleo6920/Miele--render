@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-// Mantiene tutta la catena stabile dello shop senza riattivare la vecchia logica tris.
-require('./category-layout-prestart.js');
+// Ripristina la catena stabile completa dello shop: hero, barra ricerca,
+// navigazione categorie e prodotti. Le offerte tris restano disattivate.
+require('./stable-shop-prestart.js');
 
 try {
   const indexPath = path.join(__dirname, 'index.html');
@@ -57,7 +58,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] SOS DOL aggiornato senza logica tris; catena shop preservata.');
+  console.log('[Miele Artigianale] SOS DOL aggiornato; layout stabile e navigazione prodotti ripristinati senza tris.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore aggiornamento SOS DOL:', error);
 }
