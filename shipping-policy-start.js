@@ -34,5 +34,8 @@ require('./home-layout-final.js');
 // Integra SOLO nelle due schede capsule la durata indicativa per capsula e confezione da 5.
 require('./capsule-duration-prestart.js');
 
+// Rifinitura finale delle descrizioni: nessun riferimento ai fornitori e misure candela chiare.
+require('./description-supplier-sanitize-prestart.js');
+
 // Mantiene il servizio web attivo dopo i prestart.
 require('./server.js');
