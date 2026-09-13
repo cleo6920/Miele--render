@@ -318,7 +318,9 @@ try {
     id: `tris-alveare-${offer.slug}`,
     name: `Tris dell’Alveare – ${offer.items[0].replace(/\s+€\d+[,.]\d+$/, '')}`,
     description: `Tre prodotti selezionati insieme: ${offer.items.join(' + ')}. Una proposta pronta da acquistare della linea I Tris dell’Alveare.`,
-    image: '/images/hero-prodotti-corretta.jpg',
+    image: offer.slug === 'millefiori'
+      ? '/images/tris-alveare-millefiori.jpg'
+      : '/images/hero-prodotti-corretta.jpg',
     packs: [{ id: `tris-alveare-pack-${index + 1}`, label: '1 Tris - 3 prodotti', jars: 3, price: offer.price }],
     order: 8001 + index,
     category,
