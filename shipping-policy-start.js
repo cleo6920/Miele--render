@@ -11,8 +11,9 @@ try {
 
   const bannerText = 'Consegna prevista entro 5–6 giorni • Spedizione gratuita per ordini da €200 in su';
 
-  // Testi visibili della barra spedizioni.
+  // Testi visibili della barra spedizioni: elimina anche il vecchio blocco storico.
   html = html.replaceAll("Spedizione 0€ entro 50 km dall' Oasi del Busatello (Vr-Mn) o ≥ €120", bannerText);
+  html = html.replaceAll("Spedizione 0€ entro 50 km dall' Oasi del Busatello (Vr-Mn) o >= €120", bannerText);
   html = html.replaceAll('SPEDIZIONE GRATUITA PER ORDINI SUPERIORI A €120!', bannerText);
   html = html.replaceAll('€120+', '€200+');
 
@@ -25,3 +26,6 @@ try {
   console.error('[Miele Artigianale] Errore aggiornamento politica spedizioni:', error);
   process.exitCode = 1;
 }
+
+// Mantiene il servizio web attivo dopo i prestart.
+require('./server.js');
