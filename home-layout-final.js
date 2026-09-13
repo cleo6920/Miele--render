@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-// HOME/HERO AUTORITATIVA - prova candidata 01d2d534.
-// Mantiene la geometria quasi corretta di cd4fdc97 ma sostituisce il blocco sinistro
-// con le due card cliccabili storiche PropolTerapy Professional / Unguento Apis.
+// HOME/HERO AUTORITATIVA - geometria cd4fdc97 preservata.
+// Blocco sinistro aggiornato al riferimento storico 775eb5aa:
+// nomi prodotto sotto le foto, CTA separata e navigazione diretta via shop:open-product.
 try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -17,13 +17,14 @@ try {
   #shop-authoritative-brand{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;min-height:78px!important;}
   #shop-authoritative-brand .brand-name{font-family:Georgia,'Times New Roman',serif!important;font-size:clamp(20px,1.8vw,27px)!important;font-weight:900!important;line-height:.9!important;text-transform:uppercase!important;color:#f2b63d!important;text-shadow:1px 1px 0 #7c3a00,2px 2px 0 #b85f00!important;text-align:center!important;white-space:nowrap!important;}
   #shop-authoritative-brand .brand-flag{height:23px!important;line-height:0!important;margin:4px auto 0!important;}
-  #alveoterapia-hero-actions{margin-top:16px!important;margin-left:0!important;display:flex!important;gap:16px!important;align-items:flex-start!important;}
-  #alveoterapia-hero-actions .hero-action{border:0!important;background:transparent!important;padding:0!important;margin:0!important;cursor:pointer!important;flex:0 0 auto!important;}
-  #alveoterapia-hero-actions .hero-oval{position:relative!important;width:176px!important;height:128px!important;border-radius:999px!important;overflow:hidden!important;border:4px solid #fbbf24!important;box-shadow:0 12px 28px rgba(0,0,0,.32)!important;background:#111!important;}
+  #alveoterapia-hero-actions{margin-top:16px!important;margin-left:0!important;display:flex!important;gap:20px!important;align-items:flex-start!important;padding-bottom:4px!important;}
+  #alveoterapia-hero-actions .hero-action{border:0!important;background:transparent!important;padding:0!important;margin:0!important;cursor:pointer!important;flex:0 0 176px!important;width:176px!important;display:flex!important;flex-direction:column!important;align-items:center!important;text-align:center!important;color:inherit!important;}
+  #alveoterapia-hero-actions .hero-oval{width:176px!important;height:128px!important;border-radius:999px!important;overflow:hidden!important;border:4px solid #fbbf24!important;box-shadow:0 12px 28px rgba(0,0,0,.32)!important;background:#111!important;}
   #alveoterapia-hero-actions .hero-oval img{width:100%!important;height:100%!important;display:block!important;}
   #alveoterapia-hero-actions .hero-action:first-child img{object-fit:cover!important;}
   #alveoterapia-hero-actions .hero-action:last-child img{object-fit:contain!important;background:#fff!important;}
-  #alveoterapia-hero-actions .hero-more{position:absolute!important;left:50%!important;bottom:8px!important;transform:translateX(-50%)!important;white-space:nowrap!important;border-radius:999px!important;background:rgba(0,0,0,.78)!important;padding:4px 10px!important;font-size:12px!important;font-weight:800!important;color:#fbbf24!important;border:1px solid #fbbf24!important;}
+  #alveoterapia-hero-actions .hero-name{margin-top:7px!important;font-size:13px!important;line-height:1!important;font-weight:800!important;color:#fbbf24!important;white-space:nowrap!important;}
+  #alveoterapia-hero-actions .hero-more{margin-top:5px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:999px!important;background:rgba(0,0,0,.78)!important;padding:4px 11px!important;font-size:11px!important;line-height:1!important;font-weight:800!important;color:#fbbf24!important;border:1px solid #fbbf24!important;white-space:nowrap!important;}
 }
 </style>`;
   html = html.replace('</head>', `${css}\n</head>`);
@@ -37,13 +38,8 @@ try {
     let box=document.getElementById('shop-authoritative-brand');
     if(!box){box=document.createElement('div');box.id='shop-authoritative-brand';box.innerHTML='<div class="brand-name">La Fabbrica delle Api</div><div class="brand-flag"><svg aria-label="Bandiera italiana" role="img" width="34" height="23" viewBox="0 0 30 20"><rect x="0" y="0" width="10" height="20" fill="green"/><rect x="10" y="0" width="10" height="20" fill="white"/><rect x="20" y="0" width="10" height="20" fill="red"/></svg></div>';brand.appendChild(box);}box.style.setProperty('display','flex','important');
   }
-  function openNamedProduct(label,startsWith){
-    const nodes=Array.from(document.querySelectorAll('h1,h2,h3,h4,strong,div,span'));
-    const target=nodes.find(function(el){const t=(el.textContent||'').trim();return startsWith?t.startsWith(label):t===label;});
-    if(!target)return;
-    const clickable=target.closest('button,[role="button"],.product-card,.card');
-    target.scrollIntoView({behavior:'smooth',block:'center'});
-    if(clickable&&clickable!==target&&typeof clickable.click==='function')setTimeout(function(){clickable.click();},450);
+  function openProduct(productId,category){
+    document.dispatchEvent(new CustomEvent('shop:open-product',{detail:{productId:productId,category:category}}));
   }
   function ensureHeroActions(){
     let wrap=document.getElementById('alveoterapia-hero-actions')||document.getElementById('alveoterapia-hero-static');
@@ -53,12 +49,12 @@ try {
       wrap=document.createElement('div');subtitle.insertAdjacentElement('afterend',wrap);
     }
     wrap.id='alveoterapia-hero-actions';
-    if(wrap.dataset.variant!=='clickable-01d2d534'){
-      wrap.dataset.variant='clickable-01d2d534';
-      wrap.innerHTML='<button type="button" class="hero-action" aria-label="Scopri PropolTerapy Professional"><div class="hero-oval"><img src="/images/hero-prodotti-corretta.jpg" alt="Diffusore, capsule e Unguento Apis"><span class="hero-more">Scopri di più</span></div></button><button type="button" class="hero-action" aria-label="Scopri Unguento Apis"><div class="hero-oval"><img src="/images/unguento-apis.png" alt="Unguento Apis"><span class="hero-more">Scopri di più</span></div></button>';
+    if(wrap.dataset.variant!=='labels-775eb5aa'){
+      wrap.dataset.variant='labels-775eb5aa';
+      wrap.innerHTML='<button type="button" class="hero-action" aria-label="Scopri PropolTerapy Professional"><div class="hero-oval"><img src="/images/hero-prodotti-corretta.jpg" alt="PropolTerapy Professional"></div><div class="hero-name">PropolTerapy Professional</div><div class="hero-more">Scopri di più</div></button><button type="button" class="hero-action" aria-label="Scopri SOS DOL – Unguento Apis"><div class="hero-oval"><img src="/images/unguento-apis.png" alt="SOS DOL – Unguento Apis"></div><div class="hero-name">SOS DOL – Unguento Apis – 15 ml</div><div class="hero-more">Scopri di più</div></button>';
       const buttons=wrap.querySelectorAll('.hero-action');
-      if(buttons[0])buttons[0].addEventListener('click',function(){openNamedProduct('PropolTerapy Professional',false);});
-      if(buttons[1])buttons[1].addEventListener('click',function(){openNamedProduct('Unguento Apis',true);});
+      if(buttons[0])buttons[0].addEventListener('click',function(){openProduct('propolterapy-professional','alveoterapia');});
+      if(buttons[1])buttons[1].addEventListener('click',function(){openProduct('unguento-apis','veleno-api');});
     }
     return wrap;
   }
@@ -90,5 +86,5 @@ try {
 })();
 </script>`;
 
-  html=html.replace('</body>',`${controller}\n</body>`);fs.writeFileSync(indexPath,html,'utf8');console.log('[Miele Artigianale] Prova home 01d2d534: card cliccabili storiche a sinistra, geometria cd4fdc97 preservata.');
-} catch(error){console.error('[Miele Artigianale] Errore prova home 01d2d534:',error);process.exitCode=1;}
+  html=html.replace('</body>',`${controller}\n</body>`);fs.writeFileSync(indexPath,html,'utf8');console.log('[Miele Artigianale] Home: geometria quasi corretta preservata; card sinistre aggiornate da 775eb5aa con nomi e navigazione diretta.');
+} catch(error){console.error('[Miele Artigianale] Errore home 775eb5aa:',error);process.exitCode=1;}
