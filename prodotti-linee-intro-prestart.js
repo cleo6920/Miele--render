@@ -27,8 +27,11 @@ try {
     '#prodotti-linee-intro-home .pli-coupon-title{display:block;font-size:13px;font-weight:900;letter-spacing:.10em;color:#fbbf24;text-transform:uppercase;}',
     '#prodotti-linee-intro-home .pli-coupon p{margin:7px 0 5px;color:#fff;font-size:15px;font-weight:700;line-height:1.35;}',
     '#prodotti-linee-intro-home .pli-coupon strong{display:block;color:#fde68a;font-size:17px;line-height:1.3;font-weight:900;}',
-    '#prodotti-linee-intro-home .pli-foot{margin:13px 0 0;color:#d6d3d1;font-size:14px;font-weight:700;}',
-    '@media (max-width:760px){#prodotti-linee-intro-home{padding:0 12px;margin-bottom:18px;}#prodotti-linee-intro-home .pli-card{grid-template-columns:1fr;}#prodotti-linee-intro-home .pli-photo,#prodotti-linee-intro-home .pli-photo img{min-height:0;aspect-ratio:16/11;}#prodotti-linee-intro-home .pli-copy{padding:18px 17px 20px;}#prodotti-linee-intro-home .pli-lead{font-size:15px;}#prodotti-linee-intro-home .pli-coupon strong{font-size:16px;}}'
+    '#prodotti-linee-intro-home .pli-actions{margin-top:16px;}',
+    '#prodotti-linee-intro-home .pli-lines-button{display:flex;width:100%;min-height:52px;align-items:center;justify-content:center;border:0;border-radius:13px;background:#f59e0b;color:#111827;font-size:15px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 20px rgba(245,158,11,.20);transition:transform .15s ease,background .15s ease,box-shadow .15s ease;}',
+    '#prodotti-linee-intro-home .pli-lines-button:hover{background:#fbbf24;box-shadow:0 10px 24px rgba(245,158,11,.28);}',
+    '#prodotti-linee-intro-home .pli-lines-button:active{transform:scale(.985);}',
+    '@media (max-width:760px){#prodotti-linee-intro-home{padding:0 12px;margin-bottom:18px;}#prodotti-linee-intro-home .pli-card{grid-template-columns:1fr;}#prodotti-linee-intro-home .pli-photo,#prodotti-linee-intro-home .pli-photo img{min-height:0;aspect-ratio:16/11;}#prodotti-linee-intro-home .pli-copy{padding:18px 17px 20px;}#prodotti-linee-intro-home .pli-lead{font-size:15px;}#prodotti-linee-intro-home .pli-coupon strong{font-size:16px;}#prodotti-linee-intro-home .pli-lines-button{min-height:50px;font-size:14px;}}'
   ].join('\n');
 
   const introHtml = [
@@ -43,7 +46,7 @@ try {
     '      <p>Accumula i Coupon delle Api con i tuoi acquisti.</p>',
     '      <strong>Raggiungi 100 api e richiedi il tuo Cesto dell’Alveare in omaggio.</strong>',
     '    </div>',
-    '    <p class="pli-foot">Sotto trovi tutte le linee disponibili.</p>',
+    '    <div class="pli-actions"><button type="button" class="pli-lines-button" data-open-product-lines>Scopri tutte le linee</button></div>',
     '  </div>',
     '</div>'
   ].join('');
@@ -82,6 +85,18 @@ try {
     }
   }
 
+  function goToLines(){
+    var section=document.getElementById(sectionId);
+    if(!section) return;
+    var target=document.getElementById('linea-alimenti-home') ||
+      document.getElementById('linea-benessere-veleno-api-home') ||
+      document.querySelector('[id*="linea-alimenti"]') ||
+      section.nextElementSibling;
+    if(target && target!==section){
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  }
+
   function schedule(){
     clearTimeout(timer);
     timer=setTimeout(function(){ensureStyle();ensureIntro();},50);
@@ -91,7 +106,15 @@ try {
     ensureStyle();
     ensureIntro();
     new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
-    document.addEventListener('click',function(){setTimeout(schedule,80);},true);
+    document.addEventListener('click',function(event){
+      var button=event.target && event.target.closest ? event.target.closest('[data-open-product-lines]') : null;
+      if(button){
+        event.preventDefault();
+        goToLines();
+        return;
+      }
+      setTimeout(schedule,80);
+    },true);
     window.addEventListener('popstate',schedule);
   }
 
@@ -102,7 +125,7 @@ try {
 
   html = html.replace('</body>', `${runtime}\n</body>`);
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Introduzione linee prodotto e Coupon delle Api pronta.');
+  console.log('[Miele Artigianale] Introduzione linee prodotto e Coupon delle Api pronta con accesso diretto a tutte le linee.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore introduzione linee prodotto:', error);
   process.exitCode = 1;
