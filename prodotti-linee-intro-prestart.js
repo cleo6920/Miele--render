@@ -47,7 +47,7 @@ try {
     '  <div class="pli-copy">',
     '    <div class="pli-kicker">Le linee della Fabbrica delle Api</div>',
     '    <h2>Scopri i prodotti della Fabbrica delle Api</h2>',
-    '    <p class="pli-lead">L’esperienza dell’alveare continua attraverso le nostre linee di prodotti, pensate per accompagnarti anche dopo la visita al Centro.</p>',
+    '    <p class="pli-lead">L’esperienza dell’alveare continua attraverso le nostre linee di prodotti, pensate per accompagnarti anche dopo la visita alla Galena delle Api.</p>',
     '    <div class="pli-coupon">',
     '      <span class="pli-coupon-title">🐝 Coupon delle Api</span>',
     '      <p>Accumula i Coupon delle Api con i tuoi acquisti.</p>',
