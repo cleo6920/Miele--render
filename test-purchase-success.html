@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Acquisto simulato - TEST</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;background:#111827;color:#f9fafb;font-family:Arial,Helvetica,sans-serif;min-height:100vh;padding:24px}.wrap{max-width:900px;margin:0 auto}.test{background:#7c2d12;border:2px solid #fb923c;color:#fff7ed;padding:14px 18px;border-radius:16px;font-weight:900;text-align:center;margin-bottom:18px}.card{background:#1f2937;border:1px solid #374151;border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:0 12px 30px rgba(0,0,0,.25)}h1{margin:0 0 8px;color:#fbbf24}h2{margin-top:0}.muted{color:#d1d5db}.big{font-size:2rem;font-weight:900;color:#fbbf24}.coupon{font-family:monospace;font-size:1.35rem;font-weight:900;letter-spacing:.06em;background:#111827;border:2px dashed #fbbf24;border-radius:14px;padding:14px;text-align:center;margin:14px 0}.row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #374151}.row:last-child{border-bottom:0}.btn{display:inline-block;border:0;border-radius:12px;padding:12px 18px;font-size:1rem;font-weight:900;cursor:pointer;text-decoration:none}.btn:disabled{opacity:.55;cursor:not-allowed}.primary{background:#f59e0b;color:#111827}.secondary{background:#374151;color:white}.status{margin-top:12px;padding:12px;border-radius:12px;background:#111827}.ok{color:#86efac}.err{color:#fca5a5}.warn{color:#fde68a}.progress{height:16px;background:#374151;border-radius:999px;overflow:hidden;margin-top:8px}.bar{height:100%;background:#f59e0b;width:0}.items{margin-top:12px}.item{padding:10px 0;border-bottom:1px solid #374151}.item:last-child{border-bottom:0}.claim-wrap{margin-top:16px}.claim-wrap .btn{width:100%;font-size:1.05rem}.balance-action{border:2px solid #f59e0b;background:linear-gradient(180deg,#292524,#1f2937)}.balance-action .verify-btn{width:100%;padding:18px 20px;font-size:1.25rem;box-shadow:0 8px 24px rgba(245,158,11,.25)}.balance-action .lead{font-size:1.05rem;line-height:1.5;margin-bottom:10px}.identity-reminder{font-weight:800;color:#fde68a}@media(max-width:640px){body{padding:12px}.row{flex-direction:column;gap:4px}.big{font-size:1.55rem}.balance-action .verify-btn{font-size:1.1rem}}
+    *{box-sizing:border-box}body{margin:0;background:#111827;color:#f9fafb;font-family:Arial,Helvetica,sans-serif;min-height:100vh;padding:24px}.wrap{max-width:900px;margin:0 auto}.test{background:#7c2d12;border:2px solid #fb923c;color:#fff7ed;padding:14px 18px;border-radius:16px;font-weight:900;text-align:center;margin-bottom:18px}.card{background:#1f2937;border:1px solid #374151;border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:0 12px 30px rgba(0,0,0,.25)}h1{margin:0 0 8px;color:#fbbf24}h2{margin-top:0}.muted{color:#d1d5db}.big{font-size:2rem;font-weight:900;color:#fbbf24}.coupon{font-family:monospace;font-size:1.35rem;font-weight:900;letter-spacing:.06em;background:#111827;border:2px dashed #fbbf24;border-radius:14px;padding:14px;text-align:center;margin:14px 0}.row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #374151}.row:last-child{border-bottom:0}.btn{display:inline-block;border:0;border-radius:12px;padding:12px 18px;font-size:1rem;font-weight:900;cursor:pointer;text-decoration:none}.btn:disabled{opacity:.55;cursor:not-allowed}.primary{background:#f59e0b;color:#111827}.secondary{background:#374151;color:white}.status{margin-top:12px;padding:12px;border-radius:12px;background:#111827}.ok{color:#86efac}.err{color:#fca5a5}.warn{color:#fde68a}.progress{height:16px;background:#374151;border-radius:999px;overflow:hidden;margin-top:8px}.bar{height:100%;background:#f59e0b;width:0}.items{margin-top:12px}.item{padding:10px 0;border-bottom:1px solid #374151}.item:last-child{border-bottom:0}.claim-wrap{margin-top:16px}.claim-wrap .btn{width:100%;font-size:1.05rem}.balance-action{border:2px solid #f59e0b;background:linear-gradient(180deg,#292524,#1f2937)}.balance-action .verify-btn{width:100%;padding:18px 20px;font-size:1.25rem;box-shadow:0 8px 24px rgba(245,158,11,.25)}.balance-action .lead{font-size:1.05rem;line-height:1.5;margin-bottom:10px}.identity-reminder{font-weight:800;color:#fde68a}.gift-builder{border:2px solid #fbbf24;background:linear-gradient(180deg,#1f2937,#172033)}.gift-count{font-size:1.15rem;font-weight:900;color:#fbbf24;margin:10px 0 16px}.gift-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.gift-option{min-height:58px;border:2px solid #4b5563;background:#111827;color:#f9fafb;border-radius:12px;padding:10px 12px;font-weight:800;text-align:left;cursor:pointer;transition:.15s ease}.gift-option:hover{border-color:#f59e0b;transform:translateY(-1px)}.gift-option.selected{border-color:#22c55e;background:#14532d;color:#fff;box-shadow:0 0 0 2px rgba(34,197,94,.2)}.gift-option.selected::before{content:'✓ ';color:#86efac;font-weight:900}.gift-actions{margin-top:18px}.gift-actions .btn{width:100%;padding:16px;font-size:1.1rem}.gift-selected-list{margin-top:12px;padding:12px 16px;border-radius:12px;background:#111827;color:#d1fae5;line-height:1.55}@media(max-width:640px){body{padding:12px}.row{flex-direction:column;gap:4px}.big{font-size:1.55rem}.balance-action .verify-btn{font-size:1.1rem}.gift-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -45,8 +45,19 @@
       <div class="progress"><div class="bar" id="bar"></div></div>
       <p class="muted" id="rewardText"></p>
       <div class="claim-wrap">
-        <button class="btn primary" id="claimBtn" style="display:none">🎁 Ottieni il Cesto dell’Alveare</button>
+        <button class="btn primary" id="claimBtn" style="display:none">🎁 Componi il Cesto dell’Alveare</button>
         <div class="status" id="claimMessage" style="display:none"></div>
+      </div>
+    </div>
+
+    <div class="card gift-builder" id="giftBuilder" style="display:none">
+      <h2>🎁 Componi il tuo Cesto dell’Alveare</h2>
+      <p class="muted">Scegli <strong>5 prodotti diversi</strong>. Qui non compaiono prezzi: il Cesto è il premio ottenuto con 100 Api.</p>
+      <div class="gift-count" id="giftCount">0 / 5 prodotti scelti</div>
+      <div class="gift-grid" id="giftGrid"></div>
+      <div class="status" id="giftHint">Seleziona 5 prodotti diversi per poter proseguire.</div>
+      <div class="gift-actions">
+        <button class="btn primary" id="giftConfirmBtn" disabled>Prosegui e ritira il Cesto</button>
       </div>
     </div>
 
@@ -60,6 +71,30 @@
   const $ = id => document.getElementById(id);
   let currentCoupon = '';
   let currentData = null;
+  const selectedGiftProducts = new Set();
+
+  const GIFT_PRODUCTS = [
+    {id:'favo-integrale',name:'Favo Integrale Bio'},
+    {id:'polline',name:'Polline Italiano'},
+    {id:'orsetti',name:'Orsetti Gommosi BIO'},
+    {id:'pappa-reale',name:'Pappa Reale Italiana fresca Bio'},
+    {id:'bee-energy',name:'Bee Energy – Tonico BIO'},
+    {id:'propol-active',name:'Propol Active – Compresse BIO'},
+    {id:'propoli-spray',name:'Propoli Spray'},
+    {id:'propoli-alcolica',name:'Propoli alcolica contagocce'},
+    {id:'propoli-analcolica',name:'Propoli analcolica'},
+    {id:'crema-mani',name:'Crema Mani Aloe, Cera d’Api e Propoli'},
+    {id:'burrocacao-propoli-aloe',name:'Burro Cacao Propoli + Aloe'},
+    {id:'burrocacao-miele-pappa',name:'Burro Cacao Miele + Pappa Reale'},
+    {id:'shampoo',name:'Shampoo Propoli e Aloe'},
+    {id:'saponetta-frutti-bosco',name:'Saponetta Frutti di Bosco'},
+    {id:'saponetta-lavanda',name:'Saponetta Lavanda'},
+    {id:'saponetta-aloe',name:'Saponetta Aloe'},
+    {id:'candela-alveare',name:'Candela Alveare'},
+    {id:'limoncello',name:'Limoncello'},
+    {id:'liquore-caffe',name:'Liquore al Caffè'},
+    {id:'castagne-rum',name:'Castagne al Rum'}
+  ];
 
   const euro = n => Number(n || 0).toLocaleString('it-IT',{style:'currency',currency:'EUR'});
   const post = async body => {
@@ -77,13 +112,10 @@
     $('bar').style.width=Math.min(100,balance)+'%';
     const unlocked=!!data.rewardUnlocked;
     $('rewardText').textContent=unlocked
-      ? '🎁 Hai raggiunto 100 Api: puoi ottenere il tuo Cesto dell’Alveare. I coupon saranno invalidati solo quando confermi la richiesta del Cesto.'
+      ? '🎁 Hai raggiunto 100 Api: puoi comporre il tuo Cesto dell’Alveare. I coupon saranno invalidati solo dopo la conferma finale del ritiro.'
       : 'Mancano '+Math.max(0,Number(data.remainingToReward||100-balance))+' Api per arrivare a 100 e ottenere il Cesto dell’Alveare.';
     $('claimBtn').style.display=unlocked?'inline-block':'none';
-    if(!unlocked){
-      $('claimMessage').style.display='none';
-      $('claimMessage').textContent='';
-    }
+    if(!unlocked && $('giftBuilder').style.display!=='none') $('giftBuilder').style.display='none';
   }
 
   function renderCouponState(coupon){
@@ -99,6 +131,42 @@
       $('message').className='status';
       $('message').textContent='Coupon pronto per essere conteggiato nel saldo.';
     }
+  }
+
+  function renderGiftSelection(){
+    const count=selectedGiftProducts.size;
+    $('giftCount').textContent=count+' / 5 prodotti scelti';
+    $('giftConfirmBtn').disabled=count!==5;
+    $('giftHint').className=count===5?'status ok':'status';
+    $('giftHint').textContent=count===5
+      ? '✅ Hai scelto 5 prodotti diversi. Ora puoi proseguire e ritirare il Cesto.'
+      : 'Seleziona ancora '+(5-count)+' '+((5-count)===1?'prodotto':'prodotti')+' diversi.';
+    $('giftGrid').querySelectorAll('.gift-option').forEach(btn=>{
+      btn.classList.toggle('selected',selectedGiftProducts.has(btn.dataset.productId));
+      btn.setAttribute('aria-pressed',selectedGiftProducts.has(btn.dataset.productId)?'true':'false');
+    });
+  }
+
+  function buildGiftGrid(){
+    $('giftGrid').innerHTML=GIFT_PRODUCTS.map(product=>
+      '<button type="button" class="gift-option" data-product-id="'+escapeHtml(product.id)+'" aria-pressed="false">'+escapeHtml(product.name)+'</button>'
+    ).join('');
+    $('giftGrid').querySelectorAll('.gift-option').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const id=btn.dataset.productId;
+        if(selectedGiftProducts.has(id)){
+          selectedGiftProducts.delete(id);
+        }else if(selectedGiftProducts.size<5){
+          selectedGiftProducts.add(id);
+        }else{
+          $('giftHint').className='status warn';
+          $('giftHint').textContent='Hai già scelto 5 prodotti. Deselezionane uno se vuoi cambiarlo.';
+          return;
+        }
+        renderGiftSelection();
+      });
+    });
+    renderGiftSelection();
   }
 
   async function load(){
@@ -174,28 +242,45 @@
     }
   });
 
-  $('claimBtn').addEventListener('click',async()=>{
-    if(!currentCoupon)return;
-    $('claimMessage').style.display='block';
-    $('claimMessage').className='status';
-    $('claimMessage').textContent='Richiesta del Cesto in corso...';
+  $('claimBtn').addEventListener('click',()=>{
+    selectedGiftProducts.clear();
+    renderGiftSelection();
+    $('giftBuilder').style.display='block';
+    $('claimMessage').style.display='none';
+    $('giftBuilder').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+
+  $('giftConfirmBtn').addEventListener('click',async()=>{
+    if(!currentCoupon || selectedGiftProducts.size!==5)return;
+    const selectedNames=GIFT_PRODUCTS.filter(p=>selectedGiftProducts.has(p.id)).map(p=>p.name);
+    const btn=$('giftConfirmBtn');
+    btn.disabled=true;
+    btn.textContent='Ritiro del Cesto in corso...';
+    $('giftHint').className='status';
+    $('giftHint').textContent='Conferma del Cesto e utilizzo delle 100 Api in corso...';
+
     const {res,data}=await post({testAction:'redeem',couponCode:'CLAIM:'+currentCoupon});
     if(res.ok){
+      currentData={...currentData,...data,coupon:{...(currentData.coupon||{}),status:data.couponStatus||'UTILIZZATO',addedToBalance:true}};
       $('couponStatus').textContent=data.couponStatus || 'UTILIZZATO';
       $('message').className='status warn';
-      $('message').textContent='Coupon invalidato con la richiesta del Cesto.';
-      $('claimMessage').className='status ok';
-      $('claimMessage').textContent='🎁 Cesto richiesto. '+data.couponsInvalidated+' coupon invalidati; 100 Api utilizzate.';
+      $('message').textContent='Coupon invalidato con la conferma del Cesto.';
+      $('giftBuilder').style.display='none';
       renderBalance(data);
       $('claimMessage').style.display='block';
+      $('claimMessage').className='status ok';
+      $('claimMessage').innerHTML='🎁 <strong>Cesto ritirato nella simulazione.</strong><br>100 Api utilizzate · '+data.couponsInvalidated+' coupon invalidati.<div class="gift-selected-list"><strong>I 5 prodotti scelti:</strong><br>'+selectedNames.map(escapeHtml).join('<br>')+'</div>';
+      $('balanceCard').scrollIntoView({behavior:'smooth',block:'center'});
     }else{
-      $('claimMessage').className='status err';
-      $('claimMessage').textContent='⛔ '+(data.error||'Impossibile richiedere il Cesto.');
+      $('giftHint').className='status err';
+      $('giftHint').textContent='⛔ '+(data.error||'Impossibile ritirare il Cesto.');
       if(typeof data.balance!=='undefined')renderBalance(data);
-      $('claimMessage').style.display='block';
+      btn.disabled=false;
+      btn.textContent='Prosegui e ritira il Cesto';
     }
   });
 
+  buildGiftGrid();
   load().catch(err=>{$('loading').textContent='Errore test: '+err.message;});
 })();
 </script>
