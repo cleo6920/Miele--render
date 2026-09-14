@@ -4,6 +4,21 @@ function clean(value, max = 254) {
   return String(value || '').trim().slice(0, max);
 }
 
+function cleanShipping(raw) {
+  const s = raw || {};
+  return {
+    name: clean(s.name, 120),
+    email: clean(s.email, 254).toLowerCase(),
+    phone: clean(s.phone, 50),
+    address: clean(s.address, 180),
+    postalCode: clean(s.postalCode || s.postal_code, 20),
+    city: clean(s.city, 100),
+    state: clean(s.state, 50).toUpperCase(),
+    country: clean(s.country || 'Italia', 80),
+    notes: clean(s.notes, 500)
+  };
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Allow', 'POST');
   if (req.method !== 'POST') return res.status(405).json({ error: 'Metodo non consentito.' });
@@ -35,7 +50,8 @@ module.exports = async (req, res) => {
       data = await callBeeDataApi('claim', {
         email,
         phone,
-        giftProducts: Array.isArray(body.giftProducts) ? body.giftProducts : []
+        giftProducts: Array.isArray(body.giftProducts) ? body.giftProducts : [],
+        shipping: cleanShipping(body.shipping)
       });
     } else {
       return res.status(400).json({ error: 'Azione Saldo Api non valida.' });
