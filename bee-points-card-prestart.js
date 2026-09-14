@@ -56,7 +56,7 @@ try {
                             beeBonusCard = 3;
                         }
 
-                        if (product.category === 'veleno-api') return null;
+                        if (product.category === 'veleno-api' || product.category === 'tris-alveare') return null;
                         if (!beePointsCard) return null;
 
                         return (
@@ -84,7 +84,7 @@ try {
       throw new Error(`Titolo ProductCard non individuato in modo univoco: ${cardTitleCount}`);
     }
 
-    const venomBadgeAfterImage = `                    {product.category === 'veleno-api' && (() => {
+    const bonusBadgesAfterImage = `                    {product.category === 'veleno-api' && (() => {
                         const baseBeePointsVenom = (rawPrice) => {
                             const price = Number(rawPrice || 0);
                             if (price <= 0) return 0;
@@ -117,9 +117,50 @@ try {
                             </div>
                         );
                     })()}
+                    {product.category === 'tris-alveare' && (() => {
+                        const baseBeePointsTris = (rawPrice) => {
+                            const price = Number(rawPrice || 0);
+                            if (price <= 0) return 0;
+                            if (price <= 3.90) return 1;
+                            if (price <= 6.90) return 2;
+                            if (price <= 9.90) return 3;
+                            if (price <= 14.90) return 4;
+                            if (price <= 20.00) return 5;
+                            if (price <= 29.90) return 6;
+                            if (price <= 39.90) return 7;
+                            if (price <= 59.90) return 8;
+                            if (price <= 99.90) return 10;
+                            return 15;
+                        };
+                        let beePointsTris = Number(product.beePoints);
+                        if (!Number.isFinite(beePointsTris) || beePointsTris <= 0) {
+                            const componentPricesTris = [];
+                            const priceRegexTris = /€\\s*(\\d+(?:[.,]\\d+)?)/g;
+                            const descriptionTris = String(product.description || '');
+                            let matchTris;
+                            while ((matchTris = priceRegexTris.exec(descriptionTris)) && componentPricesTris.length < 3) {
+                                componentPricesTris.push(Number(matchTris[1].replace(',', '.')));
+                            }
+                            const packPriceTris = Number(product.packs?.[0]?.price ?? 0);
+                            beePointsTris = componentPricesTris.length === 3
+                                ? componentPricesTris.reduce((sum, price) => sum + baseBeePointsTris(price), 0) + 3
+                                : baseBeePointsTris(packPriceTris) + 3;
+                        }
+                        if (!beePointsTris) return null;
+                        return (
+                            <div
+                                data-bee-points-tris-card="true"
+                                className="mb-3 inline-flex max-w-full items-center gap-1 rounded-xl border-2 border-white/80 bg-amber-400 px-2.5 py-2 text-stone-950 shadow-lg"
+                                title={(beePointsTris - 3) + ' Api + 3 bonus = ' + beePointsTris + ' Api'}
+                            >
+                                <span aria-hidden="true" className="text-base leading-none">🐝</span>
+                                <span className="text-xs sm:text-sm font-black leading-tight">{(beePointsTris - 3) + ' API + 3 BONUS = ' + beePointsTris + ' API'}</span>
+                            </div>
+                        );
+                    })()}
 ${cardTitleNeedle}`;
 
-    html = html.replace(cardTitleNeedle, venomBadgeAfterImage);
+    html = html.replace(cardTitleNeedle, bonusBadgesAfterImage);
   }
 
   if (!html.includes('data-bee-points-card="true"')) {
@@ -128,9 +169,12 @@ ${cardTitleNeedle}`;
   if (!html.includes('data-bee-points-venom-card="true"')) {
     throw new Error('Badge Punti Ape Linea Veleno fuori dalla foto non applicato');
   }
+  if (!html.includes('data-bee-points-tris-card="true"')) {
+    throw new Error('Badge Punti Ape Tris fuori dalla foto non applicato');
+  }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Badge SOS DOL: 8 Api + 2 bonus = 10 Api; calcolo totale invariato.');
+  console.log('[Miele Artigianale] Badge Punti Ape: Veleno e Tris fuori dalla foto; calcoli invariati.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore badge Punti Ape sulle card:', error);
   process.exitCode = 1;
