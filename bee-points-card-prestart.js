@@ -61,7 +61,7 @@ try {
                         return (
                             <div
                                 data-bee-points-card="true"
-                                className={'absolute right-3 z-20 inline-flex items-center gap-1.5 rounded-full border-2 border-white/80 bg-amber-400 px-2.5 py-1.5 text-stone-950 shadow-xl ' + ((!product.inStock || product.stock <= 0) ? 'top-12' : 'top-3')}
+                                className={'absolute z-20 inline-flex items-center gap-1.5 rounded-full border-2 border-white/80 bg-amber-400 px-2.5 py-1.5 text-stone-950 shadow-xl ' + (product.category === 'veleno-api' ? 'top-14 left-1/2 -translate-x-1/2' : ((!product.inStock || product.stock <= 0) ? 'right-3 top-12' : 'right-3 top-3'))}
                                 title={beeBonusCard ? beePointsCard + ' Punti Ape, inclusi +' + beeBonusCard + ' Api bonus' : beePointsCard + ' Punti Ape'}
                             >
                                 <span aria-hidden="true" className="text-lg leading-none">🐝</span>
@@ -83,7 +83,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Badge Punti Ape visibile anche sulle ProductCard; ESCLUSIVA resta a sinistra.');
+  console.log('[Miele Artigianale] Badge Punti Ape sulle ProductCard; Linea Veleno posizionata sotto ESCLUSIVA senza sovrapposizione.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore badge Punti Ape sulle card:', error);
   process.exitCode = 1;
