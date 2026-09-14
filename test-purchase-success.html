@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Acquisto simulato - TEST</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;background:#111827;color:#f9fafb;font-family:Arial,Helvetica,sans-serif;min-height:100vh;padding:24px}.wrap{max-width:900px;margin:0 auto}.test{background:#7c2d12;border:2px solid #fb923c;color:#fff7ed;padding:14px 18px;border-radius:16px;font-weight:900;text-align:center;margin-bottom:18px}.card{background:#1f2937;border:1px solid #374151;border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:0 12px 30px rgba(0,0,0,.25)}h1{margin:0 0 8px;color:#fbbf24}.muted{color:#d1d5db}.big{font-size:2rem;font-weight:900;color:#fbbf24}.coupon{font-family:monospace;font-size:1.35rem;font-weight:900;letter-spacing:.06em;background:#111827;border:2px dashed #fbbf24;border-radius:14px;padding:14px;text-align:center;margin:14px 0}.row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #374151}.row:last-child{border-bottom:0}.btn{display:inline-block;border:0;border-radius:12px;padding:12px 18px;font-size:1rem;font-weight:900;cursor:pointer;text-decoration:none}.btn:disabled{opacity:.55;cursor:not-allowed}.primary{background:#f59e0b;color:#111827}.secondary{background:#374151;color:white}.status{margin-top:12px;padding:12px;border-radius:12px;background:#111827}.ok{color:#86efac}.err{color:#fca5a5}.warn{color:#fde68a}.progress{height:16px;background:#374151;border-radius:999px;overflow:hidden;margin-top:8px}.bar{height:100%;background:#f59e0b;width:0}.items{margin-top:12px}.item{padding:10px 0;border-bottom:1px solid #374151}.item:last-child{border-bottom:0}.claim-wrap{margin-top:16px}.claim-wrap .btn{width:100%;font-size:1.05rem}@media(max-width:640px){body{padding:12px}.row{flex-direction:column;gap:4px}.big{font-size:1.55rem}}
+    *{box-sizing:border-box}body{margin:0;background:#111827;color:#f9fafb;font-family:Arial,Helvetica,sans-serif;min-height:100vh;padding:24px}.wrap{max-width:900px;margin:0 auto}.test{background:#7c2d12;border:2px solid #fb923c;color:#fff7ed;padding:14px 18px;border-radius:16px;font-weight:900;text-align:center;margin-bottom:18px}.card{background:#1f2937;border:1px solid #374151;border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:0 12px 30px rgba(0,0,0,.25)}h1{margin:0 0 8px;color:#fbbf24}h2{margin-top:0}.muted{color:#d1d5db}.big{font-size:2rem;font-weight:900;color:#fbbf24}.coupon{font-family:monospace;font-size:1.35rem;font-weight:900;letter-spacing:.06em;background:#111827;border:2px dashed #fbbf24;border-radius:14px;padding:14px;text-align:center;margin:14px 0}.row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #374151}.row:last-child{border-bottom:0}.btn{display:inline-block;border:0;border-radius:12px;padding:12px 18px;font-size:1rem;font-weight:900;cursor:pointer;text-decoration:none}.btn:disabled{opacity:.55;cursor:not-allowed}.primary{background:#f59e0b;color:#111827}.secondary{background:#374151;color:white}.status{margin-top:12px;padding:12px;border-radius:12px;background:#111827}.ok{color:#86efac}.err{color:#fca5a5}.warn{color:#fde68a}.progress{height:16px;background:#374151;border-radius:999px;overflow:hidden;margin-top:8px}.bar{height:100%;background:#f59e0b;width:0}.items{margin-top:12px}.item{padding:10px 0;border-bottom:1px solid #374151}.item:last-child{border-bottom:0}.claim-wrap{margin-top:16px}.claim-wrap .btn{width:100%;font-size:1.05rem}.balance-action{border:2px solid #f59e0b;background:linear-gradient(180deg,#292524,#1f2937)}.balance-action .verify-btn{width:100%;padding:18px 20px;font-size:1.25rem;box-shadow:0 8px 24px rgba(245,158,11,.25)}.balance-action .lead{font-size:1.05rem;line-height:1.5;margin-bottom:10px}.identity-reminder{font-weight:800;color:#fde68a}@media(max-width:640px){body{padding:12px}.row{flex-direction:column;gap:4px}.big{font-size:1.55rem}.balance-action .verify-btn{font-size:1.1rem}}
   </style>
 </head>
 <body>
@@ -23,17 +23,24 @@
       </div>
     </div>
 
+    <div class="card balance-action" id="balanceActionCard" style="display:none">
+      <h2>🐝 Verifica il tuo Saldo Api</h2>
+      <p class="lead">Acquisto concluso. Premi il pulsante qui sotto: le Api di questo ordine vengono aggiunte al tuo saldo e controlliamo subito se hai raggiunto le <strong>100 Api</strong> per ottenere il Cesto dell’Alveare.</p>
+      <p class="identity-reminder">Nei prossimi ordini usa sempre la stessa email oppure lo stesso numero di telefono per ritrovare il tuo saldo aggiornato.</p>
+      <button class="btn primary verify-btn" id="checkBalanceBtn">🐝 VERIFICA SALDO API</button>
+      <div class="status" id="checkMessage">Premi il pulsante per aggiornare e controllare il saldo.</div>
+    </div>
+
     <div class="card" id="couponCard" style="display:none">
-      <h2>Coupon Api di prova</h2>
-      <p class="muted">Aggiungi il Coupon Api al saldo. Finché non richiedi il Cesto dell’Alveare il coupon resta valido; lo stesso coupon non può però essere conteggiato due volte nello stesso saldo.</p>
+      <h2>Dettagli Coupon Api di prova</h2>
+      <p class="muted">Il coupon resta valido finché non richiedi il Cesto dell’Alveare e non può essere conteggiato due volte nello stesso saldo.</p>
       <div class="coupon" id="coupon"></div>
       <div class="row"><strong>Stato coupon</strong><span id="couponStatus"></span></div>
-      <button class="btn primary" id="redeemBtn">Aggiungi Coupon Api al saldo</button>
-      <div class="status" id="message">Pronto per aggiungere il coupon.</div>
+      <div class="status" id="message">Coupon pronto.</div>
     </div>
 
     <div class="card" id="balanceCard" style="display:none">
-      <h2>Saldo Api simulato</h2>
+      <h2>Saldo Api aggiornato</h2>
       <div class="big" id="balance"></div>
       <div class="progress"><div class="bar" id="bar"></div></div>
       <p class="muted" id="rewardText"></p>
@@ -52,6 +59,7 @@
   const orderId = params.get('order_id');
   const $ = id => document.getElementById(id);
   let currentCoupon = '';
+  let currentData = null;
 
   const euro = n => Number(n || 0).toLocaleString('it-IT',{style:'currency',currency:'EUR'});
   const post = async body => {
@@ -69,8 +77,8 @@
     $('bar').style.width=Math.min(100,balance)+'%';
     const unlocked=!!data.rewardUnlocked;
     $('rewardText').textContent=unlocked
-      ? '🎁 Soglia 100 Api raggiunta: ora puoi richiedere il tuo Cesto dell’Alveare. I coupon saranno invalidati solo quando confermi la richiesta.'
-      : 'Mancano '+Math.max(0,Number(data.remainingToReward||100-balance))+' Api alla soglia di 100.';
+      ? '🎁 Hai raggiunto 100 Api: puoi ottenere il tuo Cesto dell’Alveare. I coupon saranno invalidati solo quando confermi la richiesta del Cesto.'
+      : 'Mancano '+Math.max(0,Number(data.remainingToReward||100-balance))+' Api per arrivare a 100 e ottenere il Cesto dell’Alveare.';
     $('claimBtn').style.display=unlocked?'inline-block':'none';
     if(!unlocked){
       $('claimMessage').style.display='none';
@@ -81,13 +89,15 @@
   function renderCouponState(coupon){
     const status=coupon && coupon.status || '-';
     $('couponStatus').textContent=status;
-    $('redeemBtn').disabled=status!=='ATTIVO';
     if(status==='UTILIZZATO'){
       $('message').className='status warn';
       $('message').textContent='Questo coupon è stato invalidato quando è stato richiesto il Cesto.';
     }else if(coupon && coupon.addedToBalance){
       $('message').className='status ok';
-      $('message').textContent='✅ Coupon già aggiunto al saldo. È ancora ATTIVO e resterà valido finché non richiedi il Cesto.';
+      $('message').textContent='✅ Coupon già conteggiato nel saldo. Resta ATTIVO finché non richiedi il Cesto.';
+    }else{
+      $('message').className='status';
+      $('message').textContent='Coupon pronto per essere conteggiato nel saldo.';
     }
   }
 
@@ -95,7 +105,10 @@
     if(!orderId){$('loading').textContent='ID ordine TEST mancante.';return;}
     const {res,data}=await post({testAction:'status',orderId});
     if(!res.ok){$('loading').textContent=data.error||'Ordine TEST non trovato.';return;}
-    $('loading').style.display='none';$('content').style.display='block';$('couponCard').style.display='block';
+    currentData=data;
+    $('loading').style.display='none';
+    $('content').style.display='block';
+    $('balanceActionCard').style.display='block';
     $('orderId').textContent=data.orderId;
     $('total').textContent=euro(data.total);
     $('points').textContent=data.beePoints+' Api';
@@ -106,25 +119,58 @@
     currentCoupon=data.coupon && data.coupon.code || '';
     $('coupon').textContent=currentCoupon;
     renderCouponState(data.coupon);
-    renderBalance(data);
   }
 
   function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 
-  $('redeemBtn').addEventListener('click',async()=>{
-    if(!currentCoupon)return;
-    $('message').className='status';
-    $('message').textContent='Aggiunta coupon al saldo in corso...';
+  $('checkBalanceBtn').addEventListener('click',async()=>{
+    if(!currentCoupon || !currentData)return;
+    const btn=$('checkBalanceBtn');
+    btn.disabled=true;
+    $('checkMessage').className='status';
+    $('checkMessage').textContent='Aggiornamento del Saldo Api in corso...';
+
+    if(currentData.coupon && currentData.coupon.addedToBalance){
+      renderBalance(currentData);
+      $('couponCard').style.display='block';
+      $('checkMessage').className='status ok';
+      $('checkMessage').textContent='✅ Saldo già aggiornato: controlla qui sotto quante Api hai.';
+      btn.textContent='✅ SALDO API VERIFICATO';
+      $('balanceCard').scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+
+    if(currentData.coupon && currentData.coupon.status==='UTILIZZATO'){
+      renderBalance(currentData);
+      $('couponCard').style.display='block';
+      $('checkMessage').className='status warn';
+      $('checkMessage').textContent='Questo coupon è già stato utilizzato per un Cesto. Qui sotto trovi il saldo attuale.';
+      btn.textContent='✅ SALDO API VERIFICATO';
+      $('balanceCard').scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+
     const {res,data}=await post({testAction:'redeem',couponCode:currentCoupon});
     $('couponStatus').textContent=data.couponStatus || (res.ok?'ATTIVO':'ERRORE');
+    $('couponCard').style.display='block';
     if(res.ok){
+      currentData={...currentData,...data,coupon:{...(currentData.coupon||{}),status:data.couponStatus||'ATTIVO',addedToBalance:true}};
       $('message').className='status ok';
-      $('message').textContent='✅ Coupon aggiunto: '+data.pointsAdded+' Api accreditate al saldo. Il coupon resta ATTIVO finché non richiedi il Cesto.';
+      $('message').textContent='✅ Le '+data.pointsAdded+' Api di questo ordine sono state conteggiate. Il coupon resta ATTIVO finché non richiedi il Cesto.';
+      $('checkMessage').className='status ok';
+      $('checkMessage').textContent='✅ Saldo aggiornato. Controlla qui sotto se hai raggiunto 100 Api.';
+      btn.textContent='✅ SALDO API VERIFICATO';
       renderBalance(data);
+      $('balanceCard').scrollIntoView({behavior:'smooth',block:'center'});
     }else{
+      currentData={...currentData,...data};
       $('message').className=data.addedToBalance?'status warn':'status err';
       $('message').textContent=(data.addedToBalance?'⚠️ ':'⛔ ')+(data.error||'Coupon non utilizzabile.');
+      $('checkMessage').className=data.addedToBalance?'status warn':'status err';
+      $('checkMessage').textContent=(data.addedToBalance?'Saldo già aggiornato. ':'')+(data.error||'Impossibile verificare il saldo.');
       if(typeof data.balance!=='undefined')renderBalance(data);
+      if(data.addedToBalance)btn.textContent='✅ SALDO API VERIFICATO';
+      else btn.disabled=false;
     }
   });
 
@@ -136,7 +182,6 @@
     const {res,data}=await post({testAction:'redeem',couponCode:'CLAIM:'+currentCoupon});
     if(res.ok){
       $('couponStatus').textContent=data.couponStatus || 'UTILIZZATO';
-      $('redeemBtn').disabled=true;
       $('message').className='status warn';
       $('message').textContent='Coupon invalidato con la richiesta del Cesto.';
       $('claimMessage').className='status ok';
