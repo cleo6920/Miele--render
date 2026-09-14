@@ -1,10 +1,5 @@
 const crypto = require('crypto');
-
-const orders = new Map();
-const coupons = new Map();
-const balances = new Map();
-const pendingCoupons = new Map();
-const rewardClaims = new Map();
+const { callBeeDataApi } = require('./bee-wallet-client');
 
 const VENOM_IDS = new Set([
   'unguento-apis',
@@ -38,10 +33,6 @@ const CUSTOM_TRIS_POINTS = {
   'castagne-rum': 2
 };
 
-const GIFT_PRODUCT_IDS = new Set(Object.keys(CUSTOM_TRIS_POINTS));
-
-// Punti esatti dei 30 Tris predefiniti: somma Api dei tre prodotti + 3 Api bonus.
-// Devono coincidere con la formula mostrata nelle card e nelle schede prodotto.
 const PREDEFINED_TRIS_POINTS = {
   'tris-alveare-millefiori': 11,
   'tris-alveare-melone': 12,
@@ -140,14 +131,6 @@ function makeCoupon() {
   return `TEST-${raw.slice(0, 5)}-${raw.slice(5)}`;
 }
 
-function customerKey(customer) {
-  const email = clean(customer && customer.email, 254).toLowerCase();
-  if (email) return `email:${email}`;
-  const phone = clean(customer && customer.phone, 50).replace(/\s+/g, '');
-  if (phone) return `phone:${phone}`;
-  return 'anonymous:test';
-}
-
 function isVenomItem(productId, productName) {
   if (VENOM_IDS.has(productId)) return true;
   const name = clean(productName, 180).toLowerCase();
@@ -203,30 +186,34 @@ function pointsForItem(item) {
   if (isSosDolItem(productId, productName)) {
     perUnit = 10;
     bonusPerUnit = 2;
-    calculation = 'SOS DOL = 10 Api totali, inclusi +2 bonus veleno';
+    calculation = 'SOS DOL = 8 Api + 2 bonus = 10 Api';
   } else if (isVenomItem(productId, productName)) {
+    const base = perUnit;
     perUnit += 2;
     bonusPerUnit = 2;
-    calculation = 'fascia-prezzo +2 bonus veleno';
+    calculation = `${base} Api + 2 bonus = ${perUnit} Api`;
   } else if (String(productId).startsWith('tris-alveare-personalizzato-')) {
     const exact = customTrisPoints(productId);
     if (exact) {
       perUnit = exact;
       bonusPerUnit = 3;
-      calculation = 'somma 3 prodotti +3 bonus tris';
+      calculation = `somma prodotti + 3 bonus = ${perUnit} Api`;
     } else {
       perUnit += 3;
       bonusPerUnit = 3;
       calculation = 'fallback tris test';
     }
-  } else if (predefinedTrisPoints(productId, productName)) {
-    perUnit = predefinedTrisPoints(productId, productName);
-    bonusPerUnit = 3;
-    calculation = 'somma 3 prodotti +3 bonus tris';
-  } else if (String(productId).startsWith('tris-alveare-') || /\btris\b/i.test(productName)) {
-    perUnit += 3;
-    bonusPerUnit = 3;
-    calculation = 'fallback tris test';
+  } else {
+    const predefined = predefinedTrisPoints(productId, productName);
+    if (predefined) {
+      perUnit = predefined;
+      bonusPerUnit = 3;
+      calculation = `somma prodotti + 3 bonus = ${perUnit} Api`;
+    } else if (String(productId).startsWith('tris-alveare-') || /\btris\b/i.test(productName)) {
+      perUnit += 3;
+      bonusPerUnit = 3;
+      calculation = 'fallback tris test';
+    }
   }
 
   return {
@@ -241,11 +228,17 @@ function pointsForItem(item) {
   };
 }
 
-function createTestPurchase({ items, testCart, shippingEuro, customer, notes }) {
+async function createTestPurchase({ items, testCart, shippingEuro, customer, notes }) {
   if (!isTestPurchaseMode()) throw new Error('Modalità acquisto simulato non attiva.');
   const safeItems = Array.isArray(items) ? items : [];
   const cartMeta = Array.isArray(testCart) ? testCart : [];
-  const mergedItems = safeItems.map((item, index) => ({ ...item, ...(cartMeta[index] || {}), name: item.name, amount: item.amount, quantity: item.quantity }));
+  const mergedItems = safeItems.map((item, index) => ({
+    ...item,
+    ...(cartMeta[index] || {}),
+    name: item.name,
+    amount: item.amount,
+    quantity: item.quantity
+  }));
   const pointLines = mergedItems.map(pointsForItem);
   const beePoints = pointLines.reduce((sum, line) => sum + line.totalPoints, 0);
   const goodsTotal = safeItems.reduce((sum, item) => sum + (Number(item.amount) * Number(item.quantity)), 0);
@@ -253,153 +246,51 @@ function createTestPurchase({ items, testCart, shippingEuro, customer, notes }) 
   const total = Number((goodsTotal + shipping).toFixed(2));
   const orderId = makeId('TESTORD');
   const couponCode = makeCoupon();
-  const key = customerKey(customer || {});
-  const currentBalance = Number(balances.get(key) || 0);
-  const createdAt = new Date().toISOString();
 
-  const coupon = { code: couponCode, orderId, customerKey: key, points: beePoints, status: 'ATTIVO', createdAt, usedAt: null, balanceAfter: currentBalance };
-  const order = {
+  const result = await callBeeDataApi('create_purchase', {
     orderId,
+    couponCode,
     mode: 'TEST',
-    createdAt,
-    customerKey: key,
-    customerLabel: clean((customer && (customer.email || customer.phone || customer.name)) || 'Cliente test', 120),
+    customer: customer || {},
     items: pointLines,
     goodsTotal: Number(goodsTotal.toFixed(2)),
     shipping,
     total,
     beePoints,
-    couponCode,
     notes: clean(notes, 500)
-  };
-
-  orders.set(orderId, order);
-  coupons.set(couponCode, coupon);
-  return getTestPurchase(orderId);
-}
-
-function getTestPurchase(orderId) {
-  const order = orders.get(clean(orderId, 220));
-  if (!order) return null;
-  const coupon = coupons.get(order.couponCode);
-  const balance = Number(balances.get(order.customerKey) || 0);
-  const pending = pendingCoupons.get(order.customerKey);
-  const addedToBalance = !!(coupon && pending && pending.has(coupon.code));
-  return {
-    ...order,
-    coupon: coupon ? { code: coupon.code, points: coupon.points, status: coupon.status, createdAt: coupon.createdAt, usedAt: coupon.usedAt, addedToBalance } : null,
-    balance,
-    rewardTarget: 100,
-    rewardUnlocked: balance >= 100,
-    remainingToReward: Math.max(0, 100 - balance)
-  };
-}
-
-function validateGiftProducts(rawProducts) {
-  const products = Array.isArray(rawProducts) ? rawProducts.map(id => clean(id, 120)).filter(Boolean) : [];
-  const unique = [...new Set(products)];
-  if (products.length !== 5 || unique.length !== 5) {
-    return { ok: false, error: 'Devi selezionare esattamente 5 prodotti diversi per il Cesto.' };
-  }
-  const invalid = unique.filter(id => !GIFT_PRODUCT_IDS.has(id));
-  if (invalid.length) return { ok: false, error: 'Uno o più prodotti scelti per il Cesto non sono validi.' };
-  return { ok: true, products: unique };
-}
-
-function claimTestReward(coupon, rawGiftProducts) {
-  const gift = validateGiftProducts(rawGiftProducts);
-  if (!gift.ok) {
-    const balance = Number(balances.get(coupon.customerKey) || 0);
-    return { ok: false, status: 400, error: gift.error, couponStatus: coupon.status, balance, rewardUnlocked: balance >= 100, remainingToReward: Math.max(0, 100 - balance) };
-  }
-
-  const key = coupon.customerKey;
-  const before = Number(balances.get(key) || 0);
-  if (before < 100) {
-    return { ok: false, status: 409, error: `Servono ancora ${100 - before} Api prima di poter ottenere il Cesto.`, couponStatus: coupon.status, balance: before, rewardUnlocked: false, remainingToReward: 100 - before };
-  }
-
-  const pending = pendingCoupons.get(key) || new Set();
-  const usedAt = new Date().toISOString();
-  let invalidated = 0;
-  for (const pendingCode of pending) {
-    const pendingCoupon = coupons.get(pendingCode);
-    if (!pendingCoupon || pendingCoupon.status !== 'ATTIVO') continue;
-    pendingCoupon.status = 'UTILIZZATO';
-    pendingCoupon.usedAt = usedAt;
-    invalidated += 1;
-  }
-
-  pending.clear();
-  pendingCoupons.set(key, pending);
-  const after = Math.max(0, before - 100);
-  balances.set(key, after);
-
-  const claimId = makeId('TESTGIFT');
-  rewardClaims.set(claimId, {
-    claimId,
-    customerKey: key,
-    anchorCouponCode: coupon.code,
-    giftProducts: gift.products,
-    createdAt: usedAt,
-    pointsSpent: 100,
-    balanceBefore: before,
-    balanceAfter: after,
-    couponsInvalidated: invalidated
   });
 
-  return {
-    ok: true,
-    status: 200,
-    rewardClaimed: true,
-    claimId,
-    giftProducts: gift.products,
-    couponsInvalidated: invalidated,
-    pointsSpent: 100,
-    couponStatus: coupon.status,
-    balanceBefore: before,
-    balance: after,
-    rewardTarget: 100,
-    rewardUnlocked: after >= 100,
-    remainingToReward: Math.max(0, 100 - after)
-  };
+  if (!result || result.ok === false) {
+    throw new Error(result && result.error ? result.error : 'Impossibile salvare l’ordine TEST nel Saldo Api permanente.');
+  }
+  return result;
 }
 
-function redeemTestCoupon(rawCode, giftProducts) {
-  if (!isTestPurchaseMode()) throw new Error('Modalità acquisto simulato non attiva.');
-  const raw = clean(rawCode, 100).toUpperCase();
-  const claimRequested = raw.startsWith('CLAIM:');
-  const code = claimRequested ? clean(raw.slice(6), 80).toUpperCase() : clean(raw, 80).toUpperCase();
-  const coupon = coupons.get(code);
-  if (!coupon) return { ok: false, status: 404, error: 'Coupon TEST non trovato.' };
-  if (claimRequested) return claimTestReward(coupon, giftProducts);
+async function getTestPurchase(orderId) {
+  if (!isTestPurchaseMode()) return null;
+  const result = await callBeeDataApi('get_purchase', { orderId: clean(orderId, 220) });
+  if (!result || result.ok === false) return null;
+  return result;
+}
 
-  const balance = Number(balances.get(coupon.customerKey) || 0);
-  if (coupon.status !== 'ATTIVO') {
-    return { ok: false, status: 409, error: 'Coupon TEST già utilizzato per ottenere un Cesto.', couponStatus: coupon.status, balance, rewardUnlocked: balance >= 100, remainingToReward: Math.max(0, 100 - balance) };
+async function redeemTestCoupon(couponCode, giftProducts) {
+  if (!isTestPurchaseMode()) return { ok: false, status: 404, error: 'Modalità acquisto simulato non attiva.' };
+  const raw = clean(couponCode, 220);
+  if (raw.startsWith('CLAIM:')) {
+    const code = raw.slice('CLAIM:'.length);
+    return callBeeDataApi('claim_coupon', {
+      couponCode: code,
+      giftProducts: Array.isArray(giftProducts) ? giftProducts : []
+    });
   }
-
-  let pending = pendingCoupons.get(coupon.customerKey);
-  if (!pending) {
-    pending = new Set();
-    pendingCoupons.set(coupon.customerKey, pending);
-  }
-
-  if (pending.has(code)) {
-    return { ok: false, status: 409, error: 'Coupon TEST già inserito nel saldo. Resta valido fino alla richiesta del Cesto.', couponStatus: coupon.status, addedToBalance: true, balance, rewardUnlocked: balance >= 100, remainingToReward: Math.max(0, 100 - balance) };
-  }
-
-  const after = balance + Number(coupon.points || 0);
-  pending.add(code);
-  balances.set(coupon.customerKey, after);
-  coupon.balanceAfter = after;
-
-  return { ok: true, status: 200, couponStatus: coupon.status, addedToBalance: true, pointsAdded: coupon.points, balanceBefore: balance, balance: after, rewardTarget: 100, rewardUnlocked: after >= 100, remainingToReward: Math.max(0, 100 - after) };
+  return callBeeDataApi('check_coupon', { couponCode: raw });
 }
 
 module.exports = {
   isTestPurchaseMode,
   createTestPurchase,
   getTestPurchase,
-  redeemTestCoupon
+  redeemTestCoupon,
+  pointsForItem,
+  baseBeePoints
 };

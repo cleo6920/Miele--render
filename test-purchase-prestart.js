@@ -8,80 +8,6 @@ try {
     return;
   }
 
-  // Nel TEST il saldo Api deve poter essere ritrovato usando la stessa email O lo stesso telefono.
-  // Patch mirata del solo identificatore cliente: nessuna modifica ai punti, coupon o soglia premio.
-  const storePath = path.join(__dirname, 'test-purchase-store.js');
-  if (fs.existsSync(storePath)) {
-    let store = fs.readFileSync(storePath, 'utf8');
-    if (!store.includes('const customerAliases = new Map();')) {
-      const mapAnchor = 'const pendingCoupons = new Map();';
-      if (!store.includes(mapAnchor)) throw new Error('Anchor pendingCoupons non trovato nel TEST store');
-      store = store.replace(mapAnchor, `${mapAnchor}\nconst customerAliases = new Map();`);
-
-      const oldCustomerKey = `function customerKey(customer) {
-  const email = clean(customer && customer.email, 254).toLowerCase();
-  if (email) return \`email:\${email}\`;
-  const phone = clean(customer && customer.phone, 50).replace(/\\s+/g, '');
-  if (phone) return \`phone:\${phone}\`;
-  return 'anonymous:test';
-}`;
-
-      const newCustomerKey = `function normalizeCustomerPhone(value) {
-  let digits = clean(value, 50).replace(/\\D+/g, '');
-  if (digits.startsWith('0039')) digits = digits.slice(2);
-  if (/^3\\d{9}$/.test(digits) || /^0\\d{6,}$/.test(digits)) digits = '39' + digits;
-  return digits;
-}
-
-function customerIdentifiers(customer) {
-  const identifiers = [];
-  const email = clean(customer && customer.email, 254).toLowerCase();
-  const phone = normalizeCustomerPhone(customer && customer.phone);
-  if (email) identifiers.push(\`email:\${email}\`);
-  if (phone) identifiers.push(\`phone:\${phone}\`);
-  return identifiers;
-}
-
-function customerKey(customer) {
-  const identifiers = customerIdentifiers(customer);
-  if (!identifiers.length) return 'anonymous:test';
-
-  let canonical = '';
-  for (const identifier of identifiers) {
-    const known = customerAliases.get(identifier);
-    if (known) {
-      canonical = known;
-      break;
-    }
-  }
-  if (!canonical) canonical = identifiers[0];
-  for (const identifier of identifiers) customerAliases.set(identifier, canonical);
-  return canonical;
-}`;
-
-      if (!store.includes(oldCustomerKey)) throw new Error('Funzione customerKey attesa non trovata nel TEST store');
-      store = store.replace(oldCustomerKey, newCustomerKey);
-      fs.writeFileSync(storePath, store, 'utf8');
-      console.log('[Miele Artigianale] TEST saldo Api: stessa email O stesso telefono abilitati.');
-    }
-  }
-
-  // Il ritiro TEST deve inviare al backend i 5 prodotti scelti.
-  // Il backend li valida e registra prima di consumare 100 Api e invalidare i coupon.
-  const successPath = path.join(__dirname, 'test-purchase-success.html');
-  if (fs.existsSync(successPath)) {
-    let successHtml = fs.readFileSync(successPath, 'utf8');
-    const oldClaimCall = "    const {res,data}=await post({testAction:'redeem',couponCode:'CLAIM:'+currentCoupon});";
-    const newClaimCall = "    const giftProducts=Array.from(selectedGiftProducts);\n    const {res,data}=await post({testAction:'redeem',couponCode:'CLAIM:'+currentCoupon,giftProducts});";
-    if (successHtml.includes(oldClaimCall)) {
-      successHtml = successHtml.replace(oldClaimCall, newClaimCall);
-      fs.writeFileSync(successPath, successHtml, 'utf8');
-      console.log('[Miele Artigianale] TEST Cesto: 5 prodotti inviati al backend per validazione e registrazione.');
-    } else if (!successHtml.includes("couponCode:'CLAIM:'+currentCoupon,giftProducts")) {
-      throw new Error('Chiamata CLAIM del Cesto TEST non trovata');
-    }
-  }
-
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
   if (html.includes('data-test-purchase-mode="true"')) {
@@ -130,7 +56,7 @@ function customerKey(customer) {
     const note = document.createElement('div');
     note.id = 'bee-identity-note';
     note.setAttribute('role','note');
-    note.innerHTML = '<strong>🐝 Mantieni aggiornato il tuo Saldo Api</strong><span>Per sommare correttamente le Api di tutti i tuoi acquisti, usa sempre la stessa email oppure lo stesso numero di telefono.</span>';
+    note.innerHTML = '<strong>🐝 Saldo Api permanente</strong><span>Usa la stessa email o lo stesso telefono per ritrovare automaticamente il saldo. Se hai Coupon Api ottenuti con altri contatti, potrai aggiungerli manualmente dalla pagina SALDO API. I codici non scadono.</span>';
     emailInput.parentNode.insertBefore(note, emailInput);
   };
 
@@ -161,7 +87,7 @@ function customerKey(customer) {
 
   html = html.includes('</body>') ? html.replace('</body>', `${injection}\n</body>`) : `${html}\n${injection}`;
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Modalità acquisto simulato: ATTIVA nel frontend; Stripe non viene chiamato dal percorso TEST.');
+  console.log('[Miele Artigianale] Modalità acquisto simulato: ATTIVA; Coupon Api persistenti nel database.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore modalità acquisto simulato frontend:', error);
   process.exitCode = 1;

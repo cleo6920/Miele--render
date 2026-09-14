@@ -27,45 +27,25 @@ try {
   process.exitCode = 1;
 }
 
-// Nuova linea autonoma: I Tris dell’Alveare, con 30 offerte già definite.
 require('./linea-tris-alveare-prestart.js');
-
-// Ripristina la foto pulita della presentazione prodotti prima di costruire la pagina.
 require('./intro-photo-rebuild.js');
-
-// Pagina introduttiva alle linee prodotto: usa la foto del Centro e presenta
-// il programma Coupon delle Api prima delle linee già esistenti.
 require('./prodotti-linee-intro-prestart.js');
-
-// Aggiunge lo slogan direttamente nel box visibile I Tris dell’Alveare,
-// lasciando invariati foto, titolo, descrizione e pulsante già approvati.
 require('./tris-home-slogan-prestart.js');
-
-// Ultimo intervento: sistema SOLO la parte alta della home dopo tutte le altre patch.
-// Non modifica le viste delle linee né le schede prodotto.
 require('./home-layout-final.js');
-
-// Integra SOLO nelle due schede capsule la durata indicativa per capsula e confezione da 5.
 require('./capsule-duration-prestart.js');
-
-// Rifinitura finale delle descrizioni: nessun riferimento ai fornitori e misure candela chiare.
 require('./description-supplier-sanitize-prestart.js');
-
-// Punti Ape: badge in scheda prodotto, +2 bonus Veleno d’Api e +3 bonus sui Tris.
 require('./bee-points-prestart.js');
-
-// Punti Ape anche sulle card prodotto; ESCLUSIVA resta separata a sinistra.
 require('./bee-points-card-prestart.js');
-
-// Rende sempre esplicito il calcolo dei bonus: base + bonus = totale, senza cambiare i punti assegnati.
 require('./bonus-formula-prestart.js');
-
-// Ultimo intervento sulla griglia: Linea Alimenti mostra esclusivamente le 14 referenze approvate.
 require('./alimenti-render-final-prestart.js');
 
-// Modalità temporanea e isolata per collaudare acquisti/Coupon senza chiamare Stripe.
-// Se TEST_PURCHASE_MODE non è true, non cambia nulla nel checkout reale.
+// Modalità temporanea per collaudare gli acquisti senza chiamare Stripe.
 require('./test-purchase-prestart.js');
+
+// Saldo Api permanente: accesso nel negozio, stampa Coupon, pagina Saldo e API persistente.
+require('./bee-wallet-ui-prestart.js');
+require('./bee-wallet-success-prestart.js');
+require('./bee-wallet-server-prestart.js');
 
 // Mantiene il servizio web attivo dopo i prestart.
 require('./server.js');

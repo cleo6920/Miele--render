@@ -28,21 +28,20 @@ module.exports = async (req, res) => {
   try {
     const body = req.body || {};
 
-    // Endpoint TEST multiplexato sulla stessa rotta per evitare di toccare il router pubblico.
     if (body.testAction) {
       if (!isTestPurchaseMode()) {
         return res.status(404).json({ error: 'Modalità acquisto simulato non attiva.' });
       }
 
       if (body.testAction === 'status') {
-        const order = getTestPurchase(body.orderId);
+        const order = await getTestPurchase(body.orderId);
         if (!order) return res.status(404).json({ error: 'Ordine TEST non trovato.' });
         return res.status(200).json(order);
       }
 
       if (body.testAction === 'redeem') {
-        const result = redeemTestCoupon(body.couponCode, body.giftProducts);
-        return res.status(result.status || (result.ok ? 200 : 400)).json(result);
+        const result = await redeemTestCoupon(body.couponCode, body.giftProducts);
+        return res.status(result.status || (result.ok === false ? 400 : 200)).json(result);
       }
 
       return res.status(400).json({ error: 'Azione TEST non valida.' });
@@ -98,9 +97,8 @@ module.exports = async (req, res) => {
       safeCustomer.state
     ].filter(Boolean).join(' | ').slice(0, 500);
 
-    // Modalità temporanea di collaudo: nessuna chiamata a Stripe, nessun pagamento reale.
     if (isTestPurchaseMode()) {
-      const testPurchase = createTestPurchase({
+      const testPurchase = await createTestPurchase({
         items: sanitizedItems,
         testCart: Array.isArray(body.testCart) ? body.testCart : [],
         shippingEuro,
@@ -108,7 +106,7 @@ module.exports = async (req, res) => {
         notes: cleanText(body.notes, 500)
       });
 
-      console.log(`[TEST PURCHASE] Ordine ${testPurchase.orderId} creato: €${testPurchase.total.toFixed(2)}, ${testPurchase.beePoints} Api, coupon ${testPurchase.coupon && testPurchase.coupon.code}.`);
+      console.log(`[TEST PURCHASE] Ordine ${testPurchase.orderId} salvato permanentemente: €${Number(testPurchase.total).toFixed(2)}, ${testPurchase.beePoints} Api, coupon ${testPurchase.coupon && testPurchase.coupon.code}.`);
       return res.status(200).json({
         id: testPurchase.orderId,
         url: `/test-purchase-success.html?order_id=${encodeURIComponent(testPurchase.orderId)}`,
@@ -162,7 +160,7 @@ module.exports = async (req, res) => {
   } catch (error) {
     const prefix = isTestPurchaseMode() ? '[TEST PURCHASE]' : '[Stripe]';
     console.error(`${prefix} Errore creazione Checkout Session:`, error);
-    return res.status(500).json({
+    return res.status(error && error.status ? error.status : 500).json({
       error: error && error.message
         ? error.message
         : 'Impossibile avviare il pagamento.'
