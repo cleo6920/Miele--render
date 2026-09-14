@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Acquisto simulato - TEST</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;background:#111827;color:#f9fafb;font-family:Arial,Helvetica,sans-serif;min-height:100vh;padding:24px}.wrap{max-width:900px;margin:0 auto}.test{background:#7c2d12;border:2px solid #fb923c;color:#fff7ed;padding:14px 18px;border-radius:16px;font-weight:900;text-align:center;margin-bottom:18px}.card{background:#1f2937;border:1px solid #374151;border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:0 12px 30px rgba(0,0,0,.25)}h1{margin:0 0 8px;color:#fbbf24}.muted{color:#d1d5db}.big{font-size:2rem;font-weight:900;color:#fbbf24}.coupon{font-family:monospace;font-size:1.35rem;font-weight:900;letter-spacing:.06em;background:#111827;border:2px dashed #fbbf24;border-radius:14px;padding:14px;text-align:center;margin:14px 0}.row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #374151}.row:last-child{border-bottom:0}.btn{display:inline-block;border:0;border-radius:12px;padding:12px 18px;font-size:1rem;font-weight:900;cursor:pointer;text-decoration:none}.primary{background:#f59e0b;color:#111827}.secondary{background:#374151;color:white}.status{margin-top:12px;padding:12px;border-radius:12px;background:#111827}.ok{color:#86efac}.err{color:#fca5a5}.warn{color:#fde68a}.progress{height:16px;background:#374151;border-radius:999px;overflow:hidden;margin-top:8px}.bar{height:100%;background:#f59e0b;width:0}.items{margin-top:12px}.item{padding:10px 0;border-bottom:1px solid #374151}.item:last-child{border-bottom:0}@media(max-width:640px){body{padding:12px}.row{flex-direction:column;gap:4px}.big{font-size:1.55rem}}
+    *{box-sizing:border-box}body{margin:0;background:#111827;color:#f9fafb;font-family:Arial,Helvetica,sans-serif;min-height:100vh;padding:24px}.wrap{max-width:900px;margin:0 auto}.test{background:#7c2d12;border:2px solid #fb923c;color:#fff7ed;padding:14px 18px;border-radius:16px;font-weight:900;text-align:center;margin-bottom:18px}.card{background:#1f2937;border:1px solid #374151;border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:0 12px 30px rgba(0,0,0,.25)}h1{margin:0 0 8px;color:#fbbf24}.muted{color:#d1d5db}.big{font-size:2rem;font-weight:900;color:#fbbf24}.coupon{font-family:monospace;font-size:1.35rem;font-weight:900;letter-spacing:.06em;background:#111827;border:2px dashed #fbbf24;border-radius:14px;padding:14px;text-align:center;margin:14px 0}.row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #374151}.row:last-child{border-bottom:0}.btn{display:inline-block;border:0;border-radius:12px;padding:12px 18px;font-size:1rem;font-weight:900;cursor:pointer;text-decoration:none}.btn:disabled{opacity:.55;cursor:not-allowed}.primary{background:#f59e0b;color:#111827}.secondary{background:#374151;color:white}.status{margin-top:12px;padding:12px;border-radius:12px;background:#111827}.ok{color:#86efac}.err{color:#fca5a5}.warn{color:#fde68a}.progress{height:16px;background:#374151;border-radius:999px;overflow:hidden;margin-top:8px}.bar{height:100%;background:#f59e0b;width:0}.items{margin-top:12px}.item{padding:10px 0;border-bottom:1px solid #374151}.item:last-child{border-bottom:0}.claim-wrap{margin-top:16px}.claim-wrap .btn{width:100%;font-size:1.05rem}@media(max-width:640px){body{padding:12px}.row{flex-direction:column;gap:4px}.big{font-size:1.55rem}}
   </style>
 </head>
 <body>
@@ -25,11 +25,11 @@
 
     <div class="card" id="couponCard" style="display:none">
       <h2>Coupon Api di prova</h2>
-      <p class="muted">Il coupon è monouso: il primo utilizzo accredita le Api, il secondo deve essere rifiutato.</p>
+      <p class="muted">Aggiungi il Coupon Api al saldo. Finché non richiedi il Cesto dell’Alveare il coupon resta valido; lo stesso coupon non può però essere conteggiato due volte nello stesso saldo.</p>
       <div class="coupon" id="coupon"></div>
       <div class="row"><strong>Stato coupon</strong><span id="couponStatus"></span></div>
-      <button class="btn primary" id="redeemBtn">Simula utilizzo Coupon Api</button>
-      <div class="status" id="message">Pronto per il test.</div>
+      <button class="btn primary" id="redeemBtn">Aggiungi Coupon Api al saldo</button>
+      <div class="status" id="message">Pronto per aggiungere il coupon.</div>
     </div>
 
     <div class="card" id="balanceCard" style="display:none">
@@ -37,6 +37,10 @@
       <div class="big" id="balance"></div>
       <div class="progress"><div class="bar" id="bar"></div></div>
       <p class="muted" id="rewardText"></p>
+      <div class="claim-wrap">
+        <button class="btn primary" id="claimBtn" style="display:none">🎁 Ottieni il Cesto dell’Alveare</button>
+        <div class="status" id="claimMessage" style="display:none"></div>
+      </div>
     </div>
 
     <a class="btn secondary" href="/shop">← Torna al negozio</a>
@@ -63,9 +67,28 @@
     $('balanceCard').style.display='block';
     $('balance').textContent=balance+' Api';
     $('bar').style.width=Math.min(100,balance)+'%';
-    $('rewardText').textContent=data.rewardUnlocked
-      ? '🎁 Soglia 100 Api raggiunta: premio simulato sbloccato.'
+    const unlocked=!!data.rewardUnlocked;
+    $('rewardText').textContent=unlocked
+      ? '🎁 Soglia 100 Api raggiunta: ora puoi richiedere il tuo Cesto dell’Alveare. I coupon saranno invalidati solo quando confermi la richiesta.'
       : 'Mancano '+Math.max(0,Number(data.remainingToReward||100-balance))+' Api alla soglia di 100.';
+    $('claimBtn').style.display=unlocked?'inline-block':'none';
+    if(!unlocked){
+      $('claimMessage').style.display='none';
+      $('claimMessage').textContent='';
+    }
+  }
+
+  function renderCouponState(coupon){
+    const status=coupon && coupon.status || '-';
+    $('couponStatus').textContent=status;
+    $('redeemBtn').disabled=status!=='ATTIVO';
+    if(status==='UTILIZZATO'){
+      $('message').className='status warn';
+      $('message').textContent='Questo coupon è stato invalidato quando è stato richiesto il Cesto.';
+    }else if(coupon && coupon.addedToBalance){
+      $('message').className='status ok';
+      $('message').textContent='✅ Coupon già aggiunto al saldo. È ancora ATTIVO e resterà valido finché non richiedi il Cesto.';
+    }
   }
 
   async function load(){
@@ -82,7 +105,7 @@
     }).join('');
     currentCoupon=data.coupon && data.coupon.code || '';
     $('coupon').textContent=currentCoupon;
-    $('couponStatus').textContent=data.coupon && data.coupon.status || '-';
+    renderCouponState(data.coupon);
     renderBalance(data);
   }
 
@@ -90,17 +113,41 @@
 
   $('redeemBtn').addEventListener('click',async()=>{
     if(!currentCoupon)return;
-    $('message').textContent='Verifica coupon in corso...';
+    $('message').className='status';
+    $('message').textContent='Aggiunta coupon al saldo in corso...';
     const {res,data}=await post({testAction:'redeem',couponCode:currentCoupon});
-    $('couponStatus').textContent=data.couponStatus || (res.ok?'UTILIZZATO':'ERRORE');
+    $('couponStatus').textContent=data.couponStatus || (res.ok?'ATTIVO':'ERRORE');
     if(res.ok){
       $('message').className='status ok';
-      $('message').textContent='✅ Coupon utilizzato: '+data.pointsAdded+' Api accreditate. Clicca di nuovo per verificare che non sia riutilizzabile.';
+      $('message').textContent='✅ Coupon aggiunto: '+data.pointsAdded+' Api accreditate al saldo. Il coupon resta ATTIVO finché non richiedi il Cesto.';
       renderBalance(data);
     }else{
-      $('message').className='status err';
-      $('message').textContent='⛔ '+(data.error||'Coupon non utilizzabile.');
+      $('message').className=data.addedToBalance?'status warn':'status err';
+      $('message').textContent=(data.addedToBalance?'⚠️ ':'⛔ ')+(data.error||'Coupon non utilizzabile.');
       if(typeof data.balance!=='undefined')renderBalance(data);
+    }
+  });
+
+  $('claimBtn').addEventListener('click',async()=>{
+    if(!currentCoupon)return;
+    $('claimMessage').style.display='block';
+    $('claimMessage').className='status';
+    $('claimMessage').textContent='Richiesta del Cesto in corso...';
+    const {res,data}=await post({testAction:'redeem',couponCode:'CLAIM:'+currentCoupon});
+    if(res.ok){
+      $('couponStatus').textContent=data.couponStatus || 'UTILIZZATO';
+      $('redeemBtn').disabled=true;
+      $('message').className='status warn';
+      $('message').textContent='Coupon invalidato con la richiesta del Cesto.';
+      $('claimMessage').className='status ok';
+      $('claimMessage').textContent='🎁 Cesto richiesto. '+data.couponsInvalidated+' coupon invalidati; 100 Api utilizzate.';
+      renderBalance(data);
+      $('claimMessage').style.display='block';
+    }else{
+      $('claimMessage').className='status err';
+      $('claimMessage').textContent='⛔ '+(data.error||'Impossibile richiedere il Cesto.');
+      if(typeof data.balance!=='undefined')renderBalance(data);
+      $('claimMessage').style.display='block';
     }
   });
 

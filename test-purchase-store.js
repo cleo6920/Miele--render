@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const orders = new Map();
 const coupons = new Map();
 const balances = new Map();
+const pendingCoupons = new Map();
 
 const VENOM_IDS = new Set([
   'unguento-apis',
@@ -200,6 +201,8 @@ function getTestPurchase(orderId) {
   if (!order) return null;
   const coupon = coupons.get(order.couponCode);
   const balance = Number(balances.get(order.customerKey) || 0);
+  const pending = pendingCoupons.get(order.customerKey);
+  const addedToBalance = !!(coupon && pending && pending.has(coupon.code));
   return {
     ...order,
     coupon: coupon ? {
@@ -207,7 +210,8 @@ function getTestPurchase(orderId) {
       points: coupon.points,
       status: coupon.status,
       createdAt: coupon.createdAt,
-      usedAt: coupon.usedAt
+      usedAt: coupon.usedAt,
+      addedToBalance
     } : null,
     balance,
     rewardTarget: 100,
@@ -216,19 +220,75 @@ function getTestPurchase(orderId) {
   };
 }
 
-function redeemTestCoupon(rawCode) {
-  if (!isTestPurchaseMode()) throw new Error('Modalità acquisto simulato non attiva.');
-  const code = clean(rawCode, 80).toUpperCase();
-  const coupon = coupons.get(code);
-  if (!coupon) {
-    return { ok: false, status: 404, error: 'Coupon TEST non trovato.' };
-  }
-  if (coupon.status !== 'ATTIVO') {
-    const balance = Number(balances.get(coupon.customerKey) || 0);
+function claimTestReward(coupon) {
+  const key = coupon.customerKey;
+  const before = Number(balances.get(key) || 0);
+  if (before < 100) {
     return {
       ok: false,
       status: 409,
-      error: 'Coupon TEST già utilizzato.',
+      error: `Servono ancora ${100 - before} Api prima di poter ottenere il Cesto.`,
+      couponStatus: coupon.status,
+      balance: before,
+      rewardUnlocked: false,
+      remainingToReward: 100 - before
+    };
+  }
+
+  const pending = pendingCoupons.get(key) || new Set();
+  const usedAt = new Date().toISOString();
+  let invalidated = 0;
+  for (const pendingCode of pending) {
+    const pendingCoupon = coupons.get(pendingCode);
+    if (!pendingCoupon || pendingCoupon.status !== 'ATTIVO') continue;
+    pendingCoupon.status = 'UTILIZZATO';
+    pendingCoupon.usedAt = usedAt;
+    invalidated += 1;
+  }
+
+  pending.clear();
+  pendingCoupons.set(key, pending);
+
+  const after = Math.max(0, before - 100);
+  balances.set(key, after);
+
+  return {
+    ok: true,
+    status: 200,
+    rewardClaimed: true,
+    couponsInvalidated: invalidated,
+    pointsSpent: 100,
+    couponStatus: coupon.status,
+    balanceBefore: before,
+    balance: after,
+    rewardTarget: 100,
+    rewardUnlocked: after >= 100,
+    remainingToReward: Math.max(0, 100 - after)
+  };
+}
+
+function redeemTestCoupon(rawCode) {
+  if (!isTestPurchaseMode()) throw new Error('Modalità acquisto simulato non attiva.');
+
+  const raw = clean(rawCode, 100).toUpperCase();
+  const claimRequested = raw.startsWith('CLAIM:');
+  const code = claimRequested ? clean(raw.slice(6), 80).toUpperCase() : clean(raw, 80).toUpperCase();
+  const coupon = coupons.get(code);
+
+  if (!coupon) {
+    return { ok: false, status: 404, error: 'Coupon TEST non trovato.' };
+  }
+
+  if (claimRequested) {
+    return claimTestReward(coupon);
+  }
+
+  const balance = Number(balances.get(coupon.customerKey) || 0);
+  if (coupon.status !== 'ATTIVO') {
+    return {
+      ok: false,
+      status: 409,
+      error: 'Coupon TEST già utilizzato per ottenere un Cesto.',
       couponStatus: coupon.status,
       balance,
       rewardUnlocked: balance >= 100,
@@ -236,19 +296,37 @@ function redeemTestCoupon(rawCode) {
     };
   }
 
-  const before = Number(balances.get(coupon.customerKey) || 0);
-  const after = before + Number(coupon.points || 0);
+  let pending = pendingCoupons.get(coupon.customerKey);
+  if (!pending) {
+    pending = new Set();
+    pendingCoupons.set(coupon.customerKey, pending);
+  }
+
+  if (pending.has(code)) {
+    return {
+      ok: false,
+      status: 409,
+      error: 'Coupon TEST già inserito nel saldo. Resta valido fino alla richiesta del Cesto.',
+      couponStatus: coupon.status,
+      addedToBalance: true,
+      balance,
+      rewardUnlocked: balance >= 100,
+      remainingToReward: Math.max(0, 100 - balance)
+    };
+  }
+
+  const after = balance + Number(coupon.points || 0);
+  pending.add(code);
   balances.set(coupon.customerKey, after);
-  coupon.status = 'UTILIZZATO';
-  coupon.usedAt = new Date().toISOString();
   coupon.balanceAfter = after;
 
   return {
     ok: true,
     status: 200,
     couponStatus: coupon.status,
+    addedToBalance: true,
     pointsAdded: coupon.points,
-    balanceBefore: before,
+    balanceBefore: balance,
     balance: after,
     rewardTarget: 100,
     rewardUnlocked: after >= 100,
