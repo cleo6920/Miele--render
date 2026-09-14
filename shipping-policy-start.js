@@ -51,5 +51,8 @@ require('./capsule-duration-prestart.js');
 // Rifinitura finale delle descrizioni: nessun riferimento ai fornitori e misure candela chiare.
 require('./description-supplier-sanitize-prestart.js');
 
+// Punti Ape: badge in scheda prodotto, +2 bonus Veleno d’Api e +3 bonus sui Tris.
+require('./bee-points-prestart.js');
+
 // Mantiene il servizio web attivo dopo i prestart.
 require('./server.js');
