@@ -56,12 +56,13 @@ try {
                             beeBonusCard = 3;
                         }
 
+                        if (product.category === 'veleno-api') return null;
                         if (!beePointsCard) return null;
 
                         return (
                             <div
                                 data-bee-points-card="true"
-                                className={'absolute z-20 inline-flex items-center gap-1.5 rounded-full border-2 border-white/80 bg-amber-400 px-2.5 py-1.5 text-stone-950 shadow-xl ' + (product.category === 'veleno-api' ? 'top-14 left-1/2 -translate-x-1/2' : ((!product.inStock || product.stock <= 0) ? 'right-3 top-12' : 'right-3 top-3'))}
+                                className={'absolute z-20 inline-flex items-center gap-1.5 rounded-full border-2 border-white/80 bg-amber-400 px-2.5 py-1.5 text-stone-950 shadow-xl ' + ((!product.inStock || product.stock <= 0) ? 'right-3 top-12' : 'right-3 top-3')}
                                 title={beeBonusCard ? beePointsCard + ' Punti Ape, inclusi +' + beeBonusCard + ' Api bonus' : beePointsCard + ' Punti Ape'}
                             >
                                 <span aria-hidden="true" className="text-lg leading-none">🐝</span>
@@ -76,14 +77,57 @@ try {
                         src={product.image}`;
 
     html = html.replace(cardImageNeedle, cardBadge);
+
+    const cardTitleNeedle = '                    <h3 className="text-2xl font-bold text-amber-700">{product.name}</h3>';
+    const cardTitleCount = html.split(cardTitleNeedle).length - 1;
+    if (cardTitleCount !== 1) {
+      throw new Error(`Titolo ProductCard non individuato in modo univoco: ${cardTitleCount}`);
+    }
+
+    const venomBadgeAfterImage = `                    {product.category === 'veleno-api' && (() => {
+                        const baseBeePointsVenom = (rawPrice) => {
+                            const price = Number(rawPrice || 0);
+                            if (price <= 0) return 0;
+                            if (price <= 3.90) return 1;
+                            if (price <= 6.90) return 2;
+                            if (price <= 9.90) return 3;
+                            if (price <= 14.90) return 4;
+                            if (price <= 20.00) return 5;
+                            if (price <= 29.90) return 6;
+                            if (price <= 39.90) return 7;
+                            if (price <= 59.90) return 8;
+                            if (price <= 99.90) return 10;
+                            return 15;
+                        };
+                        const packPriceVenom = Number(product.packs?.[0]?.price ?? 0);
+                        const beePointsVenom = baseBeePointsVenom(packPriceVenom) + 2;
+                        if (!beePointsVenom) return null;
+                        return (
+                            <div
+                                data-bee-points-venom-card="true"
+                                className="mb-3 inline-flex items-center gap-1.5 rounded-full border-2 border-white/80 bg-amber-400 px-3 py-2 text-stone-950 shadow-xl"
+                                title={beePointsVenom + ' Punti Ape, inclusi +2 Api bonus'}
+                            >
+                                <span aria-hidden="true" className="text-lg leading-none">🐝</span>
+                                <span className="text-sm sm:text-base font-black leading-none">{beePointsVenom} {beePointsVenom === 1 ? 'APE' : 'API'}</span>
+                                <span className="rounded-full bg-stone-950 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-amber-300">+2 bonus</span>
+                            </div>
+                        );
+                    })()}
+${cardTitleNeedle}`;
+
+    html = html.replace(cardTitleNeedle, venomBadgeAfterImage);
   }
 
   if (!html.includes('data-bee-points-card="true"')) {
     throw new Error('Badge Punti Ape sulle card non applicato');
   }
+  if (!html.includes('data-bee-points-venom-card="true"')) {
+    throw new Error('Badge Punti Ape Linea Veleno fuori dalla foto non applicato');
+  }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Badge Punti Ape sulle ProductCard; Linea Veleno posizionata sotto ESCLUSIVA senza sovrapposizione.');
+  console.log('[Miele Artigianale] Badge Punti Ape: Linea Veleno sotto la foto e prima del titolo; altre linee invariate.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore badge Punti Ape sulle card:', error);
   process.exitCode = 1;
