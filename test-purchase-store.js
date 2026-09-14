@@ -83,6 +83,11 @@ function isVenomItem(productId, productName) {
   return /veleno d['’]api|sos dol|apis1|apis2|apis4|apis5|bagnodoccia.*oro/.test(name);
 }
 
+function isSosDolItem(productId, productName) {
+  if (productId === 'unguento-apis') return true;
+  return /\bsos\s*dol\b/i.test(clean(productName, 180));
+}
+
 function customTrisPoints(productId) {
   if (!String(productId || '').startsWith('tris-alveare-personalizzato-')) return null;
   let sum = 0;
@@ -106,7 +111,11 @@ function pointsForItem(item) {
   let bonusPerUnit = 0;
   let calculation = 'fascia-prezzo';
 
-  if (isVenomItem(productId, productName)) {
+  if (isSosDolItem(productId, productName)) {
+    perUnit = 10;
+    bonusPerUnit = 2;
+    calculation = 'SOS DOL = 10 Api totali, inclusi +2 bonus veleno';
+  } else if (isVenomItem(productId, productName)) {
     perUnit += 2;
     bonusPerUnit = 2;
     calculation = 'fascia-prezzo +2 bonus veleno';

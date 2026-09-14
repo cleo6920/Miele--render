@@ -33,7 +33,7 @@ try {
                         let beeBonusCard = 0;
 
                         if (product.category === 'veleno-api') {
-                            beePointsCard += 2;
+                            beePointsCard = product.id === 'unguento-apis' ? 10 : beePointsCard + 2;
                             beeBonusCard = 2;
                         }
 
@@ -100,7 +100,7 @@ try {
                             return 15;
                         };
                         const packPriceVenom = Number(product.packs?.[0]?.price ?? 0);
-                        const beePointsVenom = baseBeePointsVenom(packPriceVenom) + 2;
+                        const beePointsVenom = product.id === 'unguento-apis' ? 10 : baseBeePointsVenom(packPriceVenom) + 2;
                         if (!beePointsVenom) return null;
                         return (
                             <div
@@ -127,7 +127,7 @@ ${cardTitleNeedle}`;
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Badge Punti Ape: Linea Veleno sotto la foto e prima del titolo; altre linee invariate.');
+  console.log('[Miele Artigianale] Badge Punti Ape: SOS DOL 10 Api; Linea Veleno sotto la foto e prima del titolo; altre linee invariate.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore badge Punti Ape sulle card:', error);
   process.exitCode = 1;
