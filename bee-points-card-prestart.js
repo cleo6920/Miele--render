@@ -100,17 +100,20 @@ try {
                             return 15;
                         };
                         const packPriceVenom = Number(product.packs?.[0]?.price ?? 0);
-                        const beePointsVenom = product.id === 'unguento-apis' ? 10 : baseBeePointsVenom(packPriceVenom) + 2;
+                        const isSosDolVenom = product.id === 'unguento-apis';
+                        const beePointsVenom = isSosDolVenom ? 10 : baseBeePointsVenom(packPriceVenom) + 2;
                         if (!beePointsVenom) return null;
                         return (
                             <div
                                 data-bee-points-venom-card="true"
                                 className="mb-3 inline-flex items-center gap-1.5 rounded-full border-2 border-white/80 bg-amber-400 px-3 py-2 text-stone-950 shadow-xl"
-                                title={beePointsVenom + ' Punti Ape, inclusi +2 Api bonus'}
+                                title={isSosDolVenom ? '8 Api + 2 bonus = 10 Api' : beePointsVenom + ' Punti Ape, inclusi +2 Api bonus'}
                             >
                                 <span aria-hidden="true" className="text-lg leading-none">🐝</span>
-                                <span className="text-sm sm:text-base font-black leading-none">{beePointsVenom} {beePointsVenom === 1 ? 'APE' : 'API'}</span>
-                                <span className="rounded-full bg-stone-950 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-amber-300">+2 bonus</span>
+                                <span className="text-sm sm:text-base font-black leading-none">{isSosDolVenom ? '8 API + 2 BONUS = 10 API' : (beePointsVenom + ' ' + (beePointsVenom === 1 ? 'APE' : 'API'))}</span>
+                                {!isSosDolVenom && (
+                                    <span className="rounded-full bg-stone-950 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-amber-300">+2 bonus</span>
+                                )}
                             </div>
                         );
                     })()}
@@ -127,7 +130,7 @@ ${cardTitleNeedle}`;
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Badge Punti Ape: SOS DOL 10 Api; Linea Veleno sotto la foto e prima del titolo; altre linee invariate.');
+  console.log('[Miele Artigianale] Badge SOS DOL: 8 Api + 2 bonus = 10 Api; calcolo totale invariato.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore badge Punti Ape sulle card:', error);
   process.exitCode = 1;
