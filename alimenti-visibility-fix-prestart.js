@@ -13,7 +13,7 @@ try {
   ];
   const foodLiteral = JSON.stringify(foodIds);
 
-  // 1) Corregge TUTTI i percorsi reali che alimentano setProducts:
+  // 1) Corregge tutti i percorsi reali che alimentano setProducts:
   // Firebase assente, auth fallback, STOCK_MODE statico e merge Firestore.
   let productFilterCount = 0;
   html = html.replace(
@@ -25,7 +25,7 @@ try {
   );
   if (!productFilterCount) throw new Error('Nessun filtro setProducts riconosciuto');
 
-  // 2) Evita che gli stessi 14 prodotti vengano contemporaneamente classificati come archiviati.
+  // 2) Evita che gli stessi 14 prodotti siano contemporaneamente classificati come archiviati.
   html = html.replace(
     /window\.archivedProducts = (staticInitialProducts|mergedProducts|brochureReadyProducts)\.filter\(p => !allowedCategoriesForShop\.includes\(p\.category\)\);/g,
     (full, sourceName) => `window.archivedProducts = ${sourceName}.filter(p => !allowedCategoriesForShop.includes(p.category) && !${foodLiteral}.includes(p.id));`
@@ -56,16 +56,38 @@ try {
     }
   }
 
-  // 5) Verifiche finali mirate.
+  // 5) Inserisce il ramo Alimenti direttamente nel renderer ProductCard finale,
+  // preservando integralmente gli eventuali rami speciali già presenti (es. Veleno d'Api).
+  const rendererPrefix = '{products.filter(p =>';
+  const rendererTail = ').sort((a,b) => a.order - b.order).map(product => (';
+  const rendererStart = html.indexOf(rendererPrefix);
+  if (rendererStart === -1) throw new Error('Renderer products.filter non trovato');
+  const tailPos = html.indexOf(rendererTail, rendererStart);
+  if (tailPos === -1) throw new Error('Coda renderer ProductCard non trovata');
+
+  const exprStart = rendererStart + rendererPrefix.length;
+  const currentExpr = html.slice(exprStart, tailPos).trim();
+  if (!currentExpr.includes("selectedCategory === 'alimenti'")) {
+    const alimentoExpr = ` selectedCategory === 'alimenti' ? ${foodLiteral}.includes(p.id) : (${currentExpr})`;
+    html = html.slice(0, exprStart) + alimentoExpr + html.slice(tailPos);
+  }
+
+  // 6) Titolo pagina coerente se la mappa finale non contiene ancora Alimenti.
+  const titleObjectNeedle = "'veleno-api': 'Linea Benessere Veleno d’Api'";
+  if (html.includes(titleObjectNeedle) && !html.includes("'alimenti': 'Linea Alimenti'")) {
+    html = html.replaceAll(titleObjectNeedle, `${titleObjectNeedle}, 'alimenti': 'Linea Alimenti'`);
+  }
+
+  // 7) Verifiche finali mirate.
   if (!html.includes("selectedCategory === 'alimenti' ?")) {
-    throw new Error('Renderer virtuale Linea Alimenti non presente');
+    throw new Error('Renderer virtuale Linea Alimenti non inserito');
   }
   for (const id of foodIds) {
     if (!html.includes(id)) throw new Error(`Referenza Alimenti mancante dal sorgente finale: ${id}`);
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log(`[Miele Artigianale] Linea Alimenti PASS: ${foodIds.length} referenze incluse in ${productFilterCount} percorsi setProducts.`);
+  console.log(`[Miele Artigianale] Linea Alimenti PASS: ${foodIds.length} referenze incluse in ${productFilterCount} percorsi setProducts e renderer dedicato attivo.`);
 } catch (error) {
   console.error('[Miele Artigianale] Errore visibilità Linea Alimenti:', error);
   process.exitCode = 1;
