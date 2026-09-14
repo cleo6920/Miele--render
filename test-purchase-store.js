@@ -37,6 +37,41 @@ const CUSTOM_TRIS_POINTS = {
   'castagne-rum': 2
 };
 
+// Punti esatti dei 30 Tris predefiniti: somma Api dei tre prodotti + 3 Api bonus.
+// Devono coincidere con la formula mostrata nelle card e nelle schede prodotto.
+const PREDEFINED_TRIS_POINTS = {
+  'tris-alveare-millefiori': 11,
+  'tris-alveare-melone': 12,
+  'tris-alveare-fragola': 12,
+  'tris-alveare-pesca': 11,
+  'tris-alveare-arancia': 12,
+  'tris-alveare-castagno': 12,
+  'tris-alveare-acacia-zenzero': 12,
+  'tris-alveare-eucalipto': 10,
+  'tris-alveare-balsammiel': 12,
+  'tris-alveare-acacia-40g': 11,
+  'tris-alveare-favo-integrale': 12,
+  'tris-alveare-polline': 12,
+  'tris-alveare-orsetti': 11,
+  'tris-alveare-pappa-reale': 11,
+  'tris-alveare-bee-energy': 11,
+  'tris-alveare-propol-active': 13,
+  'tris-alveare-propoli-spray': 13,
+  'tris-alveare-propoli-alcolica': 12,
+  'tris-alveare-propoli-analcolica': 12,
+  'tris-alveare-crema-mani': 12,
+  'tris-alveare-burrocacao-propoli-aloe': 13,
+  'tris-alveare-burrocacao-miele-pappa': 13,
+  'tris-alveare-shampoo': 12,
+  'tris-alveare-saponetta-frutti-bosco': 12,
+  'tris-alveare-saponetta-lavanda': 10,
+  'tris-alveare-saponetta-aloe': 12,
+  'tris-alveare-candela-alveare': 12,
+  'tris-alveare-limoncello': 12,
+  'tris-alveare-liquore-caffe': 12,
+  'tris-alveare-castagne-rum': 12
+};
+
 function isTestPurchaseMode() {
   return String(process.env.TEST_PURCHASE_MODE || '').trim().toLowerCase() === 'true';
 }
@@ -101,6 +136,10 @@ function customTrisPoints(productId) {
   return count === 3 ? sum + 3 : null;
 }
 
+function predefinedTrisPoints(productId) {
+  return PREDEFINED_TRIS_POINTS[String(productId || '')] || null;
+}
+
 function pointsForItem(item) {
   const productId = clean(item.productId, 220);
   const productName = clean(item.productName || item.name, 220);
@@ -130,6 +169,10 @@ function pointsForItem(item) {
       bonusPerUnit = 3;
       calculation = 'fallback tris test';
     }
+  } else if (predefinedTrisPoints(productId)) {
+    perUnit = predefinedTrisPoints(productId);
+    bonusPerUnit = 3;
+    calculation = 'somma 3 prodotti +3 bonus tris';
   } else if (String(productId).startsWith('tris-alveare-') || /\btris\b/i.test(productName)) {
     perUnit += 3;
     bonusPerUnit = 3;
