@@ -57,6 +57,9 @@ require('./bee-points-prestart.js');
 // Punti Ape anche sulle card prodotto; ESCLUSIVA resta separata a sinistra.
 require('./bee-points-card-prestart.js');
 
+// Rende sempre esplicito il calcolo dei bonus: base + bonus = totale, senza cambiare i punti assegnati.
+require('./bonus-formula-prestart.js');
+
 // Ultimo intervento sulla griglia: Linea Alimenti mostra esclusivamente le 14 referenze approvate.
 require('./alimenti-render-final-prestart.js');
 
