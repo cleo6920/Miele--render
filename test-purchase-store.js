@@ -72,6 +72,41 @@ const PREDEFINED_TRIS_POINTS = {
   'tris-alveare-castagne-rum': 12
 };
 
+// Fallback autoritativo per il checkout TEST quando il browser non invia il productId.
+// La chiave è il primo prodotto che dà il nome al Tris.
+const PREDEFINED_TRIS_NAME_POINTS = {
+  'millefiori': 11,
+  'melone': 12,
+  'fragola': 12,
+  'pesca': 11,
+  'arancia': 12,
+  'castagno': 12,
+  'acacia e zenzero': 12,
+  'eucalipto': 10,
+  'balsamico italiano': 12,
+  'acacia 40 g': 11,
+  'acacia in favo': 12,
+  'polline': 12,
+  'orsetti': 11,
+  'pappa reale': 11,
+  'bee energy': 11,
+  'propol active': 13,
+  'propoli spray': 13,
+  'propoli alcolica contagocce': 12,
+  'propoli analcolica': 12,
+  'crema mani': 12,
+  'burrocacao propoli + aloe': 13,
+  'burrocacao miele + pappa reale': 13,
+  'shampoo': 12,
+  'saponetta frutti di bosco': 12,
+  'saponetta lavanda': 10,
+  'saponetta aloe': 12,
+  'candela alveare': 12,
+  'limoncello': 12,
+  'liquore al caffe': 12,
+  'castagne al rum': 12
+};
+
 function isTestPurchaseMode() {
   return String(process.env.TEST_PURCHASE_MODE || '').trim().toLowerCase() === 'true';
 }
@@ -136,8 +171,24 @@ function customTrisPoints(productId) {
   return count === 3 ? sum + 3 : null;
 }
 
-function predefinedTrisPoints(productId) {
-  return PREDEFINED_TRIS_POINTS[String(productId || '')] || null;
+function normalizeTrisLabel(value) {
+  return clean(value, 220)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[’‘`´]/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function predefinedTrisPoints(productId, productName) {
+  const exact = PREDEFINED_TRIS_POINTS[String(productId || '')];
+  if (exact) return exact;
+
+  const normalizedName = normalizeTrisLabel(productName);
+  const match = normalizedName.match(/tris dell'alveare\s*[–—-]\s*(.*?)(?:\s*\(|$)/i);
+  if (!match) return null;
+  return PREDEFINED_TRIS_NAME_POINTS[match[1].trim()] || null;
 }
 
 function pointsForItem(item) {
@@ -169,8 +220,8 @@ function pointsForItem(item) {
       bonusPerUnit = 3;
       calculation = 'fallback tris test';
     }
-  } else if (predefinedTrisPoints(productId)) {
-    perUnit = predefinedTrisPoints(productId);
+  } else if (predefinedTrisPoints(productId, productName)) {
+    perUnit = predefinedTrisPoints(productId, productName);
     bonusPerUnit = 3;
     calculation = 'somma 3 prodotti +3 bonus tris';
   } else if (String(productId).startsWith('tris-alveare-') || /\btris\b/i.test(productName)) {

@@ -314,6 +314,40 @@ try {
   }
 ];
 
+  // Valore autoritativo unico per card e scheda: somma Api dei 3 prodotti + 3 bonus.
+  const beePointsBySlug = {
+    'millefiori': 11,
+    'melone': 12,
+    'fragola': 12,
+    'pesca': 11,
+    'arancia': 12,
+    'castagno': 12,
+    'acacia-zenzero': 12,
+    'eucalipto': 10,
+    'balsammiel': 12,
+    'acacia-40g': 11,
+    'favo-integrale': 12,
+    'polline': 12,
+    'orsetti': 11,
+    'pappa-reale': 11,
+    'bee-energy': 11,
+    'propol-active': 13,
+    'propoli-spray': 13,
+    'propoli-alcolica': 12,
+    'propoli-analcolica': 12,
+    'crema-mani': 12,
+    'burrocacao-propoli-aloe': 13,
+    'burrocacao-miele-pappa': 13,
+    'shampoo': 12,
+    'saponetta-frutti-bosco': 12,
+    'saponetta-lavanda': 10,
+    'saponetta-aloe': 12,
+    'candela-alveare': 12,
+    'limoncello': 12,
+    'liquore-caffe': 12,
+    'castagne-rum': 12
+  };
+
   const products = offers.map((offer, index) => ({
     id: `tris-alveare-${offer.slug}`,
     name: `Tris dell’Alveare – ${offer.items[0].replace(/\s+€\d+[,.]\d+$/, '')}`,
@@ -325,7 +359,9 @@ try {
     order: 8001 + index,
     category,
     inStock: true,
-    stock: 100
+    stock: 100,
+    beePoints: beePointsBySlug[offer.slug],
+    beeBonus: 3
   }));
 
   for (const product of products) {
@@ -381,11 +417,12 @@ try {
   if (products.length !== 30) throw new Error(`Numero tris non valido: ${products.length}`);
   for (const product of products) {
     if (!findObjectBounds(html, product.id)) throw new Error(`Tris mancante: ${product.id}`);
+    if (!Number.isFinite(product.beePoints) || product.beePoints <= 0) throw new Error(`Punti Api mancanti: ${product.id}`);
   }
   if (!html.includes("setSelectedCategory('tris-alveare')")) throw new Error('Pulsante I Tris dell’Alveare non collegato');
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] I Tris dell’Alveare pronti: 30 offerte in categoria autonoma.');
+  console.log('[Miele Artigianale] I Tris dell’Alveare pronti: 30 offerte con Punti Ape autoritativi in categoria autonoma.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore linea I Tris dell’Alveare:', error);
   process.exitCode = 1;
