@@ -12,14 +12,14 @@ try {
     'pappa-reale-italiana-bio', 'orsetti-gommosi'
   ];
 
-  const rendererRegex = /\{products\.filter\(p => p\.category === selectedCategory\)\.sort\(\(a,b\) => a\.order - b\.order\)\.map\(product => \(/g;
+  const rendererRegex = /products\.filter\(p => p\.category === selectedCategory\)\.sort\(\(a,b\) => a\.order - b\.order\)\.map\(product => \(/g;
   const matches = html.match(rendererRegex) || [];
   if (matches.length !== 1) {
-    throw new Error(`Renderer generico prodotti atteso una volta, trovato ${matches.length}`);
+    throw new Error(`Renderer prodotti finale atteso una volta, trovato ${matches.length}`);
   }
 
   const foodIdsLiteral = JSON.stringify(foodIds);
-  const replacement = `{products.filter(p => selectedCategory === 'alimenti' ? ${foodIdsLiteral}.includes(p.id) : p.category === selectedCategory).sort((a,b) => a.order - b.order).map(product => (`;
+  const replacement = `products.filter(p => selectedCategory === 'alimenti' ? ${foodIdsLiteral}.includes(p.id) : p.category === selectedCategory).sort((a,b) => a.order - b.order).map(product => (`;
   html = html.replace(rendererRegex, replacement);
 
   if (!html.includes("selectedCategory === 'alimenti' ?")) {
