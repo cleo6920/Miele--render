@@ -60,5 +60,9 @@ require('./bee-points-card-prestart.js');
 // Ultimo intervento sulla griglia: Linea Alimenti mostra esclusivamente le 14 referenze approvate.
 require('./alimenti-render-final-prestart.js');
 
+// Modalità temporanea e isolata per collaudare acquisti/Coupon senza chiamare Stripe.
+// Se TEST_PURCHASE_MODE non è true, non cambia nulla nel checkout reale.
+require('./test-purchase-prestart.js');
+
 // Mantiene il servizio web attivo dopo i prestart.
 require('./server.js');
