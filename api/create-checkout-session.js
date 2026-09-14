@@ -1,4 +1,10 @@
 const Stripe = require('stripe');
+const {
+  isTestPurchaseMode,
+  createTestPurchase,
+  getTestPurchase,
+  redeemTestCoupon
+} = require('../test-purchase-store');
 
 const DEFAULT_SITE_URL = 'https://miele-backend-omega.vercel.app';
 
@@ -19,18 +25,31 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Metodo non consentito.' });
   }
 
-  if (!process.env.STRIPE_SECRET_KEY) {
-    console.error('[Stripe] Variabile STRIPE_SECRET_KEY non configurata.');
-    return res.status(500).json({
-      error: 'Configurazione Stripe mancante (STRIPE_SECRET_KEY).'
-    });
-  }
-
   try {
     const body = req.body || {};
-    const items = Array.isArray(body.items) ? body.items : [];
 
-    const lineItems = items.map((item) => {
+    // Endpoint TEST multiplexato sulla stessa rotta per evitare di toccare il router pubblico.
+    if (body.testAction) {
+      if (!isTestPurchaseMode()) {
+        return res.status(404).json({ error: 'Modalità acquisto simulato non attiva.' });
+      }
+
+      if (body.testAction === 'status') {
+        const order = getTestPurchase(body.orderId);
+        if (!order) return res.status(404).json({ error: 'Ordine TEST non trovato.' });
+        return res.status(200).json(order);
+      }
+
+      if (body.testAction === 'redeem') {
+        const result = redeemTestCoupon(body.couponCode);
+        return res.status(result.status || (result.ok ? 200 : 400)).json(result);
+      }
+
+      return res.status(400).json({ error: 'Azione TEST non valida.' });
+    }
+
+    const items = Array.isArray(body.items) ? body.items : [];
+    const sanitizedItems = items.map((item) => {
       const name = cleanText(item && item.name, 120);
       const amountEuro = Number(item && item.amount);
       const quantity = Number(item && item.quantity);
@@ -42,16 +61,13 @@ module.exports = async (req, res) => {
       }
 
       return {
-        price_data: {
-          currency: 'eur',
-          product_data: { name },
-          unit_amount: unitAmount
-        },
+        name,
+        amount: unitAmount / 100,
         quantity
       };
     });
 
-    if (lineItems.length === 0) {
+    if (sanitizedItems.length === 0) {
       return res.status(400).json({ error: 'Il carrello è vuoto.' });
     }
 
@@ -60,6 +76,61 @@ module.exports = async (req, res) => {
     if (!Number.isFinite(shippingCents) || shippingCents < 0) {
       return res.status(400).json({ error: 'Costo di spedizione non valido.' });
     }
+
+    const customer = body.customer || {};
+    const email = cleanText(customer.email || body.email, 254);
+    const safeCustomer = {
+      name: cleanText(customer.name, 100),
+      email,
+      phone: cleanText(customer.phone, 50),
+      address: cleanText(customer.address, 150),
+      postal_code: cleanText(customer.postal_code, 20),
+      city: cleanText(customer.city, 80),
+      state: cleanText(customer.state, 30)
+    };
+
+    const orderReference = [
+      safeCustomer.name,
+      safeCustomer.phone,
+      safeCustomer.address,
+      safeCustomer.postal_code,
+      safeCustomer.city,
+      safeCustomer.state
+    ].filter(Boolean).join(' | ').slice(0, 500);
+
+    // Modalità temporanea di collaudo: nessuna chiamata a Stripe, nessun pagamento reale.
+    if (isTestPurchaseMode()) {
+      const testPurchase = createTestPurchase({
+        items: sanitizedItems,
+        testCart: Array.isArray(body.testCart) ? body.testCart : [],
+        shippingEuro,
+        customer: safeCustomer,
+        notes: cleanText(body.notes, 500)
+      });
+
+      console.log(`[TEST PURCHASE] Ordine ${testPurchase.orderId} creato: €${testPurchase.total.toFixed(2)}, ${testPurchase.beePoints} Api, coupon ${testPurchase.coupon && testPurchase.coupon.code}.`);
+      return res.status(200).json({
+        id: testPurchase.orderId,
+        url: `/test-purchase-success.html?order_id=${encodeURIComponent(testPurchase.orderId)}`,
+        testMode: true
+      });
+    }
+
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('[Stripe] Variabile STRIPE_SECRET_KEY non configurata.');
+      return res.status(500).json({
+        error: 'Configurazione Stripe mancante (STRIPE_SECRET_KEY).'
+      });
+    }
+
+    const lineItems = sanitizedItems.map((item) => ({
+      price_data: {
+        currency: 'eur',
+        product_data: { name: item.name },
+        unit_amount: Math.round(item.amount * 100)
+      },
+      quantity: item.quantity
+    }));
 
     if (shippingCents > 0) {
       lineItems.push({
@@ -71,17 +142,6 @@ module.exports = async (req, res) => {
         quantity: 1
       });
     }
-
-    const customer = body.customer || {};
-    const email = cleanText(customer.email || body.email, 254);
-    const orderReference = [
-      cleanText(customer.name, 100),
-      cleanText(customer.phone, 50),
-      cleanText(customer.address, 150),
-      cleanText(customer.postal_code, 20),
-      cleanText(customer.city, 80),
-      cleanText(customer.state, 30)
-    ].filter(Boolean).join(' | ').slice(0, 500);
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const siteUrl = getSiteUrl();
@@ -100,7 +160,8 @@ module.exports = async (req, res) => {
 
     return res.status(200).json({ id: session.id, url: session.url });
   } catch (error) {
-    console.error('[Stripe] Errore creazione Checkout Session:', error);
+    const prefix = isTestPurchaseMode() ? '[TEST PURCHASE]' : '[Stripe]';
+    console.error(`${prefix} Errore creazione Checkout Session:`, error);
     return res.status(500).json({
       error: error && error.message
         ? error.message
