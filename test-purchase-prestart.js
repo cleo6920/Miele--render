@@ -66,6 +66,22 @@ function customerKey(customer) {
     }
   }
 
+  // Il ritiro TEST deve inviare al backend i 5 prodotti scelti.
+  // Il backend li valida e registra prima di consumare 100 Api e invalidare i coupon.
+  const successPath = path.join(__dirname, 'test-purchase-success.html');
+  if (fs.existsSync(successPath)) {
+    let successHtml = fs.readFileSync(successPath, 'utf8');
+    const oldClaimCall = "    const {res,data}=await post({testAction:'redeem',couponCode:'CLAIM:'+currentCoupon});";
+    const newClaimCall = "    const giftProducts=Array.from(selectedGiftProducts);\n    const {res,data}=await post({testAction:'redeem',couponCode:'CLAIM:'+currentCoupon,giftProducts});";
+    if (successHtml.includes(oldClaimCall)) {
+      successHtml = successHtml.replace(oldClaimCall, newClaimCall);
+      fs.writeFileSync(successPath, successHtml, 'utf8');
+      console.log('[Miele Artigianale] TEST Cesto: 5 prodotti inviati al backend per validazione e registrazione.');
+    } else if (!successHtml.includes("couponCode:'CLAIM:'+currentCoupon,giftProducts")) {
+      throw new Error('Chiamata CLAIM del Cesto TEST non trovata');
+    }
+  }
+
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
   if (html.includes('data-test-purchase-mode="true"')) {

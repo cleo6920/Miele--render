@@ -41,7 +41,7 @@ module.exports = async (req, res) => {
       }
 
       if (body.testAction === 'redeem') {
-        const result = redeemTestCoupon(body.couponCode);
+        const result = redeemTestCoupon(body.couponCode, body.giftProducts);
         return res.status(result.status || (result.ok ? 200 : 400)).json(result);
       }
 

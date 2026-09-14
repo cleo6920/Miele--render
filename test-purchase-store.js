@@ -4,6 +4,7 @@ const orders = new Map();
 const coupons = new Map();
 const balances = new Map();
 const pendingCoupons = new Map();
+const rewardClaims = new Map();
 
 const VENOM_IDS = new Set([
   'unguento-apis',
@@ -36,6 +37,8 @@ const CUSTOM_TRIS_POINTS = {
   'liquore-caffe': 2,
   'castagne-rum': 2
 };
+
+const GIFT_PRODUCT_IDS = new Set(Object.keys(CUSTOM_TRIS_POINTS));
 
 // Punti esatti dei 30 Tris predefiniti: somma Api dei tre prodotti + 3 Api bonus.
 // Devono coincidere con la formula mostrata nelle card e nelle schede prodotto.
@@ -72,8 +75,6 @@ const PREDEFINED_TRIS_POINTS = {
   'tris-alveare-castagne-rum': 12
 };
 
-// Fallback autoritativo per il checkout TEST quando il browser non invia il productId.
-// La chiave è il primo prodotto che dà il nome al Tris.
 const PREDEFINED_TRIS_NAME_POINTS = {
   'millefiori': 11,
   'melone': 12,
@@ -184,7 +185,6 @@ function normalizeTrisLabel(value) {
 function predefinedTrisPoints(productId, productName) {
   const exact = PREDEFINED_TRIS_POINTS[String(productId || '')];
   if (exact) return exact;
-
   const normalizedName = normalizeTrisLabel(productName);
   const match = normalizedName.match(/tris dell'alveare\s*[–—-]\s*(.*?)(?:\s*\(|$)/i);
   if (!match) return null;
@@ -196,7 +196,6 @@ function pointsForItem(item) {
   const productName = clean(item.productName || item.name, 220);
   const price = Number(item.pricePerPack ?? item.amount ?? 0);
   const quantity = Math.max(1, Number(item.quantity || 1));
-
   let perUnit = baseBeePoints(price);
   let bonusPerUnit = 0;
   let calculation = 'fascia-prezzo';
@@ -244,40 +243,21 @@ function pointsForItem(item) {
 
 function createTestPurchase({ items, testCart, shippingEuro, customer, notes }) {
   if (!isTestPurchaseMode()) throw new Error('Modalità acquisto simulato non attiva.');
-
   const safeItems = Array.isArray(items) ? items : [];
   const cartMeta = Array.isArray(testCart) ? testCart : [];
-  const mergedItems = safeItems.map((item, index) => ({
-    ...item,
-    ...(cartMeta[index] || {}),
-    name: item.name,
-    amount: item.amount,
-    quantity: item.quantity
-  }));
-
+  const mergedItems = safeItems.map((item, index) => ({ ...item, ...(cartMeta[index] || {}), name: item.name, amount: item.amount, quantity: item.quantity }));
   const pointLines = mergedItems.map(pointsForItem);
   const beePoints = pointLines.reduce((sum, line) => sum + line.totalPoints, 0);
   const goodsTotal = safeItems.reduce((sum, item) => sum + (Number(item.amount) * Number(item.quantity)), 0);
   const shipping = Math.max(0, Number(shippingEuro || 0));
   const total = Number((goodsTotal + shipping).toFixed(2));
-
   const orderId = makeId('TESTORD');
   const couponCode = makeCoupon();
   const key = customerKey(customer || {});
   const currentBalance = Number(balances.get(key) || 0);
   const createdAt = new Date().toISOString();
 
-  const coupon = {
-    code: couponCode,
-    orderId,
-    customerKey: key,
-    points: beePoints,
-    status: 'ATTIVO',
-    createdAt,
-    usedAt: null,
-    balanceAfter: currentBalance
-  };
-
+  const coupon = { code: couponCode, orderId, customerKey: key, points: beePoints, status: 'ATTIVO', createdAt, usedAt: null, balanceAfter: currentBalance };
   const order = {
     orderId,
     mode: 'TEST',
@@ -295,7 +275,6 @@ function createTestPurchase({ items, testCart, shippingEuro, customer, notes }) 
 
   orders.set(orderId, order);
   coupons.set(couponCode, coupon);
-
   return getTestPurchase(orderId);
 }
 
@@ -308,14 +287,7 @@ function getTestPurchase(orderId) {
   const addedToBalance = !!(coupon && pending && pending.has(coupon.code));
   return {
     ...order,
-    coupon: coupon ? {
-      code: coupon.code,
-      points: coupon.points,
-      status: coupon.status,
-      createdAt: coupon.createdAt,
-      usedAt: coupon.usedAt,
-      addedToBalance
-    } : null,
+    coupon: coupon ? { code: coupon.code, points: coupon.points, status: coupon.status, createdAt: coupon.createdAt, usedAt: coupon.usedAt, addedToBalance } : null,
     balance,
     rewardTarget: 100,
     rewardUnlocked: balance >= 100,
@@ -323,19 +295,28 @@ function getTestPurchase(orderId) {
   };
 }
 
-function claimTestReward(coupon) {
+function validateGiftProducts(rawProducts) {
+  const products = Array.isArray(rawProducts) ? rawProducts.map(id => clean(id, 120)).filter(Boolean) : [];
+  const unique = [...new Set(products)];
+  if (products.length !== 5 || unique.length !== 5) {
+    return { ok: false, error: 'Devi selezionare esattamente 5 prodotti diversi per il Cesto.' };
+  }
+  const invalid = unique.filter(id => !GIFT_PRODUCT_IDS.has(id));
+  if (invalid.length) return { ok: false, error: 'Uno o più prodotti scelti per il Cesto non sono validi.' };
+  return { ok: true, products: unique };
+}
+
+function claimTestReward(coupon, rawGiftProducts) {
+  const gift = validateGiftProducts(rawGiftProducts);
+  if (!gift.ok) {
+    const balance = Number(balances.get(coupon.customerKey) || 0);
+    return { ok: false, status: 400, error: gift.error, couponStatus: coupon.status, balance, rewardUnlocked: balance >= 100, remainingToReward: Math.max(0, 100 - balance) };
+  }
+
   const key = coupon.customerKey;
   const before = Number(balances.get(key) || 0);
   if (before < 100) {
-    return {
-      ok: false,
-      status: 409,
-      error: `Servono ancora ${100 - before} Api prima di poter ottenere il Cesto.`,
-      couponStatus: coupon.status,
-      balance: before,
-      rewardUnlocked: false,
-      remainingToReward: 100 - before
-    };
+    return { ok: false, status: 409, error: `Servono ancora ${100 - before} Api prima di poter ottenere il Cesto.`, couponStatus: coupon.status, balance: before, rewardUnlocked: false, remainingToReward: 100 - before };
   }
 
   const pending = pendingCoupons.get(key) || new Set();
@@ -351,14 +332,28 @@ function claimTestReward(coupon) {
 
   pending.clear();
   pendingCoupons.set(key, pending);
-
   const after = Math.max(0, before - 100);
   balances.set(key, after);
+
+  const claimId = makeId('TESTGIFT');
+  rewardClaims.set(claimId, {
+    claimId,
+    customerKey: key,
+    anchorCouponCode: coupon.code,
+    giftProducts: gift.products,
+    createdAt: usedAt,
+    pointsSpent: 100,
+    balanceBefore: before,
+    balanceAfter: after,
+    couponsInvalidated: invalidated
+  });
 
   return {
     ok: true,
     status: 200,
     rewardClaimed: true,
+    claimId,
+    giftProducts: gift.products,
     couponsInvalidated: invalidated,
     pointsSpent: 100,
     couponStatus: coupon.status,
@@ -370,33 +365,18 @@ function claimTestReward(coupon) {
   };
 }
 
-function redeemTestCoupon(rawCode) {
+function redeemTestCoupon(rawCode, giftProducts) {
   if (!isTestPurchaseMode()) throw new Error('Modalità acquisto simulato non attiva.');
-
   const raw = clean(rawCode, 100).toUpperCase();
   const claimRequested = raw.startsWith('CLAIM:');
   const code = claimRequested ? clean(raw.slice(6), 80).toUpperCase() : clean(raw, 80).toUpperCase();
   const coupon = coupons.get(code);
-
-  if (!coupon) {
-    return { ok: false, status: 404, error: 'Coupon TEST non trovato.' };
-  }
-
-  if (claimRequested) {
-    return claimTestReward(coupon);
-  }
+  if (!coupon) return { ok: false, status: 404, error: 'Coupon TEST non trovato.' };
+  if (claimRequested) return claimTestReward(coupon, giftProducts);
 
   const balance = Number(balances.get(coupon.customerKey) || 0);
   if (coupon.status !== 'ATTIVO') {
-    return {
-      ok: false,
-      status: 409,
-      error: 'Coupon TEST già utilizzato per ottenere un Cesto.',
-      couponStatus: coupon.status,
-      balance,
-      rewardUnlocked: balance >= 100,
-      remainingToReward: Math.max(0, 100 - balance)
-    };
+    return { ok: false, status: 409, error: 'Coupon TEST già utilizzato per ottenere un Cesto.', couponStatus: coupon.status, balance, rewardUnlocked: balance >= 100, remainingToReward: Math.max(0, 100 - balance) };
   }
 
   let pending = pendingCoupons.get(coupon.customerKey);
@@ -406,16 +386,7 @@ function redeemTestCoupon(rawCode) {
   }
 
   if (pending.has(code)) {
-    return {
-      ok: false,
-      status: 409,
-      error: 'Coupon TEST già inserito nel saldo. Resta valido fino alla richiesta del Cesto.',
-      couponStatus: coupon.status,
-      addedToBalance: true,
-      balance,
-      rewardUnlocked: balance >= 100,
-      remainingToReward: Math.max(0, 100 - balance)
-    };
+    return { ok: false, status: 409, error: 'Coupon TEST già inserito nel saldo. Resta valido fino alla richiesta del Cesto.', couponStatus: coupon.status, addedToBalance: true, balance, rewardUnlocked: balance >= 100, remainingToReward: Math.max(0, 100 - balance) };
   }
 
   const after = balance + Number(coupon.points || 0);
@@ -423,18 +394,7 @@ function redeemTestCoupon(rawCode) {
   balances.set(coupon.customerKey, after);
   coupon.balanceAfter = after;
 
-  return {
-    ok: true,
-    status: 200,
-    couponStatus: coupon.status,
-    addedToBalance: true,
-    pointsAdded: coupon.points,
-    balanceBefore: balance,
-    balance: after,
-    rewardTarget: 100,
-    rewardUnlocked: after >= 100,
-    remainingToReward: Math.max(0, 100 - after)
-  };
+  return { ok: true, status: 200, couponStatus: coupon.status, addedToBalance: true, pointsAdded: coupon.points, balanceBefore: balance, balance: after, rewardTarget: 100, rewardUnlocked: after >= 100, remainingToReward: Math.max(0, 100 - after) };
 }
 
 module.exports = {
