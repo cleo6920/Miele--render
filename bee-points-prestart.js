@@ -36,8 +36,9 @@ try {
                                 let bonusLabel = '';
 
                                 if (product.category === 'veleno-api') {
-                                    beePoints = product.id === 'unguento-apis' ? 10 : beePoints + 2;
-                                    bonusLabel = '+2 API BONUS LINEA VELENO D’API';
+                                    const isSosDol = product.id === 'unguento-apis';
+                                    beePoints = isSosDol ? 10 : beePoints + 2;
+                                    bonusLabel = isSosDol ? '8 API + 2 BONUS = 10 API' : '+2 API BONUS LINEA VELENO D’API';
                                 }
 
                                 if (product.category === 'tris-alveare') {
@@ -171,7 +172,7 @@ try {
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Punti Ape attivi: SOS DOL 10 Api, altre fasce invariate, +2 Veleno d’Api, Tris = somma dei 3 prodotti +3 bonus.');
+  console.log('[Miele Artigianale] Punti Ape attivi: SOS DOL 8 + 2 bonus = 10 Api; altre fasce invariate; Tris = somma dei 3 prodotti +3 bonus.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore Punti Ape:', error);
   process.exitCode = 1;
