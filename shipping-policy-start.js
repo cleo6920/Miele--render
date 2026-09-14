@@ -57,8 +57,8 @@ require('./bee-points-prestart.js');
 // Punti Ape anche sulle card prodotto; ESCLUSIVA resta separata a sinistra.
 require('./bee-points-card-prestart.js');
 
-// Ripristina la visibilità delle 14 referenze della Linea Alimenti nel catalogo finale.
-require('./alimenti-visibility-fix-prestart.js');
+// Ultimo intervento sulla griglia: Linea Alimenti mostra esclusivamente le 14 referenze approvate.
+require('./alimenti-render-final-prestart.js');
 
 // Mantiene il servizio web attivo dopo i prestart.
 require('./server.js');
