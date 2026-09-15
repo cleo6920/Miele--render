@@ -47,5 +47,8 @@ require('./bee-wallet-ui-prestart.js');
 require('./bee-wallet-success-prestart.js');
 require('./bee-wallet-server-prestart.js');
 
+// Aggiunge le pagine legali e i relativi link senza modificare checkout e catalogo.
+require('./legal-pages-prestart.js');
+
 // Mantiene il servizio web attivo dopo i prestart.
 require('./server.js');
