@@ -47,6 +47,9 @@ require('./bee-wallet-ui-prestart.js');
 require('./bee-wallet-success-prestart.js');
 require('./bee-wallet-server-prestart.js');
 
+// Mantiene visibili nel sito e nello shop Privacy, Condizioni di vendita, Resi/Recesso e Contatti.
+require('./legal-pages-prestart.js');
+
 // Predispone Nexi XPay senza abilitarlo finché XPAY_LIVE_ENABLED non viene attivato.
 require('./xpay-server-prestart.js');
 
