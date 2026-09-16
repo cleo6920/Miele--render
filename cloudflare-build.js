@@ -42,6 +42,27 @@ function normalizeImagePaths(html) {
     .replace(/url\((["']?)(?:\.\/|\/)?images\//g, 'url($1/images/');
 }
 
+function addProductPricesToShopCards(html) {
+  const marker = '<h3 className="text-2xl font-bold text-amber-700">{product.name}</h3>';
+  const replacement = `${marker}
+                    {product.packs && product.packs.length > 0 && (
+                        <p className="mt-2 text-2xl font-extrabold text-white">
+                            {product.packs.length === 1
+                                ? \`€\${product.packs[0].price.toFixed(2).replace('.', ',')}\`
+                                : \`Da €\${Math.min(...product.packs.map(pack => pack.price)).toFixed(2).replace('.', ',')}\`}
+                        </p>
+                    )}`;
+
+  const occurrences = html.split(marker).length - 1;
+  if (occurrences < 1) {
+    throw new Error('[Cloudflare test] ProductCard non trovato: impossibile aggiungere i prezzi alla carrellata prodotti.');
+  }
+
+  const updated = html.split(marker).join(replacement);
+  console.log(`[Cloudflare test] Prezzi visibili aggiunti alle ProductCard (${occurrences} occorrenze).`);
+  return updated;
+}
+
 function verifyLocalImageReferences(html, label) {
   const refs = new Set();
   const quoted = /["'`](\/images\/[^"'`?#\s)]+)/g;
@@ -121,7 +142,8 @@ async function buildShopExactlyLikeRender() {
 
     // Workers Static Assets canonicalizza /shop come /shop/. Rendiamo assoluti
     // i percorsi images/... così il browser usa /images/... come su Render /shop.
-    const shopHtml = normalizeImagePaths(rawShopHtml);
+    let shopHtml = normalizeImagePaths(rawShopHtml);
+    shopHtml = addProductPricesToShopCards(shopHtml);
     verifyLocalImageReferences(shopHtml, '/shop');
     requireCurrentVisibleShopAssets(shopHtml);
 
@@ -129,7 +151,7 @@ async function buildShopExactlyLikeRender() {
     fs.mkdirSync(shopDir, { recursive: true });
     fs.writeFileSync(path.join(shopDir, 'index.html'), shopHtml, 'utf8');
     fs.writeFileSync(path.join(dist, 'shop.html'), shopHtml, 'utf8');
-    console.log('[Cloudflare test] /shop generato tramite lo stesso server.js usato da Render.');
+    console.log('[Cloudflare test] /shop generato tramite lo stesso server.js usato da Render, con prezzi visibili nelle card solo per Cloudflare.');
   } finally {
     if (server.exitCode === null) server.kill('SIGTERM');
   }
