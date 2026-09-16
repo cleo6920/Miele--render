@@ -1,0 +1,39 @@
+name: Cloudflare Test Build
+
+on:
+  push:
+    branches:
+      - cloudflare-test
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout cloudflare-test
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Cloudflare static assets
+        env:
+          CLOUDFLARE_BUILD: '1'
+        run: npm run build:cloudflare
+
+      - name: Verify essential output
+        run: |
+          test -f dist/index.html
+          test -f dist/shop/index.html
+          test -f dist/home.html
+          test -d dist/images
+          test -f cloudflare-worker.js
+          test -f wrangler.jsonc
+          echo "Cloudflare test build PASS"
