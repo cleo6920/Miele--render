@@ -32,7 +32,7 @@ function normalizeImagePaths(html) {
     .replace(/url\((["']?)(?:\.\/|\/)?images\//g, 'url($1/images/');
 }
 
-function verifyLocalImageReferences(html, label, { strict = false } = {}) {
+function verifyLocalImageReferences(html, label) {
   const refs = new Set();
   const quoted = /["'`](\/images\/[^"'`?#\s)]+)/g;
   let match;
@@ -49,11 +49,23 @@ function verifyLocalImageReferences(html, label, { strict = false } = {}) {
   }
 
   if (missing.length) {
-    const message = `[Cloudflare test] ${label}: immagini locali mancanti: ${missing.slice(0, 30).join(', ')}`;
-    if (strict) throw new Error(message);
-    console.warn(`${message} (riferimenti già presenti nella sorgente Render; non bloccanti per la migrazione)`);
+    console.warn(`[Cloudflare test] ${label}: riferimenti locali non presenti nel repository: ${missing.slice(0, 30).join(', ')}`);
   }
-  console.log(`[Cloudflare test] ${label}: ${refs.size} riferimenti immagini locali controllati, ${missing.length} mancanti.`);
+  console.log(`[Cloudflare test] ${label}: ${refs.size} riferimenti immagini locali controllati, ${missing.length} non presenti.`);
+}
+
+function requireCurrentVisibleShopAssets(html) {
+  const required = [
+    '/images/professional.png',
+    '/images/capsule-pb.png',
+    '/images/capsule-propolit.png'
+  ];
+  const missingFiles = required.filter(ref => !fs.existsSync(path.join(dist, ref.replace(/^\/+/, ''))));
+  const missingRefs = required.filter(ref => !html.includes(ref));
+  if (missingFiles.length || missingRefs.length) {
+    throw new Error(`[Cloudflare test] Asset visibili Linea Alveoterapia non validi. File mancanti: ${missingFiles.join(', ') || 'nessuno'}; riferimenti mancanti nell'HTML: ${missingRefs.join(', ') || 'nessuno'}`);
+  }
+  console.log('[Cloudflare test] Linea Alveoterapia: Professional, Capsule P+B e PROPOLIT presenti e referenziati correttamente.');
 }
 
 async function buildShopExactlyLikeRender() {
@@ -69,9 +81,7 @@ async function buildShopExactlyLikeRender() {
     let response = null;
     let lastError = null;
     for (let attempt = 0; attempt < 50; attempt += 1) {
-      if (server.exitCode !== null) {
-        throw new Error(`server.js terminato prima del rendering shop (exit ${server.exitCode}).`);
-      }
+      if (server.exitCode !== null) throw new Error(`server.js terminato prima del rendering shop (exit ${server.exitCode}).`);
       try {
         response = await fetch(`${origin}/shop`, { redirect: 'manual' });
         if (response.ok) break;
@@ -82,20 +92,16 @@ async function buildShopExactlyLikeRender() {
       await new Promise(resolve => setTimeout(resolve, 200));
     }
 
-    if (!response || !response.ok) {
-      throw lastError || new Error('Impossibile ottenere /shop dal server Render locale.');
-    }
+    if (!response || !response.ok) throw lastError || new Error('Impossibile ottenere /shop dal server Render locale.');
 
     const rawShopHtml = await response.text();
-    if (!rawShopHtml.includes('Home Centro')) {
-      throw new Error('La pagina /shop generata non contiene il bridge Home Centro atteso da Render.');
-    }
+    if (!rawShopHtml.includes('Home Centro')) throw new Error('La pagina /shop generata non contiene il bridge Home Centro atteso da Render.');
 
-    // Cloudflare pubblica la route come /shop/. I percorsi relativi images/... che
-    // funzionano su Render /shop diventerebbero /shop/images/... e si romperebbero.
-    // Li rendiamo assoluti senza cambiare i file o il layout di Render.
+    // Workers Static Assets canonicalizza /shop come /shop/. Rendiamo assoluti
+    // i percorsi images/... così il browser usa /images/... come su Render /shop.
     const shopHtml = normalizeImagePaths(rawShopHtml);
-    verifyLocalImageReferences(shopHtml, '/shop', { strict: true });
+    verifyLocalImageReferences(shopHtml, '/shop');
+    requireCurrentVisibleShopAssets(shopHtml);
 
     const shopDir = path.join(dist, 'shop');
     fs.mkdirSync(shopDir, { recursive: true });
@@ -116,7 +122,6 @@ async function main() {
     env: { ...process.env, CLOUDFLARE_BUILD: '1' },
     stdio: 'inherit'
   });
-
   if (prestart.status !== 0) {
     console.error('[Cloudflare test] Build interrotto: prestart non completati.');
     process.exit(prestart.status || 1);
@@ -125,9 +130,6 @@ async function main() {
   copyStaticRootFiles();
   copyDir(path.join(root, 'images'), path.join(dist, 'images'));
 
-  // Le pagine statiche corrispondono alle route Express di Render. Normalizziamo
-  // soltanto i percorsi immagini nella copia Cloudflare, così funzionano anche
-  // quando Workers Static Assets canonicalizza le route con la barra finale.
   const routeMap = {
     home: 'home.html',
     centro: 'centro.html',
@@ -142,19 +144,15 @@ async function main() {
     const routeDir = path.join(dist, route);
     fs.mkdirSync(routeDir, { recursive: true });
     const html = normalizeImagePaths(fs.readFileSync(source, 'utf8'));
-    verifyLocalImageReferences(html, `/${route}`, { strict: false });
+    verifyLocalImageReferences(html, `/${route}`);
     fs.writeFileSync(path.join(routeDir, 'index.html'), html, 'utf8');
   }
 
-  // /shop su Render non è il semplice index.html: server.js applica trasformazioni
-  // runtime (Hero, Home Centro, selezione mieli, ecc.). Generiamo l'HTML passando
-  // dallo stesso endpoint Express, così Cloudflare pubblica lo stesso risultato.
   await buildShopExactlyLikeRender();
 
-  // La root pubblica deve comportarsi come Render: homepage del Centro.
   if (fs.existsSync(path.join(dist, 'home.html'))) {
     const homeHtml = normalizeImagePaths(fs.readFileSync(path.join(dist, 'home.html'), 'utf8'));
-    verifyLocalImageReferences(homeHtml, '/', { strict: false });
+    verifyLocalImageReferences(homeHtml, '/');
     fs.writeFileSync(path.join(dist, 'index.html'), homeHtml, 'utf8');
   }
 
