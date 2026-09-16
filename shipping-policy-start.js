@@ -53,5 +53,10 @@ require('./legal-pages-prestart.js');
 // Predispone Nexi XPay senza abilitarlo finché XPAY_LIVE_ENABLED non viene attivato.
 require('./xpay-server-prestart.js');
 
-// Mantiene il servizio web attivo dopo i prestart.
-require('./server.js');
+// Su Render continua a partire esattamente come prima.
+// Nel build Cloudflare eseguiamo gli stessi prestart, ma NON avviamo il server Node.
+if (process.env.CLOUDFLARE_BUILD !== '1') {
+  require('./server.js');
+} else {
+  console.log('[Cloudflare test] Prestart completati senza avvio del server Render.');
+}
