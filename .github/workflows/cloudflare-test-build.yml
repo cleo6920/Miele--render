@@ -1,3 +1,4 @@
+# Trigger Cloudflare production build after dashboard branch/build settings were saved.
 name: Cloudflare Test Build
 
 on:
