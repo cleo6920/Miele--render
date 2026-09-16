@@ -24,6 +24,16 @@ function copyStaticRootFiles() {
     if (!allowedExt.has(ext)) continue;
     fs.copyFileSync(path.join(root, entry.name), path.join(dist, entry.name));
   }
+
+  // Solo JavaScript destinato al browser. Non copiamo i numerosi script interni
+  // di prestart/server nel pacchetto pubblico Cloudflare.
+  const browserScripts = ['saldo-api.js', 'cesto-admin.js'];
+  for (const file of browserScripts) {
+    const source = path.join(root, file);
+    if (!fs.existsSync(source)) throw new Error(`[Cloudflare test] Script browser richiesto mancante: ${file}`);
+    fs.copyFileSync(source, path.join(dist, file));
+  }
+  console.log(`[Cloudflare test] Script browser pubblicati: ${browserScripts.join(', ')}.`);
 }
 
 function normalizeImagePaths(html) {
@@ -66,6 +76,18 @@ function requireCurrentVisibleShopAssets(html) {
     throw new Error(`[Cloudflare test] Asset visibili Linea Alveoterapia non validi. File mancanti: ${missingFiles.join(', ') || 'nessuno'}; riferimenti mancanti nell'HTML: ${missingRefs.join(', ') || 'nessuno'}`);
   }
   console.log('[Cloudflare test] Linea Alveoterapia: Professional, Capsule P+B e PROPOLIT presenti e referenziati correttamente.');
+}
+
+function requireSaldoApiBrowserRuntime() {
+  const htmlPath = path.join(dist, 'saldo-api.html');
+  const jsPath = path.join(dist, 'saldo-api.js');
+  if (!fs.existsSync(htmlPath)) throw new Error('[Cloudflare test] saldo-api.html mancante dal pacchetto statico.');
+  if (!fs.existsSync(jsPath)) throw new Error('[Cloudflare test] saldo-api.js mancante dal pacchetto statico.');
+  const html = fs.readFileSync(htmlPath, 'utf8');
+  const js = fs.readFileSync(jsPath, 'utf8');
+  if (!html.includes('src="/saldo-api.js"')) throw new Error('[Cloudflare test] saldo-api.html non richiama /saldo-api.js.');
+  if (!js.includes("fetch('/api/bee-wallet'")) throw new Error('[Cloudflare test] saldo-api.js non richiama /api/bee-wallet.');
+  console.log('[Cloudflare test] Saldo Api: pagina, JavaScript browser e chiamata /api/bee-wallet presenti.');
 }
 
 async function buildShopExactlyLikeRender() {
@@ -128,6 +150,7 @@ async function main() {
   }
 
   copyStaticRootFiles();
+  requireSaldoApiBrowserRuntime();
   copyDir(path.join(root, 'images'), path.join(dist, 'images'));
 
   const routeMap = {
