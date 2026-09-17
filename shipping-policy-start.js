@@ -28,6 +28,7 @@ try {
 }
 
 require('./linea-tris-alveare-prestart.js');
+require('./tris-linea-image-cloudflare.js');
 require('./intro-photo-rebuild.js');
 require('./prodotti-linee-intro-prestart.js');
 require('./tris-home-slogan-prestart.js');
