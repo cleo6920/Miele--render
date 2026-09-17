@@ -46,8 +46,8 @@ try {
     <div id="alveo-sim-body">
       <div id="alveo-sim-checkout">
         <div id="alveo-sim-product">
-          <strong>10 Colazioni dell'Alveare</strong>
-          <span>€2,90</span>
+          <strong>10 Colazioni dell'Alveare - Raccolta completa 30 pagine</strong>
+          <span>€3,90</span>
         </div>
         <div id="alveo-sim-notice">🧪 Questa è una simulazione solo su Render. Nessun importo verrà addebitato e non devi inserire dati reali della carta.</div>
         <label for="alveo-sim-email">Email per la prova</label>
@@ -61,7 +61,7 @@ try {
         <div class="check">✅</div>
         <h4>Acquisto simulato completato</h4>
         <p>Nessun pagamento reale è stato eseguito. Il prodotto digitale è pronto.</p>
-        <a id="alveo-sim-download" href="/downloads/10-colazioni-alveare.pdf?v=render1" download="10-Colazioni-dell-Alveare.pdf">⬇ Scarica il prodotto</a>
+        <a id="alveo-sim-download" href="https://drive.google.com/uc?export=download&id=1di9FWVofJvuC18oGe7cl5r-4dRUX0O3K" target="_blank" rel="noopener">⬇ Scarica il prodotto</a>
         <button id="alveo-sim-close-success" type="button" style="width:100%;margin-top:10px;border:1px solid #c8bea8;border-radius:11px;background:#fff;padding:10px 12px;font-weight:850;color:#3f493f;cursor:pointer">Chiudi</button>
       </div>
     </div>
@@ -72,6 +72,15 @@ try {
   function prepareBuyButton(){
     var btn=document.querySelector('#alveo-digitale-inline-panel [data-alveo-demo="colazioni"], #alveo-digitale-inline-panel [data-alveo-buy="colazioni"]');
     if(!btn)return false;
+    var card=btn.closest('article');
+    if(card){
+      var price=Array.from(card.querySelectorAll('div')).find(function(el){return String(el.textContent||'').trim()==='€2,90' || String(el.textContent||'').trim()==='€3,90';});
+      if(price)price.textContent='€3,90';
+      var title=card.querySelector('h3');
+      if(title)title.textContent='10 Colazioni dell’Alveare';
+      var desc=card.querySelector('p');
+      if(desc)desc.textContent='Raccolta completa di 30 pagine con ricette, piccoli rituali, guida ai mieli e pagine da vivere ogni mattina.';
+    }
     if(btn.getAttribute('data-alveo-buy')==='colazioni' && String(btn.textContent||'').trim()==='Acquista prova') return true;
     btn.removeAttribute('data-alveo-demo');
     btn.setAttribute('data-alveo-buy','colazioni');
@@ -170,7 +179,7 @@ try {
 
   html = html.includes('</body>') ? html.replace('</body>', `${injection}\n</body>`) : `${html}\n${injection}`;
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Alveo Digitale: acquisto simulato Carta + download PDF attivi solo su Render.');
+  console.log('[Miele Artigianale] Alveo Digitale: PDF definitivo 30 pagine e prezzo €3,90 attivi solo su Render.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore simulazione acquisto Alveo Digitale:', error);
   process.exitCode = 1;
