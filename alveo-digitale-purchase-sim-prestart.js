@@ -71,11 +71,13 @@ try {
 (function(){
   function prepareBuyButton(){
     var btn=document.querySelector('#alveo-digitale-inline-panel [data-alveo-demo="colazioni"], #alveo-digitale-inline-panel [data-alveo-buy="colazioni"]');
-    if(!btn)return;
+    if(!btn)return false;
+    if(btn.getAttribute('data-alveo-buy')==='colazioni' && String(btn.textContent||'').trim()==='Acquista prova') return true;
     btn.removeAttribute('data-alveo-demo');
     btn.setAttribute('data-alveo-buy','colazioni');
     btn.textContent='Acquista prova';
     btn.setAttribute('aria-label','Simula acquisto di 10 Colazioni dell’Alveare');
+    return true;
   }
 
   function overlay(){return document.getElementById('alveo-sim-overlay');}
@@ -156,8 +158,11 @@ try {
   document.addEventListener('keydown',function(event){if(event.key==='Escape')closeCheckout();});
 
   function start(){
-    prepareBuyButton();
-    new MutationObserver(prepareBuyButton).observe(document.body,{childList:true,subtree:true});
+    if(prepareBuyButton()) return;
+    var observer=new MutationObserver(function(){
+      if(prepareBuyButton()) observer.disconnect();
+    });
+    observer.observe(document.body,{childList:true,subtree:true});
   }
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start,{once:true}):start();
 })();
