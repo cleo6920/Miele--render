@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+// Modifica isolata Cloudflare: sostituisce soltanto l'immagine della card I Tris dell'Alveare.
 try {
   const imagePath = path.join(__dirname, 'images', 'tris-linea-render.jpg');
   if (!fs.existsSync(imagePath)) {
