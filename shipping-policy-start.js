@@ -38,6 +38,7 @@ require('./bee-points-prestart.js');
 require('./bee-points-card-prestart.js');
 require('./bonus-formula-prestart.js');
 require('./alimenti-render-final-prestart.js');
+require('./tris-linea-image-prestart.js');
 
 // Modalità temporanea per collaudare gli acquisti senza chiamare Stripe.
 require('./test-purchase-prestart.js');
