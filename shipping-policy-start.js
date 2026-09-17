@@ -57,5 +57,8 @@ require('./legal-pages-prestart.js');
 // Predispone Nexi XPay senza abilitarlo finché XPAY_LIVE_ENABLED non viene attivato.
 require('./xpay-server-prestart.js');
 
+// Forza una nuova versione delle immagini locali per evitare cache stale/broken sul browser.
+require('./image-cache-refresh-prestart.js');
+
 // Mantiene il servizio web attivo dopo i prestart.
 require('./server.js');
