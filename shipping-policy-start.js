@@ -42,6 +42,7 @@ require('./tris-linea-image-prestart.js');
 require('./alveo-digitale-preview-prestart.js');
 require('./alveo-digitale-cover-preview-prestart.js');
 require('./alveo-digitale-purchase-sim-prestart.js');
+require('./alveo-digitale-hd-preview-fix-prestart.js');
 
 // Modalità temporanea per collaudare gli acquisti senza chiamare Stripe.
 require('./test-purchase-prestart.js');
