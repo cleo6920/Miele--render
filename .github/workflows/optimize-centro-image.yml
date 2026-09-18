@@ -1,0 +1,83 @@
+name: Optimize Centro image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/optimize-centro-image.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  optimize-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check pillow
+
+      - name: Create high quality WebP
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+
+          source = Path("images/centro-alveoterapia-originale.png")
+          target = Path("images/centro-alveoterapia-hq.webp")
+
+          if not source.exists():
+              raise SystemExit("Original PNG not found")
+
+          image = Image.open(source).convert("RGB")
+          if image.size != (1491, 1055):
+              raise SystemExit(f"Unexpected source size: {image.size}")
+
+          image.save(target, "WEBP", quality=95, method=6)
+
+          size = target.stat().st_size
+          print("WebP bytes:", size)
+          if not (250000 <= size <= 500000):
+              raise SystemExit(f"Unexpected WebP size: {size}")
+
+          check = Image.open(target)
+          if check.size != (1491, 1055):
+              raise SystemExit(f"Unexpected WebP dimensions: {check.size}")
+          print("WebP dimensions OK:", check.size)
+          PY
+
+      - name: Point only product-intro Centro image to fast HQ WebP
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path("prodotti-linee-intro-prestart.js")
+          text = p.read_text(encoding="utf-8")
+
+          old_path = "const imagePath = path.join(__dirname, 'images', 'centro-alveoterapia-originale.png');"
+          new_path = "const imagePath = path.join(__dirname, 'images', 'centro-alveoterapia-hq.webp');"
+          old_src = "/images/centro-alveoterapia-originale.png?v=centro-hq-2"
+          new_src = "/images/centro-alveoterapia-hq.webp?v=centro-fast-1"
+
+          if text.count(old_path) != 1:
+              raise SystemExit(f"Expected 1 imagePath occurrence, found {text.count(old_path)}")
+          if text.count(old_src) != 1:
+              raise SystemExit(f"Expected 1 src occurrence, found {text.count(old_src)}")
+
+          text = text.replace(old_path, new_path).replace(old_src, new_src)
+          p.write_text(text, encoding="utf-8")
+          print("prodotti-linee-intro-prestart.js updated")
+          PY
+
+      - name: Commit optimized image
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/centro-alveoterapia-hq.webp prodotti-linee-intro-prestart.js
+          git commit -m "Render: velocizza foto Centro mantenendo qualità HD"
+          git push origin main
