@@ -1,0 +1,61 @@
+name: Import Centro HQ image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-centro-hq.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download original PNG
+        env:
+          SOURCE_URL: "https://d2jqrm6oza8nb6.cloudfront.net/datasets/094d156a-9495-495a-b673-bd1ae30dd281.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjEzZGViMGRlMGU1YzczNSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc4OTg1NjM5N30.kzNRCXdxNt4hV_jLGJiwG6KFctdRmvGPA8nttvJvNb8"
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 "$SOURCE_URL" -o images/centro-alveoterapia-originale.png
+          BYTES=$(wc -c < images/centro-alveoterapia-originale.png)
+          echo "Downloaded bytes: $BYTES"
+          test "$BYTES" -gt 1500000
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("images/centro-alveoterapia-originale.png")
+          data = p.read_bytes()
+          assert data[:8] == b"\x89PNG\r\n\x1a\n", "Not a valid PNG signature"
+          print("PNG signature OK; bytes:", len(data))
+          PY
+
+      - name: Point only Centro images to HQ PNG
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          old = '/images/centro-porticato-home.jpg?v=site5'
+          new = '/images/centro-alveoterapia-originale.png?v=hq1'
+          for name in ('home.html', 'centro.html'):
+              p = Path(name)
+              text = p.read_text(encoding='utf-8')
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f"{name}: expected 1 occurrence of old image, found {count}")
+              p.write_text(text.replace(old, new), encoding='utf-8')
+              print(f"{name}: updated")
+          PY
+
+      - name: Commit imported image
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/centro-alveoterapia-originale.png home.html centro.html
+          git commit -m "Render: usa foto Centro originale HD"
+          git push origin main
