@@ -1,0 +1,86 @@
+name: Build Alveo PDF preview images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-alveo-preview-images.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install render tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          python -m pip install --disable-pip-version-check pillow
+
+      - name: Download full Alveo PDF
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3             "https://drive.google.com/uc?export=download&id=1di9FWVofJvuC18oGe7cl5r-4dRUX0O3K"             -o /tmp/10-colazioni.pdf
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/10-colazioni.pdf')
+          data=p.read_bytes()
+          if data[:4] != b'%PDF':
+              raise SystemExit('Downloaded file is not a valid PDF')
+          if len(data) < 500000:
+              raise SystemExit(f'PDF unexpectedly small: {len(data)} bytes')
+          print('PDF OK:', len(data), 'bytes')
+          PY
+
+      - name: Render pages 2, 3 and 4
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/alveo-preview
+          pdftoppm -f 2 -l 4 -png -r 150 /tmp/10-colazioni.pdf /tmp/alveo-preview/page
+
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+
+          out = Path('images')
+          mapping = {
+              2: 'alveo-preview-presentazione.webp',
+              3: 'alveo-preview-ricetta.webp',
+              4: 'alveo-preview-extra.webp',
+          }
+
+          rendered = sorted(Path('/tmp/alveo-preview').glob('page-*.png'))
+          if len(rendered) != 3:
+              raise SystemExit(f'Expected 3 rendered PNGs, found {len(rendered)}: {rendered}')
+
+          for page_no, src in zip((2,3,4), rendered):
+              img = Image.open(src).convert('RGB')
+              if img.width < 1000:
+                  raise SystemExit(f'Page {page_no} render too small: {img.size}')
+              if img.width > 1200:
+                  h = round(img.height * 1200 / img.width)
+                  img = img.resize((1200, h), Image.Resampling.LANCZOS)
+              target = out / mapping[page_no]
+              img.save(target, 'WEBP', quality=88, method=6)
+              size = target.stat().st_size
+              if not (40000 <= size <= 400000):
+                  raise SystemExit(f'Unexpected size for {target}: {size}')
+              check = Image.open(target)
+              print(target, check.size, size, 'bytes')
+          PY
+
+      - name: Commit preview assets
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/alveo-preview-presentazione.webp images/alveo-preview-ricetta.webp images/alveo-preview-extra.webp
+          git commit -m "Render: aggiunge anteprima Alveo nitida e leggera"
+          git push origin main
