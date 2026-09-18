@@ -22,12 +22,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y poppler-utils
-          python -m pip install --disable-pip-version-check pillow
+          python -m pip install --disable-pip-version-check pillow gdown
 
       - name: Download full Alveo PDF
         run: |
           set -euo pipefail
-          curl --fail --location --retry 3             "https://drive.google.com/uc?export=download&id=1di9FWVofJvuC18oGe7cl5r-4dRUX0O3K"             -o /tmp/10-colazioni.pdf
+          gdown "https://drive.google.com/uc?id=1di9FWVofJvuC18oGe7cl5r-4dRUX0O3K" -O /tmp/10-colazioni.pdf
           python - <<'PY'
           from pathlib import Path
           p=Path('/tmp/10-colazioni.pdf')
