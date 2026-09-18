@@ -5,7 +5,7 @@ const path = require('path');
 // La presentazione resta visibile finché l'utente non apre la vista con tutte le linee.
 try {
   const indexPath = path.join(__dirname, 'index.html');
-  const imagePath = path.join(__dirname, 'images', 'centro-alveoterapia-originale.png');
+  const imagePath = path.join(__dirname, 'images', 'centro-alveoterapia-hq.webp');
   if (!fs.existsSync(imagePath)) throw new Error('Foto introduzione prodotti non trovata');
 
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -43,7 +43,7 @@ try {
 
   const introHtml = [
     '<div class="pli-card">',
-    '  <div class="pli-photo"><img src="/images/centro-alveoterapia-originale.png?v=centro-hq-2" alt="Centro di Alveoterapia con diffusori e prodotti della Fabbrica delle Api"></div>',
+    '  <div class="pli-photo"><img src="/images/centro-alveoterapia-hq.webp?v=centro-fast-1" alt="Centro di Alveoterapia con diffusori e prodotti della Fabbrica delle Api"></div>',
     '  <div class="pli-copy">',
     '    <div class="pli-kicker">Le linee della Fabbrica delle Api</div>',
     '    <h2>Scopri i prodotti della Fabbrica delle Api</h2>',
