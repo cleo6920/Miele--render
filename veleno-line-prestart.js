@@ -11,11 +11,13 @@ try {
   const exclusiveBadge = 'ESCLUSIVA';
   const category = 'veleno-api';
 
+  const venomWarningBlock = "<br/><br/><span style='display:block;padding:11px 12px;border-radius:9px;background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;font-size:0.95em;line-height:1.45;'><strong>Avvertenze:</strong> Solo per uso cosmetico esterno. Non utilizzare in caso di allergia nota al veleno d’api o a uno degli ingredienti. Evitare il contatto con occhi e mucose; interrompere l’uso in caso di reazioni indesiderate.<br/><strong>Le informazioni riportate descrivono esclusivamente l’uso cosmetico del prodotto e non costituiscono indicazioni mediche.</strong></span>";
+
   const products = [
     {
       id: 'unguento-apis',
       name: 'SOS DOL – Unguento al Veleno d’Api – 15 ml',
-      description: "Unguento da massaggio formulato con veleno d’api, cera d’api e oli essenziali.<br/><br/>È pensato per il massaggio del corpo e lascia una piacevole sensazione di comfort dopo l’applicazione.<br/><br/><strong>È importante sapere che il veleno d’api viene utilizzato qui all’interno di una formulazione cosmetica specifica per il massaggio.</strong>",
+      description: "Unguento da massaggio formulato con veleno d’api, cera d’api e oli essenziali.<br/><br/>È pensato per il massaggio del corpo e lascia una piacevole sensazione di comfort dopo l’applicazione.<br/><br/><strong>È importante sapere che il veleno d’api viene utilizzato qui all’interno di una formulazione cosmetica specifica per il massaggio.</strong>" + venomWarningBlock,
       image: '/images/veleno-sos-dol-hd.svg',
       packs: [{ id: 'unguento-apis-1', label: '1 confezione – 15 ml', jars: 1, price: 29.90 }],
       inStock: true,
@@ -36,7 +38,7 @@ try {
     {
       id: 'apis1-crema-viso-veleno-api',
       name: 'Crema Viso al Veleno d’Api – 50 ml – APIS1',
-      description: "Crema viso formulata con veleno d’api, pensata per viso, collo e décolleté.<br/><br/>Aiuta a mantenere la pelle idratata, tonica ed elastica, contribuendo a un aspetto più compatto e curato.<br/><br/><strong>È importante sapere che il veleno d’api è inserito in una formulazione cosmetica specifica per il trattamento della pelle.</strong>",
+      description: "Crema viso formulata con veleno d’api, pensata per viso, collo e décolleté.<br/><br/>Aiuta a mantenere la pelle idratata, tonica ed elastica, contribuendo a un aspetto più compatto e curato.<br/><br/><strong>È importante sapere che il veleno d’api è inserito in una formulazione cosmetica specifica per il trattamento della pelle.</strong>" + venomWarningBlock,
       image: '/images/veleno-apis1-hd.svg',
       packs: [{ id: 'apis1-1', label: '1 confezione – 50 ml', jars: 1, price: 39.90 }],
       inStock: true,
@@ -57,7 +59,7 @@ try {
     {
       id: 'apis2-siero-viso-veleno-api',
       name: 'Siero Viso al Veleno d’Api – 30 ml – APIS2',
-      description: "Siero viso cosmetico levigante e tonificante, formulato con veleno d’api.<br/><br/>Tra gli ingredienti caratterizzanti contiene soprattutto prodotti dell’alveare: veleno d’api, polline e miele, associati ad acido ialuronico, olio di borragine, olio di germe di grano, collagene idrolizzato e vitamina E.<br/><br/>Aiuta a idratare, levigare e tonificare la pelle, contribuendo a un aspetto più disteso e compatto.<br/><br/><strong>È importante sapere che riunisce in un unico trattamento tre elementi dell’alveare: veleno d’api, polline e miele.</strong>",
+      description: "Siero viso cosmetico levigante e tonificante, formulato con veleno d’api.<br/><br/>Tra gli ingredienti caratterizzanti contiene soprattutto prodotti dell’alveare: veleno d’api, polline e miele, associati ad acido ialuronico, olio di borragine, olio di germe di grano, collagene idrolizzato e vitamina E.<br/><br/>Aiuta a idratare, levigare e tonificare la pelle, contribuendo a un aspetto più disteso e compatto.<br/><br/><strong>È importante sapere che riunisce in un unico trattamento tre elementi dell’alveare: veleno d’api, polline e miele.</strong>" + venomWarningBlock,
       image: '/images/veleno-apis2-hd.svg',
       packs: [{ id: 'apis2-1', label: '1 confezione – 30 ml', jars: 1, price: 34.90 }],
       inStock: true,
@@ -78,7 +80,7 @@ try {
     {
       id: 'apis4-crema-corpo-veleno-api-manuka',
       name: 'Crema Corpo Veleno d’Api e Miele di Manuka – 250 ml – APIS4',
-      description: "Crema corpo formulata con veleno d’api e miele di Manuka, pensata per idratare e lasciare la pelle morbida e curata.<br/><br/>Aiuta a mantenere la pelle tonica, elastica e compatta, lasciandola più morbida e nutrita.<br/><br/><strong>È importante sapere che unisce due ingredienti caratteristici dell’alveare in una formulazione cosmetica specifica per il corpo.</strong><br/><br/><span style='display:block;padding:12px;border-radius:10px;background:#fffbeb;border:2px solid #f59e0b;color:#78350f;font-weight:800;'><strong>Sapevate che...</strong> La Manuka (Leptospermum scoparium) è un arbusto originario della Nuova Zelanda e dell’Australia sud-orientale. Dai suoi fiori le api producono il miele di Manuka, caratterizzato dalla presenza naturale di composti come il metilgliossale (MGO).</span>",
+      description: "Crema corpo formulata con veleno d’api e miele di Manuka, pensata per idratare e lasciare la pelle morbida e curata.<br/><br/>Aiuta a mantenere la pelle tonica, elastica e compatta, lasciandola più morbida e nutrita.<br/><br/><strong>È importante sapere che unisce due ingredienti caratteristici dell’alveare in una formulazione cosmetica specifica per il corpo.</strong><br/><br/><span style='display:block;padding:12px;border-radius:10px;background:#fffbeb;border:2px solid #f59e0b;color:#78350f;font-weight:800;'><strong>Sapevate che...</strong> La Manuka (Leptospermum scoparium) è un arbusto originario della Nuova Zelanda e dell’Australia sud-orientale. Dai suoi fiori le api producono il miele di Manuka, caratterizzato dalla presenza naturale di composti come il metilgliossale (MGO).</span>" + venomWarningBlock,
       image: '/images/veleno-apis4-hd.svg',
       packs: [{ id: 'apis4-1', label: '1 confezione – 250 ml', jars: 1, price: 31.90 }],
       inStock: true,
@@ -99,7 +101,7 @@ try {
     {
       id: 'apis5-gommage-veleno-api-manuka',
       name: 'Gommage Viso e Corpo Veleno d’Api e Miele di Manuka – 250 ml – APIS5',
-      description: "Trattamento esfoliante delicato per viso e corpo formulato con veleno d’api e miele di Manuka.<br/><br/>Aiuta a rimuovere le cellule superficiali della pelle, lasciandola più liscia, morbida e luminosa.<br/><br/><strong>È importante sapere che il gommage prepara la pelle ai successivi trattamenti cosmetici, migliorandone la sensazione di pulizia e levigatezza.</strong><br/><br/><span style='display:block;padding:12px;border-radius:10px;background:#fffbeb;border:2px solid #f59e0b;color:#78350f;font-weight:800;'><strong>SAPEVATE CHE... IL MIELE DI MANUKA DERIVA DAI FIORI DELLA PIANTA DI MANUKA, ORIGINARIA SOPRATTUTTO DELLA NUOVA ZELANDA, ED È CONOSCIUTO PER LA PRESENZA NATURALE DI COMPOSTI CARATTERISTICI COME IL METILGLIOSSALe (MGO).</strong></span>",
+      description: "Trattamento esfoliante delicato per viso e corpo formulato con veleno d’api e miele di Manuka.<br/><br/>Aiuta a rimuovere le cellule superficiali della pelle, lasciandola più liscia, morbida e luminosa.<br/><br/><strong>È importante sapere che il gommage prepara la pelle ai successivi trattamenti cosmetici, migliorandone la sensazione di pulizia e levigatezza.</strong><br/><br/><span style='display:block;padding:12px;border-radius:10px;background:#fffbeb;border:2px solid #f59e0b;color:#78350f;font-weight:800;'><strong>SAPEVATE CHE... IL MIELE DI MANUKA DERIVA DAI FIORI DELLA PIANTA DI MANUKA, ORIGINARIA SOPRATTUTTO DELLA NUOVA ZELANDA, ED È CONOSCIUTO PER LA PRESENZA NATURALE DI COMPOSTI CARATTERISTICI COME IL METILGLIOSSALe (MGO).</strong></span>" + venomWarningBlock,
       image: '/images/veleno-apis5-hd.svg',
       packs: [{ id: 'apis5-1', label: '1 confezione – 250 ml', jars: 1, price: 34.90 }],
       inStock: true,
@@ -120,7 +122,7 @@ try {
     {
       id: 'bagnodoccia-veleno-oro',
       name: 'Bagnodoccia Veleno d’Oro – 250 ml – APIS7',
-      description: "Bagnodoccia formulato con veleno d’api e miele di Manuka, pensato per detergere delicatamente la pelle durante la doccia.<br/><br/>La formulazione unisce l’azione detergente alla presenza di ingredienti caratteristici dell’alveare, lasciando la pelle pulita, morbida e piacevolmente curata.<br/><br/><strong>È importante sapere che associa il veleno d’api al miele di Manuka all’interno di un prodotto cosmetico per l’uso quotidiano.</strong><br/><br/><span style='display:block;padding:12px;border-radius:10px;background:#fffbeb;border:2px solid #f59e0b;color:#78350f;font-weight:800;'><strong>SAPEVATE CHE... IL MIELE DI MANUKA È CONSIDERATO UNO DEI MIELI PIÙ PARTICOLARI AL MONDO? VIENE PRODOTTO SOLO DOVE CRESCE LA PIANTA DI MANUKA E LA SUA QUALITÀ VIENE SPESSO IDENTIFICATA ANCHE ATTRAVERSO IL LIVELLO DI MGO, UNO DEI COMPOSTI NATURALMENTE PRESENTI CHE CONTRIBUISCE A RENDERLO CARATTERISTICO E UNICO.</strong></span>",
+      description: "Bagnodoccia formulato con veleno d’api e miele di Manuka, pensato per detergere delicatamente la pelle durante la doccia.<br/><br/>La formulazione unisce l’azione detergente alla presenza di ingredienti caratteristici dell’alveare, lasciando la pelle pulita, morbida e piacevolmente curata.<br/><br/><strong>È importante sapere che associa il veleno d’api al miele di Manuka all’interno di un prodotto cosmetico per l’uso quotidiano.</strong><br/><br/><span style='display:block;padding:12px;border-radius:10px;background:#fffbeb;border:2px solid #f59e0b;color:#78350f;font-weight:800;'><strong>SAPEVATE CHE... IL MIELE DI MANUKA È CONSIDERATO UNO DEI MIELI PIÙ PARTICOLARI AL MONDO? VIENE PRODOTTO SOLO DOVE CRESCE LA PIANTA DI MANUKA E LA SUA QUALITÀ VIENE SPESSO IDENTIFICATA ANCHE ATTRAVERSO IL LIVELLO DI MGO, UNO DEI COMPOSTI NATURALMENTE PRESENTI CHE CONTRIBUISCE A RENDERLO CARATTERISTICO E UNICO.</strong></span>" + venomWarningBlock,
       image: '/images/veleno-apis7-hd.svg',
       packs: [{ id: 'bvo1', label: '1 confezione – 250 ml', jars: 1, price: 14.90 }],
       inStock: true,
