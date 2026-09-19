@@ -1594,6 +1594,46 @@ const wrapRef = useRef(null);
                 return totalJarsRequested <= 0 || product.stock < totalJarsRequested;
             }, [product.inStock, product.stock, selectedPack, quantity]);
 
+            // Formati di acquisto: separa sempre descrizione e quantità/formato su righe diverse.
+            // Evita letture ambigue come "1 confezione - 15" e mantiene separati gli eventuali sconti.
+            const renderPackLabel = (label) => {
+                const raw = String(label || '').trim();
+                const normalizeUnits = (value) => value.replace(/(\d)(mg|g|kg|ml|cl|l)\b/gi, '$1 $2');
+
+                let match = raw.match(/^(.*?)\s*[–-]\s*(.+)$/);
+                if (match) {
+                    return (
+                        <>
+                            <span className="block">{match[1].trim()}</span>
+                            <span className="block mt-1">{normalizeUnits(match[2].trim())}</span>
+                        </>
+                    );
+                }
+
+                match = raw.match(/^(.*?)\s*\((\d+(?:[.,]\d+)?\s*(?:mg|g|kg|ml|cl|l)(?:\s+cad\.)?)\)$/i);
+                if (match) {
+                    return (
+                        <>
+                            <span className="block">{match[1].trim()}</span>
+                            <span className="block mt-1">{normalizeUnits(match[2].trim())}</span>
+                        </>
+                    );
+                }
+
+                match = raw.match(/^(.*?)\s+(\d+(?:[.,]\d+)?\s*(?:mg|g|kg|ml|cl|l))(\s*\(sconto[^)]*\))?$/i);
+                if (match) {
+                    return (
+                        <>
+                            <span className="block">{match[1].trim()}</span>
+                            <span className="block mt-1">{normalizeUnits(match[2].trim())}</span>
+                            {match[3] && <span className="block mt-1 text-base">{match[3].trim()}</span>}
+                        </>
+                    );
+                }
+
+                return <span className="block">{raw}</span>;
+            };
+
             if (!product) {
                 return (
                 <div id="product-detail-root" className="bg-white/70 backdrop-blur-lg rounded-2xl border border-amber-200 shadow-xl p-8 col-span-2 text-center text-red-500">
@@ -1685,7 +1725,7 @@ const wrapRef = useRef(null);
                                             } ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         >
                                             <div>
-                                                <div className="font-semibold text-xl">{pack.label}</div>
+                                                <div className="font-semibold text-xl leading-tight">{renderPackLabel(pack.label)}</div>
                                                 {product.shippingHints && product.shippingHints.find(h => h.packId === pack.id) && (
                                                     <div className="text-xs text-stone-500 mt-0.5">{product.shippingHints.find(h => h.packId === pack.id).label}</div>
                                                 )}
