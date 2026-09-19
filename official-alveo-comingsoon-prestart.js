@@ -64,77 +64,96 @@ ${buttonNeedle}`;
         </div>
         <div className="mt-2.5 min-w-0">
           <p className="text-sm xl:text-[13px] leading-snug font-semibold text-stone-100">Una nuova area digitale dedicata a ricette, video narrati e idee regalo. I primi contenuti saranno disponibili a breve.</p>
-          <button type="button" data-open-alveo-comingsoon className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs sm:text-sm xl:text-xs font-black text-stone-950 shadow-sm transition-colors" aria-label="Scopri Alveo Digitale">Scopri Alveo Digitale</button>
+          <button type="button" data-open-alveo-comingsoon className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs sm:text-sm xl:text-xs font-black text-stone-950 shadow-sm transition-colors" aria-label="Entra in Alveo Digitale">Entra in Alveo Digitale</button>
         </div>
       </div>
     </article>`;
+
+    const comingSoonPanel = `<section id="alveo-digitale-comingsoon-panel" className="hidden col-span-full mt-3 rounded-2xl border border-amber-300/40 bg-[#111] p-4 sm:p-6 shadow-xl" aria-label="Alveo Digitale in preparazione">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div>
+          <div className="text-xs font-black tracking-[0.14em] uppercase text-amber-400">ALVEO DIGITALE</div>
+          <div className="mt-2 inline-flex rounded-full bg-amber-500 px-3 py-1 text-[11px] font-black tracking-[0.12em] text-stone-950 uppercase">Contenuti in preparazione</div>
+          <h2 className="mt-3 text-2xl sm:text-3xl font-black text-white">Alveo Digitale sta arrivando</h2>
+          <p className="mt-3 max-w-3xl text-sm sm:text-base font-semibold leading-relaxed text-stone-200">Stiamo preparando i primi contenuti digitali della Fabbrica delle Api: ricette da sfogliare, brevi video narrati e idee regalo semplici da acquistare e utilizzare subito.</p>
+          <p className="mt-3 text-base sm:text-lg font-black text-amber-200">I primi contenuti saranno disponibili a breve.</p>
+        </div>
+        <button type="button" data-close-alveo-comingsoon className="shrink-0 rounded-lg border border-amber-300/50 px-4 py-2 text-sm font-black text-amber-300 hover:bg-stone-800">← Torna alle linee</button>
+      </div>
+      <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="rounded-xl border border-amber-200/25 bg-stone-900 p-4">
+          <div className="text-3xl">📖</div>
+          <div className="mt-2 text-sm font-black text-white">Ricette digitali</div>
+          <div className="mt-1 text-xs font-semibold text-stone-300">Raccolte pratiche e piacevoli da sfogliare.</div>
+        </div>
+        <div className="rounded-xl border border-amber-200/25 bg-stone-900 p-4">
+          <div className="text-3xl">🎬</div>
+          <div className="mt-2 text-sm font-black text-white">Video narrati</div>
+          <div className="mt-1 text-xs font-semibold text-stone-300">Brevi contenuti visivi dedicati al mondo dell’alveare.</div>
+        </div>
+        <div className="rounded-xl border border-amber-200/25 bg-stone-900 p-4">
+          <div className="text-3xl">🎁</div>
+          <div className="mt-2 text-sm font-black text-white">Idee regalo digitali</div>
+          <div className="mt-1 text-xs font-semibold text-stone-300">Piccoli contenuti da regalare e condividere.</div>
+        </div>
+      </div>
+    </section>`;
 
     const pair = `<div data-alveo-official-pair="true" className="mx-auto grid w-full max-w-[1248px] grid-cols-1 xl:grid-cols-[minmax(0,820px)_minmax(0,408px)] gap-3 xl:gap-5 items-stretch">
 ${velenoCard}
 ${alveoCard}
 </div>`;
 
-    section = section.slice(0, articleStart) + pair + section.slice(articleEnd);
+    section = section.slice(0, articleStart) + pair + '\n' + comingSoonPanel + section.slice(articleEnd);
     html = html.slice(0, sectionStart) + section + html.slice(sectionEnd);
   }
 
-  // 3) Messaggio ufficiale: nessun acquisto digitale finché i contenuti non sono pronti.
-  if (!html.includes('id="alveo-comingsoon-overlay"')) {
+  // 3) Apertura della vera sezione Alveo Digitale: nessun acquisto finché i contenuti non sono pronti.
+  if (!html.includes('data-alveo-comingsoon-inline="true"')) {
     const runtime = `
-<style data-alveo-comingsoon="true">
-#alveo-comingsoon-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.78);backdrop-filter:blur(4px)}
-#alveo-comingsoon-overlay.open{display:flex}
-#alveo-comingsoon-box{width:min(560px,96vw);border:1px solid rgba(245,158,11,.55);border-radius:18px;background:#111;color:#fff;box-shadow:0 24px 70px rgba(0,0,0,.55);overflow:hidden}
-#alveo-comingsoon-head{padding:18px 20px;background:#073c2e;border-bottom:1px solid rgba(245,158,11,.35)}
-#alveo-comingsoon-badge{display:inline-flex;border-radius:999px;background:#f59e0b;color:#111827;padding:5px 10px;font-size:11px;font-weight:950;letter-spacing:.11em;text-transform:uppercase}
-#alveo-comingsoon-head h3{margin:10px 0 0;font-family:Georgia,"Times New Roman",serif;font-size:28px;line-height:1.08;font-weight:900}
-#alveo-comingsoon-body{padding:20px}
-#alveo-comingsoon-body p{margin:0;color:#f5f5f4;font-size:16px;line-height:1.5;font-weight:650}
-#alveo-comingsoon-body strong{display:block;margin-top:12px;color:#fde68a;font-size:17px}
-#alveo-comingsoon-close{margin-top:18px;width:100%;border:0;border-radius:11px;background:#f59e0b;color:#111827;padding:12px 16px;font-size:14px;font-weight:950;cursor:pointer}
-</style>
-<div id="alveo-comingsoon-overlay" aria-hidden="true">
-  <div id="alveo-comingsoon-box" role="dialog" aria-modal="true" aria-labelledby="alveo-comingsoon-title">
-    <div id="alveo-comingsoon-head">
-      <span id="alveo-comingsoon-badge">In preparazione</span>
-      <h3 id="alveo-comingsoon-title">Alveo Digitale sta arrivando</h3>
-    </div>
-    <div id="alveo-comingsoon-body">
-      <p>Stiamo preparando i primi contenuti: ricette da sfogliare, brevi video narrati e idee regalo digitali.</p>
-      <strong>I primi contenuti saranno disponibili a breve direttamente sul sito.</strong>
-      <button type="button" id="alveo-comingsoon-close">Torna alle linee</button>
-    </div>
-  </div>
-</div>
-<script data-alveo-comingsoon="true">
+<script data-alveo-comingsoon-inline="true">
 (function(){
-  function overlay(){return document.getElementById('alveo-comingsoon-overlay');}
-  function open(){
-    var el=overlay();
-    if(!el)return;
-    el.classList.add('open');
-    el.setAttribute('aria-hidden','false');
+  function panel(){return document.getElementById('alveo-digitale-comingsoon-panel');}
+  function lineCards(){return Array.from(document.querySelectorAll('[data-pli-product-line="1"]'));}
+
+  function openPanel(){
+    var p=panel();
+    if(!p)return;
+    lineCards().forEach(function(el){el.style.display='none';});
+    p.classList.remove('hidden');
+    setTimeout(function(){p.scrollIntoView({behavior:'smooth',block:'start'});},40);
   }
-  function close(){
-    var el=overlay();
-    if(!el)return;
-    el.classList.remove('open');
-    el.setAttribute('aria-hidden','true');
+
+  function closePanel(){
+    var p=panel();
+    if(p)p.classList.add('hidden');
+    lineCards().forEach(function(el){el.style.removeProperty('display');});
+    var card=document.getElementById('linea-alveo-digitale-home');
+    if(card)setTimeout(function(){card.scrollIntoView({behavior:'smooth',block:'center'});},40);
   }
+
   document.addEventListener('click',function(event){
-    if(event.target&&event.target.closest&&event.target.closest('[data-open-alveo-comingsoon]')){event.preventDefault();open();return;}
-    if(event.target&&event.target.id==='alveo-comingsoon-close'){event.preventDefault();close();return;}
-    var el=overlay();
-    if(el&&event.target===el)close();
+    var open=event.target&&event.target.closest?event.target.closest('[data-open-alveo-comingsoon]'):null;
+    if(open){event.preventDefault();openPanel();return;}
+
+    var close=event.target&&event.target.closest?event.target.closest('[data-close-alveo-comingsoon]'):null;
+    if(close){event.preventDefault();closePanel();return;}
+
+    var globalBack=event.target&&event.target.closest?event.target.closest('[data-close-product-lines]'):null;
+    if(globalBack){
+      var p=panel();
+      if(p)p.classList.add('hidden');
+      lineCards().forEach(function(el){el.style.removeProperty('display');});
+    }
   },true);
-  document.addEventListener('keydown',function(event){if(event.key==='Escape')close();});
 })();
 </script>`;
     html = html.replace('</body>', runtime + '\n</body>');
   }
 
   if (!html.includes('/images/alveo-digitale-card-originale.png?v=alveo-official-1')) throw new Error('Immagine Alveo Digitale ufficiale non applicata');
-  if (!html.includes('I primi contenuti saranno disponibili a breve direttamente sul sito.')) throw new Error('Messaggio Alveo Digitale in preparazione non applicato');
+  if (!html.includes('id="alveo-digitale-comingsoon-panel"')) throw new Error('Sezione Alveo Digitale in preparazione non applicata');
+  if (!html.includes('I primi contenuti saranno disponibili a breve.')) throw new Error('Messaggio contenuti in arrivo non applicato');
 
   fs.writeFileSync(indexPath, html, 'utf8');
   console.log('[Cloudflare test] Linea Veleno aggiornata e Alveo Digitale aggiunta in modalità "contenuti in arrivo", senza acquisto digitale.');
