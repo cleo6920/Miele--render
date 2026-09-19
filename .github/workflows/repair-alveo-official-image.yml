@@ -1,0 +1,43 @@
+name: Repair Alveo Digitale official image
+
+on:
+  push:
+    branches: [cloudflare-test]
+    paths:
+      - '.github/workflows/repair-alveo-official-image.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout cloudflare-test
+        uses: actions/checkout@v4
+        with:
+          ref: cloudflare-test
+
+      - name: Download exact approved image
+        env:
+          SOURCE_URL: "https://d2jqrm6oza8nb6.cloudfront.net/datasets/6ae46a71-0a24-4e26-af2e-8f105ce3c1f4.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNzk2MTI3NzVhMWIzZjQyNyIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc4OTkxMTAyOX0.-OqhXhlPmwQoEazNyVETe94j1X2raJjQ-PBZvZfxip4"
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 "$SOURCE_URL" -o images/alveo-digitale-card-originale.png
+          python - <<'PY'
+          from pathlib import Path
+          p=Path("images/alveo-digitale-card-originale.png")
+          data=p.read_bytes()
+          assert data[:8] == b"\x89PNG\r\n\x1a\n", "Not a valid PNG"
+          assert len(data) > 1000000, f"Unexpectedly small image: {len(data)}"
+          print("PNG OK:", len(data), "bytes")
+          PY
+
+      - name: Commit repaired image
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/alveo-digitale-card-originale.png
+          git commit -m "cloudflare-test: ripara foto Alveo Digitale ufficiale"
+          git push origin cloudflare-test
