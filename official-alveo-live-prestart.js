@@ -265,7 +265,7 @@ try {
     '10 Colazioni dell’Alveare',
     'data-alveo-preview-open',
     'data-alveo-buy-live',
-    '/images/alveo-preview-05.webp?v=alveo-live-1'
+    "for(var i=1;i<=5;i++)"
   ];
   required.forEach((needle) => {
     if (!html.includes(needle)) throw new Error('Alveo Digitale LIVE incompleto: ' + needle);
