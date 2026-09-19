@@ -41,6 +41,7 @@ require('./alimenti-render-final-prestart.js');
 require('./tris-linea-image-prestart.js');
 require('./alveo-digitale-preview-prestart.js');
 require('./alveo-digitale-priority-layout-prestart.js');
+require('./veleno-home-description-prestart.js');
 require('./alveo-digitale-cover-preview-prestart.js');
 require('./alveo-digitale-purchase-sim-prestart.js');
 require('./alveo-digitale-hd-preview-fix-prestart.js');
