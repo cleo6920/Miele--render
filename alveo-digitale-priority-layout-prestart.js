@@ -38,7 +38,7 @@ try {
   const articleEnd = articleEndStart + '</article>'.length;
   const velenoCard = section.slice(articleStart, articleEnd);
 
-  const pair = `<div data-alveo-priority-pair="true" className="mx-auto grid w-full max-w-[1248px] grid-cols-1 xl:grid-cols-[minmax(0,900px)_minmax(0,328px)] gap-3 xl:gap-5 items-stretch">
+  const pair = `<div data-alveo-priority-pair="true" className="mx-auto grid w-full max-w-[1248px] grid-cols-1 xl:grid-cols-[minmax(0,820px)_minmax(0,408px)] gap-3 xl:gap-5 items-stretch">
 ${velenoCard}
 ${alveoCard}
 </div>`;
@@ -57,7 +57,7 @@ ${alveoCard}
   }
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Linea Veleno prioritaria e Alveo Digitale affiancata; nuova foto realistica attiva solo su Render.');
+  console.log('[Miele Artigianale] Linea Veleno resta prioritaria; Alveo Digitale ampliata e resa autonoma con layout verticale, solo su Render.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore layout prioritario Veleno + Alveo Digitale:', error);
   process.exitCode = 1;

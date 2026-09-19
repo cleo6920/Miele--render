@@ -15,18 +15,18 @@ try {
     if (endStart === -1) throw new Error('Fine card I Tris dell’Alveare non trovata');
     const end = endStart + '</article>'.length;
 
-    const card = `<article id="${cardId}" className="mx-auto w-full max-w-[900px] xl:max-w-none overflow-hidden rounded-xl border border-amber-300/40 bg-[#121212] shadow-lg">
-                            <div className="px-3 pt-2 pb-2">
-                              <div className="text-[11px] font-black tracking-[0.12em] text-amber-400 uppercase">ALVEO DIGITALE</div>
-                              <h2 className="mt-0.5 text-lg xl:text-[17px] font-black leading-tight text-white">Ricette, video e idee regalo da usare subito</h2>
+    const card = `<article id="${cardId}" className="mx-auto w-full max-w-[900px] xl:max-w-none overflow-hidden rounded-xl border border-amber-300/45 bg-[#121212] shadow-lg">
+                            <div className="px-3 pt-2.5 pb-2">
+                              <div className="text-[11px] font-black tracking-[0.14em] text-amber-400 uppercase">ALVEO DIGITALE</div>
+                              <h2 className="mt-1 text-xl xl:text-[20px] font-black leading-tight text-white">Ricette, video e idee regalo da usare subito</h2>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[145px_minmax(0,1fr)] gap-2.5 px-3 pb-3 items-stretch">
+                            <div className="px-3 pb-3">
                               <div className="overflow-hidden rounded-lg border border-amber-200/40 bg-[#f4ecdf] shadow-inner">
-                                <img src="/images/alveo-digitale-card-render.webp?v=alveo-card-1" alt="Ricette, video e idee regalo della linea Alveo Digitale" className="block w-full h-[190px] sm:h-full min-h-[160px] object-cover object-center" />
+                                <img src="/images/alveo-digitale-card-render.webp?v=alveo-card-2" alt="Ricette, video e idee regalo della linea Alveo Digitale" className="block w-full h-[155px] sm:h-[180px] xl:h-[135px] object-cover object-center" />
                               </div>
-                              <div className="min-w-0 flex flex-col justify-center">
-                                <p className="text-sm xl:text-[13px] leading-snug font-semibold text-stone-100">Scegli un contenuto, guardalo e acquistalo in modo semplice. Nessuna spedizione: quando sarà attivo lo riceverai subito dopo il pagamento.</p>
-                                <button type="button" data-open-alveo-digitale className="mt-3 inline-flex w-fit items-center justify-center rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs sm:text-sm xl:text-xs font-black text-stone-950 shadow-sm transition-colors" aria-label="Scopri Alveo Digitale">Scopri Alveo Digitale</button>
+                              <div className="mt-2.5 min-w-0">
+                                <p className="text-sm xl:text-[13px] leading-snug font-semibold text-stone-100">Ricette, video e idee regalo digitali da scegliere, acquistare e ricevere subito dopo il pagamento.</p>
+                                <button type="button" data-open-alveo-digitale className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs sm:text-sm xl:text-xs font-black text-stone-950 shadow-sm transition-colors" aria-label="Scopri Alveo Digitale">Scopri Alveo Digitale</button>
                               </div>
                             </div>
                           </article>
