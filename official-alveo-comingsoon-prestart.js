@@ -60,7 +60,7 @@ ${buttonNeedle}`;
       </div>
       <div className="px-3 pb-3">
         <div className="overflow-hidden rounded-lg border border-amber-200/40 bg-[#f4ecdf] shadow-inner">
-          <img src="/images/alveo-digitale-card-originale.png?v=alveo-official-1" alt="Ricette, video e idee regalo della linea Alveo Digitale" className="block w-full h-auto object-contain object-center" />
+          <img src="/images/alveo-digitale-card-originale.png?v=alveo-official-2" alt="Ricette, video e idee regalo della linea Alveo Digitale" className="block w-full h-auto object-contain object-center" />
         </div>
         <div className="mt-2.5 min-w-0">
           <p className="text-sm xl:text-[13px] leading-snug font-semibold text-stone-100">Una nuova area digitale dedicata a ricette, video narrati e idee regalo. I primi contenuti saranno disponibili a breve.</p>
@@ -151,7 +151,7 @@ ${alveoCard}
     html = html.replace('</body>', runtime + '\n</body>');
   }
 
-  if (!html.includes('/images/alveo-digitale-card-originale.png?v=alveo-official-1')) throw new Error('Immagine Alveo Digitale ufficiale non applicata');
+  if (!html.includes('/images/alveo-digitale-card-originale.png?v=alveo-official-2')) throw new Error('Immagine Alveo Digitale ufficiale non applicata');
   if (!html.includes('id="alveo-digitale-comingsoon-panel"')) throw new Error('Sezione Alveo Digitale in preparazione non applicata');
   if (!html.includes('I primi contenuti saranno disponibili a breve.')) throw new Error('Messaggio contenuti in arrivo non applicato');
 
