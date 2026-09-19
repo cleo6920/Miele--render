@@ -183,7 +183,11 @@ function pointsForItem(item) {
   let bonusPerUnit = 0;
   let calculation = 'fascia-prezzo';
 
-  if (isSosDolItem(productId, productName)) {
+  if (productId === 'alveo-digitale-10-colazioni' || /10 Colazioni dell[’']Alveare/i.test(productName)) {
+    perUnit = 2;
+    bonusPerUnit = 0;
+    calculation = 'Alveo Digitale = 2 Api';
+  } else if (isSosDolItem(productId, productName)) {
     perUnit = 10;
     bonusPerUnit = 2;
     calculation = 'SOS DOL = 8 Api + 2 bonus = 10 Api';
