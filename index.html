@@ -1644,6 +1644,14 @@ const wrapRef = useRef(null);
 
                         <div className="flex-grow w-full lg:w-1/2 space-y-6">
                             <h2 className="text-4xl font-bold text-amber-800">{product.name}</h2>
+
+                            {/* Badge "Novità assoluta" per Unguento Apis: prima della descrizione */}
+                            {product.id === 'unguento-apis' && (
+                                <p className="text-4xl text-amber-500 font-extrabold">
+                                    NOVITÀ ASSOLUTA!
+                                </p>
+                            )}
+
                             <p className={product.id === 'caramelle-incartate-70g' ? 'text-2xl font-bold text-white leading-relaxed' : 'text-lg text-stone-700 leading-relaxed'} dangerouslySetInnerHTML={{ __html: product.description }}>
 </p>
                             {product.id === 'caramelle-incartate-70g' && (
@@ -1661,13 +1669,6 @@ const wrapRef = useRef(null);
                             {product.id === 'saponette-artigianali' && (
                                 <p className="text-3xl text-red-600 font-extrabold">
                                     Da 6 saponette (anche miste): sconto −8,33% applicato in carrello.
-                                </p>
-                            )}
-
-                            {/* Badge "Novità assoluta" per Unguento Apis */}
-                            {product.id === 'unguento-apis' && (
-                                <p className="text-4xl text-amber-500 font-extrabold">
-                                    NOVITÀ ASSOLUTA!
                                 </p>
                             )}
 
