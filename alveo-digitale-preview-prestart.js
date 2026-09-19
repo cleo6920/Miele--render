@@ -22,7 +22,7 @@ try {
                             </div>
                             <div className="px-3 pb-3">
                               <div className="overflow-hidden rounded-lg border border-amber-200/40 bg-[#f4ecdf] shadow-inner">
-                                <img src="/images/alveo-digitale-card-render.webp?v=alveo-card-2" alt="Ricette, video e idee regalo della linea Alveo Digitale" className="block w-full h-[155px] sm:h-[180px] xl:h-[135px] object-cover object-center" />
+                                <img src="/images/alveo-digitale-card-originale.png?v=alveo-originale-1" alt="Ricette, video e idee regalo della linea Alveo Digitale" className="block w-full h-auto object-contain object-center" />
                               </div>
                               <div className="mt-2.5 min-w-0">
                                 <p className="text-sm xl:text-[13px] leading-snug font-semibold text-stone-100">Ricette, video e idee regalo digitali da scegliere, acquistare e ricevere subito dopo il pagamento.</p>
