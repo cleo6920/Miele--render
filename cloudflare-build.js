@@ -174,6 +174,8 @@ async function main() {
   copyStaticRootFiles();
   requireSaldoApiBrowserRuntime();
   copyDir(path.join(root, 'images'), path.join(dist, 'images'));
+  copyDir(path.join(root, 'downloads'), path.join(dist, 'downloads'));
+  console.log('[Cloudflare test] Download digitali copiati nel pacchetto statico.');
 
   const routeMap = {
     home: 'home.html',
