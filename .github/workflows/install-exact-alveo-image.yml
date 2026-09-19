@@ -1,0 +1,66 @@
+name: Install exact Alveo Digitale image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/install-exact-alveo-image.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download exact user image
+        env:
+          SOURCE_URL: "https://d2jqrm6oza8nb6.cloudfront.net/datasets/052c207e-e59c-41dd-9b45-6c5ea82a20bb.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYWJhMTUyOTc1YjQ1Y2ZhMiIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc4OTk3MjM3NX0.nU95Oi_ZTuGZmEZkwDwlmAsRYsu3U8nqkBhM0uwVHaU"
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 "$SOURCE_URL" -o images/alveo-digitale-card-originale.png
+          python - <<'PY'
+          from pathlib import Path
+          p=Path("images/alveo-digitale-card-originale.png")
+          data=p.read_bytes()
+          assert data[:8] == b"\x89PNG\r\n\x1a\n", "Not a valid PNG"
+          assert len(data) > 500000, f"Unexpectedly small image: {len(data)}"
+          print("Exact PNG OK:", len(data), "bytes")
+          PY
+
+      - name: Use full uncropped image in Alveo Digitale card
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path("alveo-digitale-preview-prestart.js")
+          text=p.read_text(encoding="utf-8")
+          old='<img src="/images/alveo-digitale-card-render.webp?v=alveo-card-2" alt="Ricette, video e idee regalo della linea Alveo Digitale" className="block w-full h-[155px] sm:h-[180px] xl:h-[135px] object-cover object-center" />'
+          new='<img src="/images/alveo-digitale-card-originale.png?v=alveo-originale-1" alt="Ricette, video e idee regalo della linea Alveo Digitale" className="block w-full h-auto object-contain object-center" />'
+          if text.count(old) != 1:
+              raise SystemExit(f"Expected one current Alveo image tag, found {text.count(old)}")
+          p.write_text(text.replace(old,new),encoding="utf-8")
+
+          p2=Path("alveo-digitale-priority-layout-prestart.js")
+          t2=p2.read_text(encoding="utf-8")
+          old_check='/images/alveo-digitale-card-render.webp?v=alveo-card-2'
+          new_check='/images/alveo-digitale-card-originale.png?v=alveo-originale-1'
+          if t2.count(old_check) != 1:
+              raise SystemExit(f"Expected one old verification path, found {t2.count(old_check)}")
+          p2.write_text(t2.replace(old_check,new_check),encoding="utf-8")
+          print("Alveo Digitale card now uses the exact full PNG without cropping.")
+          PY
+
+      - name: Commit exact image and card update
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/alveo-digitale-card-originale.png alveo-digitale-preview-prestart.js alveo-digitale-priority-layout-prestart.js
+          git commit -m "Render: usa foto Alveo Digitale originale senza tagli"
+          git push origin main
