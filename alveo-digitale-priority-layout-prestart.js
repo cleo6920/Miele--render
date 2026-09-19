@@ -47,7 +47,7 @@ ${alveoCard}
   html = html.slice(0, sectionStart) + section + html.slice(sectionEnd);
 
   if (!html.includes('data-alveo-priority-pair="true"')) throw new Error('Affiancamento Veleno + Alveo non applicato');
-  if (!html.includes('/images/alveo-digitale-card-render.webp?v=alveo-card-1')) throw new Error('Nuova immagine Alveo Digitale non applicata');
+  if (!html.includes('/images/alveo-digitale-card-render.webp?v=alveo-card-2')) throw new Error('Nuova immagine Alveo Digitale non applicata');
 
   const pairPos = html.indexOf('data-alveo-priority-pair="true"');
   const velenoInPair = html.indexOf('Uno dei punti di forza del nostro Centro', pairPos);
