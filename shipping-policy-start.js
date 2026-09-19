@@ -33,6 +33,7 @@ require('./intro-photo-rebuild.js');
 require('./prodotti-linee-intro-prestart.js');
 require('./tris-home-slogan-prestart.js');
 require('./home-layout-final.js');
+require('./official-alveo-comingsoon-prestart.js');
 require('./capsule-duration-prestart.js');
 require('./description-supplier-sanitize-prestart.js');
 require('./bee-points-prestart.js');

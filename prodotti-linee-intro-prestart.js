@@ -78,7 +78,8 @@ try {
     'LINEA INTEGRATORI',
     'LINEA COSMESI E TESORI IN CERA D’API',
     'LINEA I TESORI DI FRANCESCO',
-    'I TRIS DELL’ALVEARE'
+    'I TRIS DELL’ALVEARE',
+    'ALVEO DIGITALE'
   ];
 
   function normalizeText(value){
@@ -114,7 +115,7 @@ try {
   function isProductLineArticle(article){
     if(!article) return false;
     var id=article.id||'';
-    if(/^linea-(alimenti|integratori|cosmesi-cera|tesori-francesco|tris-alveare|benessere-veleno-api|veleno-api)-home$/i.test(id)) return true;
+    if(/^linea-(alimenti|integratori|cosmesi-cera|tesori-francesco|tris-alveare|alveo-digitale|benessere-veleno-api|veleno-api)-home$/i.test(id)) return true;
     var text=normalizeText(article.textContent||'');
     for(var i=0;i<normalizedLabels.length;i++){
       if(text.indexOf(normalizedLabels[i])!==-1) return true;
