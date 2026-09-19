@@ -1,0 +1,67 @@
+name: Build official Alveo preview images
+
+on:
+  push:
+    branches: [cloudflare-test]
+    paths:
+      - 'downloads/10-colazioni-alveare-premium-45f7034d.pdf'
+      - '.github/workflows/build-alveo-official-preview-images.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout official branch
+        uses: actions/checkout@v4
+        with:
+          ref: cloudflare-test
+
+      - name: Install PDF renderer and Pillow
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          python -m pip install --disable-pip-version-check pillow
+
+      - name: Render first five definitive pages
+        run: |
+          set -euo pipefail
+          pdftoppm -f 1 -l 5 -r 160 -png             "downloads/10-colazioni-alveare-premium-45f7034d.pdf"             /tmp/alveo-preview
+
+      - name: Create high-quality WebP previews
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+
+          out_dir = Path('images')
+          out_dir.mkdir(exist_ok=True)
+
+          for i in range(1, 6):
+              src = Path(f'/tmp/alveo-preview-{i}.png')
+              if not src.exists():
+                  raise SystemExit(f'Missing rendered page: {src}')
+              img = Image.open(src).convert('RGB')
+              target_w = min(1100, img.width)
+              target_h = round(img.height * target_w / img.width)
+              if target_w != img.width:
+                  img = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
+              target = out_dir / f'alveo-preview-{i:02d}.webp'
+              img.save(target, 'WEBP', quality=84, method=6)
+              check = Image.open(target)
+              if check.width < 900 or check.height < 1200:
+                  raise SystemExit(f'Preview too small: {target} {check.size}')
+              print(target, check.size, target.stat().st_size, 'bytes')
+          PY
+
+      - name: Commit official preview assets
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/alveo-preview-01.webp images/alveo-preview-02.webp images/alveo-preview-03.webp images/alveo-preview-04.webp images/alveo-preview-05.webp
+          git diff --cached --quiet && exit 0
+          git commit -m "Official: genera preview 5 pagine Alveo Digitale"
+          git push origin HEAD:cloudflare-test
