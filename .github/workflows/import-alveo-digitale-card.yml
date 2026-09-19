@@ -1,0 +1,46 @@
+name: Import Alveo Digitale card image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-alveo-digitale-card.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download approved WebP
+        env:
+          SOURCE_URL: "https://d2jqrm6oza8nb6.cloudfront.net/datasets/a6793005-c3c6-4218-9279-a1ecc30c1321.webp?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjUyMjY4MWFlZjM3OWNiYiIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc4OTkzMDI2Nn0.oNZBJfhK_FmeNP9WSn_sl1YLYOa4uqGxRAKTQEj6ScY"
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 "$SOURCE_URL" -o images/alveo-digitale-card-render.webp
+          BYTES=$(wc -c < images/alveo-digitale-card-render.webp)
+          echo "Downloaded bytes: $BYTES"
+          test "$BYTES" -gt 150000
+          test "$BYTES" -lt 500000
+          python - <<'PY'
+          from pathlib import Path
+          p=Path("images/alveo-digitale-card-render.webp")
+          data=p.read_bytes()
+          assert data[:4] == b"RIFF" and data[8:12] == b"WEBP", "Not a valid WebP"
+          print("WebP signature OK; bytes:", len(data))
+          PY
+
+      - name: Commit approved image
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/alveo-digitale-card-render.webp
+          git commit -m "Render: aggiunge nuova immagine Alveo Digitale"
+          git push origin main
