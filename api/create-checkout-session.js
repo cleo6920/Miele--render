@@ -70,7 +70,19 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Il carrello è vuoto.' });
     }
 
-    const shippingEuro = Number(body.shippingCostOverride || 0);
+    const cartMeta = Array.isArray(body.xpayCart) ? body.xpayCart : [];
+    const orderNote = cleanText(body.notes, 120);
+    const isAlveoDigitalOrder =
+      sanitizedItems.length === 1 &&
+      (
+        cleanText(cartMeta[0] && cartMeta[0].productId, 180) === 'alveo-digitale-10-colazioni' ||
+        orderNote === 'ALVEO_DIGITALE:10_COLAZIONI' ||
+        /10 Colazioni dell[’']Alveare\s*-\s*PDF digitale/i.test(sanitizedItems[0].name)
+      );
+
+    // I contenuti digitali non hanno costi di spedizione, indipendentemente
+    // da eventuali override/intercettori del carrello fisico.
+    const shippingEuro = isAlveoDigitalOrder ? 0 : Number(body.shippingCostOverride || 0);
     const shippingCents = Math.round(shippingEuro * 100);
     if (!Number.isFinite(shippingCents) || shippingCents < 0) {
       return res.status(400).json({ error: 'Costo di spedizione non valido.' });
