@@ -41,11 +41,12 @@ try {
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-emerald-400/40 bg-emerald-950/60 px-3 py-1.5 text-xs font-black text-emerald-100">Download immediato</span>
               <span className="rounded-full border border-amber-300/40 bg-amber-950/40 px-3 py-1.5 text-xs font-black text-amber-100">Nessuna spedizione</span>
+              <span className="rounded-full border border-yellow-300/50 bg-yellow-950/40 px-3 py-1.5 text-xs font-black text-yellow-100">🐝 2 Punti Ape</span>
             </div>
-            <div className="mt-5 text-3xl font-black text-amber-300">€3,90</div>
+            <div className="mt-5 text-3xl font-black text-amber-300">€4,90</div>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button type="button" data-alveo-preview-open className="rounded-xl border-2 border-amber-400 px-4 py-3 text-sm font-black text-amber-200 hover:bg-amber-950/40">Anteprima gratuita · 5 pagine</button>
-              <button type="button" data-alveo-buy-live className="rounded-xl bg-amber-500 hover:bg-amber-400 px-4 py-3 text-sm font-black text-stone-950 shadow-lg">Acquista PDF · €3,90</button>
+              <button type="button" data-alveo-buy-live className="rounded-xl bg-amber-500 hover:bg-amber-400 px-4 py-3 text-sm font-black text-stone-950 shadow-lg">Acquista PDF · €4,90</button>
             </div>
             <p className="mt-3 text-xs font-semibold text-stone-400">L’anteprima mostra le prime 5 pagine complete: copertina, indice e la prima colazione con varianti.</p>
           </div>
@@ -170,7 +171,7 @@ try {
     o=document.createElement('div');
     o.id='alveo-live-buy';
     o.setAttribute('aria-hidden','true');
-    o.innerHTML='<div id="alveo-live-buy-modal" role="dialog" aria-modal="true" aria-labelledby="alveo-live-buy-title"><div id="alveo-live-buy-head"><div class="eyebrow">ALVEO DIGITALE · DOWNLOAD IMMEDIATO</div><h3 id="alveo-live-buy-title">Completa l’acquisto</h3></div><div id="alveo-live-buy-body"><div id="alveo-live-buy-product"><strong>10 Colazioni dell’Alveare · Edizione Premium</strong><span>€3,90</span></div><label class="main" for="alveo-live-email">Email</label><input id="alveo-live-email" type="email" inputmode="email" autocomplete="email" placeholder="nome@email.it"><label id="alveo-live-consent-wrap"><input id="alveo-live-consent" type="checkbox"><span>Chiedo che la fornitura del contenuto digitale inizi subito dopo il pagamento e riconosco che, con l’avvio del download, perdo il diritto di recesso previsto per il contenuto digitale fornito immediatamente.</span></label><button id="alveo-live-pay" type="button">Procedi al pagamento · €3,90</button><div id="alveo-live-buy-error"></div><button id="alveo-live-buy-close" type="button">Annulla e torna ad Alveo Digitale</button><div id="alveo-live-terms">Consulta anche <a href="/condizioni-vendita.html" target="_blank" rel="noopener">Condizioni di vendita</a> e <a href="/resi-recesso.html" target="_blank" rel="noopener">Resi e recesso</a>.</div></div></div>';
+    o.innerHTML='<div id="alveo-live-buy-modal" role="dialog" aria-modal="true" aria-labelledby="alveo-live-buy-title"><div id="alveo-live-buy-head"><div class="eyebrow">ALVEO DIGITALE · DOWNLOAD IMMEDIATO</div><h3 id="alveo-live-buy-title">Completa l’acquisto</h3></div><div id="alveo-live-buy-body"><div id="alveo-live-buy-product"><strong>10 Colazioni dell’Alveare · Edizione Premium</strong><span>€4,90</span></div><label class="main" for="alveo-live-email">Email</label><input id="alveo-live-email" type="email" inputmode="email" autocomplete="email" placeholder="nome@email.it"><label id="alveo-live-consent-wrap"><input id="alveo-live-consent" type="checkbox"><span>Chiedo che la fornitura del contenuto digitale inizi subito dopo il pagamento e riconosco che, con l’avvio del download, perdo il diritto di recesso previsto per il contenuto digitale fornito immediatamente.</span></label><button id="alveo-live-pay" type="button">Procedi al pagamento · €4,90</button><div id="alveo-live-buy-error"></div><button id="alveo-live-buy-close" type="button">Annulla e torna ad Alveo Digitale</button><div id="alveo-live-terms">Consulta anche <a href="/condizioni-vendita.html" target="_blank" rel="noopener">Condizioni di vendita</a> e <a href="/resi-recesso.html" target="_blank" rel="noopener">Resi e recesso</a>.</div></div></div>';
     document.body.appendChild(o);
     return o;
   }
@@ -180,7 +181,7 @@ try {
     var err=document.getElementById('alveo-live-buy-error');
     if(err){err.style.display='none';err.textContent='';}
     var pay=document.getElementById('alveo-live-pay');
-    if(pay){pay.disabled=false;pay.textContent='Procedi al pagamento · €3,90';}
+    if(pay){pay.disabled=false;pay.textContent='Procedi al pagamento · €4,90';}
     o.classList.add('open');
     o.setAttribute('aria-hidden','false');
     lock();
@@ -210,7 +211,7 @@ try {
 
     try{
       var payload={
-        items:[{name:'10 Colazioni dell’Alveare - PDF digitale',amount:3.90,quantity:1}],
+        items:[{name:'10 Colazioni dell’Alveare - PDF digitale',amount:4.90,quantity:1}],
         shippingCostOverride:0,
         customer:{email:value},
         email:value,
@@ -224,7 +225,7 @@ try {
       window.location.assign(data.url);
     }catch(error){
       buyError(error&&error.message?error.message:'Impossibile avviare il pagamento. Riprova tra poco.');
-      if(pay){pay.disabled=false;pay.textContent='Procedi al pagamento · €3,90';}
+      if(pay){pay.disabled=false;pay.textContent='Procedi al pagamento · €4,90';}
     }
   }
 
@@ -273,7 +274,7 @@ try {
   if (html.includes('I primi contenuti saranno disponibili a breve.')) throw new Error('Vecchio messaggio di attesa ancora visibile');
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Cloudflare test] Alveo Digitale ufficiale LIVE: 10 Colazioni acquistabile a €3,90, preview 5 pagine e download post-pagamento.');
+  console.log('[Cloudflare test] Alveo Digitale ufficiale LIVE: 10 Colazioni acquistabile a €4,90, preview 5 pagine e download post-pagamento.');
 } catch (error) {
   console.error('[Cloudflare test] Errore attivazione Alveo Digitale LIVE:', error);
   process.exitCode = 1;
