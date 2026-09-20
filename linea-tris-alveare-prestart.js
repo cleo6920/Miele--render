@@ -355,7 +355,10 @@ try {
     image: offer.slug === 'millefiori'
       ? '/images/tris-alveare-millefiori.jpg'
       : '/images/hero-prodotti-corretta.jpg',
-    packs: [{ id: `tris-alveare-pack-${index + 1}`, label: '1 Tris - 3 prodotti', jars: 3, price: offer.price }],
+    packs: [
+      { id: `tris-alveare-pack-${index + 1}`, label: '1 Tris - 3 prodotti', jars: 3, price: offer.price },
+      { id: `tris-alveare-pack-${index + 1}-regalo`, label: '1 Tris - 3 prodotti + espositore confezione regalo', jars: 3, price: Number((offer.price + 5).toFixed(2)) }
+    ],
     order: 8001 + index,
     category,
     inStock: true,
@@ -415,6 +418,9 @@ try {
   }
 
   if (products.length !== 30) throw new Error(`Numero tris non valido: ${products.length}`);
+  if (products.some(product => product.packs.length !== 2 || Math.abs((product.packs[1].price - product.packs[0].price) - 5) > 0.001)) {
+    throw new Error('Opzione regalo Tris non valida: ogni Tris deve avere 2 formati con differenza esatta di €5,00');
+  }
   for (const product of products) {
     if (!findObjectBounds(html, product.id)) throw new Error(`Tris mancante: ${product.id}`);
     if (!Number.isFinite(product.beePoints) || product.beePoints <= 0) throw new Error(`Punti Api mancanti: ${product.id}`);
