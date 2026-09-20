@@ -266,6 +266,50 @@ Object.assign(T,{
 "Telefono 2":"Telefon 2"
 });
 
+Object.assign(T,{
+"Scegli una linea e scopri i prodotti disponibili.":"Wähle eine Produktlinie und entdecke die verfügbaren Produkte.",
+"← Torna alla presentazione":"← Zurück zur Übersicht",
+
+"Immagine rappresentativa della Linea Benessere Veleno d'Api":"Repräsentatives Bild der Bienengift-Kosmetiklinie",
+"Esclusiva":"Exklusiv",
+"Uno dei punti di forza del nostro Centro":"Eine der besonderen Linien unseres Zentrums",
+"LINEA COSMETICA AL VELENO D’API":"KOSMETIKLINIE MIT BIENENGIFT",
+"Una selezione esclusiva dedicata al veleno d’api, con cosmetici per viso, corpo e massaggio scelti per rappresentare una delle linee più distintive della Fabbrica delle Api. La gamma riunisce 6 referenze: crema e siero viso, prodotti per il corpo, gommage, bagnodoccia e unguento da massaggio. In alcune formulazioni il veleno d’api è abbinato ad altri ingredienti dell’alveare, come miele, polline e cera d’api. Scopri ogni prodotto e consulta la scheda completa con caratteristiche, formato e prezzo.":"Eine exklusive Auswahl rund um Bienengift mit Kosmetik für Gesicht, Körper und Massage. Die Linie umfasst 6 Produkte: Gesichtscreme und -serum, Körperpflege, Peeling, Duschbad und Massagesalbe. In einigen Formulierungen wird Bienengift mit weiteren Bestandteilen aus dem Bienenstock wie Honig, Pollen und Bienenwachs kombiniert. Entdecke jedes Produkt und öffne die vollständige Produktseite mit Eigenschaften, Format und Preis.",
+"Viso":"Gesicht",
+"Corpo":"Körper",
+"Massaggio":"Massage",
+"La linea in breve":"Die Linie im Überblick",
+"Viso · crema e siero":"Gesicht · Creme und Serum",
+"Corpo · crema, gommage e bagnodoccia":"Körper · Creme, Peeling und Duschbad",
+"Massaggio · SOS DOL":"Massage · SOS DOL",
+"Scopri la linea":"Linie entdecken",
+
+"Ricette, video e idee regalo della linea Alveo Digitale":"Rezepte, Videos und digitale Geschenkideen der Linie Alveo Digital",
+"Ricette, video e idee regalo digitali da scegliere, acquistare e ricevere subito dopo il pagamento.":"Digitale Rezepte, Videos und Geschenkideen auswählen, kaufen und direkt nach der Zahlung erhalten.",
+
+"Energia naturale dalle api":"Natürliche Energie aus der Welt der Bienen",
+"Presentazione della Linea Integratori":"Präsentation der Nahrungsergänzungslinie",
+"Integratori e preparazioni a base di prodotti dell’alveare, selezionati per un uso semplice e quotidiano.":"Nahrungsergänzungen und Zubereitungen auf Basis von Bienenprodukten, ausgewählt für eine einfache Anwendung im Alltag.",
+
+"Bellezza e trattamento quotidiano per il corpo e creazioni in cera d’api":"Schönheit, tägliche Körperpflege und Kreationen aus Bienenwachs",
+"Presentazione della Linea Cosmesi e Tesori in Cera d’Api":"Präsentation der Kosmetik- und Bienenwachslinie",
+"Cosmesi con ingredienti dell’alveare, saponette per la detersione quotidiana e creazioni artigianali in cera d’api.":"Kosmetik mit Inhaltsstoffen aus dem Bienenstock, Seifen für die tägliche Reinigung und handwerkliche Kreationen aus Bienenwachs.",
+
+"Linea I Tesori di Francesco":"Linie „Francescos Spezialitäten“",
+"Sapori artigianali, intensi e sorprendenti":"Handwerkliche, intensive und überraschende Aromen",
+"Presentazione della Linea I Tesori di Francesco":"Präsentation der Linie „Francescos Spezialitäten“",
+"Una piccola selezione di specialità dal carattere deciso: limoncello, liquore al caffè e castagne al rum, riuniti nella linea I Tesori di Francesco.":"Eine kleine Auswahl charaktervoller Spezialitäten: Limoncello, Kaffeelikör und Kastanien in Rum, vereint in der Linie „Francescos Spezialitäten“.",
+
+"Tre prodotti, una proposta già pronta":"Drei Produkte, bereits passend zusammengestellt",
+"Presentazione I Tris dell’Alveare":"Präsentation der Bienenstock-Dreier-Sets",
+"Una selezione di 30 tris composti da tre prodotti della Fabbrica delle Api, già abbinati e pronti da acquistare.":"Eine Auswahl von 30 Dreier-Sets mit jeweils drei Produkten der Fabbrica delle Api, bereits kombiniert und direkt bestellbar.",
+"Vivi un’esperienza a 360° e ottimizza la spedizione con i nostri tris.":"Entdecke mehrere Produkte auf einmal und nutze unsere Dreier-Sets für eine besonders praktische Bestellung.",
+
+"Referenze reali della Linea Alimenti della Fabbrica delle Api":"Produkte der Lebensmittel-Linie der Fabbrica delle Api",
+"Marco Zago durante una seduta di alveoterapia naturale all'Oasi del Busatello":"Marco Zago während einer natürlichen Alveotherapie-Sitzung in der Oasi del Busatello",
+"Marco Zago utilizza il diffusore nel Centro di Alveoterapia Integrata":"Marco Zago verwendet den Diffusor im Zentrum für Integrierte Alveotherapie"
+});
+
 const SUB=[
 ["confezioni","Packungen"],["confezione","Packung"],["vasetti","Gläser"],["vasetto","Glas"],["flacone","Flasche"],["bottiglia","Flasche"],["saponetta","Seife"],["candela","Kerze"],["prodotti","Produkte"],["prodotto","Produkt"],["sconto","Rabatt"],["Spedizione:","Versand:"],["gratuita","kostenlos"],["Disponibile","Verfügbar"],["Esaurito","Ausverkauft"],["Quantità","Menge"],["Prezzo","Preis"],["Totale","Gesamt"],["Continua gli acquisti","Weiter einkaufen"],["Vai al carrello","Zum Warenkorb"],["Procedi al checkout","Zur Kasse"],["Rimuovi","Entfernen"],["Cerca","Suchen"],["Categorie","Kategorien"]
 ];
