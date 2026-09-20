@@ -144,7 +144,7 @@ try {
       id: 'cosmesi-travel-kit-benessere',
       name: 'Kit da Viaggio Benessere dell’Alveare',
       description: 'Quattro essenziali. Una sola custodia. Sempre con te. Il Kit da Viaggio Benessere dell’Alveare riunisce quattro formati da 50 ml pensati per accompagnare la cura quotidiana anche fuori casa: shampoo idratante lenitivo con calendula, miele e camomilla; balsamo intensivo multivitaminico con miele, polline, pappa reale, olio di lino ed estratto di ortica; crema corpo con miele, burro di karité, oli di riso e oliva ed estratti di lavanda, timo e iperico; bagnodoccia delicato con miele ed estratti di lavanda, iperico e timo, completato da note di muschio bianco e vetiver. Una combinazione pratica per corpo e capelli, adatta a uomo e donna e pensata per tutti i tipi di pelle e capelli. I quattro flaconi sono raccolti nella loro pochette trasparente riutilizzabile, comoda da tenere in valigia, nel beauty case o nel bagaglio a mano. Il tuo benessere non resta a casa.',
-      image: '/images/travel-kit-benessere-alveare.png',
+      image: '/images/travel-kit-benessere-alveare.png?v=20260920-3',
       packs: [{ id: 'tkb1', label: 'Kit completo - 4 x 50 ml + pochette riutilizzabile', jars: 1, price: 17.90 }],
       order: 6009, category, inStock: true, stock: 100
     },
