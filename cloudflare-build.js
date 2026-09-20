@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn, spawnSync } = require('child_process');
+const { PDFDocument } = require('pdf-lib');
 
 const root = __dirname;
 const dist = path.join(root, 'dist');
@@ -111,6 +112,37 @@ function requireSaldoApiBrowserRuntime() {
   console.log('[Cloudflare test] Saldo Api: pagina, JavaScript browser e chiamata /api/bee-wallet presenti.');
 }
 
+async function replaceAlveoPremiumFinalPage() {
+  const target = path.join(dist, 'downloads', '10-colazioni-alveare-premium-45f7034d.pdf');
+  const replacement = path.join(root, 'build-assets', 'alveo-page37-updated.pdf');
+
+  if (!fs.existsSync(target)) throw new Error('[Cloudflare test] PDF Alveo Premium mancante nel pacchetto statico.');
+  if (!fs.existsSync(replacement)) throw new Error('[Cloudflare test] Nuova pagina 37 Alveo Premium mancante.');
+
+  const mainPdf = await PDFDocument.load(fs.readFileSync(target));
+  const finalPagePdf = await PDFDocument.load(fs.readFileSync(replacement));
+
+  if (mainPdf.getPageCount() !== 37) {
+    throw new Error(`[Cloudflare test] PDF Alveo Premium: attese 37 pagine, trovate ${mainPdf.getPageCount()}.`);
+  }
+  if (finalPagePdf.getPageCount() !== 1) {
+    throw new Error(`[Cloudflare test] Pagina finale Alveo: attesa 1 pagina, trovate ${finalPagePdf.getPageCount()}.`);
+  }
+
+  const [newFinalPage] = await mainPdf.copyPages(finalPagePdf, [0]);
+  mainPdf.removePage(36);
+  mainPdf.addPage(newFinalPage);
+
+  const output = await mainPdf.save({ useObjectStreams: true });
+  const verified = await PDFDocument.load(output);
+  if (verified.getPageCount() !== 37) {
+    throw new Error('[Cloudflare test] PDF Alveo Premium ricostruito con numero pagine non valido.');
+  }
+
+  fs.writeFileSync(target, output);
+  console.log(`[Cloudflare test] PDF Alveo Premium aggiornato: pagina 37 sostituita, 37 pagine totali, ${output.length} byte.`);
+}
+
 async function buildShopExactlyLikeRender() {
   const port = 39100 + Math.floor(Math.random() * 500);
   const origin = `http://127.0.0.1:${port}`;
@@ -176,6 +208,7 @@ async function main() {
   copyDir(path.join(root, 'images'), path.join(dist, 'images'));
   copyDir(path.join(root, 'downloads'), path.join(dist, 'downloads'));
   console.log('[Cloudflare test] Download digitali copiati nel pacchetto statico.');
+  await replaceAlveoPremiumFinalPage();
 
   const routeMap = {
     home: 'home.html',
