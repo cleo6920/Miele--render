@@ -42,310 +42,290 @@ try {
 
   const category = 'tris-alveare';
   const offers = [
-  {
-    "slug": "millefiori",
-    "price": 25.7,
-    "items": [
-      "Millefiori €4,90",
-      "Castagne al rum €5,90",
-      "Bee Energy €14,90"
-    ]
-  },
-  {
-    "slug": "melone",
-    "price": 25.7,
-    "items": [
-      "Melone €4,90",
-      "Propol Active €10,90",
-      "Shampoo €9,90"
-    ]
-  },
-  {
-    "slug": "fragola",
-    "price": 25.7,
-    "items": [
-      "Fragola €4,90",
-      "Propol Active €10,90",
-      "Crema Mani €9,90"
-    ]
-  },
-  {
-    "slug": "pesca",
-    "price": 25.7,
-    "items": [
-      "Pesca €4,90",
-      "Bee Energy €14,90",
-      "Candela Alveare €5,90"
-    ]
-  },
-  {
-    "slug": "arancia",
-    "price": 29.7,
-    "items": [
-      "Arancia €4,90",
-      "Bee Energy €14,90",
-      "Crema Mani €9,90"
-    ]
-  },
-  {
-    "slug": "castagno",
-    "price": 27.7,
-    "items": [
-      "Castagno €6,90",
-      "Propol Active €10,90",
-      "Shampoo €9,90"
-    ]
-  },
-  {
-    "slug": "acacia-zenzero",
-    "price": 25.7,
-    "items": [
-      "Acacia e Zenzero €7,90",
-      "Propoli spray €7,90",
-      "Crema Mani €9,90"
-    ]
-  },
-  {
-    "slug": "eucalipto",
-    "price": 25.7,
-    "items": [
-      "Eucalipto €6,90",
-      "Bee Energy €14,90",
-      "Saponetta Aloe €3,90"
-    ]
-  },
-  {
-    "slug": "balsammiel",
-    "price": 27.7,
-    "items": [
-      "Balsamico Italiano €11,90",
-      "Propoli analcolica €5,90",
-      "Shampoo €9,90"
-    ]
-  },
-  {
-    "slug": "acacia-40g",
-    "price": 27.7,
-    "items": [
-      "Acacia 40 g €2,90",
-      "Bee Energy €14,90",
-      "Crema Mani €9,90"
-    ]
-  },
-  {
-    "slug": "favo-integrale",
-    "price": 27.7,
-    "items": [
-      "Acacia in Favo €11,90",
-      "Propoli analcolica €5,90",
-      "Shampoo €9,90"
-    ]
-  },
-  {
-    "slug": "polline",
-    "price": 26.7,
-    "items": [
-      "Polline €10,90",
-      "Propoli alcolica contagocce €5,90",
-      "Crema Mani €9,90"
-    ]
-  },
-  {
-    "slug": "orsetti",
-    "price": 28.7,
-    "items": [
-      "Orsetti €3,90",
-      "Bee Energy €14,90",
-      "Crema Mani €9,90"
-    ]
-  },
-  {
-    "slug": "pappa-reale",
-    "price": 26.7,
-    "items": [
-      "Pappa Reale €6,90",
-      "Bee Energy €14,90",
-      "Burrocacao Miele/Pappa Reale €4,90"
-    ]
-  },
-  {
-    "slug": "bee-energy",
-    "price": 27.7,
-    "items": [
-      "Bee Energy €14,90",
-      "Castagno €6,90",
-      "Candela Alveare €5,90"
-    ]
-  },
-  {
-    "slug": "propol-active",
-    "price": 26.7,
-    "items": [
-      "Propol Active €10,90",
-      "Polline €10,90",
-      "Burrocacao Miele/Pappa Reale €4,90"
-    ]
-  },
-  {
-    "slug": "propoli-spray",
-    "price": 28.7,
-    "items": [
-      "Propoli spray €7,90",
-      "Polline €10,90",
-      "Crema Mani €9,90"
-    ]
-  },
-  {
-    "slug": "propoli-alcolica",
-    "price": 27.7,
-    "items": [
-      "Propoli alcolica contagocce €5,90",
-      "Balsamico Italiano €11,90",
-      "Shampoo €9,90"
-    ]
-  },
-  {
-    "slug": "propoli-analcolica",
-    "price": 26.7,
-    "items": [
-      "Propoli analcolica €5,90",
-      "Polline €10,90",
-      "Shampoo €9,90"
-    ]
-  },
-  {
-    "slug": "crema-mani",
-    "price": 27.7,
-    "items": [
-      "Crema Mani €9,90",
-      "Acacia in Favo €11,90",
-      "Propoli analcolica €5,90"
-    ]
-  },
-  {
-    "slug": "burrocacao-propoli-aloe",
-    "price": 27.7,
-    "items": [
-      "Burrocacao Propoli + Aloe €4,90",
-      "Balsamico Italiano €11,90",
-      "Propol Active €10,90"
-    ]
-  },
-  {
-    "slug": "burrocacao-miele-pappa",
-    "price": 27.7,
-    "items": [
-      "Burrocacao Miele + Pappa Reale €4,90",
-      "Acacia in Favo €11,90",
-      "Propol Active €10,90"
-    ]
-  },
-  {
-    "slug": "shampoo",
-    "price": 27.7,
-    "items": [
-      "Shampoo €9,90",
-      "Acacia in Favo €11,90",
-      "Propoli alcolica contagocce €5,90"
-    ]
-  },
-  {
-    "slug": "saponetta-frutti-bosco",
-    "price": 25.7,
-    "items": [
-      "Saponetta Frutti di Bosco €3,90",
-      "Polline €10,90",
-      "Propol Active €10,90"
-    ]
-  },
-  {
-    "slug": "saponetta-lavanda",
-    "price": 25.7,
-    "items": [
-      "Saponetta Lavanda €3,90",
-      "Castagno €6,90",
-      "Bee Energy €14,90"
-    ]
-  },
-  {
-    "slug": "saponetta-aloe",
-    "price": 26.7,
-    "items": [
-      "Saponetta Aloe €3,90",
-      "Acacia in Favo €11,90",
-      "Propol Active €10,90"
-    ]
-  },
-  {
-    "slug": "candela-alveare",
-    "price": 25.7,
-    "items": [
-      "Candela Alveare €5,90",
-      "Balsamico Italiano €11,90",
-      "Propoli spray €7,90"
-    ]
-  },
-  {
-    "slug": "limoncello",
-    "price": 27.7,
-    "items": [
-      "Limoncello €5,90",
-      "Acacia in Favo €11,90",
-      "Shampoo €9,90"
-    ]
-  },
-  {
-    "slug": "liquore-caffe",
-    "price": 27.7,
-    "items": [
-      "Liquore al Caffè €5,90",
-      "Balsamico Italiano €11,90",
-      "Crema Mani €9,90"
-    ]
-  },
-  {
-    "slug": "castagne-rum",
-    "price": 25.7,
-    "items": [
-      "Castagne al Rum €5,90",
-      "Balsamico Italiano €11,90",
-      "Propoli spray €7,90"
-    ]
-  }
-];
+    {
+      "slug": "millefiori",
+      "price": 23.7,
+      "items": [
+        "Millefiori €4,90",
+        "Castagno €6,90",
+        "Acacia in Favo €11,90"
+      ]
+    },
+    {
+      "slug": "melone",
+      "price": 23.7,
+      "items": [
+        "Melone €4,90",
+        "Polline Italiano €10,90",
+        "Propoli Spray alcolica 30% €7,90"
+      ]
+    },
+    {
+      "slug": "fragola",
+      "price": 23.7,
+      "items": [
+        "Fragola €4,90",
+        "Acacia e Zenzero €7,90",
+        "Polline Italiano €10,90"
+      ]
+    },
+    {
+      "slug": "pesca",
+      "price": 23.7,
+      "items": [
+        "Pesca €4,90",
+        "Polline Italiano €10,90",
+        "Propoli Spray alcolica 30% €7,90"
+      ]
+    },
+    {
+      "slug": "arancia",
+      "price": 24.7,
+      "items": [
+        "Arancia €4,90",
+        "Crema Mani €9,90",
+        "Shampoo €9,90"
+      ]
+    },
+    {
+      "slug": "castagno",
+      "price": 23.7,
+      "items": [
+        "Castagno €6,90",
+        "Acacia in Favo €11,90",
+        "Burrocacao Miele e Pappa Reale €4,90"
+      ]
+    },
+    {
+      "slug": "acacia-zenzero",
+      "price": 23.7,
+      "items": [
+        "Acacia e Zenzero €7,90",
+        "Balsamico Italiano €11,90",
+        "Saponetta Frutti di Bosco €3,90"
+      ]
+    },
+    {
+      "slug": "eucalipto",
+      "price": 23.7,
+      "items": [
+        "Eucalipto €6,90",
+        "Acacia in Favo €11,90",
+        "Burrocacao Propoli e Aloe €4,90"
+      ]
+    },
+    {
+      "slug": "balsammiel",
+      "price": 23.7,
+      "items": [
+        "Balsamico Italiano €11,90",
+        "Propoli Spray alcolica 30% €7,90",
+        "Saponetta Aloe Vera €3,90"
+      ]
+    },
+    {
+      "slug": "acacia-40g",
+      "price": 23.7,
+      "items": [
+        "Acacia 40 g €2,90",
+        "Polline Italiano €10,90",
+        "Crema Mani €9,90"
+      ]
+    },
+    {
+      "slug": "favo-integrale",
+      "price": 23.7,
+      "items": [
+        "Acacia in Favo €11,90",
+        "Acacia e Zenzero €7,90",
+        "Saponetta Frutti di Bosco €3,90"
+      ]
+    },
+    {
+      "slug": "polline",
+      "price": 23.7,
+      "items": [
+        "Polline Italiano €10,90",
+        "Propoli Spray alcolica 30% €7,90",
+        "Burrocacao Miele e Pappa Reale €4,90"
+      ]
+    },
+    {
+      "slug": "orsetti",
+      "price": 23.7,
+      "items": [
+        "Orsetti Gommosi BIO €3,90",
+        "Acacia e Zenzero €7,90",
+        "Balsamico Italiano €11,90"
+      ]
+    },
+    {
+      "slug": "pappa-reale",
+      "price": 23.7,
+      "items": [
+        "Pappa Reale €6,90",
+        "Acacia in Favo €11,90",
+        "Burrocacao Propoli e Aloe €4,90"
+      ]
+    },
+    {
+      "slug": "propoli-spray",
+      "price": 23.7,
+      "items": [
+        "Propoli Spray alcolica 30% €7,90",
+        "Acacia in Favo €11,90",
+        "Saponetta Lavanda €3,90"
+      ]
+    },
+    {
+      "slug": "propoli-alcolica",
+      "price": 23.7,
+      "items": [
+        "Propoli in pipetta alcolica €5,90",
+        "Acacia in Favo €11,90",
+        "Candela Alveare €5,90"
+      ]
+    },
+    {
+      "slug": "propoli-analcolica",
+      "price": 23.7,
+      "items": [
+        "Propoli in pipetta analcolica €5,90",
+        "Acacia e Zenzero €7,90",
+        "Shampoo €9,90"
+      ]
+    },
+    {
+      "slug": "crema-mani",
+      "price": 24.7,
+      "items": [
+        "Crema Mani €9,90",
+        "Acacia 40 g €2,90",
+        "Balsamico Italiano €11,90"
+      ]
+    },
+    {
+      "slug": "burrocacao-propoli-aloe",
+      "price": 21.7,
+      "items": [
+        "Burrocacao Propoli e Aloe €4,90",
+        "Polline Italiano €10,90",
+        "Propoli in pipetta alcolica €5,90"
+      ]
+    },
+    {
+      "slug": "burrocacao-miele-pappa",
+      "price": 23.7,
+      "items": [
+        "Burrocacao Miele e Pappa Reale €4,90",
+        "Eucalipto €6,90",
+        "Balsamico Italiano €11,90"
+      ]
+    },
+    {
+      "slug": "shampoo",
+      "price": 23.7,
+      "items": [
+        "Shampoo €9,90",
+        "Crema Mani €9,90",
+        "Saponetta Aloe Vera €3,90"
+      ]
+    },
+    {
+      "slug": "saponetta-frutti-bosco",
+      "price": 23.7,
+      "items": [
+        "Saponetta Frutti di Bosco €3,90",
+        "Crema Mani €9,90",
+        "Shampoo €9,90"
+      ]
+    },
+    {
+      "slug": "saponetta-lavanda",
+      "price": 23.7,
+      "items": [
+        "Saponetta Lavanda €3,90",
+        "Crema Mani €9,90",
+        "Shampoo €9,90"
+      ]
+    },
+    {
+      "slug": "saponetta-aloe",
+      "price": 23.7,
+      "items": [
+        "Saponetta Aloe Vera €3,90",
+        "Acacia e Zenzero €7,90",
+        "Balsamico Italiano €11,90"
+      ]
+    },
+    {
+      "slug": "candela-alveare",
+      "price": 24.7,
+      "items": [
+        "Candela Alveare €5,90",
+        "Eucalipto €6,90",
+        "Balsamico Italiano €11,90"
+      ]
+    },
+    {
+      "slug": "limoncello",
+      "price": 23.7,
+      "items": [
+        "Limoncello €5,90",
+        "Acacia e Zenzero €7,90",
+        "Shampoo €9,90"
+      ]
+    },
+    {
+      "slug": "liquore-caffe",
+      "price": 21.7,
+      "items": [
+        "Liquore al Caffè €5,90",
+        "Propoli in pipetta analcolica €5,90",
+        "Crema Mani €9,90"
+      ]
+    },
+    {
+      "slug": "castagne-rum",
+      "price": 23.7,
+      "items": [
+        "Castagne al Rum €5,90",
+        "Balsamico Italiano €11,90",
+        "Candela Alveare €5,90"
+      ]
+    }
+  ];
 
   // Valore autoritativo unico per card e scheda: somma Api dei 3 prodotti + 3 bonus.
   const beePointsBySlug = {
     'millefiori': 11,
     'melone': 12,
     'fragola': 12,
-    'pesca': 11,
-    'arancia': 12,
-    'castagno': 12,
-    'acacia-zenzero': 12,
-    'eucalipto': 10,
-    'balsammiel': 12,
+    'pesca': 12,
+    'arancia': 11,
+    'castagno': 11,
+    'acacia-zenzero': 11,
+    'eucalipto': 11,
+    'balsammiel': 11,
     'acacia-40g': 11,
-    'favo-integrale': 12,
+    'favo-integrale': 11,
     'polline': 12,
     'orsetti': 11,
     'pappa-reale': 11,
-    'bee-energy': 11,
-    'propol-active': 13,
-    'propoli-spray': 13,
-    'propoli-alcolica': 12,
-    'propoli-analcolica': 12,
-    'crema-mani': 12,
-    'burrocacao-propoli-aloe': 13,
-    'burrocacao-miele-pappa': 13,
-    'shampoo': 12,
-    'saponetta-frutti-bosco': 12,
+    'propoli-spray': 11,
+    'propoli-alcolica': 11,
+    'propoli-analcolica': 11,
+    'crema-mani': 11,
+    'burrocacao-propoli-aloe': 11,
+    'burrocacao-miele-pappa': 11,
+    'shampoo': 10,
+    'saponetta-frutti-bosco': 10,
     'saponetta-lavanda': 10,
-    'saponetta-aloe': 12,
-    'candela-alveare': 12,
-    'limoncello': 12,
-    'liquore-caffe': 12,
-    'castagne-rum': 12
+    'saponetta-aloe': 11,
+    'candela-alveare': 11,
+    'limoncello': 11,
+    'liquore-caffe': 10,
+    'castagne-rum': 11
   };
 
   const products = offers.map((offer, index) => ({
@@ -356,8 +336,8 @@ try {
       ? '/images/tris-alveare-millefiori.jpg'
       : '/images/hero-prodotti-corretta.jpg',
     packs: [
-      { id: `tris-alveare-pack-${index + 1}`, label: '1 Tris - 3 prodotti', jars: 3, price: offer.price },
-      { id: `tris-alveare-pack-${index + 1}-regalo`, label: '1 Tris - 3 prodotti + espositore confezione regalo', jars: 3, price: Number((offer.price + 5).toFixed(2)) }
+      { id: `tris-alveare-pack-${index + 1}`, label: 'Confezione spedizione / da viaggio - 3 prodotti', jars: 3, price: offer.price },
+      { id: `tris-alveare-pack-${index + 1}-regalo`, label: 'Con espositore confezione regalo - 3 prodotti (+ €5,00)', jars: 3, price: Number((offer.price + 5).toFixed(2)) }
     ],
     order: 8001 + index,
     category,
@@ -409,7 +389,7 @@ try {
                                 <img src="/images/hero-prodotti-corretta.jpg" alt="Presentazione I Tris dell’Alveare" className="block w-full h-[170px] sm:h-full min-h-[170px] object-cover object-center" />
                               </div>
                               <div className="min-w-0 flex flex-col justify-center">
-                                <p className="text-sm leading-snug font-semibold text-stone-100">Una selezione di 30 tris composti da tre prodotti della Fabbrica delle Api, già abbinati e pronti da acquistare.</p>
+                                <p className="text-sm leading-snug font-semibold text-stone-100">Una selezione di 28 tris composti da tre prodotti della Fabbrica delle Api, già abbinati e disponibili in confezione spedizione/da viaggio oppure con espositore confezione regalo.</p>
                                 <button type="button" onClick={() => { setSelectedProductId(null); setSelectedCategory('tris-alveare'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="mt-3 inline-flex w-fit items-center justify-center rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs sm:text-sm font-black text-stone-950 shadow-sm transition-colors" aria-label="Scopri I Tris dell’Alveare">Scopri la gamma</button>
                               </div>
                             </div>
@@ -417,7 +397,17 @@ try {
     html = html.slice(0, end) + '\n' + home + html.slice(end);
   }
 
-  if (products.length !== 30) throw new Error(`Numero tris non valido: ${products.length}`);
+  if (products.length !== 28) throw new Error(`Numero tris non valido: ${products.length}`);
+  for (const offer of offers) {
+    const itemTotal = offer.items.reduce((sum, item) => {
+      const match = item.match(/€(\d+),(\d{2})$/);
+      if (!match) throw new Error(`Prezzo prodotto non leggibile nel Tris ${offer.slug}: ${item}`);
+      return sum + Number(`${match[1]}.${match[2]}`);
+    }, 0);
+    if (Math.abs(itemTotal - offer.price) > 0.001) {
+      throw new Error(`Prezzo base Tris non uguale alla somma dei 3 prodotti: ${offer.slug} (${itemTotal.toFixed(2)} != ${offer.price.toFixed(2)})`);
+    }
+  }
   if (products.some(product => product.packs.length !== 2 || Math.abs((product.packs[1].price - product.packs[0].price) - 5) > 0.001)) {
     throw new Error('Opzione regalo Tris non valida: ogni Tris deve avere 2 formati con differenza esatta di €5,00');
   }
@@ -428,7 +418,7 @@ try {
   if (!html.includes("setSelectedCategory('tris-alveare')")) throw new Error('Pulsante I Tris dell’Alveare non collegato');
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] I Tris dell’Alveare pronti: 30 offerte con Punti Ape autoritativi in categoria autonoma.');
+  console.log('[Miele Artigianale] I Tris dell’Alveare pronti: 28 offerte allineate alla brochure, con opzione viaggio e regalo + €5,00.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore linea I Tris dell’Alveare:', error);
   process.exitCode = 1;
