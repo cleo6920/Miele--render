@@ -139,7 +139,7 @@ try {
       image: '/images/cosmesi-candela-alveare.jpg',
       packs: [{ id: 'ca1', label: '1 candela - cera d’api', jars: 1, price: 5.90 }],
       order: 6008, category, inStock: true, stock: 100
-    }
+    },
     {
       id: 'cosmesi-travel-kit-benessere',
       name: 'Travel Kit Benessere dell’Alveare',
