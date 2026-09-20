@@ -5,7 +5,7 @@ try {
   const indexPath = path.join(__dirname, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
 
-  const oldBlock = '<p className="text-sm leading-snug font-semibold text-stone-100">Una selezione di 30 tris composti da tre prodotti della Fabbrica delle Api, già abbinati e pronti da acquistare.</p>';
+  const oldBlock = '<p className="text-sm leading-snug font-semibold text-stone-100">Una selezione di 28 tris composti da tre prodotti della Fabbrica delle Api, già abbinati e disponibili in confezione spedizione/da viaggio oppure con espositore confezione regalo.</p>';
   const newBlock = `${oldBlock}\n                                <p data-tris-home-slogan="true" className="mt-2 text-sm sm:text-base leading-snug font-extrabold text-amber-300">Vivi un’esperienza a 360° e ottimizza la spedizione con i nostri tris.</p>`;
 
   const before = html;
@@ -105,7 +105,7 @@ try {
   const customTrisGrid = `{selectedCategory === 'tris-alveare' ? (
                                             <>
                                                 {products
-                                                    .filter(p => p.category === 'tris-alveare' && p.order >= 8001 && p.order <= 8010)
+                                                    .filter(p => p.category === 'tris-alveare' && p.order >= 8001 && p.order <= 8028)
                                                     .sort((a,b) => a.order - b.order)
                                                     .map(product => (
                                                         <ProductCard key={product.id} product={product} onProductClick={handleProductSelect} />
@@ -168,12 +168,20 @@ try {
                                                                             name: 'Il tuo Tris personalizzato',
                                                                             description: \`Hai scelto: \${chosen.map(option => option.name).join(' + ')}. Tris composto da 3 prodotti selezionati da te.\`,
                                                                             image: '/images/hero-prodotti-corretta.jpg',
-                                                                            packs: [{
-                                                                                id: \`\${customId}-pack\`,
-                                                                                label: '1 Tris personalizzato - 3 prodotti',
-                                                                                jars: 3,
-                                                                                price: Number(total.toFixed(2))
-                                                                            }],
+                                                                            packs: [
+                                                                                {
+                                                                                    id: \`\${customId}-pack\`,
+                                                                                    label: 'Confezione spedizione / da viaggio - 3 prodotti',
+                                                                                    jars: 3,
+                                                                                    price: Number(total.toFixed(2))
+                                                                                },
+                                                                                {
+                                                                                    id: \`\${customId}-pack-regalo\`,
+                                                                                    label: 'Con espositore confezione regalo - 3 prodotti (+ €5,00)',
+                                                                                    jars: 3,
+                                                                                    price: Number((total + 5).toFixed(2))
+                                                                                }
+                                                                            ],
                                                                             order: 8999,
                                                                             category: 'tris-alveare',
                                                                             inStock: true,
@@ -206,7 +214,7 @@ try {
   if (!html.includes('customTrisSelection.length === 3')) throw new Error('Regola di selezione 3 prodotti mancante');
 
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Tris: 10 card approvate + selettore personalizzato sui 20 prodotti rimanenti.');
+  console.log('[Miele Artigianale] Tris: 28 combinazioni brochure + selettore personalizzato, con opzione viaggio e regalo + €5,00.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore aggiornamento Tris dell’Alveare:', error);
   process.exitCode = 1;
