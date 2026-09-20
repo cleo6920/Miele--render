@@ -310,6 +310,15 @@ Object.assign(T,{
 "Marco Zago utilizza il diffusore nel Centro di Alveoterapia Integrata":"Marco Zago verwendet den Diffusor im Zentrum für Integrierte Alveotherapie"
 });
 
+Object.assign(T,{
+"← Torna alle Categorie":"← Zurück zu den Kategorien",
+"Linea Benessere Veleno d'Api":"Bienengift-Kosmetiklinie",
+"La LINEA COSMETICA AL VELENO D’API comprende 6 prodotti esclusivi. Apri ogni scheda per consultare descrizione completa e prezzo della selezione aggiornata.":"Die KOSMETIKLINIE MIT BIENENGIFT umfasst 6 exklusive Produkte. Öffne jede Produktseite, um die vollständige Beschreibung und den aktuellen Preis zu sehen.",
+"ESCLUSIVA":"EXKLUSIV",
+"Miele Artigianale":"Handwerklicher Honig",
+"© 2026 Oasi del Busatello – Miele Artigianale. Tutti i diritti riservati.":"© 2026 Oasi del Busatello – Handwerklicher Honig. Alle Rechte vorbehalten."
+});
+
 const SUB=[
 ["confezioni","Packungen"],["confezione","Packung"],["vasetti","Gläser"],["vasetto","Glas"],["flacone","Flasche"],["bottiglia","Flasche"],["saponetta","Seife"],["candela","Kerze"],["prodotti","Produkte"],["prodotto","Produkt"],["sconto","Rabatt"],["Spedizione:","Versand:"],["gratuita","kostenlos"],["Disponibile","Verfügbar"],["Esaurito","Ausverkauft"],["Quantità","Menge"],["Prezzo","Preis"],["Totale","Gesamt"],["Continua gli acquisti","Weiter einkaufen"],["Vai al carrello","Zum Warenkorb"],["Procedi al checkout","Zur Kasse"],["Rimuovi","Entfernen"],["Cerca","Suchen"],["Categorie","Kategorien"]
 ];
@@ -344,7 +353,22 @@ function selector(){
 
 function trText(v){
  const raw=String(v||'');const x=raw.trim();if(!x)return raw;
- const out=T[x]||x;
+ let out=T[x]||x;
+
+ if(out===x && lang===DE){
+   const beePoints=x.match(/^(\\d+)\\s+API\\s*\\+\\s*(\\d+)\\s+BONUS\\s*=\\s*(\\d+)\\s+API$/i);
+   if(beePoints){
+     out=beePoints[1]+' BIENENPUNKTE + '+beePoints[2]+' BONUS = '+beePoints[3]+' BIENENPUNKTE';
+   }
+ }
+
+ if(out===x && lang===DE){
+   const footer=x.match(/^©\\s*(\\d{4})\\s+Oasi del Busatello\\s*[–-]\\s*Miele Artigianale\\.\\s*Tutti i diritti riservati\\.$/i);
+   if(footer){
+     out='© '+footer[1]+' Oasi del Busatello – Handwerklicher Honig. Alle Rechte vorbehalten.';
+   }
+ }
+
  if(out===x)return raw;
  return raw.replace(x,out);
 }
