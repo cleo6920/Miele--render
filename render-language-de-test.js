@@ -265,6 +265,21 @@ function sync(){
 }
 function setLang(v){lang=v===DE?DE:IT;try{localStorage.setItem(KEY,lang);}catch(_){}if(lang===IT){restore();location.reload();return;}sync();}
 function schedule(){clearTimeout(timer);timer=setTimeout(sync,50);}
-function start(){let s='';try{s=localStorage.getItem(KEY)||'';}catch(_){}if(s!==IT&&s!==DE)s=(navigator.language||'').toLowerCase().startsWith('de')?DE:IT;lang=s;selector();sync();new MutationObserver(ms=>{if(busy)return;if(lang===DE)ms.forEach(m=>m.addedNodes&&m.addedNodes.forEach(n=>{if(n.nodeType===1||n.nodeType===3)walk(n.nodeType===1?n:n.parentNode);}));schedule();}).observe(document.body,{childList:true,subtree:true});document.addEventListener('click',()=>setTimeout(sync,80),true);}
+function start(){let s='';try{s=localStorage.getItem(KEY)||'';}catch(_){}if(s!==IT&&s!==DE)s=(navigator.language||'').toLowerCase().startsWith('de')?DE:IT;lang=s;selector();sync();new MutationObserver(ms=>{
+  if(busy)return;
+  if(lang===DE){
+    ms.forEach(m=>{
+      if(m.type==='characterData' && m.target){
+        translateNode(m.target);
+      }
+      if(m.addedNodes){
+        m.addedNodes.forEach(n=>{
+          if(n.nodeType===1||n.nodeType===3) walk(n.nodeType===1?n:n.parentNode);
+        });
+      }
+    });
+  }
+  schedule();
+}).observe(document.body,{childList:true,subtree:true,characterData:true});document.addEventListener('click',()=>setTimeout(sync,80),true);}
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start,{once:true}):start();
 })();
