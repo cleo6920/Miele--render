@@ -2202,6 +2202,20 @@ const wrapRef = useRef(null);
             const [orderTextForEmailModal, setOrderTextForEmailModal] = useState("");
             const [selectedProductId, setSelectedProductId] = useState(null);
             const [selectedCategory, setSelectedCategory] = useState(null);
+
+            useEffect(() => {
+                try {
+                    const requestedLine = new URLSearchParams(window.location.search).get('linea');
+                    if (requestedLine === 'veleni') {
+                        setSelectedProductId(null);
+                        setSelectedCategory('veleno-api');
+                        setHasNavigatedAway(true);
+                        setTimeout(() => window.scrollTo({ top: 0, behavior: 'auto' }), 80);
+                    }
+                } catch (error) {
+                    console.warn('Deep link linea Veleni non applicato:', error);
+                }
+            }, []);
             const [products, setProducts] = useState([]);
             const [isLoadingProducts, setIsLoadingProducts] = useState(true);
             const [cartItems, setCartItems] = useState([]);
