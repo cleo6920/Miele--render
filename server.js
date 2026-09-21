@@ -22,19 +22,20 @@ app.use(express.json({ limit: '1mb' }));
 app.post('/api/create-checkout-session', createCheckoutSession);
 
 app.get('/api/ape-pelu-status', (req, res) => {
-  const configured = Boolean(String(process.env.OPENAI_API_KEY || '').trim());
+  const configured = Boolean(String(process.env.GROQ_API_KEY || '').trim());
   res.setHeader('Cache-Control','no-store');
   return res.json({
     ok:true,
     aiConfigured:configured,
-    model:String(process.env.OPENAI_MODEL || 'gpt-5.6-luna')
+    provider:'groq',
+    model:String(process.env.GROQ_MODEL || 'openai/gpt-oss-20b')
   });
 });
 
 app.post('/api/ape-pelu-chat', async (req, res) => {
-  const apiKey = String(process.env.OPENAI_API_KEY || '').trim();
+  const apiKey = String(process.env.GROQ_API_KEY || '').trim();
   if (!apiKey) {
-    console.warn('[Ape Pelù] OPENAI_API_KEY assente: uso fallback locale.');
+    console.warn('[Ape Pelù] GROQ_API_KEY assente: uso fallback locale.');
     return res.status(503).json({
       ok:false,
       aiConfigured:false,
@@ -125,36 +126,33 @@ Risposta attesa: impollinazione, cibo, agricoltura, lavoro, economia, cultura, e
       {role:'user',content:message}
     ];
 
-    const aiResponse = await fetch('https://api.openai.com/v1/responses', {
+    const messages = [
+      {role:'system', content:instructions},
+      ...input
+    ];
+
+    const aiResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method:'POST',
       headers:{
         'Authorization':'Bearer ' + apiKey,
         'Content-Type':'application/json'
       },
       body:JSON.stringify({
-        model:String(process.env.OPENAI_MODEL || 'gpt-5.6-luna'),
-        instructions,
-        input,
-        max_output_tokens:650
+        model:String(process.env.GROQ_MODEL || 'openai/gpt-oss-20b'),
+        messages,
+        max_tokens:650,
+        temperature:0.45
       })
     });
 
     const data = await aiResponse.json().catch(() => null);
 
     if (!aiResponse.ok) {
-      console.error('[Ape Pelù] OpenAI error:', aiResponse.status, data?.error?.message || 'unknown');
+      console.error('[Ape Pelù] Groq error:', aiResponse.status, data?.error?.message || 'unknown');
       return res.status(502).json({ok:false,aiConfigured:true,error:'Ape Pelù non riesce a rispondere con il motore AI in questo momento.'});
     }
 
-    let reply = String(data?.output_text || '').trim();
-    if (!reply && Array.isArray(data?.output)) {
-      reply = data.output
-        .flatMap(item => Array.isArray(item?.content) ? item.content : [])
-        .filter(part => part?.type === 'output_text' && part?.text)
-        .map(part => part.text)
-        .join('\n')
-        .trim();
-    }
+    const reply = String(data?.choices?.[0]?.message?.content || '').trim();
 
     if (!reply) {
       return res.status(502).json({ok:false,aiConfigured:true,error:'Risposta AI vuota.'});
