@@ -543,6 +543,26 @@ async function calculateShipping(){
   shippingState={cost,label:euro(cost),reason:'Corriere · consegna indicativa 5–6 giorni'};
   return shippingState;
 }
+
+function addV2Product(btn){
+  const id=btn.dataset.id;
+  const found=shopV2Cart.find(x=>x.id===id);
+  if(found){
+    found.qty+=1;
+  }else{
+    shopV2Cart.push({
+      id,
+      name:btn.dataset.name,
+      price:Number(btn.dataset.price),
+      size:btn.dataset.size,
+      points:Number(btn.dataset.points||defaultPointsFor(id)),
+      qty:1
+    });
+  }
+  saveV2Cart();
+  document.getElementById('cartDrawer').classList.add('open');
+}
+
 function removeV2Product(id){shopV2Cart=shopV2Cart.filter(x=>x.id!==id);saveV2Cart();}
 function renderV2Cart(){
   const box=document.getElementById('cartItems');
