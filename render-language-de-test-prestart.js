@@ -3,7 +3,7 @@ const path = require('path');
 
 try {
   const marker = 'data-global-language-switch="true"';
-  const tag = '<script src="/render-language-de-test.js?v=20260921-it-en-global-1" '+marker+'></script>';
+  const tag = '<script src="/render-language-de-test.js?v=20260921-eu5-global-1" '+marker+'></script>';
   const oldMarkers = [
     'data-render-language-de-test="true"',
     'data-global-language-switch="true"'
@@ -42,8 +42,8 @@ try {
     injectedPages += 1;
   });
 
-  console.log('[Global language] IT/EN selector enabled on '+injectedPages+' customer pages.');
+  console.log('[Global language] IT/EN/DE/FR/ES selector enabled on '+injectedPages+' customer pages.');
 } catch (error) {
-  console.error('[Global language] Errore attivazione IT/EN:', error);
+  console.error('[Global language] Errore attivazione lingue europee:', error);
   process.exitCode = 1;
 }
