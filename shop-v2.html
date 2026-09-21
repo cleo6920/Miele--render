@@ -920,11 +920,42 @@ function apeContextActionFromText(message,reply){
 function apeNormalize(text){
   return String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 }
-function apePelùReply(question){
+function apePelùReply(question,history=[]){
   const q=apeNormalize(question);
+  const recent=apeNormalize((Array.isArray(history)?history:[]).map(x=>x&&x.content||'').join(' '));
   const has=(...words)=>words.some(w=>q.includes(w));
   const asksUse=has('a cosa serve','cosa serve','serve a','come si usa','a che serve');
   const officialProduct=findOfficialProductContext(q);
+  const busatelloCatalog=[
+    {id:'miele-millefiori',name:'Miele Millefiori',size:'250 g',price:4.9},
+    {id:'miele-melone',name:'Miele al Melone',size:'250 g',price:4.9},
+    {id:'miele-fragola',name:'Miele alla Fragola',size:'250 g',price:4.9},
+    {id:'miele-pesca',name:'Miele alla Pesca',size:'250 g',price:4.9},
+    {id:'miele-arancia',name:"Miele all'Arancia",size:'250 g',price:4.9}
+  ];
+  const allCatalogProducts=[...busatelloCatalog,...SHOP_OFFICIAL_PRODUCTS];
+  const priceIntent=/\b(costa|costano|prezzo|prezzi|economico|economica|economici|economiche|caro|cara|cari|care)\b/.test(q);
+  const explicitCatalogSubject=/\b(prodotto|prodotti|articolo|articoli|referenza|referenze|catalogo|shop)\b/.test(q);
+  const inheritedCatalogSubject=/\b(prodotto|prodotti|articolo|articoli|referenza|referenze|catalogo|shop|miele|propoli|polline|pappa reale|crema|unguento|apis|tesori)\b/.test(recent);
+  const catalogContext=explicitCatalogSubject||(priceIntent&&inheritedCatalogSubject);
+  if(catalogContext && priceIntent && /(costa\s+(?:di\s+)?meno|piu\s+economico|meno\s+caro|prezzo\s+piu\s+basso)/.test(q)){
+    const minPrice=Math.min(...allCatalogProducts.map(p=>Number(p.price)));
+    const cheapest=allCatalogProducts.filter(p=>Number(p.price)===minPrice);
+    const first=cheapest[0];
+    if(cheapest.length===1){
+      return 'Tra i prodotti presenti nel nostro shop, quello con il prezzo più basso è <strong>'+apeEscape(first.name)+' · '+apeEscape(first.size)+' · '+euro(first.price)+'</strong>.';
+    }
+    return 'Il prezzo più basso del catalogo è <strong>'+euro(minPrice)+'</strong>. I prodotti a questo prezzo sono: '+cheapest.map(p=>'<strong>'+apeEscape(p.name)+'</strong>').join(', ')+'.';
+  }
+  if(catalogContext && priceIntent && /(costa\s+(?:di\s+)?piu|piu\s+caro|prezzo\s+piu\s+alto)/.test(q)){
+    const maxPrice=Math.max(...allCatalogProducts.map(p=>Number(p.price)));
+    const mostExpensive=allCatalogProducts.filter(p=>Number(p.price)===maxPrice);
+    const first=mostExpensive[0];
+    if(mostExpensive.length===1){
+      return 'Tra i prodotti presenti nel nostro shop, quello con il prezzo più alto è <strong>'+apeEscape(first.name)+' · '+apeEscape(first.size)+' · '+euro(first.price)+'</strong>.';
+    }
+    return 'Il prezzo più alto del catalogo è <strong>'+euro(maxPrice)+'</strong>. I prodotti a questo prezzo sono: '+mostExpensive.map(p=>'<strong>'+apeEscape(p.name)+'</strong>').join(', ')+'.';
+  }
   const productHealthConcern=officialProduct && /(cura|curare|guarire|diagnosi|dose|dosaggio|dolore|dolori|artrosi|artrite|antinfiamm|analges|circolazione|patologia|sintomo|farmac|medicine|medication|pain|arthritis|inflammation|symptom|schmerz|arthrose|medikament|douleur|médicament|medicament|dolor|artrosis|medicamento)/i.test(q);
   if(productHealthConcern){
     return 'Posso descriverti <strong>'+apeEscape(officialProduct.name)+'</strong> solo per ciò che è realmente indicato nel catalogo e senza trasformarlo in una cura o in un consiglio medico. Se vuoi, posso spiegarti formato, prezzo e uso alimentare, cosmetico o da massaggio previsto per questo prodotto.';
@@ -1371,12 +1402,15 @@ async function apeAsk(text){
 
   // Rete di sicurezza: se l'AI non è configurata o non risponde,
   // Ape Pelù continua a funzionare con la base di conoscenza locale.
-  const fallback=apeKeepConversation(value,apePelùReply(value));
+  const fallback=apeKeepConversation(value,apePelùReply(value,historyToSend));
+  const fallbackPlain=String(fallback).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
   apeChatHistory.push({
     role:'assistant',
-    content:String(fallback).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim()
+    content:fallbackPlain
   });
   apeAddMessage(fallback,'bot');
+  const fallbackAction=apeContextActionFromText(value,fallbackPlain);
+  if(fallbackAction)apeAddContextLink(fallbackAction);
 }
 document.getElementById('apeChatLaunch').addEventListener('click',()=>{apeChatPanel.classList.add('open');setTimeout(()=>apeChatInput.focus(),50);});
 document.getElementById('apeChatClose').addEventListener('click',()=>apeChatPanel.classList.remove('open'));
