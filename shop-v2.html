@@ -195,6 +195,7 @@ img{display:block;max-width:100%}
 .ape-msg.user{background:#17382b;color:#fff;margin-left:auto;border-bottom-right-radius:6px}
 .ape-context-link{display:inline-flex;align-items:center;gap:7px;margin:4px 0 10px 2px;padding:9px 13px;border-radius:999px;background:#e0aa2d;color:#18251f;text-decoration:none;font-weight:950;font-size:12px;border:1px solid #c9941f;box-shadow:0 4px 12px rgba(0,0,0,.08)}
 .ape-context-link:hover{filter:brightness(.97);transform:translateY(-1px)}
+#miele-millefiori,#miele-melone,#miele-fragola,#miele-pesca,#miele-arancia,#mieli,#punti-ape{scroll-margin-top:130px}
 .ape-quick{display:flex;gap:7px;flex-wrap:wrap;padding:0 14px 12px;background:#f6efe3}
 .ape-quick button{border:1px solid #dccb9c;background:#fff8dd;color:#5d4813;border-radius:999px;padding:8px 10px;font-weight:850;font-size:12px;cursor:pointer}
 .ape-chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid #e4d9c7;background:#fff}
@@ -369,7 +370,7 @@ img{display:block;max-width:100%}
       <div class="api-goal">100 punti = cesto omaggio · 5 prodotti</div>
     </div>
     <div class="products-new">
-      <article class="product-new">
+      <article class="product-new" id="miele-millefiori">
         <div class="product-new-media"><img src="https://i.postimg.cc/Wpky9NLX/millefiori.png" alt="Miele Millefiori dell'Oasi del Busatello"></div>
         <div class="product-new-copy"><small>Oasi del Busatello · 250 g</small><h3>Miele Millefiori</h3><p>Il Millefiori dell’Oasi del Busatello nasce dalla varietà di fioriture spontanee presenti nell’oasi. Il suo profilo è armonico, con una dolcezza equilibrata e profumi che possono cambiare naturalmente da raccolto a raccolto, proprio perché seguono il ritmo reale delle stagioni. È piacevole da gustare al cucchiaio, sul pane, nello yogurt oppure per dolcificare bevande e preparazioni. La naturale cristallizzazione è una caratteristica tipica del miele e non ne altera la qualità.</p><p class="product-choice">Sceglilo se vuoi partire dal miele che racconta in modo più diretto il paesaggio del Busatello.</p><div class="api-badge">🐝 +2 Punti Ape</div><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="millefiori" data-name="Miele Millefiori" data-price="4.90" data-size="250 g" data-points="2">Aggiungi</button></div></div>
       </article>
@@ -798,10 +799,21 @@ function apeAddContextLink(action){
   link.className='ape-context-link';
   link.href=action.href;
   link.textContent=action.label+' →';
-  link.addEventListener('click',()=>{
-    if(String(action.href).startsWith('#')||String(action.href).startsWith('/shop#')){
-      apeChatPanel.classList.remove('open');
+  link.addEventListener('click',(e)=>{
+    const href=String(action.href||'');
+    const hashIndex=href.indexOf('#');
+    if(hashIndex>=0 && (href.startsWith('#') || href.startsWith('/shop#') || location.pathname==='/shop')){
+      const hash=href.slice(hashIndex);
+      const target=document.querySelector(hash);
+      if(target){
+        e.preventDefault();
+        apeChatPanel.classList.remove('open');
+        history.replaceState(null,'',hash);
+        setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'start'}),80);
+        return;
+      }
     }
+    if(href.startsWith('#')||href.startsWith('/shop#'))apeChatPanel.classList.remove('open');
   });
   apeChatMessages.appendChild(link);
   apeChatMessages.scrollTop=apeChatMessages.scrollHeight;
