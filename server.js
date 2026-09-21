@@ -174,6 +174,7 @@ Risposta attesa: impollinazione, cibo, agricoltura, lavoro, economia, cultura, e
       return res.status(502).json({ok:false,aiConfigured:true,error:'Risposta AI vuota.'});
     }
 
+    console.log('[Ape Pelù] Groq OK:', String(process.env.GROQ_MODEL || 'openai/gpt-oss-20b'));
     return res.json({ok:true,reply});
   } catch (error) {
     console.error('[Ape Pelù] Errore chat AI:', error);
