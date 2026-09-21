@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Fabbrica delle Api · Un mondo da vivere</title>
+<meta name="description" content="La Fabbrica delle Api: storie, luoghi, esperienze e prodotti dal mondo dell'alveare. Un nuovo modo di scoprire prima di acquistare.">
+<style>
+:root{
+  --ink:#13231c;--forest:#0b3025;--deep:#071b15;--cream:#f4efe4;--paper:#fffaf1;
+  --gold:#dda52e;--honey:#f1c357;--earth:#7c4b1f;--sage:#dce7d3;--muted:#68756e;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,Helvetica,sans-serif;line-height:1.55}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.wrap{width:min(1200px,calc(100% - 40px));margin:auto}
+.serif{font-family:Georgia,'Times New Roman',serif}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:#a36c11}
+.top{position:sticky;top:0;z-index:50;background:rgba(7,27,21,.94);backdrop-filter:blur(12px);color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+.nav{width:min(1280px,calc(100% - 28px));margin:auto;display:flex;align-items:center;gap:22px;padding:11px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;white-space:nowrap}
+.brand-mark{width:38px;height:38px;border-radius:14px;background:var(--gold);display:grid;place-items:center;color:var(--deep)}
+.links{display:flex;gap:18px;align-items:center;margin-left:auto;font-size:13px;white-space:nowrap}
+.links .pill{border:1px solid rgba(255,255,255,.38);padding:9px 14px;border-radius:999px}
+.links .legacy{color:#f6d884}
+.hero{min-height:88vh;position:relative;display:grid;align-items:end;color:#fff;overflow:hidden;background:#071b15}
+.hero-bg{position:absolute;inset:0;background:
+ linear-gradient(90deg,rgba(3,25,18,.9),rgba(4,28,20,.62) 48%,rgba(5,20,15,.18)),
+ url('/images/alveari-busatello.jpg') center/cover no-repeat;transform:scale(1.02)}
+.hero::after{content:"";position:absolute;inset:auto 0 0;height:180px;background:linear-gradient(transparent,var(--cream))}
+.hero-inner{position:relative;z-index:2;padding:155px 0 120px}
+.hero-kicker{font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:900;color:#ffd46d}
+.hero h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(58px,8vw,106px);line-height:.92;letter-spacing:-.045em;max-width:1000px;margin:22px 0}
+.hero h1 em{font-style:normal;color:#ffd66c}
+.hero p{font-size:clamp(19px,2vw,24px);max-width:720px;color:#f5f1e7}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 20px;border-radius:999px;font-weight:900}
+.btn-gold{background:var(--gold);color:#172019}
+.btn-glass{border:1px solid rgba(255,255,255,.46);background:rgba(255,255,255,.08);color:#fff}
+.chapter{padding:95px 0}
+.section-head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end;margin-bottom:40px}
+.section-head h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(44px,6vw,74px);line-height:.98;margin:10px 0 0}
+.section-head p{font-size:18px;color:#5d6a63;margin:0;max-width:650px}
+.today{background:var(--paper)}
+.today-grid{display:grid;grid-template-columns:1.4fr .8fr .8fr;gap:18px}
+.today-card{position:relative;min-height:350px;border-radius:28px;overflow:hidden;background:#111;color:#fff;box-shadow:0 16px 42px rgba(26,31,27,.12)}
+.today-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.today-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(0,0,0,.82))}
+.today-copy{position:absolute;z-index:2;left:25px;right:25px;bottom:24px}
+.today-copy small{display:block;text-transform:uppercase;letter-spacing:.14em;color:#f5cb68;font-weight:900;margin-bottom:7px}
+.today-copy h3{font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1.03;margin:0 0 8px}
+.today-copy p{margin:0;color:#ece8df}
+.story-flow{background:#12382c;color:#fff}
+.story-flow .eyebrow{color:#f3c257}
+.story-flow .section-head p{color:#dce7df}
+.story-flow-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.story-step{border-top:1px solid rgba(255,255,255,.24);padding:24px 0 6px}
+.story-step b{display:block;font-family:Georgia,serif;font-size:58px;color:#f0bd4d;line-height:1}
+.story-step h3{font-family:Georgia,serif;font-size:28px;margin:12px 0 8px}
+.story-step p{color:#dce7df;margin:0}
+.feature-story{display:grid;grid-template-columns:1fr 1fr;min-height:620px}
+.feature-image{position:relative;min-height:520px;overflow:hidden}
+.feature-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.feature-copy{padding:78px max(38px,7vw);display:flex;flex-direction:column;justify-content:center;background:#fff9ed}
+.feature-copy.dark{background:#1d1208;color:#fff}
+.feature-copy.dark .eyebrow{color:#efb83f}
+.feature-copy h2{font-family:Georgia,serif;font-size:clamp(44px,5vw,68px);line-height:.98;margin:12px 0 22px}
+.feature-copy p{font-size:18px;max-width:620px;color:#5f675f}
+.feature-copy.dark p{color:#eadfce}
+.quote{font-family:Georgia,serif;font-size:26px;line-height:1.2;color:#8d5c0b;border-left:3px solid var(--gold);padding-left:18px;margin:26px 0}
+.feature-copy.dark .quote{color:#f7d98b}
+.pathways{background:#f0eadf}
+.path-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.path{background:#fff;border-radius:24px;padding:27px;min-height:300px;display:flex;flex-direction:column;border:1px solid #ded5c5}
+.path .icon{font-size:32px}
+.path h3{font-family:Georgia,serif;font-size:28px;line-height:1.06;margin:22px 0 10px}
+.path p{color:#69736e;margin:0 0 20px}
+.path a{margin-top:auto;font-weight:900;color:#96640d}
+.journal{background:#fffdf8}
+.journal-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:25px}
+.journal-main{background:#0c2d22;color:#fff;border-radius:30px;padding:44px;min-height:370px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+.journal-main::before{content:"";position:absolute;inset:0;background:url('/images/centro-alveoterapia-hq.webp') center/cover;opacity:.22}
+.journal-main>*{position:relative}
+.journal-main h3{font-family:Georgia,serif;font-size:42px;line-height:1.02;margin:10px 0 12px}
+.journal-side{display:grid;gap:16px}
+.note-card{background:#f1e7d4;border-radius:24px;padding:28px}
+.note-card h3{font-family:Georgia,serif;font-size:27px;margin:7px 0 10px}
+.note-card p{color:#67726b;margin:0}
+.bottega{background:#e0a52d;color:#16261e}
+.bottega-inner{display:grid;grid-template-columns:1.2fr .8fr;gap:44px;align-items:center}
+.bottega h2{font-family:Georgia,serif;font-size:clamp(48px,6vw,78px);line-height:.95;margin:10px 0 20px}
+.bottega p{font-size:19px;max-width:720px}
+.bottega-box{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.42);border-radius:28px;padding:30px}
+.bottega-box strong{display:block;font-family:Georgia,serif;font-size:28px;margin-bottom:10px}
+.footer{background:#071b15;color:#dce5df;padding:52px 0}
+.footer-grid{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:30px}
+.footer h3{color:#f1c55f;margin-top:0}.footer a{display:block;margin:7px 0}
+@media(max-width:950px){
+ .links{overflow-x:auto}.section-head,.feature-story,.journal-grid,.bottega-inner{grid-template-columns:1fr}
+ .today-grid{grid-template-columns:1fr 1fr}.today-card:first-child{grid-column:1/-1}
+ .story-flow-grid{grid-template-columns:1fr}.path-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:620px){
+ .wrap{width:min(100% - 24px,1200px)}.nav{width:calc(100% - 18px)}.links{gap:12px}.links a:not(.legacy):not(.pill){display:none}
+ .hero{min-height:760px}.hero-inner{padding:145px 0 105px}.hero h1{font-size:clamp(52px,16vw,76px)}
+ .chapter{padding:68px 0}.section-head{gap:18px}.today-grid,.path-grid{grid-template-columns:1fr}.today-card:first-child{grid-column:auto}
+ .feature-copy{padding:52px 24px}.story-flow-grid{gap:8px}.footer-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <nav class="nav">
+    <a class="brand" href="/"><span class="brand-mark">✦</span><span>LA FABBRICA DELLE API</span></a>
+    <div class="links">
+      <a href="#oggi">Oggi</a>
+      <a href="#storie">Storie</a>
+      <a href="#percorsi">Percorsi</a>
+      <a href="/bacheca">Bacheca</a>
+      <a href="/contatti" class="pill">Parliamone</a>
+      <a href="/shop-legacy" class="legacy">Shop classico ↗</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-kicker">NON UN NEGOZIO. UN MONDO DA VIVERE.</div>
+    <h1>Prima <em>scopri.</em><br>Poi scegli cosa portare con te.</h1>
+    <p>Api, luoghi, stagioni, storie e prodotti diventano un'unica esperienza. Qui non entri per sfogliare un catalogo: entri per capire cosa c'è dietro.</p>
+    <div class="hero-actions">
+      <a class="btn btn-gold" href="#oggi">Entra nella Fabbrica delle Api</a>
+      <a class="btn btn-glass" href="/shop-legacy">Devo acquistare subito →</a>
+    </div>
+  </div>
+</section>
+
+<section class="chapter today" id="oggi">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="eyebrow">Oggi nella Fabbrica delle Api</span><h2>C'è sempre qualcosa che cambia.</h2></div>
+      <p>Stagioni, fioriture, nuove esperienze, prodotti, racconti dal Centro e dall'Oasi. Questa pagina deve avere un motivo per essere visitata anche quando non devi comprare nulla.</p>
+    </div>
+    <div class="today-grid">
+      <a class="today-card" href="/alveoterapia">
+        <img src="/images/alveari-busatello.jpg" alt="Arnie all'Oasi del Busatello">
+        <div class="today-copy"><small>Primavera · Estate</small><h3>Dentro il paesaggio del Busatello</h3><p>Scopri perché l'Oasi non è soltanto il luogo delle arnie, ma parte del racconto dei nostri mieli.</p></div>
+      </a>
+      <a class="today-card" href="/centro">
+        <img src="/images/centro-alveoterapia-hq.webp" alt="Galena delle Api">
+        <div class="today-copy"><small>Autunno · Inverno</small><h3>La Galena delle Api</h3><p>L'esperienza dell'alveare continua anche al coperto.</p></div>
+      </a>
+      <a class="today-card" href="/bacheca">
+        <img src="/images/alveo-digitale-card-render.webp" alt="Novità dalla Fabbrica delle Api">
+        <div class="today-copy"><small>Novità</small><h3>La Bacheca</h3><p>Comunicazioni, idee, nuovi contenuti e quello che stiamo preparando.</p></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="chapter story-flow" id="storie">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="eyebrow">Il nuovo modo di entrare nello shop</span><h2>Non categorie.<br>Storie da seguire.</h2></div>
+      <p>Ogni prodotto deve avere un prima e un dopo: da dove nasce, cosa racconta e perché è arrivato qui. Il prezzo viene dopo la comprensione.</p>
+    </div>
+    <div class="story-flow-grid">
+      <div class="story-step"><b>01</b><h3>Guarda il luogo</h3><p>Oasi, Galena, alveare, persone e stagioni danno un contesto reale.</p></div>
+      <div class="story-step"><b>02</b><h3>Capisci il perché</h3><p>Ogni linea ha una ragione per esistere. La raccontiamo prima di mostrare le confezioni.</p></div>
+      <div class="story-step"><b>03</b><h3>Scegli cosa portare con te</h3><p>Solo a quel punto il prodotto diventa la continuazione naturale dell'esperienza.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="feature-story">
+  <div class="feature-image"><img src="/images/alveari-busatello.jpg" alt="Oasi del Busatello"></div>
+  <div class="feature-copy">
+    <span class="eyebrow">Storia 01 · Il territorio</span>
+    <h2>I Mieli del Busatello non iniziano dal vasetto.</h2>
+    <p>Iniziano da un luogo. Da un'oasi, dalle fioriture, dall'acqua, dalla vegetazione e dal lavoro delle api. Se mostriamo soltanto la confezione, perdiamo la parte più importante.</p>
+    <div class="quote">Prima conosci il paesaggio. Poi assaggi ciò che quel paesaggio ha contribuito a creare.</div>
+    <a class="btn btn-gold" href="/shop-legacy">Scopri i mieli disponibili →</a>
+  </div>
+</section>
+
+<section class="feature-story">
+  <div class="feature-copy dark">
+    <span class="eyebrow">Storia 02 · Linea specialistica</span>
+    <h2>Linea Veleni. Un lato sorprendente dell'alveare.</h2>
+    <p>Una linea che non deve sembrare una successione di schede cosmetiche. Prima viene il fascino di uno degli elementi più particolari dell'alveare; poi massaggio, gesti quotidiani, pelle e prodotti.</p>
+    <div class="quote">Non una promessa di cura. Un modo diverso di scoprire il carattere dell'alveare.</div>
+    <a class="btn btn-gold" href="/#veleni">Entra nel racconto della Linea Veleni →</a>
+  </div>
+  <div class="feature-image"><img src="/images/veleno-apis1-hd.svg" alt="Linea Veleni d'Api"></div>
+</section>
+
+<section class="chapter pathways" id="percorsi">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="eyebrow">Scegli da dove partire</span><h2>Quattro porte.<br>Non quattro scaffali.</h2></div>
+      <p>Il nuovo shop organizza l'esplorazione per interesse e curiosità, non soltanto per tipologia merceologica.</p>
+    </div>
+    <div class="path-grid">
+      <article class="path"><div class="icon">🍯</div><h3>Voglio conoscere i sapori</h3><p>Mieli, specialità, degustazioni e territori.</p><a href="/shop-legacy">Entra nei sapori →</a></article>
+      <article class="path"><div class="icon">🐝</div><h3>Voglio capire l'alveare</h3><p>Polline, pane delle api, propoli e ciò che raccontano della vita delle api.</p><a href="/shop-legacy">Esplora l'alveare →</a></article>
+      <article class="path"><div class="icon">◇</div><h3>Voglio prendermi un momento</h3><p>Cosmesi, massaggio e gesti quotidiani ispirati all'alveare.</p><a href="/shop-legacy">Scopri i gesti →</a></article>
+      <article class="path"><div class="icon">▣</div><h3>Voglio portare via un'esperienza</h3><p>Alveo Digitale, idee, contenuti e prodotti che continuano oltre la visita.</p><a href="/alveo-digitale">Scopri Alveo Digitale →</a></article>
+    </div>
+  </div>
+</section>
+
+<section class="chapter journal">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="eyebrow">Diario della Fabbrica</span><h2>Un sito che vive.</h2></div>
+      <p>Qui nascerà la parte che fa tornare le persone: brevi storie, immagini, aggiornamenti, nuove fioriture, dietro le quinte, arrivi e piccoli approfondimenti.</p>
+    </div>
+    <div class="journal-grid">
+      <a class="journal-main" href="/bacheca"><span class="eyebrow">Dal Centro</span><h3>Cosa sta succedendo alla Galena delle Api?</h3><p>Novità, aperture, iniziative e ciò che stiamo costruendo.</p></a>
+      <div class="journal-side">
+        <a class="note-card" href="/alveoterapia"><span class="eyebrow">Dal Busatello</span><h3>Il miele cambia con il paesaggio</h3><p>Un prodotto ha più valore quando conosci il luogo da cui parte.</p></a>
+        <a class="note-card" href="/chi-siamo"><span class="eyebrow">Dietro il progetto</span><h3>Perché stiamo costruendo tutto questo</h3><p>La Fabbrica delle Api vuole far conoscere il mondo dell'alveare prima ancora di venderne i prodotti.</p></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter bottega">
+  <div class="wrap bottega-inner">
+    <div>
+      <span class="eyebrow">La Bottega</span>
+      <h2>E quando vuoi acquistare, tutto diventa semplice.</h2>
+      <p>Il racconto non deve rendere difficile comprare. Chi sa già cosa cerca deve poter arrivare subito ai prodotti; chi invece vuole esplorare può farlo senza sentirsi dentro un e-commerce tradizionale.</p>
+    </div>
+    <div class="bottega-box">
+      <strong>Il vecchio shop resta attivo durante l'esperimento.</strong>
+      <p>Lo usiamo come motore commerciale e archivio mentre costruiamo il nuovo carrello e le nuove pagine prodotto.</p>
+      <a class="btn btn-gold" href="/shop-legacy">Apri la bottega attuale →</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div><h3>La Fabbrica delle Api</h3><p>Alveoterapia Integrata, luoghi, storie e prodotti dell'alveare.</p></div>
+    <div><h3>Vivi</h3><a href="/alveoterapia">Oasi del Busatello</a><a href="/centro">Galena delle Api</a><a href="/bacheca">Bacheca</a></div>
+    <div><h3>Continua</h3><a href="/shop-legacy">Shop classico</a><a href="/contatti">Parliamone</a><a href="/">Home Centro</a></div>
+  </div>
+</footer>
+
+<script src="/render-language-de-test.js?v=shop-experience-v2"></script>
+</body>
+</html>
