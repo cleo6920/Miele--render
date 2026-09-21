@@ -794,156 +794,201 @@ function apeNormalize(text){
 }
 function apePelùReply(question){
   const q=apeNormalize(question);
+  const has=(...words)=>words.some(w=>q.includes(w));
+  const asksUse=has('a cosa serve','cosa serve','serve a','come si usa','a che serve');
 
-  const medicalWords=['cura','curare','guarisce','guarire','malattia','diagnosi','terapia','terapeutico','dolore cronico','farmaco','medicina','dose','dosaggio'];
-  if(medicalWords.some(w=>q.includes(w))){
-    return 'Posso spiegarti il progetto, l’esperienza e l’uso previsto dei prodotti, ma non posso fare diagnosi né presentare un prodotto come cura o trattamento medico. Se hai un problema di salute o un dolore persistente, è meglio parlarne con un medico, farmacista o professionista sanitario.';
+  // Salute: blocco solo quando l'utente chiede davvero diagnosi, cure o dosaggi.
+  const medicalIntent=
+    has('mi cura','puo curare','può curare','guarisce','guarire','diagnosi','dosaggio','che dose','quanto ne devo prendere',
+        'sostituisce il farmaco','sostituire il farmaco','terapia per','cura per','trattamento per');
+  if(medicalIntent){
+    return 'Posso spiegarti <strong>cos’è</strong> un prodotto dell’alveare, come viene usato e cosa sappiamo del suo ruolo naturale, ma non posso fare diagnosi, indicare dosaggi personali o presentarlo come una cura. Per un problema di salute è meglio parlarne con un medico, farmacista o altro professionista sanitario.';
   }
 
-  if(q.includes('velen') && (q.includes('dolor')||q.includes('cura')||q.includes('schiena'))){
-    return 'Per la <strong>Linea Veleni</strong> posso parlarti di massaggio, uso cosmetico e sensazioni di comfort. Non posso invece indicare il veleno d’api come cura o trattamento del dolore. Se vuoi, posso raccontarti come viene presentato <strong>SOS DOL</strong> nel nostro progetto.';
+  // PRODOTTI E SOSTANZE DELL'ALVEARE: prima la spiegazione, poi il collegamento al progetto.
+  if(has('veleno d api','veleno di api','veleno delle api','veleno')){
+    if(has('mal di schiena','dolore','dolori','cura')){
+      return 'Il <strong>veleno d’api</strong> è prima di tutto uno strumento naturale di difesa dell’ape e dell’alveare. Nella nostra <strong>Linea Veleni</strong> viene raccontato attraverso prodotti cosmetici e da massaggio, ma non lo presentiamo come cura o trattamento del dolore. Se hai un dolore persistente, è corretto rivolgersi a un professionista sanitario.';
+    }
+    return '<strong>Il veleno d’api</strong> è una sostanza naturale prodotta dall’ape e utilizzata soprattutto per <strong>difendere sé stessa e la colonia</strong> quando percepisce una minaccia.<br><br><strong>Per le api:</strong> è quindi uno strumento di difesa.<br><strong>Per noi:</strong> è una sostanza studiata anche in ambito scientifico e utilizzata in alcuni prodotti cosmetici e da massaggio. Questo però non significa che sia una cura o un trattamento medico.<br><br>Nella Fabbrica delle Api lo raccontiamo attraverso la <strong>Linea Veleni</strong>, con un linguaggio prudente e centrato su cosmetica, massaggio e sensazioni di comfort.';
   }
 
-  if(q.includes('alveoter')){
-    return '<strong>Alveoterapia Integrata</strong> è il cuore del progetto. In primavera ed estate l’esperienza si vive all’aperto, all’Oasi del Busatello, vicino alle arnie vere. In autunno e inverno continua alla Galena delle Api di Castel d’Ario, in un ambiente raccolto con diffusori dedicati. Due stagioni, due modalità, un unico percorso.';
+  if(has('polline')){
+    if(has('pappa reale','pappa')){
+      return '<strong>Polline e pappa reale sono due cose diverse.</strong><br><br><strong>Polline:</strong> viene raccolto sui fiori e portato nell’alveare. Per le api è una fonte fondamentale di proteine, grassi, vitamine e altri nutrienti, soprattutto per nutrire la covata.<br><br><strong>Pappa reale:</strong> viene prodotta dalle api nutrici. Nutre tutte le larve nei primi giorni e la regina per tutta la vita.<br><br>Per l’uomo entrambi vengono utilizzati come alimenti o ingredienti, ma con caratteristiche molto diverse.';
+    }
+    return '<strong>Il polline</strong> è la polvere finissima prodotta dai fiori. Le api la raccolgono sulle zampe e la portano nell’alveare.<br><br><strong>A cosa serve alle api?</strong><br>È una delle loro principali fonti di nutrimento: apporta soprattutto proteine e altri nutrienti importanti per la crescita della colonia e per l’alimentazione della covata.<br><br><strong>A cosa serve a noi?</strong><br>Il polline raccolto dalle api viene consumato come alimento o ingrediente alimentare. La sua composizione cambia in base ai fiori e alla zona di raccolta. Non è un farmaco e, per chi è allergico ai pollini o ai prodotti dell’alveare, è bene prestare particolare attenzione.';
   }
-  if(q.includes('busatello')||q.includes('oasi')){
-    return 'L’<strong>Oasi del Busatello</strong> è la parte più naturale del progetto: arnie vere, paesaggio, fioriture e stagioni. È anche il contesto che dà senso ai <strong>Mieli del Busatello</strong>: prima conosci il luogo, poi scopri i prodotti che lo raccontano.';
+
+  if(has('pappa reale','pappa')){
+    return '<strong>La pappa reale</strong> è una sostanza prodotta dalle api nutrici.<br><br><strong>A cosa serve alle api?</strong><br>Nutre tutte le larve nei primi giorni di vita e soprattutto la <strong>regina</strong>, che la riceve per tutta la sua esistenza. È uno degli elementi che accompagnano lo sviluppo particolare della regina.<br><br><strong>A cosa serve a noi?</strong><br>Viene raccolta e utilizzata come alimento o ingrediente di prodotti alimentari e integratori. È un prodotto dell’alveare molto particolare, ma non va descritto come una cura o come qualcosa dagli effetti garantiti.';
   }
-  if(q.includes('galena')){
-    return 'La <strong>Galena delle Api</strong> è lo spazio di Castel d’Ario dove l’esperienza dell’Alveoterapia Integrata continua nei mesi più freddi. È un ambiente raccolto, dedicato alla conoscenza dell’alveare e all’esperienza con diffusori dedicati.';
+
+  if(has('propoli')){
+    return '<strong>La propoli</strong> è una sostanza resinosa che le api raccolgono soprattutto da gemme e parti vegetali e poi lavorano nell’alveare.<br><br><strong>A cosa serve alle api?</strong><br>La usano come una specie di “materiale di protezione”: sigillano piccole fessure, rivestono superfici e contribuiscono a mantenere l’ambiente dell’alveare protetto.<br><br><strong>A cosa serve a noi?</strong><br>La propoli viene utilizzata in diversi prodotti, per esempio preparazioni alimentari, spray, estratti e cosmetici. Posso spiegarti i prodotti della nostra gamma, senza attribuire alla propoli proprietà di cura.';
   }
-  if(q.includes('punt')&&q.includes('ape')){
-    return '<strong>Punti Ape 🐝</strong>: ogni prodotto può assegnare punti che si sommano nel tempo. I Mieli del Busatello valgono attualmente <strong>2 Punti Ape ciascuno</strong>. A <strong>100 punti</strong> puoi comporre un <strong>cesto omaggio con 5 prodotti a scelta</strong>.';
+
+  if(has('pane delle api','pane d api','pane d’api')){
+    return '<strong>Il Pane delle Api</strong> è polline che le api hanno già portato nell’alveare, depositato nelle celle e trasformato naturalmente.<br><br><strong>A cosa serve alle api?</strong><br>È una vera riserva alimentare della colonia, utilizzata soprattutto come fonte di nutrienti per le api e per l’allevamento della covata.<br><br><strong>Per noi:</strong> viene raccolto e consumato come prodotto alimentare dell’alveare. È diverso dal polline fresco perché ha già subito trasformazioni naturali all’interno del favo.';
   }
-  if(q.includes('sped')||q.includes('consegn')||q.includes('ordine')){
+
+  if(has('cera d api','cera delle api','cera')){
+    return '<strong>La cera d’api</strong> viene prodotta dalle api operaie tramite speciali ghiandole.<br><br><strong>A cosa serve alle api?</strong><br>Serve per costruire i <strong>favi</strong>: le strutture con celle esagonali dove vengono allevate le giovani api e conservati miele e polline.<br><br><strong>A cosa serve a noi?</strong><br>Viene utilizzata, tra le altre cose, per candele, cosmetici, balsami, lavorazioni artigianali e prodotti protettivi.';
+  }
+
+  if(has('miele')){
+    if(has('cristall','diventa duro','indurisce','granul')){
+      return 'La <strong>cristallizzazione del miele</strong> è un fenomeno naturale. Alcuni mieli diventano più densi o formano cristalli più velocemente di altri, soprattutto in base alla quantità di glucosio, alla temperatura e alla composizione del miele. <strong>Non significa che il miele sia rovinato.</strong>';
+    }
+    if(has('come fanno','come si fa','come viene fatto','come nasce','producono')){
+      return 'Le api producono il <strong>miele</strong> partendo soprattutto dal nettare dei fiori. Lo raccolgono, lo trasportano nell’alveare e lo lavorano più volte. Poi lo depositano nelle celle del favo e fanno evaporare parte dell’acqua ventilando con le ali. Quando è abbastanza maturo, le celle vengono chiuse con un sottile tappo di cera chiamato <strong>opercolo</strong>.';
+    }
+    if(has('montagna','montano')){
+      return 'Con <strong>mieli di montagna</strong> si indicano mieli prodotti in territori montani. A seconda della zona e delle fioriture si possono trovare, per esempio, millefiori di montagna, castagno, rododendro, tarassaco o mieli di melata. Non esiste quindi un unico “miele di montagna”: cambia con territorio, quota e stagione.';
+    }
+    if(has('colazione','mattina')){
+      return '<strong>Per colazione dipende soprattutto da quello che ti piace 🐝</strong><br><br>Se vuoi un miele semplice e versatile, partirei dal <strong>Millefiori del Busatello</strong>: va bene sul pane, sulle fette biscottate, nello yogurt e nelle bevande calde.<br><br>Se preferisci qualcosa di più fruttato, puoi scegliere <strong>Fragola, Pesca, Melone o Arancia</strong>. Se mi dici cosa mangi di solito a colazione, ti aiuto a restringere la scelta.';
+    }
+    if(asksUse){
+      return '<strong>Il miele</strong> è prima di tutto la riserva energetica della colonia.<br><br><strong>A cosa serve alle api?</strong><br>È il loro alimento energetico: lo conservano nei favi per avere una scorta quando fuori c’è poco nettare, soprattutto nei periodi più difficili.<br><br><strong>A cosa serve a noi?</strong><br>È un alimento dolce che usiamo al cucchiaio, sul pane, nello yogurt, nelle bevande e in cucina. Non va dato ai bambini sotto i 12 mesi.';
+    }
+  }
+
+  // COME È FATTA L'ARNIA / ALVEARE
+  if(has('come e fatta un arnia','come e fatta l arnia','come è fatta un arnia','come è fatta l arnia','parti dell arnia','com e fatta un arnia','arnia')){
+    return '<strong>Un’arnia</strong> è la “casa” costruita dall’uomo per ospitare una colonia di api. Immaginala come una scatola composta da più parti sovrapposte.<br><br><strong>In basso</strong> c’è il fondo e l’ingresso da cui entrano ed escono le api.<br><strong>Al centro</strong> c’è il nido, con telaini mobili che contengono i favi: qui vive la colonia, cresce la covata e vengono conservate scorte.<br><strong>Sopra</strong> possono esserci uno o più melari, cioè spazi aggiuntivi dove le api accumulano miele.<br><strong>In alto</strong> ci sono coprifavo e tetto, che proteggono l’interno.<br><br>L’<strong>alveare</strong> è invece la colonia con il suo nido; l’<strong>arnia</strong> è la struttura che la ospita.';
+  }
+
+  if(has('alveare')){
+    if(has('come funziona','organizzato','organizzata','dentro')){
+      return 'Un <strong>alveare</strong> funziona come una piccola società molto organizzata. Ci sono una regina, migliaia di operaie e, in alcuni periodi, i fuchi. Le operaie cambiano compito con l’età: puliscono, nutrono le larve, producono cera, sorvegliano l’ingresso e infine escono a raccogliere nettare, polline, acqua e resine.';
+    }
+    return 'Un <strong>alveare</strong> è l’insieme della colonia di api e del suo nido. Al suo interno troviamo la regina, le api operaie, in certi periodi i fuchi, i favi di cera, la covata e le scorte di miele e polline. L’arnia è invece la struttura costruita dall’uomo che può ospitare questo alveare.';
+  }
+
+  if(has('favo','celle esagonali','celle')){
+    return 'Il <strong>favo</strong> è una struttura di cera costruita dalle api. È formato da moltissime celle, generalmente esagonali. Le celle servono per tre cose principali: <strong>allevare la covata</strong>, conservare <strong>miele</strong> e conservare <strong>polline/Pane delle Api</strong>.';
+  }
+
+  if(has('regina')){
+    return 'L’<strong>ape regina</strong> è la femmina fertile della colonia. Il suo compito principale è deporre le uova. Produce inoltre segnali chimici, chiamati feromoni, che aiutano a mantenere la coesione della colonia. Non “comanda” le api come una regina umana: la colonia funziona grazie al comportamento collettivo di migliaia di individui.';
+  }
+
+  if(has('fuco','fuchi')){
+    return 'I <strong>fuchi</strong> sono i maschi della colonia. Il loro ruolo principale è riproduttivo: possono accoppiarsi con una regina vergine durante il volo nuziale. Non raccolgono nettare o polline e sono presenti soprattutto nella bella stagione.';
+  }
+
+  if(has('operaia','operaie')){
+    return 'Le <strong>api operaie</strong> sono femmine che svolgono quasi tutti i lavori della colonia. Da giovani si occupano soprattutto dell’interno dell’alveare; crescendo possono diventare guardiane e poi bottinatrici, cioè uscire a raccogliere nettare, polline, acqua e resine.';
+  }
+
+  if(has('bottinatrice','bottinatrici')){
+    return 'Le <strong>bottinatrici</strong> sono le api operaie che escono dall’alveare per raccogliere ciò che serve alla colonia: nettare, polline, acqua e resine per la propoli. Sono loro a creare il collegamento continuo tra i fiori e l’alveare.';
+  }
+
+  if(has('impollin','pollinazione')){
+    return 'L’<strong>impollinazione</strong> avviene quando il polline passa da un fiore a un altro permettendo a molte piante di riprodursi. Le api, visitando tantissimi fiori per raccogliere nettare e polline, trasportano involontariamente granelli di polline da un fiore all’altro. È uno dei loro ruoli ecologici più importanti.';
+  }
+
+  if(has('sciam','sciame')){
+    return 'La <strong>sciamatura</strong> è un modo naturale con cui una colonia può riprodursi. Una parte delle api lascia l’alveare insieme alla vecchia regina e forma uno sciame, mentre nella colonia originaria nascerà una nuova regina. Vedere uno sciame non significa automaticamente che le api siano aggressive.';
+  }
+
+  if(has('puntura','punge','pungono','pungiglione')){
+    return 'Le api pungono soprattutto per <strong>difesa</strong>. L’ape mellifera ha un pungiglione che, nella pelle elastica dei mammiferi, può rimanere conficcato insieme al sacco velenifero. Per questo una puntura va trattata con attenzione, soprattutto se compaiono sintomi importanti o se la persona sa di essere allergica.';
+  }
+
+  if(has('quanto vive','vita di un ape','vita dell ape')){
+    return 'La durata della vita di un’ape cambia molto in base al ruolo e alla stagione. Le operaie estive possono vivere solo alcune settimane perché lavorano intensamente; quelle nate verso l’inverno possono vivere diversi mesi. La regina può vivere molto più a lungo, anche alcuni anni.';
+  }
+
+  if(has('perche sono importanti','perché sono importanti','importanza delle api','api importanti')){
+    return 'Le api sono importanti per due grandi motivi. <strong>Per l’ecosistema</strong>, perché visitando i fiori contribuiscono all’impollinazione di moltissime piante. <strong>Per l’uomo</strong>, perché dall’alveare arrivano miele, cera, propoli, polline, pappa reale e altri prodotti, oltre a una grande quantità di conoscenze sul rapporto tra natura, stagioni e biodiversità.';
+  }
+
+  // PROGETTO FABBRICA DELLE API
+  if(has('alveoter')){
+    return '<strong>Alveoterapia Integrata</strong> è il cuore del progetto. In primavera ed estate l’esperienza si svolge all’aperto all’<strong>Oasi del Busatello</strong>, vicino alle arnie vere. In autunno e inverno continua nella <strong>Galena delle Api</strong> di Castel d’Ario attraverso ambienti e diffusori dedicati. L’idea è mantenere il contatto con il mondo dell’alveare durante tutto l’anno, senza presentare l’esperienza come sostituto di cure mediche.';
+  }
+
+  if(has('busatello','oasi')){
+    return 'L’<strong>Oasi del Busatello</strong> rappresenta la parte all’aperto del progetto: natura, stagioni, fioriture e arnie vere. È il luogo in cui il visitatore può avvicinarsi al mondo delle api nel loro ambiente e comprendere meglio anche i prodotti legati a quel territorio.';
+  }
+
+  if(has('galena')){
+    return 'La <strong>Galena delle Api</strong> è lo spazio di Castel d’Ario dedicato alla conoscenza del mondo dell’alveare e alla parte autunno/inverno dell’Alveoterapia Integrata. Qui l’esperienza continua in ambiente interno con diffusori dedicati e con un percorso che collega conoscenza, prodotti e cultura delle api.';
+  }
+
+  if(has('punt')&&has('ape')){
+    return '<strong>Punti Ape 🐝</strong>: i punti si accumulano acquistando i prodotti che li prevedono. I Mieli del Busatello presenti ora nella V2 valgono <strong>2 Punti Ape ciascuno</strong>. Raggiunti <strong>100 punti</strong>, il programma prevede un cesto omaggio con <strong>5 prodotti a scelta</strong>.';
+  }
+
+  if(has('sped','consegn','ordine')){
     return 'Nel nuovo shop l’ordine passa da cestino, dati, consegna, riepilogo e pagamento. La consegna locale entro 50 km da Castel d’Ario è gratuita; anche gli ordini da €200 o più hanno spedizione gratuita. Negli altri casi il costo viene mostrato chiaramente prima della conferma.';
   }
-  const asksMillefiori=q.includes('millefiori');
-  const asksMelone=q.includes('melone');
-  const asksFragola=q.includes('fragola');
-  const asksPesca=q.includes('pesca');
-  const asksArancia=q.includes('arancia');
+
+  // PRODOTTI PRESENTI ORA NELLA V2
+  const asksMillefiori=has('millefiori');
+  const asksMelone=has('melone');
+  const asksFragola=has('fragola');
+  const asksPesca=has('pesca');
+  const asksArancia=has('arancia');
 
   if(asksMillefiori){
-    return '<strong>Miele Millefiori dell’Oasi del Busatello · 250 g · €4,90</strong><br>Nasce dalla varietà delle fioriture spontanee presenti nell’oasi. Ha un profilo armonico, una dolcezza equilibrata e profumi che possono cambiare naturalmente da raccolto a raccolto, seguendo le stagioni. È piacevole al cucchiaio, sul pane, nello yogurt oppure per dolcificare bevande e preparazioni. La naturale cristallizzazione è una caratteristica tipica del miele e non ne altera la qualità. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
+    return '<strong>Miele Millefiori dell’Oasi del Busatello · 250 g · €4,90</strong><br>Nasce dalla varietà delle fioriture spontanee presenti nell’oasi. Ha un profilo armonico, una dolcezza equilibrata e profumi che possono cambiare naturalmente da raccolto a raccolto. È piacevole al cucchiaio, sul pane, nello yogurt oppure per dolcificare bevande e preparazioni.<br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
   }
   if(asksMelone){
-    return '<strong>Miele al Melone · 250 g · €4,90</strong><br>È un miele dal gusto dolce e fruttato, con una nota di melone piacevole e immediata. Si presta bene al cucchiaio, sul pane, nello yogurt e in abbinamento a dessert o preparazioni fresche. Servito a temperatura ambiente esprime al meglio il suo profilo aromatico. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
+    return '<strong>Miele al Melone · 250 g · €4,90</strong><br>Ha un gusto dolce e fruttato, con una nota di melone piacevole e immediata. È adatto al cucchiaio, sul pane, nello yogurt e con dessert o preparazioni fresche.<br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
   }
   if(asksFragola){
-    return '<strong>Miele alla Fragola · 250 g · €4,90</strong><br>Ha un gusto morbido e fruttato, con una nota di fragola ben riconoscibile. È adatto a colazione, nello yogurt, con formaggi freschi oppure nella preparazione di dolci semplici. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
+    return '<strong>Miele alla Fragola · 250 g · €4,90</strong><br>Ha un gusto morbido e fruttato, con una nota di fragola ben riconoscibile. È facile da usare a colazione, nello yogurt o nei dolci semplici.<br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
   }
   if(asksPesca){
-    return '<strong>Miele alla Pesca · 250 g · €4,90</strong><br>Ha un profilo delicato e fruttato, con una nota di pesca morbida e piacevole. Si abbina bene a pane, fette biscottate, yogurt, ricotta, formaggi freschi e dessert. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
+    return '<strong>Miele alla Pesca · 250 g · €4,90</strong><br>Ha un profilo delicato e fruttato. Si abbina facilmente a pane, fette biscottate, yogurt, ricotta, formaggi freschi e dessert.<br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
   }
   if(asksArancia){
-    return '<strong>Miele all’Arancia · 250 g · €4,90</strong><br>Ha un carattere fresco e agrumato, in cui le note di arancia accompagnano la naturale dolcezza del miele. È piacevole a colazione, nello yogurt, sul pane, con biscotti, dolci e formaggi freschi. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
-  }
-  if((q.includes('miele')||q.includes('mieli')) && (q.includes('colazione')||q.includes('mattina'))){
-    return '<strong>Per colazione dipende soprattutto da quello che ti piace 🐝</strong><br><br>Se vuoi un miele semplice e versatile, partirei dal <strong>Millefiori del Busatello</strong>: va bene sul pane, sulle fette biscottate, nello yogurt e nelle bevande calde.<br><br>Se invece preferisci qualcosa di più fruttato, puoi scegliere <strong>Fragola, Pesca, Melone o Arancia</strong>.<br><br>Se mi dici cosa mangi di solito a colazione — pane, yogurt, biscotti, latte o altro — ti aiuto a scegliere quello più vicino ai tuoi gusti.';
-  }
-  if((q.includes('miele')||q.includes('mieli')) && (q.includes('montagna')||q.includes('montano'))){
-    return 'Con “<strong>mieli di montagna</strong>” si indicano mieli prodotti in territori montani, dove le api raccolgono nettare o melata dalla vegetazione locale. A seconda della zona si possono trovare, per esempio, mieli di castagno, rododendro, tarassaco, millefiori di montagna o mieli di melata. Il gusto cambia molto con quota, stagione e fioriture presenti.';
-  }
-  if(q.includes('miele')||q.includes('mieli')){
-    return 'Possiamo scegliere insieme in base a <strong>gusto e momento d’uso</strong>. Se vuoi qualcosa di armonico e versatile c’è il <strong>Millefiori</strong>; se preferisci note più fruttate ci sono <strong>Melone, Fragola, Pesca e Arancia</strong>. Dimmi come pensi di usarlo — colazione, yogurt, formaggi, dolci o semplicemente al cucchiaio — e ti aiuto a restringere la scelta.';
-  }
-  if(q.includes('velen')){
-    return 'La <strong>Linea Veleni</strong> racconta uno degli elementi più sorprendenti dell’alveare attraverso prodotti cosmetici e da massaggio. Il linguaggio resta sempre prudente: niente promesse di cura, ma attenzione a gesti, massaggio, pelle e sensazioni di comfort.';
-  }
-  if(q.includes('sos dol')||q.includes('massagg')){
-    return '<strong>SOS DOL</strong> viene presentato come prodotto per il massaggio, pensato per accompagnare un gesto mirato e una sensazione di comfort. Non viene presentato come cura o trattamento del dolore.';
-  }
-  if(q.includes('prezzo')||q.includes('quanto costa')){
-    return 'Posso aiutarti sui prezzi presenti nel nuovo shop. Al momento i Mieli del Busatello da 250 g mostrati nella V2 sono a <strong>€4,90</strong> ciascuno. Per gli altri prodotti preferisco usare solo i dati effettivamente presenti quando li inseriremo nella nuova struttura.';
-  }
-  if(q.includes('alveare')||q.includes('arnia')){
-    return 'Un <strong>alveare</strong> è la casa organizzata della colonia di api. Al suo interno vivono la regina, migliaia di api operaie e, in alcuni periodi dell’anno, i fuchi. Le api costruiscono favi di cera con celle esagonali, dove allevano la covata e conservano miele e polline. L’arnia, invece, è la struttura costruita dall’uomo che ospita la colonia.';
+    return '<strong>Miele all’Arancia · 250 g · €4,90</strong><br>Ha un carattere fresco e agrumato. È piacevole a colazione, nello yogurt, sul pane, con biscotti, dolci e formaggi freschi.<br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
   }
 
-  if(q.includes('propoli')){
-    return 'La <strong>propoli</strong> è una sostanza resinosa che le api raccolgono dalle piante e trasformano per proteggere e sigillare l’alveare. Nel mondo dei prodotti dell’alveare viene utilizzata in diverse preparazioni. Posso spiegarti i prodotti presenti nel nostro shop, ma senza attribuire loro proprietà di cura o effetti terapeutici.';
+  if(has('sos dol','massagg')){
+    return '<strong>SOS DOL</strong> viene presentato nella nostra Linea Veleni come prodotto per il massaggio, pensato per accompagnare un gesto mirato e una sensazione di comfort. Non viene presentato come cura o trattamento del dolore.';
   }
 
-  if(q.includes('pappa reale')||q.includes('pappa')){
-    return 'La <strong>pappa reale</strong> è una sostanza prodotta dalle api nutrici. È il nutrimento delle larve nei primi giorni di vita e della regina per tutta la sua esistenza. È uno dei prodotti più caratteristici dell’alveare.';
+  if(has('prezzo','quanto costa')){
+    return 'Posso aiutarti sui prezzi che risultano realmente presenti nel nuovo shop. In questo momento i <strong>Mieli del Busatello da 250 g</strong> mostrati nella V2 sono a <strong>€4,90 ciascuno</strong>. Per un prodotto non ancora inserito preferisco non inventare il prezzo.';
   }
 
-  if(q.includes('polline') && q.includes('pappa')){
-    return 'Sono due prodotti molto diversi. Il <strong>polline</strong> viene raccolto dalle api sui fiori e trasportato nell’alveare; la <strong>pappa reale</strong> viene invece prodotta direttamente dalle api nutrici ed è il nutrimento della regina. Se vuoi, posso anche spiegarti cos’è il Pane delle Api.';
-  }
-
-  if(q.includes('polline')){
-    return 'Il <strong>polline</strong> viene raccolto dalle api sui fiori e trasportato all’alveare. È una delle principali fonti nutritive della colonia. Nell’alveare può essere immagazzinato e trasformato nel cosiddetto <strong>Pane delle Api</strong>.';
-  }
-
-  if(q.includes('pane delle api')||q.includes('pane d')){
-    return 'Il <strong>Pane delle Api</strong> è polline immagazzinato nelle celle del favo e trasformato naturalmente all’interno dell’alveare attraverso un processo di fermentazione. È una riserva nutritiva importante per la colonia.';
-  }
-
-  if(q.includes('cristall')&&q.includes('miele')){
-    return 'La <strong>cristallizzazione del miele</strong> è un fenomeno naturale. Dipende soprattutto dal rapporto tra glucosio e fruttosio, dalla temperatura e dal tipo di miele. Un miele cristallizzato non è per questo deteriorato: spesso è semplicemente una caratteristica naturale del prodotto.';
-  }
-
-  if(q.includes('quante api')||q.includes('numero di api')||q.includes('api ci sono')){
-    return 'Il numero di api in una colonia cambia con la stagione. In primavera e in estate una colonia forte può arrivare a <strong>decine di migliaia di api</strong>; nei mesi freddi la popolazione si riduce sensibilmente.';
-  }
-
-  if(q.includes('regina')&&q.includes('ape')){
-    return 'L’<strong>ape regina</strong> è la femmina fertile della colonia. Il suo ruolo principale è deporre le uova e contribuire, attraverso i feromoni, alla coesione sociale dell’alveare. In condizioni favorevoli può deporre moltissime uova al giorno.';
-  }
-
-  if(q.includes('fuchi')||q.includes('fuco')){
-    return 'I <strong>fuchi</strong> sono i maschi della colonia. Il loro ruolo biologico principale è la riproduzione con una regina vergine. Sono presenti soprattutto nella stagione favorevole e non partecipano alla raccolta di nettare e polline.';
-  }
-
-  if(q.includes('operaie')||q.includes('ape operaia')){
-    return 'Le <strong>api operaie</strong> sono femmine non riproduttive che svolgono gran parte delle attività della colonia: pulizia, nutrimento della covata, costruzione dei favi, ventilazione, difesa e raccolta di nettare, polline, acqua e resine.';
-  }
-
-  if(q.includes('ciao')||q.includes('buongiorno')||q.includes('salve')){
-    return 'Ciao! 🐝 Sono Ape Pelù. Puoi chiedermi liberamente di api, alveari, miele, prodotti dell’alveare, Alveoterapia, Oasi, Galena, Linea Veleni, Punti Ape oppure ordini e spedizioni.';
-  }
-
-  const asksProductAdvice =
-    (q.includes('prodotto')||q.includes('prodotti')||q.includes('consigli')||q.includes('scegli')) &&
-    (q.includes('lavoro')||q.includes('ufficio')||q.includes('pausa')||q.includes('giornata'));
-
+  // CONSIGLI CONTESTUALI
+  const asksProductAdvice=
+    has('prodotto','prodotti','consigli','scegli','scelgo','prendo') &&
+    has('lavoro','ufficio','pausa','giornata');
   if(asksProductAdvice){
-    return '<strong>Certo 🐝</strong><br><br>Se cerchi qualcosa da accompagnare durante la giornata di lavoro, tra i prodotti già presenti nel nuovo shop partirei dai <strong>Mieli del Busatello</strong>: il <strong>Millefiori</strong> è la scelta più semplice e versatile, mentre <strong>Fragola, Pesca, Melone o Arancia</strong> sono più adatti se vuoi una pausa dal gusto più fruttato.<br><br>Se mi dici solo una cosa — <strong>lavori soprattutto in ufficio, all’aperto o fai un lavoro fisico?</strong> — ti indirizzo meglio senza farti perdere tempo.';
+    return '<strong>Certo 🐝</strong><br><br>Se cerchi qualcosa da accompagnare durante la giornata di lavoro, tra i prodotti già presenti nella V2 partirei dai <strong>Mieli del Busatello</strong>: il Millefiori è la scelta più semplice e versatile; Fragola, Pesca, Melone o Arancia sono alternative più fruttate.<br><br>Se mi dici se lavori soprattutto in ufficio, all’aperto o fai un lavoro fisico, posso orientarti meglio.';
   }
 
-  const productIntentWords=['prodotto','prodotti','consigliami','consiglio','consigli','scegliere','scelta','sceglio','scelgo','comprare','acquistare','prendo','prendere'];
-  const useCaseWords=['lavoro','ufficio','pausa','colazione','mattina','sera','notte','mezzanotte','regalo','sport','attivita','giornata','viaggio'];
-
-  if(productIntentWords.some(w=>q.includes(w)) && useCaseWords.some(w=>q.includes(w))){
-    return 'Posso aiutarti a scegliere in base al momento in cui vuoi usarlo 🐝. Dimmi semplicemente l’occasione — per esempio <strong>lavoro, colazione, regalo, sera o attività fisica</strong> — e ti propongo le opzioni più sensate tra i prodotti realmente presenti nel nostro shop.';
-  }
-
-  const explicitOutsideWords=[
-    'cravatta','vestito','abito','scarpe','giacca','pantaloni','camicia',
-    'libro','romanzo','film','serie tv','automobile','auto ','macchina','moto ',
-    'telefono','smartphone','computer','pc ','borsa','orologio','colore di'
-  ];
+  const explicitOutsideWords=['cravatta','vestito','abito','scarpe','giacca','pantaloni','camicia','libro','romanzo','film','serie tv','automobile','macchina','smartphone','computer','borsa','orologio','colore di'];
   if(explicitOutsideWords.some(w=>q.includes(w))){
-    return 'Questa richiesta è chiaramente fuori dal mondo della Fabbrica delle Api 🐝. Posso aiutarti a scegliere tra prodotti dell’alveare, esperienze, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.';
+    return 'Questa richiesta è chiaramente fuori dal mondo della Fabbrica delle Api 🐝. Io sono qui per guidarti tra api, alveari, prodotti dell’alveare, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.';
   }
 
   const genericChoiceWords=['cosa scelgo','che scelgo','cosa prendo','che prendo','cosa mi consigli','che mi consigli','cosa scegliere','che cosa scegliere'];
   if(genericChoiceWords.some(w=>q.includes(w))){
-    if(q.includes('mezzanotte')||q.includes('notte')){
-      return '<strong>Se parliamo del mondo della Fabbrica delle Api, a quell’ora penserei a qualcosa di semplice e tranquillo 🐝</strong><br><br>Tra i prodotti già presenti nel nuovo shop, il <strong>Millefiori</strong> è la scelta più versatile; se preferisci un gusto più morbido e fruttato, puoi orientarti su <strong>Pesca</strong> o <strong>Arancia</strong>.<br><br>Se mi dici se cerchi qualcosa da gustare, da regalare o semplicemente da tenere con te, restringo subito la scelta.';
+    if(has('mezzanotte','notte')){
+      return '<strong>Se parliamo del mondo della Fabbrica delle Api, a quell’ora penserei a qualcosa di semplice e tranquillo 🐝</strong><br><br>Tra i prodotti già presenti, il <strong>Millefiori</strong> è il più versatile; se preferisci un gusto più fruttato puoi orientarti su <strong>Pesca</strong> o <strong>Arancia</strong>. Se mi dici se vuoi qualcosa da gustare, regalare o usare in un momento particolare, restringo subito la scelta.';
     }
-    return 'Interpreto la tua domanda nel contesto della <strong>Fabbrica delle Api</strong> 🐝. Quindi, quando mi chiedi semplicemente “cosa scelgo?”, penso a prodotti ed esperienze del nostro mondo, non a libri, vestiti o altro. Dimmi solo il momento o l’occasione e ti aiuto a scegliere.';
+    return 'Interpreto la tua domanda nel contesto della <strong>Fabbrica delle Api</strong> 🐝. Quindi quando mi chiedi semplicemente “cosa scelgo?”, penso prima a prodotti ed esperienze del nostro mondo. Dimmi il momento o l’occasione e ti aiuto a restringere la scelta.';
   }
 
-  const beeWorldWords=['ape','api','alveare','arnia','miele','mieli','apicolt','favo','cera','nettare','melata','fiore','fioritura','regina','fuco','operaia','propoli','polline','pappa reale','pane delle api','veleno','prodotto','prodotti'];
+  if(has('ciao','buongiorno','salve')){
+    return 'Ciao! 🐝 Sono Ape Pelù. Puoi chiedermi liberamente di api, alveari, miele, polline, propoli, pappa reale, cera, favi, Alveoterapia, Oasi, Galena, prodotti, Punti Ape, ordini e spedizioni.';
+  }
+
+  const beeWorldWords=['ape','api','alveare','arnia','miele','mieli','apicolt','favo','cera','nettare','melata','fiore','fioritura','regina','fuco','operaia','propoli','polline','pappa reale','pane delle api','veleno','sciame','impollin'];
   if(beeWorldWords.some(w=>q.includes(w))){
-    return 'È una domanda che riguarda il mondo delle api, quindi voglio poterti rispondere bene. Questa prima versione di Ape Pelù non ha ancora una risposta completa per questo argomento. Non voglio inventare: quando collegheremo il motore AI, potrò rispondere in modo naturale anche a domande molto più libere come questa.';
+    return 'La domanda riguarda il mondo delle api e quindi è nel mio campo 🐝. Non voglio però inventare una risposta incompleta. Prova a formulare la domanda con qualche dettaglio in più e ti spiego quello che so in modo semplice.';
   }
 
-  return 'Questa domanda è fuori dal mondo di cui mi occupo. Io sono Ape Pelù 🐝 e posso aiutarti con api, alveari, miele, prodotti dell’alveare, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.';
+  return 'Questa domanda è fuori dal mondo di cui mi occupo. Io sono Ape Pelù 🐝 e posso aiutarti con api, alveari, miele e altri prodotti dell’alveare, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.';
 }
 function apeAsk(text){
   const value=String(text||'').trim();
