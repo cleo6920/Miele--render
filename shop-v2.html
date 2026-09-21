@@ -180,6 +180,26 @@ img{display:block;max-width:100%}
 .buy-row .btn{margin:0}
 .feature-copy.dark .buy-step{border-color:rgba(255,255,255,.14)}
 .feature-copy.dark .buy-step .why{color:#f7d98b}
+.ape-chat-launch{position:fixed;left:18px;bottom:18px;z-index:85;border:0;background:#f0b52f;color:#173126;border-radius:999px;padding:10px 15px 10px 9px;display:flex;align-items:center;gap:9px;font-weight:950;box-shadow:0 12px 32px rgba(0,0,0,.23);cursor:pointer}
+.ape-chat-launch svg{width:42px;height:42px;flex:0 0 42px}
+.ape-chat-panel{position:fixed;left:18px;bottom:82px;z-index:140;width:min(390px,calc(100vw - 30px));height:min(620px,calc(100vh - 120px));background:#fffaf1;border:1px solid #decfAF;border-radius:28px;box-shadow:0 28px 80px rgba(0,0,0,.28);display:none;overflow:hidden}
+.ape-chat-panel.open{display:flex;flex-direction:column}
+.ape-chat-head{background:#0e3529;color:#fff;padding:15px 16px;display:flex;align-items:center;gap:11px}
+.ape-chat-head svg{width:44px;height:44px;flex:0 0 44px}
+.ape-chat-head strong{display:block;font-family:Georgia,serif;font-size:21px;line-height:1}
+.ape-chat-head small{display:block;color:#d7e5dd;margin-top:4px}
+.ape-chat-close{margin-left:auto;border:0;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer}
+.ape-chat-messages{flex:1;overflow:auto;padding:16px;background:linear-gradient(180deg,#fffaf1,#f6efe3)}
+.ape-msg{max-width:88%;padding:11px 13px;border-radius:18px;margin:8px 0;font-size:14px;line-height:1.45}
+.ape-msg.bot{background:#fff;border:1px solid #e3d9c7;border-bottom-left-radius:6px}
+.ape-msg.user{background:#17382b;color:#fff;margin-left:auto;border-bottom-right-radius:6px}
+.ape-quick{display:flex;gap:7px;flex-wrap:wrap;padding:0 14px 12px;background:#f6efe3}
+.ape-quick button{border:1px solid #dccb9c;background:#fff8dd;color:#5d4813;border-radius:999px;padding:8px 10px;font-weight:850;font-size:12px;cursor:pointer}
+.ape-chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid #e4d9c7;background:#fff}
+.ape-chat-input input{flex:1;border:1px solid #d9cfbf;border-radius:999px;padding:11px 13px;font:inherit;min-width:0}
+.ape-chat-input button{border:0;background:#e0aa2d;color:#18251f;border-radius:999px;padding:0 16px;font-weight:950;cursor:pointer}
+.ape-note{padding:0 14px 10px;background:#fff;font-size:11px;color:#79827c}
+@media(max-width:620px){.ape-chat-launch{left:10px;bottom:10px}.ape-chat-panel{left:8px;right:8px;bottom:72px;width:auto;height:calc(100vh - 95px)}}
 @media(max-width:950px){.quick-grid{grid-template-columns:1fr 1fr}.guide-card{grid-template-columns:1fr}.guide-actions{justify-content:flex-start}}
 @media(max-width:620px){.project-bar{top:60px}.quick-head{display:block}.quick-head p{margin-top:14px}.quick-grid{grid-template-columns:1fr}}
 
@@ -423,6 +443,41 @@ img{display:block;max-width:100%}
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-foot"><div class="cart-points"><span>🐝 Punti Ape di questo ordine</span><span id="cartPoints">0</span></div><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><button class="checkout-new" type="button" id="startCheckout">Continua con l'ordine →</button><div class="cart-note">100 Punti Ape = cesto omaggio con 5 prodotti a scelta.</div></div>
 </aside>
+
+<button class="ape-chat-launch" id="apeChatLaunch" type="button" aria-label="Chiedi a Ape Pelù"><svg viewBox="0 0 64 64" aria-hidden="true">
+<ellipse cx="32" cy="35" rx="16" ry="19" fill="#f6bd2f"/>
+<path d="M19 29h26M18 38h28M23 47h18" stroke="#2d2412" stroke-width="5" stroke-linecap="round"/>
+<ellipse cx="18" cy="24" rx="11" ry="8" fill="#e9f7f4" opacity=".9" transform="rotate(-28 18 24)"/>
+<ellipse cx="46" cy="24" rx="11" ry="8" fill="#e9f7f4" opacity=".9" transform="rotate(28 46 24)"/>
+<circle cx="26" cy="18" r="2.4" fill="#1b211d"/><circle cx="38" cy="18" r="2.4" fill="#1b211d"/>
+<path d="M27 23q5 5 10 0" fill="none" stroke="#1b211d" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M24 10q-4-6-8-4M40 10q4-6 8-4" fill="none" stroke="#1b211d" stroke-width="2.4" stroke-linecap="round"/>
+</svg><span>Chiedi a Ape Pelù</span></button>
+<section class="ape-chat-panel" id="apeChatPanel" aria-label="Chiedi a Ape Pelù">
+  <div class="ape-chat-head"><svg viewBox="0 0 64 64" aria-hidden="true">
+<ellipse cx="32" cy="35" rx="16" ry="19" fill="#f6bd2f"/>
+<path d="M19 29h26M18 38h28M23 47h18" stroke="#2d2412" stroke-width="5" stroke-linecap="round"/>
+<ellipse cx="18" cy="24" rx="11" ry="8" fill="#e9f7f4" opacity=".9" transform="rotate(-28 18 24)"/>
+<ellipse cx="46" cy="24" rx="11" ry="8" fill="#e9f7f4" opacity=".9" transform="rotate(28 46 24)"/>
+<circle cx="26" cy="18" r="2.4" fill="#1b211d"/><circle cx="38" cy="18" r="2.4" fill="#1b211d"/>
+<path d="M27 23q5 5 10 0" fill="none" stroke="#1b211d" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M24 10q-4-6-8-4M40 10q4-6 8-4" fill="none" stroke="#1b211d" stroke-width="2.4" stroke-linecap="round"/>
+</svg><div><strong>Ape Pelù</strong><small>La tua guida nella Fabbrica delle Api</small></div><button class="ape-chat-close" id="apeChatClose" type="button">×</button></div>
+  <div class="ape-chat-messages" id="apeChatMessages">
+    <div class="ape-msg bot"><strong>Ciao, sono Ape Pelù 🐝</strong><br>Posso accompagnarti tra Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Mieli, Linea Veleni, Punti Ape, ordini e spedizioni. Cosa ti incuriosisce?</div>
+  </div>
+  <div class="ape-quick" id="apeQuick">
+    <button type="button" data-ape-q="Cos'è l'Alveoterapia Integrata?">Alveoterapia</button>
+    <button type="button" data-ape-q="Parlami dell'Oasi del Busatello">Oasi</button>
+    <button type="button" data-ape-q="Cos'è la Galena delle Api?">Galena</button>
+    <button type="button" data-ape-q="Come scelgo un miele?">Mieli</button>
+    <button type="button" data-ape-q="Parlami della Linea Veleni">Linea Veleni</button>
+    <button type="button" data-ape-q="Come funzionano i Punti Ape?">Punti Ape</button>
+    <button type="button" data-ape-q="Come funzionano spedizioni e ordini?">Ordini e spedizioni</button>
+  </div>
+  <div class="ape-chat-input"><input id="apeChatInput" type="text" placeholder="Scrivi la tua domanda..." autocomplete="off"><button id="apeChatSend" type="button">Invia</button></div>
+  <div class="ape-note">Ape Pelù informa e orienta. Non sostituisce un medico o un professionista sanitario.</div>
+</section>
 
 <div class="checkout-overlay" id="checkoutOverlay" aria-hidden="true">
   <section class="checkout-panel">
@@ -719,6 +774,81 @@ document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('clic
 document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>showCheckoutStep(Number(btn.dataset.back))));
 document.getElementById('simulatePay').addEventListener('click',completeSimulatedOrder);
 document.getElementById('finishCheckout').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');window.scrollTo({top:0,behavior:'smooth'});});
+const apeChatPanel=document.getElementById('apeChatPanel');
+const apeChatMessages=document.getElementById('apeChatMessages');
+const apeChatInput=document.getElementById('apeChatInput');
+
+function apeEscape(value){
+  return String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function apeAddMessage(text,who='bot'){
+  const el=document.createElement('div');
+  el.className='ape-msg '+who;
+  el.innerHTML=who==='user'?apeEscape(text):text;
+  apeChatMessages.appendChild(el);
+  apeChatMessages.scrollTop=apeChatMessages.scrollHeight;
+}
+function apeNormalize(text){
+  return String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+}
+function apePelùReply(question){
+  const q=apeNormalize(question);
+
+  const medicalWords=['cura','curare','guarisce','guarire','malattia','diagnosi','terapia','terapeutico','dolore cronico','farmaco','medicina','dose','dosaggio'];
+  if(medicalWords.some(w=>q.includes(w))){
+    return 'Posso spiegarti il progetto, l’esperienza e l’uso previsto dei prodotti, ma non posso fare diagnosi né presentare un prodotto come cura o trattamento medico. Se hai un problema di salute o un dolore persistente, è meglio parlarne con un medico, farmacista o professionista sanitario.';
+  }
+
+  if(q.includes('velen') && (q.includes('dolor')||q.includes('cura')||q.includes('schiena'))){
+    return 'Per la <strong>Linea Veleni</strong> posso parlarti di massaggio, uso cosmetico e sensazioni di comfort. Non posso invece indicare il veleno d’api come cura o trattamento del dolore. Se vuoi, posso raccontarti come viene presentato <strong>SOS DOL</strong> nel nostro progetto.';
+  }
+
+  if(q.includes('alveoter')){
+    return '<strong>Alveoterapia Integrata</strong> è il cuore del progetto. In primavera ed estate l’esperienza si vive all’aperto, all’Oasi del Busatello, vicino alle arnie vere. In autunno e inverno continua alla Galena delle Api di Castel d’Ario, in un ambiente raccolto con diffusori dedicati. Due stagioni, due modalità, un unico percorso.';
+  }
+  if(q.includes('busatello')||q.includes('oasi')){
+    return 'L’<strong>Oasi del Busatello</strong> è la parte più naturale del progetto: arnie vere, paesaggio, fioriture e stagioni. È anche il contesto che dà senso ai <strong>Mieli del Busatello</strong>: prima conosci il luogo, poi scopri i prodotti che lo raccontano.';
+  }
+  if(q.includes('galena')){
+    return 'La <strong>Galena delle Api</strong> è lo spazio di Castel d’Ario dove l’esperienza dell’Alveoterapia Integrata continua nei mesi più freddi. È un ambiente raccolto, dedicato alla conoscenza dell’alveare e all’esperienza con diffusori dedicati.';
+  }
+  if(q.includes('punt')&&q.includes('ape')){
+    return '<strong>Punti Ape 🐝</strong>: ogni prodotto può assegnare punti che si sommano nel tempo. I Mieli del Busatello valgono attualmente <strong>2 Punti Ape ciascuno</strong>. A <strong>100 punti</strong> puoi comporre un <strong>cesto omaggio con 5 prodotti a scelta</strong>.';
+  }
+  if(q.includes('sped')||q.includes('consegn')||q.includes('ordine')){
+    return 'Nel nuovo shop l’ordine passa da cestino, dati, consegna, riepilogo e pagamento. La consegna locale entro 50 km da Castel d’Ario è gratuita; anche gli ordini da €200 o più hanno spedizione gratuita. Negli altri casi il costo viene mostrato chiaramente prima della conferma.';
+  }
+  if(q.includes('miele')||q.includes('mieli')){
+    return 'Per scegliere un miele puoi partire dal gusto: <strong>Millefiori</strong> se vuoi qualcosa di armonico e rappresentativo del Busatello; <strong>Melone, Fragola, Pesca o Arancia</strong> se preferisci una nota più fruttata. Se mi dici che gusto ti piace, ti aiuto a orientarti.';
+  }
+  if(q.includes('velen')){
+    return 'La <strong>Linea Veleni</strong> racconta uno degli elementi più sorprendenti dell’alveare attraverso prodotti cosmetici e da massaggio. Il linguaggio resta sempre prudente: niente promesse di cura, ma attenzione a gesti, massaggio, pelle e sensazioni di comfort.';
+  }
+  if(q.includes('sos dol')||q.includes('massagg')){
+    return '<strong>SOS DOL</strong> viene presentato come prodotto per il massaggio, pensato per accompagnare un gesto mirato e una sensazione di comfort. Non viene presentato come cura o trattamento del dolore.';
+  }
+  if(q.includes('prezzo')||q.includes('quanto costa')){
+    return 'Posso aiutarti sui prezzi presenti nel nuovo shop. Al momento i Mieli del Busatello da 250 g mostrati nella V2 sono a <strong>€4,90</strong> ciascuno. Per gli altri prodotti preferisco usare solo i dati effettivamente presenti quando li inseriremo nella nuova struttura.';
+  }
+  if(q.includes('ciao')||q.includes('buongiorno')||q.includes('salve')){
+    return 'Ciao! 🐝 Sono Ape Pelù. Dimmi cosa ti incuriosisce: Alveoterapia, Oasi, Galena, Mieli, Linea Veleni, Punti Ape oppure ordini e spedizioni.';
+  }
+
+  return 'Non voglio darti un’informazione imprecisa. Posso aiutarti sul mondo della Fabbrica delle Api: <strong>Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Mieli, Linea Veleni, Punti Ape, ordini e spedizioni</strong>. Prova a chiedermi qualcosa su uno di questi temi.';
+}
+function apeAsk(text){
+  const value=String(text||'').trim();
+  if(!value)return;
+  apeAddMessage(value,'user');
+  apeChatInput.value='';
+  setTimeout(()=>apeAddMessage(apePelùReply(value),'bot'),180);
+}
+document.getElementById('apeChatLaunch').addEventListener('click',()=>{apeChatPanel.classList.add('open');setTimeout(()=>apeChatInput.focus(),50);});
+document.getElementById('apeChatClose').addEventListener('click',()=>apeChatPanel.classList.remove('open'));
+document.getElementById('apeChatSend').addEventListener('click',()=>apeAsk(apeChatInput.value));
+apeChatInput.addEventListener('keydown',e=>{if(e.key==='Enter')apeAsk(apeChatInput.value);});
+document.querySelectorAll('[data-ape-q]').forEach(btn=>btn.addEventListener('click',()=>apeAsk(btn.dataset.apeQ)));
+
 ['coAddress','coCap','coCity','coProvince'].forEach(id=>{
   const el=document.getElementById(id);
   if(el)el.addEventListener('input',invalidateAddressValidation);
