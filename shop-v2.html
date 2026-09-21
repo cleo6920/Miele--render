@@ -97,6 +97,34 @@ img{display:block;max-width:100%}
 .footer{background:#071b15;color:#dce5df;padding:52px 0}
 .footer-grid{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:30px}
 .footer h3{color:#f1c55f;margin-top:0}.footer a{display:block;margin:7px 0}
+.project-bar{position:sticky;top:61px;z-index:45;background:#10392c;color:#fff;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08)}
+.project-bar .wrap{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
+.project-bar .wrap::-webkit-scrollbar{display:none}
+.project-bar a{white-space:nowrap;font-size:12px;font-weight:850;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10)}
+.project-bar a:last-child{background:var(--gold);color:#152119;border-color:transparent}
+.quick-buy{background:#fff8eb;padding:76px 0}
+.quick-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:26px}
+.quick-head h2{font-family:Georgia,serif;font-size:clamp(40px,5vw,62px);line-height:.98;margin:8px 0 0}
+.quick-head p{max-width:560px;color:#67726b;margin:0}
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.quick-card{background:white;border:1px solid #e5dccb;border-radius:22px;padding:24px;display:flex;flex-direction:column;min-height:230px;box-shadow:0 10px 28px rgba(26,31,27,.06)}
+.quick-card small{font-weight:900;color:#9c690f;text-transform:uppercase;letter-spacing:.1em}
+.quick-card h3{font-family:Georgia,serif;font-size:27px;line-height:1.05;margin:12px 0 8px}
+.quick-card p{color:#68736d;margin:0 0 20px}
+.quick-card a{margin-top:auto;font-weight:900;color:#875b0d}
+.guide-card{margin-top:24px;background:#0d3327;color:#fff;border-radius:28px;padding:28px 30px;display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center}
+.guide-card h3{font-family:Georgia,serif;font-size:34px;line-height:1.03;margin:6px 0 10px}
+.guide-card p{color:#dbe5df;margin:0}
+.guide-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.buy-step{margin-top:28px;padding:24px 0 0;border-top:1px solid rgba(0,0,0,.12)}
+.buy-step .why{font-family:Georgia,serif;font-size:22px;line-height:1.25;color:#7c5108;margin-bottom:14px}
+.buy-row{display:flex;gap:10px;flex-wrap:wrap}
+.buy-row .btn{margin:0}
+.feature-copy.dark .buy-step{border-color:rgba(255,255,255,.14)}
+.feature-copy.dark .buy-step .why{color:#f7d98b}
+@media(max-width:950px){.quick-grid{grid-template-columns:1fr 1fr}.guide-card{grid-template-columns:1fr}.guide-actions{justify-content:flex-start}}
+@media(max-width:620px){.project-bar{top:60px}.quick-head{display:block}.quick-head p{margin-top:14px}.quick-grid{grid-template-columns:1fr}}
+
 @media(max-width:950px){
  .links{overflow-x:auto}.section-head,.feature-story,.journal-grid,.bottega-inner{grid-template-columns:1fr}
  .today-grid{grid-template-columns:1fr 1fr}.today-card:first-child{grid-column:1/-1}
@@ -117,13 +145,23 @@ img{display:block;max-width:100%}
     <div class="links">
       <a href="#oggi">Oggi</a>
       <a href="#storie">Storie</a>
-      <a href="#percorsi">Percorsi</a>
+      <a href="#scegli">Scegli prodotti</a>
       <a href="/bacheca">Bacheca</a>
       <a href="/contatti" class="pill">Parliamone</a>
-      <a href="/shop-legacy" class="legacy">Shop classico ↗</a>
+      <a href="#scegli" class="legacy">Acquista ↓</a>
     </div>
   </nav>
 </header>
+<div class="project-bar" aria-label="Percorso La Fabbrica delle Api">
+  <div class="wrap">
+    <a href="/">Alveoterapia Integrata</a>
+    <a href="/alveoterapia">Oasi del Busatello</a>
+    <a href="/centro">Galena delle Api</a>
+    <a href="/#veleni">Linea Veleni</a>
+    <a href="/bacheca">Bacheca</a>
+    <a href="#scegli">Bottega · scegli e acquista</a>
+  </div>
+</div>
 
 <main>
 <section class="hero">
@@ -162,6 +200,27 @@ img{display:block;max-width:100%}
   </div>
 </section>
 
+<section class="quick-buy" id="scegli">
+  <div class="wrap">
+    <div class="quick-head">
+      <div><span class="eyebrow">Sai già cosa ti interessa?</span><h2>Arriva subito alla scelta giusta.</h2></div>
+      <p>Il racconto resta sempre disponibile, ma acquistare deve essere facile. Scegli il mondo che ti interessa e ti portiamo direttamente ai prodotti relativi.</p>
+    </div>
+    <div class="quick-grid">
+      <article class="quick-card"><small>Territorio</small><h3>Mieli del Busatello</h3><p>Se cerchi il sapore legato all'Oasi, parti da qui.</p><a href="/shop-legacy?categoria=busatello">Vedi i mieli disponibili →</a></article>
+      <article class="quick-card"><small>Alveare</small><h3>Polline, Pane delle Api e alimenti</h3><p>Per chi vuole conoscere e assaggiare ciò che nasce dalla vita dell'alveare.</p><a href="/shop-legacy?categoria=alimenti">Scopri gli alimenti →</a></article>
+      <article class="quick-card"><small>Quotidianità</small><h3>Propoli e integratori</h3><p>Una selezione semplice da esplorare, senza promesse e senza tecnicismi inutili.</p><a href="/shop-legacy?categoria=integratori">Vedi la selezione →</a></article>
+      <article class="quick-card"><small>Gesti</small><h3>Cosmesi dell'alveare</h3><p>Creme, saponi e prodotti per trasformare piccoli gesti quotidiani in momenti più curati.</p><a href="/shop-legacy?categoria=cosmesi-cera">Scopri la cosmesi →</a></article>
+      <article class="quick-card"><small>Linea specialistica</small><h3>Linea Veleni</h3><p>Massaggio, viso e corpo raccontati attraverso uno degli elementi più sorprendenti dell'alveare.</p><a href="/shop-legacy?categoria=veleno-api">Vai alla Linea Veleni →</a></article>
+      <article class="quick-card"><small>Digitale</small><h3>Alveo Digitale</h3><p>Ricette, contenuti e idee da vivere anche lontano dal Centro.</p><a href="/alveo-digitale">Scopri Alveo Digitale →</a></article>
+    </div>
+    <div class="guide-card">
+      <div><span class="eyebrow">Non sai cosa scegliere?</span><h3>Parti da ciò che ti incuriosisce, non dal nome del prodotto.</h3><p>Ti guidiamo per sapore, esperienza o momento d'uso. La parte commerciale arriva solo quando hai capito cosa può avere senso per te.</p></div>
+      <div class="guide-actions"><a class="btn btn-gold" href="#percorsi">Fammi scegliere per interesse →</a><a class="btn btn-glass" href="/contatti">Parliamone</a></div>
+    </div>
+  </div>
+</section>
+
 <section class="chapter story-flow" id="storie">
   <div class="wrap">
     <div class="section-head">
@@ -183,7 +242,10 @@ img{display:block;max-width:100%}
     <h2>I Mieli del Busatello non iniziano dal vasetto.</h2>
     <p>Iniziano da un luogo. Da un'oasi, dalle fioriture, dall'acqua, dalla vegetazione e dal lavoro delle api. Se mostriamo soltanto la confezione, perdiamo la parte più importante.</p>
     <div class="quote">Prima conosci il paesaggio. Poi assaggi ciò che quel paesaggio ha contribuito a creare.</div>
-    <a class="btn btn-gold" href="/shop-legacy">Scopri i mieli disponibili →</a>
+    <div class="buy-step">
+      <div class="why">Se questo racconto ti incuriosisce, il passo successivo è semplice: guarda i mieli legati a questo mondo e scegli quello che ti attira di più.</div>
+      <div class="buy-row"><a class="btn btn-gold" href="/shop-legacy?categoria=busatello">Scegli un Miele del Busatello →</a><a class="btn btn-dark" href="/alveoterapia">Prima voglio conoscere meglio l'Oasi</a></div>
+    </div>
   </div>
 </section>
 
@@ -193,7 +255,10 @@ img{display:block;max-width:100%}
     <h2>Linea Veleni. Un lato sorprendente dell'alveare.</h2>
     <p>Una linea che non deve sembrare una successione di schede cosmetiche. Prima viene il fascino di uno degli elementi più particolari dell'alveare; poi massaggio, gesti quotidiani, pelle e prodotti.</p>
     <div class="quote">Non una promessa di cura. Un modo diverso di scoprire il carattere dell'alveare.</div>
-    <a class="btn btn-gold" href="/#veleni">Entra nel racconto della Linea Veleni →</a>
+    <div class="buy-step">
+      <div class="why">Se ti interessa soprattutto il massaggio, la cura quotidiana della pelle o un gesto più particolare, puoi passare direttamente alla scelta del prodotto legato a quel momento.</div>
+      <div class="buy-row"><a class="btn btn-gold" href="/shop-legacy?categoria=veleno-api">Scopri e scegli nella Linea Veleni →</a><a class="btn btn-glass" href="/#veleni">Prima voglio conoscere la storia</a></div>
+    </div>
   </div>
   <div class="feature-image"><img src="/images/veleno-apis1-hd.svg" alt="Linea Veleni d'Api"></div>
 </section>
@@ -205,9 +270,9 @@ img{display:block;max-width:100%}
       <p>Il nuovo shop organizza l'esplorazione per interesse e curiosità, non soltanto per tipologia merceologica.</p>
     </div>
     <div class="path-grid">
-      <article class="path"><div class="icon">🍯</div><h3>Voglio conoscere i sapori</h3><p>Mieli, specialità, degustazioni e territori.</p><a href="/shop-legacy">Entra nei sapori →</a></article>
-      <article class="path"><div class="icon">🐝</div><h3>Voglio capire l'alveare</h3><p>Polline, pane delle api, propoli e ciò che raccontano della vita delle api.</p><a href="/shop-legacy">Esplora l'alveare →</a></article>
-      <article class="path"><div class="icon">◇</div><h3>Voglio prendermi un momento</h3><p>Cosmesi, massaggio e gesti quotidiani ispirati all'alveare.</p><a href="/shop-legacy">Scopri i gesti →</a></article>
+      <article class="path"><div class="icon">🍯</div><h3>Voglio conoscere i sapori</h3><p>Mieli, specialità, degustazioni e territori.</p><a href="/shop-legacy?categoria=busatello">Entra nei sapori →</a></article>
+      <article class="path"><div class="icon">🐝</div><h3>Voglio capire l'alveare</h3><p>Polline, pane delle api, propoli e ciò che raccontano della vita delle api.</p><a href="/shop-legacy?categoria=alimenti">Esplora l'alveare →</a></article>
+      <article class="path"><div class="icon">◇</div><h3>Voglio prendermi un momento</h3><p>Cosmesi, massaggio e gesti quotidiani ispirati all'alveare.</p><a href="/shop-legacy?categoria=cosmesi-cera">Scopri i gesti →</a></article>
       <article class="path"><div class="icon">▣</div><h3>Voglio portare via un'esperienza</h3><p>Alveo Digitale, idee, contenuti e prodotti che continuano oltre la visita.</p><a href="/alveo-digitale">Scopri Alveo Digitale →</a></article>
     </div>
   </div>
@@ -237,9 +302,9 @@ img{display:block;max-width:100%}
       <p>Il racconto non deve rendere difficile comprare. Chi sa già cosa cerca deve poter arrivare subito ai prodotti; chi invece vuole esplorare può farlo senza sentirsi dentro un e-commerce tradizionale.</p>
     </div>
     <div class="bottega-box">
-      <strong>Il vecchio shop resta attivo durante l'esperimento.</strong>
-      <p>Lo usiamo come motore commerciale e archivio mentre costruiamo il nuovo carrello e le nuove pagine prodotto.</p>
-      <a class="btn btn-gold" href="/shop-legacy">Apri la bottega attuale →</a>
+      <strong>Vuoi arrivare subito ai prodotti?</strong>
+      <p>Scegli una linea e vai direttamente alla selezione relativa, senza dover ripartire dal catalogo generale.</p>
+      <a class="btn btn-gold" href="#scegli">Scegli la tua strada →</a>
     </div>
   </div>
 </section>
@@ -249,7 +314,7 @@ img{display:block;max-width:100%}
   <div class="wrap footer-grid">
     <div><h3>La Fabbrica delle Api</h3><p>Alveoterapia Integrata, luoghi, storie e prodotti dell'alveare.</p></div>
     <div><h3>Vivi</h3><a href="/alveoterapia">Oasi del Busatello</a><a href="/centro">Galena delle Api</a><a href="/bacheca">Bacheca</a></div>
-    <div><h3>Continua</h3><a href="/shop-legacy">Shop classico</a><a href="/contatti">Parliamone</a><a href="/">Home Centro</a></div>
+    <div><h3>Continua</h3><a href="#scegli">Scegli prodotti</a><a href="/contatti">Parliamone</a><a href="/">Home Centro</a></div>
   </div>
 </footer>
 
