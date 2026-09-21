@@ -90,27 +90,41 @@ section[id]{scroll-margin-top:92px}
 .venom h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(58px,7vw,88px);color:#e8ad35;margin:10px 0 12px}
 .venom p{max-width:760px;font-size:18px;color:#f6f0e4}
 .venom-launch{margin-top:26px}
-.venom-experience{display:none;margin-top:34px;border-top:1px solid rgba(255,255,255,.18);padding-top:34px}
+.venom-experience{display:none;margin-top:34px;border-top:1px solid rgba(255,255,255,.12);padding-top:34px}
 .venom-experience.open{display:block}
 .venom-viewer{position:relative}
-.venom-slide{display:none;grid-template-columns:.85fr 1.15fr;gap:42px;align-items:center}
+.venom-slide{display:none;grid-template-columns:.92fr 1.08fr;gap:64px;align-items:center;min-height:560px}
 .venom-slide.active{display:grid}
-.venom-media{background:linear-gradient(145deg,#f5efe4,#d9c7a2);border-radius:28px;min-height:480px;display:flex;align-items:center;justify-content:center;padding:26px;box-shadow:0 18px 46px rgba(0,0,0,.28)}
-.venom-media img{display:block;max-width:100%;max-height:430px;object-fit:contain}
-.venom-detail .series{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#e4a72c;font-weight:800}
-.venom-detail h3{font-family:Georgia,'Times New Roman',serif;font-size:clamp(34px,4vw,52px);line-height:1.02;margin:10px 0 18px;color:#f1b63b}
-.venom-detail>p{font-size:18px;color:#f7f0e5;margin:0 0 22px;line-height:1.55}
-.venom-storyline{font-family:Georgia,'Times New Roman',serif;font-size:clamp(24px,2.5vw,34px);line-height:1.12;color:#fff3cf;margin:0 0 18px}
-.venom-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.venom-fact{background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.045));border:1px solid rgba(244,198,91,.18);border-radius:20px;padding:18px;min-height:150px}
-.venom-fact b{display:block;color:#f4c65b;margin-bottom:8px;font-size:14px;letter-spacing:.02em}
-.venom-fact p{font-size:14px;line-height:1.5;margin:0;color:#f0e8dc}
-.venom-warning{margin-top:16px;background:rgba(255,244,216,.96);color:#3c2a0d;border-left:4px solid #e7aa28;border-radius:16px;padding:14px 17px;font-size:13px;line-height:1.45}
-.venom-warning strong{display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
-.venom-nav{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:24px}
-.venom-count{font-weight:800;color:#decaa7}
+
+/* immagine editoriale: prodotto protagonista, non scheda catalogo */
+.venom-media{position:relative;min-height:520px;display:flex;align-items:center;justify-content:center;padding:38px;background:radial-gradient(circle at 50% 44%,rgba(255,245,216,.98) 0 31%,rgba(224,205,166,.92) 32% 55%,rgba(137,93,28,.12) 56% 72%,transparent 73%);border-radius:42% 58% 49% 51% / 56% 42% 58% 44%;box-shadow:none;overflow:visible}
+.venom-media::before{content:"";position:absolute;width:78%;height:78%;border:1px solid rgba(241,182,59,.38);border-radius:50%;transform:rotate(-9deg)}
+.venom-media::after{content:"";position:absolute;width:58%;height:58%;border:1px solid rgba(255,255,255,.18);border-radius:50%;transform:rotate(14deg)}
+.venom-media img{position:relative;z-index:2;display:block;max-width:88%;max-height:420px;object-fit:contain;filter:drop-shadow(0 22px 26px rgba(0,0,0,.28))}
+
+.venom-detail{padding-right:10px}
+.venom-detail .series{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#f2bf53;font-weight:900}
+.venom-detail .series::before{content:"";width:26px;height:1px;background:#e9ad35}
+.venom-detail h3{font-family:Georgia,'Times New Roman',serif;font-size:clamp(30px,3.2vw,44px);line-height:1.02;margin:12px 0 12px;color:#f0b33a;max-width:760px}
+.venom-storyline{font-family:Georgia,'Times New Roman',serif;font-size:clamp(28px,3vw,42px);line-height:1.04;color:#fff6df;margin:0 0 16px;max-width:760px}
+.venom-detail>p{font-size:17px;color:#efe7da;margin:0 0 28px;line-height:1.6;max-width:720px}
+
+/* tre idee editoriali: niente effetto scheda tecnica */
+.venom-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.venom-fact{position:relative;background:transparent;border:0;border-radius:0;padding:17px 0 0;min-height:0}
+.venom-fact::before{content:"";position:absolute;top:0;left:0;width:34px;height:2px;background:linear-gradient(90deg,#f0b13a,rgba(240,177,58,.15))}
+.venom-fact b{display:block;color:#f4c65b;margin-bottom:8px;font-size:13px;letter-spacing:.05em;text-transform:uppercase}
+.venom-fact p{font-size:14px;line-height:1.55;margin:0;color:#eee6d9}
+
+/* avvertenze presenti ma visivamente secondarie */
+.venom-warning{margin-top:26px;background:transparent;color:#d8cdbd;border:0;border-top:1px solid rgba(255,255,255,.14);border-radius:0;padding:14px 0 0;font-size:12px;line-height:1.5}
+.venom-warning strong{display:inline;margin-right:8px;color:#f0c56c;text-transform:uppercase;letter-spacing:.08em;font-size:11px}
+
+.venom-nav{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:30px}
+.venom-count{font-family:Georgia,'Times New Roman',serif;font-size:18px;font-weight:700;color:#f0d493;letter-spacing:.08em}
 .venom-nav-buttons{display:flex;gap:10px}
-.venom-arrow{border:1px solid rgba(255,255,255,.34);background:rgba(255,255,255,.08);color:#fff;width:48px;height:48px;border-radius:50%;font-size:22px;cursor:pointer}
+.venom-arrow{border:1px solid rgba(239,189,77,.45);background:transparent;color:#f5d98a;width:46px;height:46px;border-radius:50%;font-size:20px;cursor:pointer;transition:.2s ease}
+.venom-arrow:hover{background:#e9ad35;color:#171008;border-color:#e9ad35;transform:translateY(-1px)}
 .venom-shop-end{margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14);display:flex;justify-content:flex-end;position:relative;z-index:3}
 .venom-shop-end .btn{position:relative;z-index:4;pointer-events:auto}
 .venom-note{font-size:12px;color:#cfc4b4;margin-top:12px}
@@ -138,7 +152,7 @@ section[id]{scroll-margin-top:92px}
  .hero{min-height:700px}.hero-inner{padding:145px 0 38px}.hero h1{font-size:clamp(48px,15vw,70px)}
  .section{padding:64px 0}.section-title{gap:18px}.seasons,.places,.steps,.product-grid{grid-template-columns:1fr}
  .season{min-height:420px;padding:25px}.hex-grid{grid-template-columns:repeat(3,92px);gap:8px}.hex{width:92px;height:82px;font-size:11px}
- .place{padding:54px 24px}.bee-card,.bee-info{padding:28px}.venom-slide.active{grid-template-columns:1fr}.venom-media{min-height:340px}.venom-media img{max-height:300px}.venom-facts{grid-template-columns:1fr}.conversation{padding:54px 0}.footer-inner{grid-template-columns:1fr}
+ .place{padding:54px 24px}.bee-card,.bee-info{padding:28px}.venom-slide.active{grid-template-columns:1fr;gap:24px}.venom-slide{min-height:0}.venom-media{min-height:360px;padding:24px}.venom-media img{max-height:310px}.venom-detail{padding-right:0}.venom-detail h3{font-size:clamp(29px,9vw,38px)}.venom-storyline{font-size:clamp(26px,8vw,34px)}.venom-facts{grid-template-columns:1fr;gap:14px}.venom-fact{padding-top:14px}.venom-warning{margin-top:20px}.conversation{padding:54px 0}.footer-inner{grid-template-columns:1fr}
 }
 </style>
 </head>
