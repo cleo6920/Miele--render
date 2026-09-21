@@ -51,8 +51,23 @@ function findApeV2ProductContext(value){
   return best?.product||null;
 }
 
+function findApeV2ProductsContext(value){
+  const hay=apeProductNormalize(value);
+  const found=[];
+  for(const product of APE_V2_OFFICIAL_PRODUCTS){
+    const candidates=[product.name,...(APE_V2_PRODUCT_ALIASES[product.id]||[])];
+    if(candidates.some(candidateRaw=>{
+      const candidate=apeProductNormalize(candidateRaw);
+      return candidate.length>=4 && hay.includes(candidate);
+    })) found.push(product);
+  }
+  return found;
+}
+
 function getApeContextAction(message, reply, lang='it') {
-  const text=(String(message||'')+' '+String(reply||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const normalize=(v)=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const messageText=normalize(message);
+  const replyText=normalize(reply);
   const labels={
     it:{millefiori:'Vai al Miele Millefiori',melone:'Vai al Miele al Melone',fragola:'Vai al Miele alla Fragola',pesca:'Vai al Miele alla Pesca',arancia:"Vai al Miele all'Arancia",mieli:'Scopri i Mieli del Busatello',punti:'Vai ai Punti Ape',oasi:"Scopri l'Oasi del Busatello",galena:'Scopri la Galena delle Api',alveo:'Scopri Alveo Digitale',bacheca:'Vai alla Bacheca',veleni:'Scopri la Linea Veleni',alveoterapia:"Scopri l'Alveoterapia Integrata"},
     en:{millefiori:'Go to Millefiori Honey',melone:'Go to Melon Honey',fragola:'Go to Strawberry Honey',pesca:'Go to Peach Honey',arancia:'Go to Orange Honey',mieli:'Discover Busatello Honeys',punti:'Go to Bee Points',oasi:'Discover Busatello Oasis',galena:'Discover Galena delle Api',alveo:'Discover Alveo Digitale',bacheca:'Go to News',veleni:'Discover the Bee Venom Line',alveoterapia:'Discover Integrated Alveotherapy'},
@@ -61,26 +76,42 @@ function getApeContextAction(message, reply, lang='it') {
     es:{millefiori:'Ir a la Miel Millefiori',melone:'Ir a la Miel al Melón',fragola:'Ir a la Miel a la Fresa',pesca:'Ir a la Miel al Melocotón',arancia:'Ir a la Miel a la Naranja',mieli:'Descubrir las Mieles del Busatello',punti:'Ir a los Puntos Abeja',oasi:'Descubrir el Oasis del Busatello',galena:'Descubrir Galena delle Api',alveo:'Descubrir Alveo Digitale',bacheca:'Ir a Novedades',veleni:'Descubrir la Línea Veneno de Abeja',alveoterapia:'Descubrir la Alveoterapia Integrada'}
   };
   const L=labels[lang]||labels.it;
-  const has=(...xs)=>xs.some(x=>text.includes(x));
-  const product=findApeV2ProductContext(text);
-  if(product){
+  const hasMsg=(...xs)=>xs.some(x=>messageText.includes(x));
+  const promotionIntent=/(^|\s)(offerta|offerte|promozione|promozioni|sconto|sconti)(\s|$)|\b(on sale|discounts?|promotions?|deals?|angebot|angebote|rabatt|rabatte|promo|promos|remise|remises|oferta|ofertas|descuento|descuentos)\b/i.test(messageText);
+
+  // Se l'utente chiede genericamente offerte/promozioni, non scegliere mai
+  // un prodotto solo perché il modello lo ha citato dentro una lista.
+  if(promotionIntent) return null;
+
+  const productInMessage=findApeV2ProductContext(messageText);
+  if(productInMessage){
+    const prefix={it:'Vai a',en:'Go to',de:'Zum Produkt',fr:'Voir',es:'Ir a'}[lang]||'Vai a';
+    return {href:'/shop#prodotto-'+productInMessage.id,label:prefix+' '+productInMessage.name};
+  }
+
+  if(hasMsg('millefiori')) return {href:'/shop#miele-millefiori',label:L.millefiori};
+  if(hasMsg('miele al melone','miele melone','miel al melon','melon honey','melonenhonig')) return {href:'/shop#miele-melone',label:L.melone};
+  if(hasMsg('miele alla fragola','miele fragola','miel al la fresa','miel a la fresa','strawberry honey','erdbeerhonig')) return {href:'/shop#miele-fragola',label:L.fragola};
+  if(hasMsg('miele alla pesca','miele pesca','miel al melocoton','peach honey','pfirsichhonig')) return {href:'/shop#miele-pesca',label:L.pesca};
+  if(hasMsg("miele all'arancia",'miele arancia','miel a la naranja','orange honey','orangenhonig')) return {href:'/shop#miele-arancia',label:L.arancia};
+
+  // Se la risposta suggerisce UNA sola referenza, il pulsante è utile.
+  // Se ne cita più di una, nessuna viene scelta arbitrariamente.
+  const replyProducts=findApeV2ProductsContext(replyText);
+  if(replyProducts.length===1){
+    const product=replyProducts[0];
     const prefix={it:'Vai a',en:'Go to',de:'Zum Produkt',fr:'Voir',es:'Ir a'}[lang]||'Vai a';
     return {href:'/shop#prodotto-'+product.id,label:prefix+' '+product.name};
   }
 
-  if(has('millefiori')) return {href:'/shop#miele-millefiori',label:L.millefiori};
-  if(has('miele al melone','miele melone','miel al melon','melon honey','melonenhonig')) return {href:'/shop#miele-melone',label:L.melone};
-  if(has('miele alla fragola','miele fragola','miel a la fresa','strawberry honey','erdbeerhonig')) return {href:'/shop#miele-fragola',label:L.fragola};
-  if(has('miele alla pesca','miele pesca','miel al melocoton','peach honey','pfirsichhonig')) return {href:'/shop#miele-pesca',label:L.pesca};
-  if(has("miele all'arancia",'miele arancia','miel a la naranja','orange honey','orangenhonig')) return {href:'/shop#miele-arancia',label:L.arancia};
-  if(has('punti ape','bee points','bienenpunkte','points abeille','puntos abeja')) return {href:'/shop#punti-ape',label:L.punti};
-  if(has('oasi del busatello','oasis del busatello','busatello oasis','oase busatello','oasis du busatello')) return {href:'/alveoterapia',label:L.oasi};
-  if(has('galena delle api')) return {href:'/centro',label:L.galena};
-  if(has('alveo digitale')) return {href:'/alveo-digitale',label:L.alveo};
-  if(has('bacheca','news','novedades','actualites','aktuelles')) return {href:'/bacheca',label:L.bacheca};
-  if(has('linea veleni','bee venom line','bienengift-linie',"ligne venin d'abeille",'linea veneno de abeja')) return {href:'/shop#linea-veleni',label:L.veleni};
-  if(has('alveoterapia integrata','integrated alveotherapy','integrierte alveotherapie','alveotherapie integree','alveoterapia integrada')) return {href:'/alveoterapia',label:L.alveoterapia};
-  if(has('miele','mieli','honey','honeys','honig','miel','miels')) return {href:'/shop#mieli',label:L.mieli};
+  if(hasMsg('punti ape','bee points','bienenpunkte','points abeille','puntos abeja')) return {href:'/shop#punti-ape',label:L.punti};
+  if(hasMsg('oasi del busatello','oasis del busatello','busatello oasis','oase busatello','oasis du busatello')) return {href:'/alveoterapia',label:L.oasi};
+  if(hasMsg('galena delle api')) return {href:'/centro',label:L.galena};
+  if(hasMsg('alveo digitale')) return {href:'/alveo-digitale',label:L.alveo};
+  if(hasMsg('bacheca','news','novedades','actualites','aktuelles')) return {href:'/bacheca',label:L.bacheca};
+  if(hasMsg('linea veleni','bee venom line','bienengift-linie',"ligne venin d'abeille",'linea veneno de abeja')) return {href:'/shop#linea-veleni',label:L.veleni};
+  if(hasMsg('alveoterapia integrata','integrated alveotherapy','integrierte alveotherapie','alveotherapie integree','alveoterapia integrada')) return {href:'/alveoterapia',label:L.alveoterapia};
+  if(hasMsg('miele','mieli','honey','honeys','honig','miel','miels')) return {href:'/shop#mieli',label:L.mieli};
   return null;
 }
 
@@ -105,6 +136,18 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
 
     if (!message) {
       return res.status(400).json({ok:false,error:'Scrivi una domanda per Ape Pelù.'});
+    }
+
+    const promotionIntent=/(^|\s)(offerta|offerte|promozione|promozioni|sconto|sconti)(\s|$)|\b(on sale|discounts?|promotions?|deals?|angebot|angebote|rabatt|rabatte|promo|promos|remise|remises|oferta|ofertas|descuento|descuentos)\b/i.test(message);
+    if(promotionIntent){
+      const promoReply={
+        it:'Nel catalogo V2 che ho a disposizione **non risultano al momento offerte, sconti o promozioni configurati**. I prezzi che vedi sono i prezzi correnti del catalogo.\n\nSe vuoi, posso invece dirti **qual è il prodotto che costa meno**, mostrarti i prodotti sotto una certa cifra oppure confrontare i prezzi di due prodotti.',
+        en:'In the V2 catalog available to me, **there are currently no configured sales, discounts or promotions**. The prices shown are the current catalog prices.\n\nIf you want, I can tell you **which product costs the least**, show products under a certain price, or compare two products.',
+        de:'Im V2-Katalog, der mir vorliegt, sind **derzeit keine Angebote, Rabatte oder Aktionen hinterlegt**. Die angezeigten Preise sind die aktuellen Katalogpreise.\n\nIch kann dir aber sagen, **welches Produkt am günstigsten ist**, Produkte unter einem bestimmten Preis zeigen oder zwei Preise vergleichen.',
+        fr:'Dans le catalogue V2 dont je dispose, **aucune offre, remise ou promotion n’est actuellement configurée**. Les prix affichés sont les prix actuels du catalogue.\n\nJe peux toutefois vous dire **quel produit coûte le moins cher**, afficher les produits sous un certain prix ou comparer deux produits.',
+        es:'En el catálogo V2 que tengo disponible **no hay actualmente ofertas, descuentos ni promociones configurados**. Los precios mostrados son los precios actuales del catálogo.\n\nSi quieres, puedo decirte **qué producto cuesta menos**, mostrar productos por debajo de un precio o comparar dos productos.'
+      };
+      return res.json({ok:true,reply:promoReply[requestedLanguage],action:null,suppressAction:true});
     }
 
     const q = message.toLowerCase();
@@ -177,6 +220,8 @@ PRINCIPIO DI APPARTENENZA SEMANTICA
 - Usa anche la conversazione immediatamente precedente: pronomi, confronti e formule come "quello", "il più economico", "e questo?", "quale dei due?" ereditano il contesto già stabilito.
 - Il tuo mondo comprende: api, alveari, arnie, apicoltura, impollinazione, biodiversità, prodotti dell'alveare, catalogo e prezzi della V2, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.
 - Dichiara una domanda fuori tema solo quando il significato complessivo è chiaramente esterno; non perché manca una parola chiave prevista.
+- Interpreta "offerta", "sconto" e "promozione" nel loro significato commerciale: NON significano "prodotti disponibili". Non dichiarare mai un prodotto in offerta se nel contesto certo non è indicato uno sconto o una promozione.
+- Se una domanda è generale e la risposta cita più prodotti, non scegliere arbitrariamente una singola referenza come se fosse la risposta principale.
 
 COME INTERPRETARE LE DOMANDE
 - Se una domanda è ambigua ("cosa scelgo a mezzanotte?"), interpretala prima nel contesto Fabbrica delle Api / prodotti dell'alveare / esperienza.
