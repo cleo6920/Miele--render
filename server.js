@@ -108,10 +108,10 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
     }
 
     const q = message.toLowerCase();
-    const asksDose = /(quante volte|quanto ne devo|quanto devo|dose|dosaggio|per quanto tempo|1-2 volte|applicazioni al giorno)/i.test(message);
-    const asksDrugChange = /(smett|sospend|interromp).*(farmac|antinfiamm)|posso smettere.*farmac|posso smettere.*antinfiamm/i.test(message);
-    const asksMedicalOutcome = /(cura|curare|artrosi|dolore|riduce il dolore|circolazione|antinfiammatorio|analgesico|patologia|sintomo)/i.test(message);
-    const productContext = /(veleno|linea veleni|sos dol|prodotto|crema|unguento)/i.test(message);
+    const asksDose = /(quante volte|quanto ne devo|quanto devo|dose|dosaggio|per quanto tempo|applicazioni al giorno|how often|how much|dosage|for how long|times? a day|wie oft|wie viel|dosierung|wie lange|combien de fois|quelle quantité|dosage|pendant combien de temps|cu[aá]ntas veces|cu[aá]nto debo|dosis|durante cu[aá]nto tiempo)/i.test(message);
+    const asksDrugChange = /((smett|sospend|interromp).*(farmac|antinfiamm)|posso smettere.*(farmac|antinfiamm)|stop|quit|discontinue|suspend|absetzen|aufh[oö]ren|arr[eê]ter|suspendre|dejar|suspender).*(medic|drug|medicine|farmac|antinfiamm|entz[uü]nd|m[eé]dicament|medicamento)/i.test(message);
+    const asksMedicalOutcome = /(cura|curare|artrosi|dolore|riduce il dolore|circolazione|antinfiammatorio|analgesico|patologia|sintomo|cure|treat|arthritis|pain|inflammation|anti-inflammatory|analgesic|disease|symptom|heil|arthrose|schmerz|entz[uü]nd|krankheit|symptom|gu[eé]rir|soigner|arthrose|douleur|inflammation|maladie|sympt[oô]me|curar|artrosis|dolor|inflamaci[oó]n|enfermedad|s[ií]ntoma)/i.test(message);
+    const productContext = /(veleno|linea veleni|bee venom|bienengift|venin d['’]abeille|veneno de abeja|sos dol|apis\s*[12457]|prodotto|product|produkt|produit|producto|crema|cream|cr[eè]me|unguento|ointment|salbe|pommade|pomada|gommage|bagnodoccia)/i.test(message);
 
     if (productContext && (asksDose || asksDrugChange || asksMedicalOutcome)) {
       console.log('[Ape Pelù] Guardia non-medica attivata.');
