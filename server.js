@@ -32,6 +32,34 @@ app.get('/api/ape-pelu-status', (req, res) => {
   });
 });
 
+function getApeContextAction(message, reply, lang='it') {
+  const text=(String(message||'')+' '+String(reply||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const labels={
+    it:{millefiori:'Vai al Miele Millefiori',melone:'Vai al Miele al Melone',fragola:'Vai al Miele alla Fragola',pesca:'Vai al Miele alla Pesca',arancia:"Vai al Miele all'Arancia",mieli:'Scopri i Mieli del Busatello',punti:'Vai ai Punti Ape',oasi:"Scopri l'Oasi del Busatello",galena:'Scopri la Galena delle Api',alveo:'Scopri Alveo Digitale',bacheca:'Vai alla Bacheca',veleni:'Scopri la Linea Veleni',alveoterapia:"Scopri l'Alveoterapia Integrata"},
+    en:{millefiori:'Go to Millefiori Honey',melone:'Go to Melon Honey',fragola:'Go to Strawberry Honey',pesca:'Go to Peach Honey',arancia:'Go to Orange Honey',mieli:'Discover Busatello Honeys',punti:'Go to Bee Points',oasi:'Discover Busatello Oasis',galena:'Discover Galena delle Api',alveo:'Discover Alveo Digitale',bacheca:'Go to News',veleni:'Discover the Bee Venom Line',alveoterapia:'Discover Integrated Alveotherapy'},
+    de:{millefiori:'Zum Millefiori-Honig',melone:'Zum Melonenhonig',fragola:'Zum Erdbeerhonig',pesca:'Zum Pfirsichhonig',arancia:'Zum Orangenhonig',mieli:'Busatello-Honige entdecken',punti:'Zu den Bienenpunkten',oasi:'Oase Busatello entdecken',galena:'Galena delle Api entdecken',alveo:'Alveo Digitale entdecken',bacheca:'Zu den Neuigkeiten',veleni:'Bienengift-Linie entdecken',alveoterapia:'Integrierte Alveotherapie entdecken'},
+    fr:{millefiori:'Voir le Miel Millefiori',melone:'Voir le Miel au Melon',fragola:'Voir le Miel à la Fraise',pesca:'Voir le Miel à la Pêche',arancia:"Voir le Miel à l'Orange",mieli:'Découvrir les Miels du Busatello',punti:'Voir les Points Abeille',oasi:"Découvrir l'Oasis du Busatello",galena:'Découvrir Galena delle Api',alveo:'Découvrir Alveo Digitale',bacheca:'Voir les Actualités',veleni:"Découvrir la Ligne Venin d'Abeille",alveoterapia:"Découvrir l'Alvéothérapie Intégrée"},
+    es:{millefiori:'Ir a la Miel Millefiori',melone:'Ir a la Miel al Melón',fragola:'Ir a la Miel a la Fresa',pesca:'Ir a la Miel al Melocotón',arancia:'Ir a la Miel a la Naranja',mieli:'Descubrir las Mieles del Busatello',punti:'Ir a los Puntos Abeja',oasi:'Descubrir el Oasis del Busatello',galena:'Descubrir Galena delle Api',alveo:'Descubrir Alveo Digitale',bacheca:'Ir a Novedades',veleni:'Descubrir la Línea Veneno de Abeja',alveoterapia:'Descubrir la Alveoterapia Integrada'}
+  };
+  const L=labels[lang]||labels.it;
+  const has=(...xs)=>xs.some(x=>text.includes(x));
+
+  if(has('millefiori')) return {href:'/shop#miele-millefiori',label:L.millefiori};
+  if(has('miele al melone','miele melone','miel al melon','melon honey','melonenhonig')) return {href:'/shop#miele-melone',label:L.melone};
+  if(has('miele alla fragola','miele fragola','miel a la fresa','strawberry honey','erdbeerhonig')) return {href:'/shop#miele-fragola',label:L.fragola};
+  if(has('miele alla pesca','miele pesca','miel al melocoton','peach honey','pfirsichhonig')) return {href:'/shop#miele-pesca',label:L.pesca};
+  if(has("miele all'arancia",'miele arancia','miel a la naranja','orange honey','orangenhonig')) return {href:'/shop#miele-arancia',label:L.arancia};
+  if(has('punti ape','bee points','bienenpunkte','points abeille','puntos abeja')) return {href:'/shop#punti-ape',label:L.punti};
+  if(has('oasi del busatello','oasis del busatello','busatello oasis','oase busatello','oasis du busatello')) return {href:'/alveoterapia',label:L.oasi};
+  if(has('galena delle api')) return {href:'/centro',label:L.galena};
+  if(has('alveo digitale')) return {href:'/alveo-digitale',label:L.alveo};
+  if(has('bacheca','news','novedades','actualites','aktuelles')) return {href:'/bacheca',label:L.bacheca};
+  if(has('linea veleni','bee venom line','bienengift-linie',"ligne venin d'abeille",'linea veneno de abeja')) return {href:'/#veleni',label:L.veleni};
+  if(has('alveoterapia integrata','integrated alveotherapy','integrierte alveotherapie','alveotherapie integree','alveoterapia integrada')) return {href:'/alveoterapia',label:L.alveoterapia};
+  if(has('miele','mieli','honey','honeys','honig','miel','miels')) return {href:'/shop#mieli',label:L.mieli};
+  return null;
+}
+
 app.post('/api/ape-pelu-chat', async (req, res) => {
   const apiKey = String(process.env.GROQ_API_KEY || '').trim();
   if (!apiKey) {
@@ -72,7 +100,8 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
           de:'Ich kann dir die **Bienengift-Linie** nur aus kosmetischer Sicht und für Massageanwendungen erklären. Ich kann keine Mengen, Häufigkeit oder Anwendungsdauer für körperliche Beschwerden angeben und auch nicht empfehlen, Medikamente zu ändern oder abzusetzen. Bienengift stelle ich außerdem nicht als Heilmittel gegen Arthrose, Schmerzen oder andere Gesundheitsprobleme dar.\n\nWenn du möchtest, kann ich dir stattdessen erklären, **welche Produkte der Bienengift-Linie tatsächlich verfügbar sind** und für welchen kosmetischen oder Massagegebrauch sie gedacht sind.',
           fr:'Je peux vous expliquer la **Ligne Venin d’Abeille** uniquement du point de vue cosmétique et de l’usage en massage. Je ne peux pas indiquer de quantité, de fréquence ou de durée d’utilisation pour un problème physique, ni conseiller de modifier ou d’arrêter des médicaments. Je ne présente pas non plus le venin d’abeille comme un remède contre l’arthrose, la douleur ou d’autres problèmes de santé.\n\nSi vous le souhaitez, je peux plutôt vous expliquer **quels produits de la Ligne Venin d’Abeille sont réellement disponibles** et à quel usage cosmétique ou de massage ils sont destinés.',
           es:'Puedo explicarte la **Línea Veneno de Abeja** únicamente desde el punto de vista cosmético y de uso en masaje. No puedo indicarte cantidades, frecuencia o duración de uso para un problema físico, ni decirte que cambies o suspendas medicamentos. Tampoco presento el veneno de abeja como una cura para la artrosis, el dolor u otros problemas de salud.\n\nSi quieres, puedo explicarte **qué productos de la Línea Veneno de Abeja están realmente disponibles** y para qué uso cosmético o de masaje están destinados, sin entrar en el ámbito médico.'
-        })[requestedLanguage]
+        })[requestedLanguage],
+        action:getApeContextAction(message,'Linea Veleni',requestedLanguage)
       });
     }
 
@@ -220,7 +249,8 @@ Risposta attesa: impollinazione, cibo, agricoltura, lavoro, economia, cultura, e
     }
 
     console.log('[Ape Pelù] Groq OK:', String(process.env.GROQ_MODEL || 'openai/gpt-oss-20b'));
-    return res.json({ok:true,reply});
+    const action=getApeContextAction(message,reply,requestedLanguage);
+    return res.json({ok:true,reply,action});
   } catch (error) {
     console.error('[Ape Pelù] Errore chat AI:', error);
     return res.status(500).json({ok:false,aiConfigured:true,error:'Errore temporaneo di Ape Pelù.'});
