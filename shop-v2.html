@@ -951,6 +951,10 @@ function apePelùReply(question){
     return 'L’<strong>apicoltore</strong> non si limita a raccogliere miele. Controlla lo stato delle colonie, verifica che abbiano spazio e scorte, osserva la presenza della regina e della covata, gestisce la sciamatura, controlla parassiti e malattie e segue l’andamento delle fioriture.<br><br>È un lavoro molto legato alle stagioni e richiede osservazione continua: ogni alveare può reagire in modo diverso.';
   }
 
+  if((has('quanti apicoltori','numero di apicoltori','apicoltori ci sono')&&has('italia')) || has('quanti apicultori')){
+    return 'In Italia ci sono <strong>circa 77.000 apicoltori</strong>. Il dato ufficiale disponibile per il <strong>2024</strong> ne registra <strong>76.961</strong>, con <strong>186.212 apiari</strong>.<br><br>Circa il <strong>74%</strong> produce soprattutto per autoconsumo, mentre circa il <strong>26%</strong> è orientato al mercato.<br><br>Questi numeri arrivano dalla Banca Dati Nazionale apistica e dai dati pubblicati da Ministero della Salute e CREA.';
+  }
+
   if(has('problemi degli apicoltori','problemi apicoltori','difficolta apicoltori','difficoltà apicoltori')){
     return 'Gli apicoltori oggi devono affrontare diversi problemi: <strong>varroa e altre malattie</strong>, cambiamenti climatici, periodi di siccità o piogge fuori stagione, riduzione delle fioriture, trattamenti agricoli, costi di gestione e in alcuni territori anche predatori o specie invasive.<br><br>Per questo l’apicoltura moderna richiede sempre più attenzione, conoscenza e capacità di adattarsi.';
   }
@@ -1087,6 +1091,8 @@ function apeKeepConversation(question,reply){
     follow='Vuoi sapere cosa succede ai fuchi quando finisce la stagione favorevole?';
   }else if(q.includes('operaia')||q.includes('operaie')){
     follow='Vuoi sapere come cambia il lavoro di un’ape operaia man mano che cresce?';
+  }else if((q.includes('apicoltori')||q.includes('apicultori'))&&q.includes('italia')){
+    follow='Vuoi sapere in quali regioni italiane ci sono più apicoltori e alveari?';
   }else if(q.includes('sociale')||q.includes('societa')||q.includes('società')){
     follow='Vuoi che ti faccia un esempio concreto di come le api influenzano ogni giorno cibo, lavoro ed economia senza che ce ne accorgiamo?';
   }else if((q.includes('italia')&&q.includes('api')) || q.includes('situazione delle api')){
