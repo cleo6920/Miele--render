@@ -514,23 +514,14 @@ function kmBetween(lat1,lon1,lat2,lon2){
   const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
-async function geocodeCheckoutAddress(){
-  const q=[
-    document.getElementById('coAddress').value.trim(),
-    document.getElementById('coCap').value.trim(),
-    document.getElementById('coCity').value.trim(),
-    document.getElementById('coProvince').value.trim(),
-    'Italia'
-  ].filter(Boolean).join(', ');
-  if(!q)return null;
+async function checkLocalDelivery(){
+  const city=document.getElementById('coCity').value.trim();
+  const cap=document.getElementById('coCap').value.trim();
+  const province=document.getElementById('coProvince').value.trim();
   try{
-    const res=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=it&q='+encodeURIComponent(q),{
-      headers:{'Accept':'application/json'}
-    });
+    const res=await fetch('/api/local-delivery-check?city='+encodeURIComponent(city)+'&cap='+encodeURIComponent(cap)+'&province='+encodeURIComponent(province));
     if(!res.ok)return null;
-    const data=await res.json();
-    if(!data||!data[0])return null;
-    return {lat:Number(data[0].lat),lon:Number(data[0].lon)};
+    return await res.json();
   }catch(_){return null;}
 }
 async function calculateShipping(){
@@ -543,25 +534,14 @@ async function calculateShipping(){
     shippingState={cost:0,label:'Gratuita',reason:'Ordine da €200 o più'};
     return shippingState;
   }
-  const pos=await geocodeCheckoutAddress();
-  if(pos){
-    const km=kmBetween(45.187,10.974,pos.lat,pos.lon);
-    if(km<=50){
-      shippingState={cost:0,label:'Gratuita',reason:'Indirizzo entro 50 km da Castel d’Ario'};
-      return shippingState;
-    }
+  const local=await checkLocalDelivery();
+  if(local && local.ok && local.eligible){
+    shippingState={cost:0,label:'Gratuita',reason:'Consegna locale gratuita · '+local.distanceKm+' km da Castel d’Ario'};
+    return shippingState;
   }
   const cost=cartUnits()>=3?10:8;
   shippingState={cost,label:euro(cost),reason:'Corriere · consegna indicativa 5–6 giorni'};
   return shippingState;
-}
-function addV2Product(btn){
-  const id=btn.dataset.id;
-  const found=shopV2Cart.find(x=>x.id===id);
-  if(found)found.qty+=1;
-  else shopV2Cart.push({id,name:btn.dataset.name,price:Number(btn.dataset.price),size:btn.dataset.size,points:Number(btn.dataset.points||0),qty:1});
-  saveV2Cart();
-  document.getElementById('cartDrawer').classList.add('open');
 }
 function removeV2Product(id){shopV2Cart=shopV2Cart.filter(x=>x.id!==id);saveV2Cart();}
 function renderV2Cart(){
