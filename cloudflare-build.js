@@ -28,7 +28,7 @@ function copyStaticRootFiles() {
 
   // Solo JavaScript destinato al browser. Non copiamo i numerosi script interni
   // di prestart/server nel pacchetto pubblico Cloudflare.
-  const browserScripts = ['saldo-api.js', 'cesto-admin.js'];
+  const browserScripts = ['saldo-api.js', 'cesto-admin.js', 'render-language-de-test.js'];
   for (const file of browserScripts) {
     const source = path.join(root, file);
     if (!fs.existsSync(source)) throw new Error(`[Cloudflare test] Script browser richiesto mancante: ${file}`);
