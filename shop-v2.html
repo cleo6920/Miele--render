@@ -867,7 +867,7 @@ function apePelùReply(question){
   }
 
   if(has('favo','celle esagonali','celle')){
-    return 'Il <strong>favo</strong> è una struttura di cera costruita dalle api. È formato da moltissime celle, generalmente esagonali. Le celle servono per tre cose principali: <strong>allevare la covata</strong>, conservare <strong>miele</strong> e conservare <strong>polline/Pane delle Api</strong>.';
+    return 'Il <strong>favo</strong> è la struttura di cera che le api costruiscono dentro l’alveare. È formato da tantissime celle esagonali, tutte vicine tra loro.<br><br><strong>A cosa serve?</strong><br>• nelle celle le api allevano le giovani api;<br>• conservano il <strong>miele</strong>;<br>• conservano il <strong>polline</strong>, che può trasformarsi nel <strong>Pane delle Api</strong>.<br><br>In pratica il favo è un po’ come la <strong>dispensa, la nursery e il magazzino dell’alveare</strong>, tutto insieme.';
   }
 
   if(has('regina')){
@@ -990,12 +990,66 @@ function apePelùReply(question){
 
   return 'Questa domanda è fuori dal mondo di cui mi occupo. Io sono Ape Pelù 🐝 e posso aiutarti con api, alveari, miele e altri prodotti dell’alveare, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.';
 }
+function apeKeepConversation(question,reply){
+  const q=apeNormalize(question);
+  let follow='';
+
+  if(q.includes('favo')){
+    follow='Sai quanto può diventare grande un favo e quante celle può contenere? Se vuoi te lo racconto.';
+  }else if(q.includes('arnia')){
+    follow='Vuoi che ti faccia anche un piccolo “giro guidato” dell’arnia, dal fondo fino al tetto?';
+  }else if(q.includes('alveare')){
+    follow='Vuoi sapere chi fa cosa dentro l’alveare durante una giornata normale?';
+  }else if(q.includes('polline')){
+    follow='Vuoi che ti spieghi anche come fanno le api a raccoglierlo e trasportarlo sulle zampe?';
+  }else if(q.includes('pappa')){
+    follow='Vuoi sapere perché proprio la regina viene nutrita con pappa reale per tutta la vita?';
+  }else if(q.includes('propoli')){
+    follow='Vuoi che ti spieghi anche come fanno le api a raccogliere e usare la propoli dentro l’alveare?';
+  }else if(q.includes('velen')){
+    follow='Vuoi che ti spieghi anche come funziona il pungiglione dell’ape e perché il veleno è legato alla difesa della colonia?';
+  }else if(q.includes('miele')||q.includes('mieli')){
+    follow='Vuoi che ti aiuti a scegliere un miele in base al gusto oppure vuoi sapere come fanno le api a produrlo?';
+  }else if(q.includes('regina')){
+    follow='Vuoi sapere come nasce una nuova regina e perché è diversa dalle api operaie?';
+  }else if(q.includes('fuco')||q.includes('fuchi')){
+    follow='Vuoi sapere cosa succede ai fuchi quando finisce la stagione favorevole?';
+  }else if(q.includes('operaia')||q.includes('operaie')){
+    follow='Vuoi sapere come cambia il lavoro di un’ape operaia man mano che cresce?';
+  }else if(q.includes('impollin')){
+    follow='Vuoi un esempio semplice di come una sola visita di un’ape può aiutare un fiore a produrre frutti o semi?';
+  }else if(q.includes('sciame')||q.includes('sciam')){
+    follow='Vuoi sapere cosa bisogna fare se si vede uno sciame fermo su un ramo o vicino a casa?';
+  }else if(q.includes('oasi')||q.includes('busatello')){
+    follow='Vuoi che ti racconti cosa può osservare una persona durante l’esperienza all’Oasi del Busatello?';
+  }else if(q.includes('galena')){
+    follow='Vuoi che ti spieghi come cambia l’esperienza nella Galena delle Api rispetto a quella all’aperto?';
+  }else if(q.includes('alveoter')){
+    follow='Vuoi che ti spieghi in modo semplice la differenza tra l’esperienza estiva all’Oasi e quella autunno/inverno nella Galena?';
+  }else if(q.includes('punt')&&q.includes('ape')){
+    follow='Vuoi che facciamo un esempio pratico di quanti Punti Ape accumuli con alcuni prodotti?';
+  }else if(q.includes('sped')||q.includes('ordine')||q.includes('consegn')){
+    follow='Vuoi che facciamo un esempio con un ordine concreto e vediamo insieme quanto sarebbe la spedizione?';
+  }else if(q.includes('cravatta')||q.includes('vestito')||q.includes('libro')){
+    follow='Se vuoi, però, possiamo tornare al mio mondo: chiedimi pure qualcosa su api, alveari o prodotti dell’alveare.';
+  }else if(q.includes('cura')||q.includes('diagnosi')||q.includes('dosaggio')){
+    follow='Se vuoi, posso invece spiegarti il ruolo naturale di quella sostanza nell’alveare o come viene presentata nei nostri prodotti.';
+  }else{
+    follow='Se vuoi, fammi un’altra domanda: posso continuare ad accompagnarti nel mondo delle api senza dare per scontato che tu lo conosca già.';
+  }
+
+  return reply+'<br><br><strong>'+follow+'</strong>';
+}
+
 function apeAsk(text){
   const value=String(text||'').trim();
   if(!value)return;
   apeAddMessage(value,'user');
   apeChatInput.value='';
-  setTimeout(()=>apeAddMessage(apePelùReply(value),'bot'),180);
+  setTimeout(()=>{
+    const reply=apePelùReply(value);
+    apeAddMessage(apeKeepConversation(value,reply),'bot');
+  },180);
 }
 document.getElementById('apeChatLaunch').addEventListener('click',()=>{apeChatPanel.classList.add('open');setTimeout(()=>apeChatInput.focus(),50);});
 document.getElementById('apeChatClose').addEventListener('click',()=>apeChatPanel.classList.remove('open'));
