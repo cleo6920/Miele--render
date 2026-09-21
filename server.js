@@ -20,6 +20,44 @@ try {
 app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
 app.post('/api/create-checkout-session', createCheckoutSession);
+
+app.get('/api/local-delivery-check', async (req, res) => {
+  try {
+    const city = String(req.query.city || '').trim();
+    const cap = String(req.query.cap || '').trim();
+    const province = String(req.query.province || '').trim();
+    if (!city && !cap) return res.status(400).json({ ok:false, eligible:false, error:'Comune o CAP mancanti' });
+
+    const query = [cap, city, province, 'Italia'].filter(Boolean).join(', ');
+    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=it&q=' + encodeURIComponent(query);
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'LaFabbricaDelleApi/1.0 local-delivery-check'
+      }
+    });
+    if (!response.ok) return res.status(502).json({ ok:false, eligible:false, error:'Geocodifica non disponibile' });
+    const data = await response.json();
+    if (!Array.isArray(data) || !data[0]) return res.status(404).json({ ok:false, eligible:false, error:'Località non trovata' });
+
+    const lat = Number(data[0].lat), lon = Number(data[0].lon);
+    const centerLat = 45.187, centerLon = 10.974;
+    const toRad = v => v * Math.PI / 180;
+    const dLat = toRad(lat - centerLat), dLon = toRad(lon - centerLon);
+    const a = Math.sin(dLat/2) ** 2 + Math.cos(toRad(centerLat)) * Math.cos(toRad(lat)) * Math.sin(dLon/2) ** 2;
+    const km = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return res.json({
+      ok:true,
+      eligible: km <= 50,
+      distanceKm: Math.round(km * 10) / 10,
+      locality: data[0].display_name || query
+    });
+  } catch (error) {
+    console.error('[Shop V2] Errore verifica consegna locale:', error);
+    return res.status(500).json({ ok:false, eligible:false, error:'Errore verifica distanza' });
+  }
+});
 app.use('/images', express.static(path.join(__dirname, 'images'), { etag:true,lastModified:true,maxAge:0,setHeaders:(res)=>{res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');res.setHeader('Pragma','no-cache');res.setHeader('Expires','0');} }));
 
 const cacheBustScript = `<script>(()=>{const version=${JSON.stringify('20260827-13')};const addVersion=(img)=>{if(!img||!img.getAttribute)return;const raw=img.getAttribute('src');if(!raw||!/^(?:\\/?images\\/)/i.test(raw))return;try{const url=new URL(raw,window.location.href);if(url.searchParams.get('v')!==version){url.searchParams.set('v',version);img.src=url.pathname+url.search+url.hash;}}catch(_){}};const scan=(root)=>{if(!root)return;if(root.tagName==='IMG')addVersion(root);if(root.querySelectorAll)root.querySelectorAll('img[src]').forEach(addVersion);};const start=()=>{scan(document);const observer=new MutationObserver(ms=>{for(const m of ms){m.addedNodes.forEach(scan);if(m.type==='attributes'&&m.target.tagName==='IMG')addVersion(m.target);}});observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['src']});};document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start,{once:true}):start();})();</script>`;
