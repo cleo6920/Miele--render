@@ -914,11 +914,28 @@ function apePelùReply(question){
     return '<strong>Certo 🐝</strong><br><br>Se cerchi qualcosa da accompagnare durante la giornata di lavoro, tra i prodotti già presenti nel nuovo shop partirei dai <strong>Mieli del Busatello</strong>: il <strong>Millefiori</strong> è la scelta più semplice e versatile, mentre <strong>Fragola, Pesca, Melone o Arancia</strong> sono più adatti se vuoi una pausa dal gusto più fruttato.<br><br>Se mi dici solo una cosa — <strong>lavori soprattutto in ufficio, all’aperto o fai un lavoro fisico?</strong> — ti indirizzo meglio senza farti perdere tempo.';
   }
 
-  const productIntentWords=['prodotto','prodotti','consigliami','consiglio','consigli','scegliere','scelta','comprare','acquistare'];
-  const useCaseWords=['lavoro','ufficio','pausa','colazione','mattina','sera','regalo','sport','attivita','giornata','viaggio'];
+  const productIntentWords=['prodotto','prodotti','consigliami','consiglio','consigli','scegliere','scelta','sceglio','scelgo','comprare','acquistare','prendo','prendere'];
+  const useCaseWords=['lavoro','ufficio','pausa','colazione','mattina','sera','notte','mezzanotte','regalo','sport','attivita','giornata','viaggio'];
 
   if(productIntentWords.some(w=>q.includes(w)) && useCaseWords.some(w=>q.includes(w))){
     return 'Posso aiutarti a scegliere in base al momento in cui vuoi usarlo 🐝. Dimmi semplicemente l’occasione — per esempio <strong>lavoro, colazione, regalo, sera o attività fisica</strong> — e ti propongo le opzioni più sensate tra i prodotti realmente presenti nel nostro shop.';
+  }
+
+  const explicitOutsideWords=[
+    'cravatta','vestito','abito','scarpe','giacca','pantaloni','camicia',
+    'libro','romanzo','film','serie tv','automobile','auto ','macchina','moto ',
+    'telefono','smartphone','computer','pc ','borsa','orologio','colore di'
+  ];
+  if(explicitOutsideWords.some(w=>q.includes(w))){
+    return 'Questa richiesta è chiaramente fuori dal mondo della Fabbrica delle Api 🐝. Posso aiutarti a scegliere tra prodotti dell’alveare, esperienze, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.';
+  }
+
+  const genericChoiceWords=['cosa scelgo','che scelgo','cosa prendo','che prendo','cosa mi consigli','che mi consigli','cosa scegliere','che cosa scegliere'];
+  if(genericChoiceWords.some(w=>q.includes(w))){
+    if(q.includes('mezzanotte')||q.includes('notte')){
+      return '<strong>Se parliamo del mondo della Fabbrica delle Api, a quell’ora penserei a qualcosa di semplice e tranquillo 🐝</strong><br><br>Tra i prodotti già presenti nel nuovo shop, il <strong>Millefiori</strong> è la scelta più versatile; se preferisci un gusto più morbido e fruttato, puoi orientarti su <strong>Pesca</strong> o <strong>Arancia</strong>.<br><br>Se mi dici se cerchi qualcosa da gustare, da regalare o semplicemente da tenere con te, restringo subito la scelta.';
+    }
+    return 'Interpreto la tua domanda nel contesto della <strong>Fabbrica delle Api</strong> 🐝. Quindi, quando mi chiedi semplicemente “cosa scelgo?”, penso a prodotti ed esperienze del nostro mondo, non a libri, vestiti o altro. Dimmi solo il momento o l’occasione e ti aiuto a scegliere.';
   }
 
   const beeWorldWords=['ape','api','alveare','arnia','miele','mieli','apicolt','favo','cera','nettare','melata','fiore','fioritura','regina','fuco','operaia','propoli','polline','pappa reale','pane delle api','veleno','prodotto','prodotti'];
