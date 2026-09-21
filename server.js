@@ -46,6 +46,10 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
   try {
     const message = String(req.body?.message || '').trim().slice(0, 1800);
     const historyRaw = Array.isArray(req.body?.history) ? req.body.history : [];
+    const requestedLanguage = ['it','en','de','fr','es'].includes(String(req.body?.language || '').toLowerCase())
+      ? String(req.body.language).toLowerCase()
+      : 'it';
+    const languageName = {it:'Italiano',en:'English',de:'Deutsch',fr:'Français',es:'Español'}[requestedLanguage];
 
     if (!message) {
       return res.status(400).json({ok:false,error:'Scrivi una domanda per Ape Pelù.'});
@@ -62,7 +66,13 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
       return res.json({
         ok:true,
         guarded:true,
-        reply:'Posso spiegarti la **Linea Veleni** solo dal punto di vista cosmetico e da massaggio. Non posso indicarti quantità, frequenza, durata d’uso per un problema fisico, né dirti di modificare o sospendere farmaci. Inoltre non presento il veleno d’api come cura per artrosi, dolore o altri problemi di salute.\n\nSe vuoi, posso invece spiegarti **quali prodotti della Linea Veleni sono realmente disponibili** e a quale uso cosmetico o da massaggio sono destinati, senza entrare in ambito medico.'
+        reply:({
+          it:'Posso spiegarti la **Linea Veleni** solo dal punto di vista cosmetico e da massaggio. Non posso indicarti quantità, frequenza, durata d’uso per un problema fisico, né dirti di modificare o sospendere farmaci. Inoltre non presento il veleno d’api come cura per artrosi, dolore o altri problemi di salute.\n\nSe vuoi, posso invece spiegarti **quali prodotti della Linea Veleni sono realmente disponibili** e a quale uso cosmetico o da massaggio sono destinati, senza entrare in ambito medico.',
+          en:'I can explain the **Bee Venom Line** only from a cosmetic and massage-use perspective. I cannot tell you amounts, frequency or duration of use for a physical problem, nor advise you to change or stop medicines. I also do not present bee venom as a cure for arthritis, pain or other health problems.\n\nIf you want, I can instead explain **which Bee Venom Line products are actually available** and what cosmetic or massage use they are intended for, without entering the medical field.',
+          de:'Ich kann dir die **Bienengift-Linie** nur aus kosmetischer Sicht und für Massageanwendungen erklären. Ich kann keine Mengen, Häufigkeit oder Anwendungsdauer für körperliche Beschwerden angeben und auch nicht empfehlen, Medikamente zu ändern oder abzusetzen. Bienengift stelle ich außerdem nicht als Heilmittel gegen Arthrose, Schmerzen oder andere Gesundheitsprobleme dar.\n\nWenn du möchtest, kann ich dir stattdessen erklären, **welche Produkte der Bienengift-Linie tatsächlich verfügbar sind** und für welchen kosmetischen oder Massagegebrauch sie gedacht sind.',
+          fr:'Je peux vous expliquer la **Ligne Venin d’Abeille** uniquement du point de vue cosmétique et de l’usage en massage. Je ne peux pas indiquer de quantité, de fréquence ou de durée d’utilisation pour un problème physique, ni conseiller de modifier ou d’arrêter des médicaments. Je ne présente pas non plus le venin d’abeille comme un remède contre l’arthrose, la douleur ou d’autres problèmes de santé.\n\nSi vous le souhaitez, je peux plutôt vous expliquer **quels produits de la Ligne Venin d’Abeille sont réellement disponibles** et à quel usage cosmétique ou de massage ils sont destinés.',
+          es:'Puedo explicarte la **Línea Veneno de Abeja** únicamente desde el punto de vista cosmético y de uso en masaje. No puedo indicarte cantidades, frecuencia o duración de uso para un problema físico, ni decirte que cambies o suspendas medicamentos. Tampoco presento el veneno de abeja como una cura para la artrosis, el dolor u otros problemas de salud.\n\nSi quieres, puedo explicarte **qué productos de la Línea Veneno de Abeja están realmente disponibles** y para qué uso cosmético o de masaje están destinados, sin entrar en el ámbito médico.'
+        })[requestedLanguage]
       });
     }
 
@@ -82,7 +92,8 @@ IDENTITÀ E PRIORITÀ
 - Prima di tutto sei una guida competente sul mondo delle api, dell'alveare, dell'apicoltura, degli impollinatori, della biodiversità e dei prodotti dell'alveare.
 - NON sei una venditrice che cerca sempre di portare a un acquisto.
 - La gerarchia è: conoscenza -> curiosità -> fiducia -> eventuale prodotto, solo se pertinente.
-- Parla in italiano salvo che l'utente usi chiaramente un'altra lingua.
+- Lingua del sito attiva: ${languageName}. Rispondi SEMPRE in questa lingua, salvo che l'utente chieda esplicitamente di usare un'altra lingua.
+- Non cambiare lingua solo perché l'utente inserisce una singola parola straniera o un nome proprio.
 - Non sappiamo età, istruzione o conoscenze dell'utente: usa parole semplici, frasi chiare e spiega i termini tecnici.
 - Non essere infantile. Sii calda, curiosa, autorevole e facile da capire.
 
