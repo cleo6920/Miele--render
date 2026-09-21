@@ -76,9 +76,11 @@ section[id]{scroll-margin-top:92px}
 .step b{display:block;font-family:Georgia,'Times New Roman',serif;font-size:34px;color:#f6b93d;margin-bottom:8px}
 .step h3{margin:0 0 8px;font-size:17px}.step p{margin:0;color:#e4eee8}
 .bee-world{display:grid;grid-template-columns:1.2fr .8fr;gap:22px}
-.bee-card{border-radius:28px;padding:40px;background:#e9b83f;min-height:390px}
+.bee-card{border-radius:28px;padding:40px;background:#e9b83f;min-height:390px;display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center}
 .bee-card h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(42px,4.8vw,64px);line-height:1.02;margin:18px 0}
 .bee-card p{font-size:17px;max-width:720px}
+.bee-photo{display:flex;align-items:center;justify-content:center}
+.bee-photo img{display:block;width:100%;max-width:330px;aspect-ratio:4/3;object-fit:cover;border-radius:22px;box-shadow:0 16px 34px rgba(0,0,0,.18)}
 .bee-info{background:#fff;border-radius:28px;padding:40px}
 .bee-info h3{font-family:Georgia,'Times New Roman',serif;font-size:25px;margin:0 0 10px}
 .bee-info .line{border-top:1px solid #aaa;margin:22px 0}
@@ -102,7 +104,7 @@ section[id]{scroll-margin-top:92px}
 .footer h3{color:#f1c55c;margin-top:0}.footer a{display:block;color:#dce7e1;text-decoration:none;margin:7px 0}
 @media(max-width:900px){
  .nav{flex-wrap:wrap}.nav-links{width:100%;overflow-x:auto;padding:0 0 9px;gap:14px;scrollbar-width:none}.nav-links::-webkit-scrollbar{display:none}.hero{min-height:760px}.hero::before{inset:0}.hero::after{display:none}.hero-overlay{background:linear-gradient(180deg,rgba(8,49,37,.72),rgba(5,34,26,.9))}
- .section-title,.discovery,.bee-world,.conversation-inner{grid-template-columns:1fr}.seasons,.places,.steps,.product-grid{grid-template-columns:1fr 1fr}
+ .section-title,.discovery,.bee-world,.conversation-inner{grid-template-columns:1fr}.bee-card{grid-template-columns:1fr}.bee-photo{justify-content:flex-start}.bee-photo img{max-width:300px}.seasons,.places,.steps,.product-grid{grid-template-columns:1fr 1fr}
  .hex-grid{margin:auto}.footer-inner{grid-template-columns:1fr 1fr}
 }
 @media(max-width:640px){
@@ -180,7 +182,16 @@ section[id]{scroll-margin-top:92px}
 
 <section class="section alt">
   <div class="wrap bee-world">
-    <article class="bee-card"><span class="eyebrow">Il mondo delle api</span><h2>Piccole protagoniste di un universo immenso.</h2><p>Osservare l’alveare significa scoprire organizzazione, stagionalità, biodiversità e il lavoro degli apicoltori. La Galena delle Api nasce anche per raccontare tutto questo.</p></article>
+    <article class="bee-card">
+      <div>
+        <span class="eyebrow">Il mondo delle api</span>
+        <h2>Piccole protagoniste di un universo immenso.</h2>
+        <p>Osservare l’alveare significa scoprire organizzazione, stagionalità, biodiversità e il lavoro degli apicoltori. La Galena delle Api nasce anche per raccontare tutto questo.</p>
+      </div>
+      <div class="bee-photo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/Honeybee_apis_mellifera_macro.jpg" alt="Ape mellifera in primo piano">
+      </div>
+    </article>
     <aside class="bee-info"><h3>Conoscere per rispettare</h3><p>Il progetto avvicina persone e famiglie alla cultura dell’ape, con un linguaggio accessibile e senza semplificazioni sensazionalistiche.</p><div class="line"></div><h3>Dall’alveare alla tavola</h3><p>Miele, polline, propoli e altri prodotti diventano una porta d’ingresso per capire il valore del lavoro delle api.</p></aside>
   </div>
 </section>
