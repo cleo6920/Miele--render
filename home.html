@@ -17,14 +17,15 @@ a{color:inherit}
 .wrap{width:min(1180px,calc(100% - 44px));margin:auto}
 .serif{font-family:Georgia,'Times New Roman',serif}
 .eyebrow{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#a96711}
-.site-header{position:absolute;inset:0 0 auto;z-index:20;color:#fff}
-.nav{width:min(1180px,calc(100% - 44px));margin:auto;display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.25)}
+.site-header{position:fixed;inset:0 0 auto;z-index:50;color:#fff;background:rgba(8,40,31,.92);backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.16)}
+.nav{width:min(1240px,calc(100% - 32px));margin:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.18);gap:18px}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:800;letter-spacing:.02em}
 .brand-mark{width:42px;height:42px;border-radius:14px;background:var(--gold);display:grid;place-items:center;color:var(--green2);font-size:20px}
-.nav-links{display:flex;align-items:center;gap:28px;font-size:14px}
+.nav-links{display:flex;align-items:center;gap:18px;font-size:13px;white-space:nowrap}
 .nav-links a{text-decoration:none}
 .nav-links .talk{padding:11px 18px;border:1px solid rgba(255,255,255,.55);border-radius:999px;font-weight:700}
 .nav-links .shop{color:#ffe59e;font-weight:700}
+section[id]{scroll-margin-top:92px}
 .hero{min-height:650px;display:grid;align-items:end;color:#fff;position:relative;overflow:hidden}
 .hero::before,.hero::after{content:"";position:absolute;inset:0 50% 0 0;background:url('/images/alveari-busatello.jpg?v=home-narrative1') center/cover no-repeat}
 .hero::after{inset:0 0 0 50%;background-image:url('/images/centro-alveoterapia-originale.png?v=home-narrative1');background-position:center}
@@ -100,12 +101,12 @@ a{color:inherit}
 .footer-inner{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:30px}
 .footer h3{color:#f1c55c;margin-top:0}.footer a{display:block;color:#dce7e1;text-decoration:none;margin:7px 0}
 @media(max-width:900px){
- .nav-links a:not(.talk){display:none}.hero{min-height:720px}.hero::before{inset:0}.hero::after{display:none}.hero-overlay{background:linear-gradient(180deg,rgba(8,49,37,.72),rgba(5,34,26,.9))}
+ .nav{flex-wrap:wrap}.nav-links{width:100%;overflow-x:auto;padding:0 0 9px;gap:14px;scrollbar-width:none}.nav-links::-webkit-scrollbar{display:none}.hero{min-height:760px}.hero::before{inset:0}.hero::after{display:none}.hero-overlay{background:linear-gradient(180deg,rgba(8,49,37,.72),rgba(5,34,26,.9))}
  .section-title,.discovery,.bee-world,.conversation-inner{grid-template-columns:1fr}.seasons,.places,.steps,.product-grid{grid-template-columns:1fr 1fr}
  .hex-grid{margin:auto}.footer-inner{grid-template-columns:1fr 1fr}
 }
 @media(max-width:640px){
- .wrap,.nav{width:min(100% - 28px,1180px)}.site-header{position:absolute}.nav{padding:13px 0}.brand span:last-child{font-size:13px}
+ .wrap,.nav{width:min(100% - 24px,1180px)}.nav{padding:10px 0}.brand span:last-child{font-size:13px}.brand-mark{width:36px;height:36px;border-radius:12px}.nav-links{font-size:12px}
  .hero{min-height:700px}.hero-inner{padding:145px 0 38px}.hero h1{font-size:clamp(48px,15vw,70px)}
  .section{padding:64px 0}.section-title{gap:18px}.seasons,.places,.steps,.product-grid{grid-template-columns:1fr}
  .season{min-height:420px;padding:25px}.hex-grid{grid-template-columns:repeat(3,92px);gap:8px}.hex{width:92px;height:82px;font-size:11px}
@@ -118,8 +119,11 @@ a{color:inherit}
   <nav class="nav">
     <a class="brand" href="/"><span class="brand-mark">✦</span><span>LA FABBRICA DELLE API</span></a>
     <div class="nav-links">
+      <a href="#top">Home</a>
       <a href="#alveoterapia">Alveoterapia</a>
       <a href="#luoghi">I luoghi</a>
+      <a href="/chi-siamo">Chi siamo</a>
+      <a href="/bacheca">Bacheca</a>
       <a href="#veleni">VELENI</a>
       <a class="shop" href="/shop">Prodotti & Shop</a>
       <a class="talk" href="/contatti">Parliamone</a>
