@@ -186,9 +186,15 @@ app.get('/api/local-delivery-check', async (req, res) => {
       );
       const capOk = !resultCap || resultCap === cap;
       const provinceOk = !resultProvince || resultProvince.toUpperCase().includes(province);
-      const roadOk = Boolean(roadName) &&
-        (!streetWords || roadName.includes(streetWords) || normalizePlace(item.display_name || '').includes(streetWords));
-      const numberOk = !requireNumberMatch || !house || normalizePlace(house) === normalizePlace(wantedNumber);
+      const fullDisplay = normalizePlace(item.display_name || '');
+      const roadOk = !streetWords ||
+        roadName.includes(streetWords) ||
+        fullDisplay.includes(streetWords);
+
+      const numberOk = !requireNumberMatch ||
+        !house ||
+        normalizePlace(house) === normalizePlace(wantedNumber) ||
+        fullDisplay.includes(normalizePlace(wantedNumber));
 
       return cityOk && capOk && provinceOk && roadOk && numberOk;
     };
