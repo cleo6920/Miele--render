@@ -918,6 +918,63 @@ function apePelùReply(question){
     return '<strong>In Italia la situazione delle api e degli altri impollinatori richiede attenzione.</strong><br><br>È importante distinguere tra <strong>api da miele allevate</strong>, seguite dagli apicoltori, e <strong>api selvatiche</strong>, che vivono senza essere gestite dall’uomo.<br><br>Per gli impollinatori selvatici il quadro è preoccupante: perdita e frammentazione degli habitat, agricoltura intensiva, pesticidi, cambiamenti climatici, parassiti e specie invasive possono ridurre popolazioni e biodiversità. ISPRA segnala che una parte significativa delle specie di api native valutate in Italia è minacciata.<br><br>Le api da miele possono invece essere aiutate dal lavoro degli apicoltori, ma anche loro devono affrontare problemi come parassiti, malattie, scarsità di fioriture e condizioni climatiche difficili.<br><br>Quindi la risposta più corretta è: <strong>le api ci sono, ma proteggerle è sempre più importante</strong>.';
   }
 
+  // CONOSCENZA GENERALE DEL MONDO DELLE API: prima dell'aspetto commerciale.
+  if(has('come comunicano','comunicazione','danza delle api','danza dell ape','danza')){
+    return '<strong>Le api comunicano in diversi modi.</strong><br><br>Uno dei più famosi è la <strong>danza</strong>: una bottinatrice che ha trovato una buona fonte di cibo può tornare nell’alveare e, con movimenti precisi, indicare alle compagne <strong>direzione e distanza</strong> del luogo da raggiungere.<br><br>Usano anche <strong>odori e feromoni</strong>, vibrazioni e contatti tra loro. In pratica, dentro l’alveare c’è un continuo scambio di informazioni.';
+  }
+
+  if(has('come vedono','vista delle api','vedono i colori','colori vedono','ultravioletto')){
+    return 'Le api vedono il mondo in modo diverso da noi. Riconoscono bene molti colori e sono particolarmente sensibili alla luce <strong>ultravioletta</strong>, che noi non vediamo. Alcuni fiori hanno disegni ultravioletti che funzionano quasi come “segnali stradali” e guidano le api verso nettare e polline.';
+  }
+
+  if(has('come trovano i fiori','trovano i fiori','orientano','orientamento','ritrovano alveare','tornano all alveare')){
+    return 'Le api si orientano usando più segnali insieme: <strong>posizione del sole</strong>, punti di riferimento nel paesaggio, odori e memoria. Quando una bottinatrice trova una zona ricca di fiori, può poi comunicarne la posizione alle compagne con la danza. Questa combinazione permette loro di allontanarsi e ritrovare l’alveare con grande precisione.';
+  }
+
+  if(has('in inverno','inverno api','cosa fanno in inverno','api inverno')){
+    return 'In inverno le api non vanno in letargo come alcuni animali. La colonia si raccoglie in una specie di <strong>grappolo</strong> attorno alla regina. Le api si muovono e producono calore per mantenere una temperatura adatta all’interno. Vivono soprattutto grazie alle <strong>scorte di miele</strong> accumulate nei mesi precedenti.';
+  }
+
+  if(has('in estate','estate api','cosa fanno in estate','api estate')){
+    return 'In estate l’alveare è molto attivo. Le bottinatrici raccolgono nettare, polline, acqua e resine; all’interno altre operaie nutrono la covata, costruiscono favi, ventilano e trasformano il nettare in miele. Nelle giornate calde molte api ventilano con le ali per aiutare a controllare temperatura e umidità.';
+  }
+
+  if(has('stagioni','stagione delle api','cambia con le stagioni','alveare nelle stagioni')){
+    return 'La vita dell’alveare cambia molto con le stagioni.<br><br><strong>Primavera:</strong> la colonia cresce rapidamente e aumenta la covata.<br><strong>Estate:</strong> grande attività di raccolta e produzione di scorte.<br><strong>Autunno:</strong> la colonia riduce gradualmente l’attività e prepara le riserve.<br><strong>Inverno:</strong> le api restano più raccolte e consumano il miele conservato.<br><br>Per capire davvero un alveare bisogna quindi osservarlo nel tempo, non in un solo momento.';
+  }
+
+  if(has('ape mellifera','api selvatiche','ape selvatica','differenza api','mellifera e selvatica')){
+    return 'L’<strong>ape mellifera</strong> è la specie più conosciuta perché vive in colonie numerose e viene allevata dagli apicoltori. Ma esistono moltissime <strong>api selvatiche</strong>, spesso solitarie: una femmina costruisce il proprio nido senza vivere in una grande colonia.<br><br>Entrambe sono importanti per l’impollinazione, ma hanno comportamenti, nidi e cicli di vita molto diversi.';
+  }
+
+  if(has('apicoltore','apicoltori','apicoltura','lavoro dell apicoltore')){
+    return 'L’<strong>apicoltore</strong> non si limita a raccogliere miele. Controlla lo stato delle colonie, verifica che abbiano spazio e scorte, osserva la presenza della regina e della covata, gestisce la sciamatura, controlla parassiti e malattie e segue l’andamento delle fioriture.<br><br>È un lavoro molto legato alle stagioni e richiede osservazione continua: ogni alveare può reagire in modo diverso.';
+  }
+
+  if(has('problemi degli apicoltori','problemi apicoltori','difficolta apicoltori','difficoltà apicoltori')){
+    return 'Gli apicoltori oggi devono affrontare diversi problemi: <strong>varroa e altre malattie</strong>, cambiamenti climatici, periodi di siccità o piogge fuori stagione, riduzione delle fioriture, trattamenti agricoli, costi di gestione e in alcuni territori anche predatori o specie invasive.<br><br>Per questo l’apicoltura moderna richiede sempre più attenzione, conoscenza e capacità di adattarsi.';
+  }
+
+  if(has('varroa')){
+    return 'La <strong>Varroa destructor</strong> è un acaro parassita delle api da miele. Vive e si riproduce nella colonia, indebolisce le api e può favorire la diffusione di virus. È uno dei principali problemi sanitari dell’apicoltura moderna e gli apicoltori devono controllarne regolarmente la presenza.';
+  }
+
+  if(has('pesticidi','fitofarmaci','insetticidi')){
+    return 'Alcuni pesticidi possono essere un problema per api e altri impollinatori, soprattutto se l’esposizione avviene durante la fioritura o in condizioni non corrette. Il rischio dipende dalla sostanza, dalla dose, dal momento e dal modo in cui viene usata. Per questo agricoltura e tutela degli impollinatori devono essere gestite con molta attenzione.';
+  }
+
+  if(has('cambiamento climatico','cambiamenti climatici','clima api')){
+    return 'Il cambiamento climatico può influenzare le api modificando <strong>tempi delle fioriture, disponibilità di acqua e nettare, temperature e durata delle stagioni</strong>. Se una fioritura arriva troppo presto o dura poco, la colonia può trovarsi fuori sincronizzazione con le risorse disponibili. Anche eventi estremi, siccità e piogge prolungate possono creare difficoltà.';
+  }
+
+  if(has('biodiversita','biodiversità')){
+    return 'La <strong>biodiversità</strong> significa varietà di specie, ambienti e relazioni tra organismi. Le api ne fanno parte e allo stesso tempo la sostengono grazie all’impollinazione. Un ambiente ricco di piante diverse offre cibo agli impollinatori per periodi più lunghi e rende l’ecosistema più resistente ai cambiamenti.';
+  }
+
+  if(has('quante specie di api','specie di api','tipi di api')){
+    return 'Quando diciamo “ape” spesso pensiamo solo all’ape da miele, ma nel mondo esistono <strong>migliaia di specie di api</strong>. Molte non vivono in alveari organizzati come l’ape mellifera: sono solitarie e nidificano nel terreno, nel legno o in piccole cavità. Questa diversità è fondamentale per l’impollinazione di moltissime piante.';
+  }
+
   // PROGETTO FABBRICA DELLE API
   if(has('alveoter')){
     return '<strong>Alveoterapia Integrata</strong> è il cuore del progetto. In primavera ed estate l’esperienza si svolge all’aperto all’<strong>Oasi del Busatello</strong>, vicino alle arnie vere. In autunno e inverno continua nella <strong>Galena delle Api</strong> di Castel d’Ario attraverso ambienti e diffusori dedicati. L’idea è mantenere il contatto con il mondo dell’alveare durante tutto l’anno, senza presentare l’esperienza come sostituto di cure mediche.';
