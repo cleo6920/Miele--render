@@ -1080,7 +1080,11 @@ function apeKeepConversation(question,reply){
   }else if(q.includes('propoli')){
     follow='Vuoi che ti spieghi anche come fanno le api a raccogliere e usare la propoli dentro l’alveare?';
   }else if(q.includes('velen')){
-    follow='Vuoi che ti spieghi anche come funziona il pungiglione dell’ape e perché il veleno è legato alla difesa della colonia?';
+    if(q.includes('dolor')||q.includes('ginoc')||q.includes('farmac')||q.includes('antinfiamm')||q.includes('artrosi')||q.includes('rughe')){
+      follow='Se vuoi, posso spiegarti in modo semplice quali usi cosmetici e da massaggio hanno i prodotti della Linea Veleni, senza entrare in ambito medico.';
+    }else{
+      follow='Vuoi che ti spieghi anche come funziona il pungiglione dell’ape e perché il veleno è legato alla difesa della colonia?';
+    }
   }else if(q.includes('cosmesi')||q.includes('cosmetica')||q.includes('cosmetici')){
     follow='Vuoi che ti faccia un esempio semplice di come cambiano i cosmetici quando contengono miele, cera d’api, propoli o veleno d’api?';
   }else if(q.includes('miele')||q.includes('mieli')){
