@@ -370,6 +370,32 @@ section[id]{scroll-margin-top:92px}
 </footer>
 <script>
 let venomSlideIndex=0;
+let venomAutoTimer=null;
+const VENOM_SLIDE_DELAY=10000;
+
+function startVenomAuto(){
+  stopVenomAuto();
+  venomAutoTimer=setInterval(()=>{
+    const box=document.getElementById('venomExperience');
+    if(box && box.classList.contains('open')){
+      venomSlideIndex+=1;
+      renderVenomSlide();
+    }
+  },VENOM_SLIDE_DELAY);
+}
+
+function stopVenomAuto(){
+  if(venomAutoTimer){
+    clearInterval(venomAutoTimer);
+    venomAutoTimer=null;
+  }
+}
+
+function resetVenomAuto(){
+  const box=document.getElementById('venomExperience');
+  if(box && box.classList.contains('open')) startVenomAuto();
+}
+
 function toggleVenomExperience(){
   const box=document.getElementById('venomExperience');
   if(!box)return;
@@ -377,9 +403,13 @@ function toggleVenomExperience(){
   if(box.classList.contains('open')){
     venomSlideIndex=0;
     renderVenomSlide();
+    startVenomAuto();
     box.scrollIntoView({behavior:'smooth',block:'start'});
+  }else{
+    stopVenomAuto();
   }
 }
+
 function renderVenomSlide(){
   const slides=Array.from(document.querySelectorAll('.venom-slide'));
   if(!slides.length)return;
@@ -388,9 +418,16 @@ function renderVenomSlide(){
   const count=document.getElementById('venomCount');
   if(count)count.textContent=(venomSlideIndex+1)+' / '+slides.length;
 }
+
 function changeVenomSlide(delta){
   venomSlideIndex+=delta;
   renderVenomSlide();
+  resetVenomAuto();
 }
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden) stopVenomAuto();
+  else resetVenomAuto();
+});
 </script>
 </body></html>
