@@ -514,15 +514,47 @@ function kmBetween(lat1,lon1,lat2,lon2){
   const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
-async function checkLocalDelivery(){
+let lastAddressValidation=null;
+let lastAddressSignature='';
+
+function currentAddressSignature(){
+  return [
+    document.getElementById('coAddress').value.trim().toLowerCase(),
+    document.getElementById('coCap').value.trim(),
+    document.getElementById('coCity').value.trim().toLowerCase(),
+    document.getElementById('coProvince').value.trim().toUpperCase()
+  ].join('|');
+}
+
+function invalidateAddressValidation(){
+  lastAddressValidation=null;
+  lastAddressSignature='';
+  shippingState={cost:null,label:'Da calcolare',reason:''};
+}
+
+async function checkLocalDelivery(force=false){
+  const address=document.getElementById('coAddress').value.trim();
   const city=document.getElementById('coCity').value.trim();
   const cap=document.getElementById('coCap').value.trim();
   const province=document.getElementById('coProvince').value.trim();
+  const signature=currentAddressSignature();
+
+  if(!force && lastAddressValidation && lastAddressSignature===signature){
+    return lastAddressValidation;
+  }
+
   try{
-    const res=await fetch('/api/local-delivery-check?city='+encodeURIComponent(city)+'&cap='+encodeURIComponent(cap)+'&province='+encodeURIComponent(province));
-    if(!res.ok)return null;
-    return await res.json();
-  }catch(_){return null;}
+    const qs=new URLSearchParams({address,city,cap,province});
+    const res=await fetch('/api/local-delivery-check?'+qs.toString(),{cache:'no-store'});
+    const data=await res.json().catch(()=>null);
+    lastAddressValidation=data;
+    lastAddressSignature=signature;
+    return data;
+  }catch(_){
+    lastAddressValidation=null;
+    lastAddressSignature='';
+    return null;
+  }
 }
 async function calculateShipping(){
   const method=document.querySelector('input[name="delivery"]:checked')?.value||'courier';
@@ -534,20 +566,23 @@ async function calculateShipping(){
     shippingState={cost:0,label:'Gratuita',reason:'Ordine da €200 o più'};
     return shippingState;
   }
-  const local=await checkLocalDelivery();
-  if(local && local.ok && local.validAddressPair===true && local.eligible){
-    shippingState={cost:0,label:'Gratuita',reason:'Consegna locale gratuita · '+local.distanceKm+' km da Castel d’Ario'};
+
+  const local=await checkLocalDelivery(false);
+  if(!local || local.ok!==true || local.validFullAddress!==true){
+    throw new Error(local?.error || 'Indirizzo non verificato');
+  }
+
+  if(local.eligible){
+    shippingState={
+      cost:0,
+      label:'Gratuita',
+      reason:'Consegna locale gratuita · '+local.distanceKm+' km da Castel d’Ario'
+    };
     return shippingState;
   }
 
   const cost=cartUnits()>=3?10:8;
-  shippingState={
-    cost,
-    label:euro(cost),
-    reason:(local && local.validationAvailable===false)
-      ? 'Corriere · verifica area locale non disponibile, applicata tariffa standard'
-      : 'Corriere · consegna indicativa 5–6 giorni'
-  };
+  shippingState={cost,label:euro(cost),reason:'Corriere · consegna indicativa 5–6 giorni'};
   return shippingState;
 }
 
@@ -593,16 +628,17 @@ async function validStepOne(){
   if(!document.getElementById('coEmail').value.includes('@')){alert('Inserisci un indirizzo email valido per la simulazione.');return false;}
 
   const cap=document.getElementById('coCap').value.trim();
+  const address=document.getElementById('coAddress').value.trim();
   if(!/^\d{5}$/.test(cap)){alert('Il CAP deve essere composto da 5 cifre.');return false;}
-
-  const result=await checkLocalDelivery();
-  if(result && result.validationAvailable===true && result.validAddressPair===false){
-    alert(result.error || 'CAP e Comune non corrispondono. Controlla i dati inseriti.');
+  if(!/[A-Za-zÀ-ÿ]/.test(address) || !/\d/.test(address)){
+    alert('Inserisci via e numero civico completi, ad esempio “Via Roma 12”.');
     return false;
   }
 
-  if(!result || result.validationAvailable===false){
-    console.warn('Verifica CAP/Comune temporaneamente non disponibile: il checkout prosegue con spedizione standard.');
+  const result=await checkLocalDelivery(true);
+  if(!result || result.ok!==true || result.validFullAddress!==true){
+    alert(result?.error || 'Non riesco a verificare l’indirizzo. Controlla via, numero civico, CAP, Comune e Provincia.');
+    return false;
   }
 
   return true;
@@ -611,7 +647,13 @@ async function renderCheckoutSummary(){
   const rows=shopV2Cart.map(x=>'<div class="summary-row"><span>'+x.name+' × '+x.qty+'</span><strong>'+euro(x.price*x.qty)+'</strong></div>').join('');
   document.getElementById('checkoutSummary').innerHTML=rows+'<div class="summary-row"><span>Spedizione</span><strong>Verifica in corso…</strong></div><div class="summary-row total"><span>Totale simulato</span><span>'+euro(cartTotal())+'</span></div>';
   document.getElementById('summaryPoints').textContent=cartPoints();
-  await calculateShipping();
+  try{
+    await calculateShipping();
+  }catch(error){
+    alert(error?.message || 'Indirizzo non verificato. Torna ai dati e controlla l’indirizzo.');
+    showCheckoutStep(1);
+    return;
+  }
   const grand=cartTotal()+Number(shippingState.cost||0);
   const shippingText=shippingState.cost===0
     ? '<strong>Gratuita</strong><br><small>'+shippingState.reason+'</small>'
@@ -677,6 +719,11 @@ document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('clic
 document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>showCheckoutStep(Number(btn.dataset.back))));
 document.getElementById('simulatePay').addEventListener('click',completeSimulatedOrder);
 document.getElementById('finishCheckout').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');window.scrollTo({top:0,behavior:'smooth'});});
+['coAddress','coCap','coCity','coProvince'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',invalidateAddressValidation);
+});
+
 renderV2Cart();
 </script>
 
