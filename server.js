@@ -51,6 +51,21 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
       return res.status(400).json({ok:false,error:'Scrivi una domanda per Ape Pelù.'});
     }
 
+    const q = message.toLowerCase();
+    const asksDose = /(quante volte|quanto ne devo|quanto devo|dose|dosaggio|per quanto tempo|1-2 volte|applicazioni al giorno)/i.test(message);
+    const asksDrugChange = /(smett|sospend|interromp).*(farmac|antinfiamm)|posso smettere.*farmac|posso smettere.*antinfiamm/i.test(message);
+    const asksMedicalOutcome = /(cura|curare|artrosi|dolore|riduce il dolore|circolazione|antinfiammatorio|analgesico|patologia|sintomo)/i.test(message);
+    const productContext = /(veleno|linea veleni|sos dol|prodotto|crema|unguento)/i.test(message);
+
+    if (productContext && (asksDose || asksDrugChange || asksMedicalOutcome)) {
+      console.log('[Ape Pelù] Guardia non-medica attivata.');
+      return res.json({
+        ok:true,
+        guarded:true,
+        reply:'Posso spiegarti la <strong>Linea Veleni</strong> solo dal punto di vista cosmetico e da massaggio. Non posso indicarti quantità, frequenza, durata d’uso per un problema fisico, né dirti di modificare o sospendere farmaci. Inoltre non presento il veleno d’api come cura per artrosi, dolore o altri problemi di salute.<br><br>Se vuoi, posso invece spiegarti <strong>quali prodotti della Linea Veleni sono realmente disponibili</strong> e a quale uso cosmetico o da massaggio sono destinati, senza entrare in ambito medico.'
+      });
+    }
+
     const history = historyRaw
       .slice(-10)
       .filter(item => item && (item.role === 'user' || item.role === 'assistant'))
