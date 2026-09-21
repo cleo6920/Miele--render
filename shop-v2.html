@@ -579,11 +579,21 @@ function showCheckoutStep(step){
   document.querySelectorAll('.checkout-step').forEach(el=>el.classList.toggle('active',Number(el.dataset.stepPill)<=Math.min(Number(step),4)));
   if(step===3)document.getElementById('summaryPoints').textContent=cartPoints();
 }
-function validStepOne(){
+async function validStepOne(){
   const ids=['coName','coEmail','coPhone','coCity','coAddress','coCap','coProvince'];
   const missing=ids.filter(id=>!document.getElementById(id).value.trim());
   if(missing.length){alert('Completa i campi obbligatori prima di continuare.');return false;}
   if(!document.getElementById('coEmail').value.includes('@')){alert('Inserisci un indirizzo email valido per la simulazione.');return false;}
+
+  const cap=document.getElementById('coCap').value.trim();
+  if(!/^\d{5}$/.test(cap)){alert('Il CAP deve essere composto da 5 cifre.');return false;}
+
+  const result=await checkLocalDelivery();
+  if(!result || !result.ok || result.validAddressPair===false){
+    alert(result?.error || 'Non riesco a verificare la corrispondenza tra CAP e Comune. Controlla i dati inseriti.');
+    return false;
+  }
+
   return true;
 }
 async function renderCheckoutSummary(){
@@ -642,7 +652,17 @@ document.getElementById('startCheckout').addEventListener('click',()=>{
   showCheckoutStep(1);
 });
 document.getElementById('checkoutClose').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');});
-document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('click',async()=>{const next=Number(btn.dataset.next);if(next===2&&!validStepOne())return;showCheckoutStep(next);if(next===3)await renderCheckoutSummary();}));
+document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('click',async()=>{
+  const next=Number(btn.dataset.next);
+  if(next===2){
+    btn.disabled=true;
+    const ok=await validStepOne();
+    btn.disabled=false;
+    if(!ok)return;
+  }
+  showCheckoutStep(next);
+  if(next===3)await renderCheckoutSummary();
+}));
 document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>showCheckoutStep(Number(btn.dataset.back))));
 document.getElementById('simulatePay').addEventListener('click',completeSimulatedOrder);
 document.getElementById('finishCheckout').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');window.scrollTo({top:0,behavior:'smooth'});});
