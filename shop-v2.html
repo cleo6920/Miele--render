@@ -910,6 +910,14 @@ function apePelùReply(question){
     return 'Le api sono importanti per due grandi motivi. <strong>Per l’ecosistema</strong>, perché visitando i fiori contribuiscono all’impollinazione di moltissime piante. <strong>Per l’uomo</strong>, perché dall’alveare arrivano miele, cera, propoli, polline, pappa reale e altri prodotti, oltre a una grande quantità di conoscenze sul rapporto tra natura, stagioni e biodiversità.';
   }
 
+  if(has('mondo sociale','sociale','societa','società','nella societa','nella società')){
+    return '<strong>Le api hanno un’importanza enorme anche nel mondo sociale</strong>, non solo nella natura.<br><br><strong>Per il cibo:</strong> aiutano l’impollinazione di molte colture che arrivano sulle nostre tavole.<br><strong>Per l’agricoltura:</strong> sostengono produzioni e raccolti e quindi anche il lavoro di agricoltori e apicoltori.<br><strong>Per l’economia:</strong> intorno alle api esistono attività, prodotti, aziende, mercati e mestieri.<br><strong>Per l’ambiente:</strong> sono un indicatore prezioso della salute degli ecosistemi.<br><strong>Per la cultura:</strong> miele, cera, apicoltura e tradizioni legate alle api fanno parte della storia di molti territori.<br><strong>Per l’educazione:</strong> osservare un alveare aiuta a capire collaborazione, organizzazione, stagioni e biodiversità.<br><br>In pratica, le api collegano <strong>natura, cibo, lavoro, economia e cultura</strong>.';
+  }
+
+  if((has('api in italia','in italia')&&has('come sono messe','come stanno','situazione','stato','messe')) || has('situazione delle api in italia')){
+    return '<strong>In Italia la situazione delle api e degli altri impollinatori richiede attenzione.</strong><br><br>È importante distinguere tra <strong>api da miele allevate</strong>, seguite dagli apicoltori, e <strong>api selvatiche</strong>, che vivono senza essere gestite dall’uomo.<br><br>Per gli impollinatori selvatici il quadro è preoccupante: perdita e frammentazione degli habitat, agricoltura intensiva, pesticidi, cambiamenti climatici, parassiti e specie invasive possono ridurre popolazioni e biodiversità. ISPRA segnala che una parte significativa delle specie di api native valutate in Italia è minacciata.<br><br>Le api da miele possono invece essere aiutate dal lavoro degli apicoltori, ma anche loro devono affrontare problemi come parassiti, malattie, scarsità di fioriture e condizioni climatiche difficili.<br><br>Quindi la risposta più corretta è: <strong>le api ci sono, ma proteggerle è sempre più importante</strong>.';
+  }
+
   // PROGETTO FABBRICA DELLE API
   if(has('alveoter')){
     return '<strong>Alveoterapia Integrata</strong> è il cuore del progetto. In primavera ed estate l’esperienza si svolge all’aperto all’<strong>Oasi del Busatello</strong>, vicino alle arnie vere. In autunno e inverno continua nella <strong>Galena delle Api</strong> di Castel d’Ario attraverso ambienti e diffusori dedicati. L’idea è mantenere il contatto con il mondo dell’alveare durante tutto l’anno, senza presentare l’esperienza come sostituto di cure mediche.';
@@ -1022,6 +1030,10 @@ function apeKeepConversation(question,reply){
     follow='Vuoi sapere cosa succede ai fuchi quando finisce la stagione favorevole?';
   }else if(q.includes('operaia')||q.includes('operaie')){
     follow='Vuoi sapere come cambia il lavoro di un’ape operaia man mano che cresce?';
+  }else if(q.includes('sociale')||q.includes('societa')||q.includes('società')){
+    follow='Vuoi che ti faccia un esempio concreto di come le api influenzano ogni giorno cibo, lavoro ed economia senza che ce ne accorgiamo?';
+  }else if((q.includes('italia')&&q.includes('api')) || q.includes('situazione delle api')){
+    follow='Vuoi che ti spieghi anche quali sono oggi le principali minacce per le api in Italia e cosa possiamo fare per aiutarle?';
   }else if(q.includes('impollin')){
     follow='Vuoi un esempio semplice di come una sola visita di un’ape può aiutare un fiore a produrre frutti o semi?';
   }else if(q.includes('sciame')||q.includes('sciam')){
