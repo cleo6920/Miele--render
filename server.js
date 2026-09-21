@@ -129,51 +129,76 @@ app.get('/api/local-delivery-check', async (req, res) => {
       });
     }
 
-    const streetQuery = new URLSearchParams({
-      format:'json',
-      addressdetails:'1',
-      limit:'5',
-      countrycodes:'it',
-      street:address,
-      city:municipality.nome,
-      postalcode:cap,
-      country:'Italia'
-    });
+    const rawAddress = address.trim();
+    const hasStreetPrefix = /^(via|viale|piazza|corso|strada|vicolo|localita|località|frazione)\b/i.test(rawAddress);
+    const addressVariants = hasStreetPrefix
+      ? [rawAddress]
+      : [rawAddress, 'Via ' + rawAddress];
 
-    const geoResponse = await fetch('https://nominatim.openstreetmap.org/search?'+streetQuery.toString(), {
-      headers:{
-        'Accept':'application/json',
-        'User-Agent':'LaFabbricaDelleApi/1.0 shipping-address-validator'
+    let geoResults = [];
+    for (const variant of addressVariants) {
+      const freeQuery = [variant, municipality.nome, cap, province, 'Italia'].join(', ');
+      const qs = new URLSearchParams({
+        format:'json',
+        addressdetails:'1',
+        limit:'8',
+        countrycodes:'it',
+        q:freeQuery
+      });
+
+      const geoResponse = await fetch('https://nominatim.openstreetmap.org/search?'+qs.toString(), {
+        headers:{
+          'Accept':'application/json',
+          'User-Agent':'LaFabbricaDelleApi/1.0 shipping-address-validator'
+        }
+      });
+
+      if (geoResponse.ok) {
+        const part = await geoResponse.json();
+        if (Array.isArray(part)) geoResults.push(...part);
       }
-    });
+      if (geoResults.length) break;
+    }
 
-    if (!geoResponse.ok) {
-      return res.status(503).json({
+    if (!geoResults.length) {
+      return res.status(422).json({
         ok:false,
         eligible:false,
         validAddressPair:true,
         validFullAddress:false,
-        error:'Non riesco a verificare l’indirizzo in questo momento. Riprova tra poco.'
+        error:'Non riesco a trovare questo indirizzo. Prova a scriverlo completo, ad esempio “Via Venera 2”.'
       });
     }
 
-    const geoResults = await geoResponse.json();
     const wantedCity = normalizePlace(municipality.nome);
+    const wantedAddress = normalizePlace(rawAddress.replace(/^(via|viale|piazza|corso|strada|vicolo)\s+/i,''));
 
-    const verified = Array.isArray(geoResults) ? geoResults.find(item => {
+    const verified = geoResults.find(item => {
       const a = item.address || {};
       const resultCap = String(a.postcode || '');
       const resultProvince = String(a.ISO3166_2_lvl6 || a.province || a.county || '');
-      const resultCities = [a.city, a.town, a.village, a.municipality, a.hamlet]
+      const resultCities = [a.city, a.town, a.village, a.municipality, a.hamlet, a.suburb, item.display_name]
         .filter(Boolean)
         .map(normalizePlace);
-      const hasRoad = Boolean(a.road || a.pedestrian || a.residential || a.path || a.place);
-      const hasHouseNumber = Boolean(a.house_number);
-      const cityOk = resultCities.some(name => name === wantedCity);
+      const roadName = normalizePlace(a.road || a.pedestrian || a.residential || a.path || a.place || '');
+      const house = String(a.house_number || '').trim();
+
+      const cityOk = resultCities.some(name =>
+        name === wantedCity ||
+        name.includes(wantedCity) ||
+        wantedCity.includes(name) ||
+        normalizePlace(item.display_name || '').includes(wantedCity)
+      );
       const capOk = !resultCap || resultCap === cap;
       const provinceOk = !resultProvince || resultProvince.toUpperCase().includes(province);
-      return cityOk && capOk && provinceOk && hasRoad && hasHouseNumber;
-    }) : null;
+
+      const wantedNumber = (rawAddress.match(/\b(\d+[A-Za-z\/]*)\b/) || [,''])[1];
+      const streetWords = wantedAddress.replace(/\b\d+[A-Za-z\/]*\b/g,'').trim();
+      const roadOk = !streetWords || roadName.includes(streetWords) || normalizePlace(item.display_name || '').includes(streetWords);
+      const numberOk = !wantedNumber || !house || normalizePlace(house) === normalizePlace(wantedNumber);
+
+      return cityOk && capOk && provinceOk && roadOk && numberOk;
+    });
 
     if (!verified) {
       return res.status(422).json({
