@@ -160,20 +160,15 @@ app.get('/api/local-delivery-check', async (req, res) => {
       if (geoResults.length) break;
     }
 
-    if (!geoResults.length) {
-      return res.status(422).json({
-        ok:false,
-        eligible:false,
-        validAddressPair:true,
-        validFullAddress:false,
-        error:'Non riesco a trovare questo indirizzo. Prova a scriverlo completo, ad esempio “Via Venera 2”.'
-      });
-    }
-
     const wantedCity = normalizePlace(municipality.nome);
-    const wantedAddress = normalizePlace(rawAddress.replace(/^(via|viale|piazza|corso|strada|vicolo)\s+/i,''));
+    const wantedNumber = (rawAddress.match(/\b(\d+[A-Za-z\/]*)\b/) || [,''])[1];
+    const streetOnly = rawAddress
+      .replace(/^(via|viale|piazza|corso|strada|vicolo|localita|località|frazione)\s+/i,'')
+      .replace(/\b\d+[A-Za-z\/]*\b/g,'')
+      .trim();
+    const streetWords = normalizePlace(streetOnly);
 
-    const verified = geoResults.find(item => {
+    const matchesAddress = (item, requireNumberMatch) => {
       const a = item.address || {};
       const resultCap = String(a.postcode || '');
       const resultProvince = String(a.ISO3166_2_lvl6 || a.province || a.county || '');
@@ -191,19 +186,48 @@ app.get('/api/local-delivery-check', async (req, res) => {
       );
       const capOk = !resultCap || resultCap === cap;
       const provinceOk = !resultProvince || resultProvince.toUpperCase().includes(province);
-
-      const wantedNumber = (rawAddress.match(/\b(\d+[A-Za-z\/]*)\b/) || [,''])[1];
-      const streetWords = wantedAddress.replace(/\b\d+[A-Za-z\/]*\b/g,'').trim();
-      const roadOk = Boolean(a.road || a.pedestrian || a.residential || a.path || a.place) &&
+      const roadOk = Boolean(roadName) &&
         (!streetWords || roadName.includes(streetWords) || normalizePlace(item.display_name || '').includes(streetWords));
-
-      // Il civico deve essere presente nell'input. Se il geocoder lo conosce,
-      // deve coincidere; se non lo conosce, non blocchiamo una via reale.
-      const numberOk = Boolean(wantedNumber) &&
-        (!house || normalizePlace(house) === normalizePlace(wantedNumber));
+      const numberOk = !requireNumberMatch || !house || normalizePlace(house) === normalizePlace(wantedNumber);
 
       return cityOk && capOk && provinceOk && roadOk && numberOk;
-    });
+    };
+
+    let verified = geoResults.find(item => matchesAddress(item, true));
+
+    // Fallback: molti civici italiani non sono censiti. In quel caso verifichiamo
+    // la via nel Comune/CAP corretti e accettiamo il civico scritto dall'utente.
+    if (!verified && streetOnly) {
+      const streetQueries = [
+        [streetOnly, municipality.nome, cap, province, 'Italia'].join(', '),
+        ['Via '+streetOnly, municipality.nome, cap, province, 'Italia'].join(', ')
+      ];
+
+      for (const query of streetQueries) {
+        const qs = new URLSearchParams({
+          format:'json',
+          addressdetails:'1',
+          limit:'10',
+          countrycodes:'it',
+          q:query
+        });
+
+        const geoResponse = await fetch('https://nominatim.openstreetmap.org/search?'+qs.toString(), {
+          headers:{
+            'Accept':'application/json',
+            'User-Agent':'LaFabbricaDelleApi/1.0 street-validator'
+          }
+        });
+
+        if (geoResponse.ok) {
+          const part = await geoResponse.json();
+          if (Array.isArray(part)) {
+            verified = part.find(item => matchesAddress(item, false));
+            if (verified) break;
+          }
+        }
+      }
+    }
 
     if (!verified) {
       return res.status(422).json({
@@ -211,7 +235,7 @@ app.get('/api/local-delivery-check', async (req, res) => {
         eligible:false,
         validAddressPair:true,
         validFullAddress:false,
-        error:'Non riesco a trovare questa via nel Comune indicato. Controlla il nome della strada, il Comune e il CAP.'
+        error:'Non riesco a verificare questa via nel Comune indicato. Controlla il nome della strada, il Comune e il CAP.'
       });
     }
 
