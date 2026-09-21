@@ -21,9 +21,20 @@ app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
 app.post('/api/create-checkout-session', createCheckoutSession);
 
+app.get('/api/ape-pelu-status', (req, res) => {
+  const configured = Boolean(String(process.env.OPENAI_API_KEY || '').trim());
+  res.setHeader('Cache-Control','no-store');
+  return res.json({
+    ok:true,
+    aiConfigured:configured,
+    model:String(process.env.OPENAI_MODEL || 'gpt-5.6-luna')
+  });
+});
+
 app.post('/api/ape-pelu-chat', async (req, res) => {
   const apiKey = String(process.env.OPENAI_API_KEY || '').trim();
   if (!apiKey) {
+    console.warn('[Ape Pelù] OPENAI_API_KEY assente: uso fallback locale.');
     return res.status(503).json({
       ok:false,
       aiConfigured:false,
