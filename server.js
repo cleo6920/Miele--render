@@ -62,7 +62,7 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
       return res.json({
         ok:true,
         guarded:true,
-        reply:'Posso spiegarti la <strong>Linea Veleni</strong> solo dal punto di vista cosmetico e da massaggio. Non posso indicarti quantità, frequenza, durata d’uso per un problema fisico, né dirti di modificare o sospendere farmaci. Inoltre non presento il veleno d’api come cura per artrosi, dolore o altri problemi di salute.<br><br>Se vuoi, posso invece spiegarti <strong>quali prodotti della Linea Veleni sono realmente disponibili</strong> e a quale uso cosmetico o da massaggio sono destinati, senza entrare in ambito medico.'
+        reply:'Posso spiegarti la **Linea Veleni** solo dal punto di vista cosmetico e da massaggio. Non posso indicarti quantità, frequenza, durata d’uso per un problema fisico, né dirti di modificare o sospendere farmaci. Inoltre non presento il veleno d’api come cura per artrosi, dolore o altri problemi di salute.\n\nSe vuoi, posso invece spiegarti **quali prodotti della Linea Veleni sono realmente disponibili** e a quale uso cosmetico o da massaggio sono destinati, senza entrare in ambito medico.'
       });
     }
 
