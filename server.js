@@ -194,8 +194,13 @@ app.get('/api/local-delivery-check', async (req, res) => {
 
       const wantedNumber = (rawAddress.match(/\b(\d+[A-Za-z\/]*)\b/) || [,''])[1];
       const streetWords = wantedAddress.replace(/\b\d+[A-Za-z\/]*\b/g,'').trim();
-      const roadOk = !streetWords || roadName.includes(streetWords) || normalizePlace(item.display_name || '').includes(streetWords);
-      const numberOk = !wantedNumber || !house || normalizePlace(house) === normalizePlace(wantedNumber);
+      const roadOk = Boolean(a.road || a.pedestrian || a.residential || a.path || a.place) &&
+        (!streetWords || roadName.includes(streetWords) || normalizePlace(item.display_name || '').includes(streetWords));
+
+      // Il civico deve essere presente nell'input. Se il geocoder lo conosce,
+      // deve coincidere; se non lo conosce, non blocchiamo una via reale.
+      const numberOk = Boolean(wantedNumber) &&
+        (!house || normalizePlace(house) === normalizePlace(wantedNumber));
 
       return cityOk && capOk && provinceOk && roadOk && numberOk;
     });
@@ -206,7 +211,7 @@ app.get('/api/local-delivery-check', async (req, res) => {
         eligible:false,
         validAddressPair:true,
         validFullAddress:false,
-        error:'Non riesco a verificare via e numero civico per '+city+' '+cap+'. Controlla l’indirizzo completo.'
+        error:'Non riesco a trovare questa via nel Comune indicato. Controlla il nome della strada, il Comune e il CAP.'
       });
     }
 
