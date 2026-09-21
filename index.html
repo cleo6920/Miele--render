@@ -2189,13 +2189,7 @@ const wrapRef = useRef(null);
             const [isLocalShipping, setIsLocalShipping] = useState(false);
             
             // STATO CHIAVE: per tracciare se l'utente ha navigato via dalla home iniziale.
-            const [hasNavigatedAway, setHasNavigatedAway] = useState(() => {
-                try {
-                    return new URLSearchParams(window.location.search).get('linea') === 'veleni';
-                } catch (error) {
-                    return false;
-                }
-            });
+            const [hasNavigatedAway, setHasNavigatedAway] = useState(false);
 
             const [firestoreDb, setFirestoreDb] = useState(null);
             const [firebaseAuth, setFirebaseAuth] = useState(null);
@@ -2207,14 +2201,7 @@ const wrapRef = useRef(null);
             const [showEmailInstructionsModal, setShowEmailInstructionsModal] = useState(false);
             const [orderTextForEmailModal, setOrderTextForEmailModal] = useState("");
             const [selectedProductId, setSelectedProductId] = useState(null);
-            const [selectedCategory, setSelectedCategory] = useState(() => {
-                try {
-                    const requestedLine = new URLSearchParams(window.location.search).get('linea');
-                    return requestedLine === 'veleni' ? 'veleno-api' : null;
-                } catch (error) {
-                    return null;
-                }
-            });
+            const [selectedCategory, setSelectedCategory] = useState(null);
             const [products, setProducts] = useState([]);
             const [isLoadingProducts, setIsLoadingProducts] = useState(true);
             const [cartItems, setCartItems] = useState([]);
