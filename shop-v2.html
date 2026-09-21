@@ -496,11 +496,65 @@ const SHOP_V2_CART_KEY='fda-shop-v2-cart';
 const SHOP_V2_ORDERS_KEY='fda-shop-v2-sim-orders';
 let shopV2Cart=[];
 try{shopV2Cart=JSON.parse(localStorage.getItem(SHOP_V2_CART_KEY)||'[]')||[];}catch(_){shopV2Cart=[];}
+const BUSATELLO_IDS=new Set(['millefiori','melone','fragola','pesca','arancia']);
+function defaultPointsFor(id){return BUSATELLO_IDS.has(id)?2:0;}
+shopV2Cart=shopV2Cart.map(x=>({...x,points:Number(x.points||defaultPointsFor(x.id))}));
+localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));
 
 function saveV2Cart(){localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));renderV2Cart();}
 function euro(v){return '€'+Number(v||0).toFixed(2).replace('.',',');}
-function cartPoints(){return shopV2Cart.reduce((s,x)=>s+(Number(x.points||0)*x.qty),0);}
+function cartPoints(){return shopV2Cart.reduce((s,x)=>s+(Number(x.points||defaultPointsFor(x.id))*x.qty),0);}
 function cartTotal(){return shopV2Cart.reduce((s,x)=>s+(x.qty*x.price),0);}
+function cartUnits(){return shopV2Cart.reduce((s,x)=>s+x.qty,0);}
+let shippingState={cost:null,label:'Da calcolare',reason:''};
+
+function kmBetween(lat1,lon1,lat2,lon2){
+  const R=6371,toRad=v=>v*Math.PI/180;
+  const dLat=toRad(lat2-lat1),dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+async function geocodeCheckoutAddress(){
+  const q=[
+    document.getElementById('coAddress').value.trim(),
+    document.getElementById('coCap').value.trim(),
+    document.getElementById('coCity').value.trim(),
+    document.getElementById('coProvince').value.trim(),
+    'Italia'
+  ].filter(Boolean).join(', ');
+  if(!q)return null;
+  try{
+    const res=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=it&q='+encodeURIComponent(q),{
+      headers:{'Accept':'application/json'}
+    });
+    if(!res.ok)return null;
+    const data=await res.json();
+    if(!data||!data[0])return null;
+    return {lat:Number(data[0].lat),lon:Number(data[0].lon)};
+  }catch(_){return null;}
+}
+async function calculateShipping(){
+  const method=document.querySelector('input[name="delivery"]:checked')?.value||'courier';
+  if(method==='pickup'){
+    shippingState={cost:0,label:'Gratuita',reason:'Ritiro / accordo diretto'};
+    return shippingState;
+  }
+  if(cartTotal()>=200){
+    shippingState={cost:0,label:'Gratuita',reason:'Ordine da €200 o più'};
+    return shippingState;
+  }
+  const pos=await geocodeCheckoutAddress();
+  if(pos){
+    const km=kmBetween(45.187,10.974,pos.lat,pos.lon);
+    if(km<=50){
+      shippingState={cost:0,label:'Gratuita',reason:'Indirizzo entro 50 km da Castel d’Ario'};
+      return shippingState;
+    }
+  }
+  const cost=cartUnits()>=3?10:8;
+  shippingState={cost,label:euro(cost),reason:'Corriere · consegna indicativa 5–6 giorni'};
+  return shippingState;
+}
 function addV2Product(btn){
   const id=btn.dataset.id;
   const found=shopV2Cart.find(x=>x.id===id);
@@ -523,7 +577,7 @@ function renderV2Cart(){
 function showCheckoutStep(step){
   document.querySelectorAll('.checkout-screen').forEach(el=>el.classList.toggle('active',el.dataset.step===String(step)));
   document.querySelectorAll('.checkout-step').forEach(el=>el.classList.toggle('active',Number(el.dataset.stepPill)<=Math.min(Number(step),4)));
-  if(step===3)renderCheckoutSummary();
+  if(step===3)document.getElementById('summaryPoints').textContent=cartPoints();
 }
 function validStepOne(){
   const ids=['coName','coEmail','coPhone','coCity','coAddress','coCap','coProvince'];
@@ -532,11 +586,18 @@ function validStepOne(){
   if(!document.getElementById('coEmail').value.includes('@')){alert('Inserisci un indirizzo email valido per la simulazione.');return false;}
   return true;
 }
-function renderCheckoutSummary(){
-  const delivery=document.querySelector('input[name="delivery"]:checked')?.value==='pickup'?'Ritiro / accordo diretto':'Corriere · 5–6 giorni';
+async function renderCheckoutSummary(){
   const rows=shopV2Cart.map(x=>'<div class="summary-row"><span>'+x.name+' × '+x.qty+'</span><strong>'+euro(x.price*x.qty)+'</strong></div>').join('');
-  document.getElementById('checkoutSummary').innerHTML=rows+'<div class="summary-row"><span>Consegna</span><strong>'+delivery+'</strong></div><div class="summary-row total"><span>Totale simulato</span><span>'+euro(cartTotal())+'</span></div>';
+  document.getElementById('checkoutSummary').innerHTML=rows+'<div class="summary-row"><span>Spedizione</span><strong>Verifica in corso…</strong></div><div class="summary-row total"><span>Totale simulato</span><span>'+euro(cartTotal())+'</span></div>';
   document.getElementById('summaryPoints').textContent=cartPoints();
+  await calculateShipping();
+  const grand=cartTotal()+Number(shippingState.cost||0);
+  const shippingText=shippingState.cost===0
+    ? '<strong>Gratuita</strong><br><small>'+shippingState.reason+'</small>'
+    : '<strong>'+euro(shippingState.cost)+'</strong><br><small>'+shippingState.reason+'</small>';
+  document.getElementById('checkoutSummary').innerHTML=rows+
+    '<div class="summary-row"><span>Spedizione</span><span style="text-align:right">'+shippingText+'</span></div>'+
+    '<div class="summary-row total"><span>Totale simulato</span><span>'+euro(grand)+'</span></div>';
 }
 function completeSimulatedOrder(){
   const orderId='API-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+String(Date.now()).slice(-5);
@@ -556,7 +617,10 @@ function completeSimulatedOrder(){
     delivery:document.querySelector('input[name="delivery"]:checked')?.value||'courier',
     notes:document.getElementById('coNotes').value.trim(),
     items:shopV2Cart,
-    total:cartTotal(),
+    goodsTotal:cartTotal(),
+    shipping:Number(shippingState.cost||0),
+    shippingReason:shippingState.reason,
+    total:cartTotal()+Number(shippingState.cost||0),
     points:cartPoints()
   };
   let orders=[];try{orders=JSON.parse(localStorage.getItem(SHOP_V2_ORDERS_KEY)||'[]')||[];}catch(_){}
@@ -578,7 +642,7 @@ document.getElementById('startCheckout').addEventListener('click',()=>{
   showCheckoutStep(1);
 });
 document.getElementById('checkoutClose').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');});
-document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('click',()=>{const next=Number(btn.dataset.next);if(next===2&&!validStepOne())return;showCheckoutStep(next);}));
+document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('click',async()=>{const next=Number(btn.dataset.next);if(next===2&&!validStepOne())return;showCheckoutStep(next);if(next===3)await renderCheckoutSummary();}));
 document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>showCheckoutStep(Number(btn.dataset.back))));
 document.getElementById('simulatePay').addEventListener('click',completeSimulatedOrder);
 document.getElementById('finishCheckout').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');window.scrollTo({top:0,behavior:'smooth'});});
