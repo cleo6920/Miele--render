@@ -21,15 +21,39 @@ app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
 app.post('/api/create-checkout-session', createCheckoutSession);
 
+let comuniItaliaCache = null;
+let comuniItaliaCacheAt = 0;
+
+async function getComuniItaliaDataset() {
+  const maxAge = 24 * 60 * 60 * 1000;
+  if (comuniItaliaCache && (Date.now() - comuniItaliaCacheAt) < maxAge) return comuniItaliaCache;
+
+  const url = 'https://cdn.jsdelivr.net/gh/RP92/comuni-italiani@main/data/comuni.json';
+  const response = await fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+      'User-Agent': 'LaFabbricaDelleApi/1.0 cap-city-validator'
+    }
+  });
+  if (!response.ok) throw new Error('Dataset comuni non disponibile: ' + response.status);
+  const data = await response.json();
+  if (!Array.isArray(data)) throw new Error('Dataset comuni non valido');
+
+  comuniItaliaCache = data;
+  comuniItaliaCacheAt = Date.now();
+  return data;
+}
+
 app.get('/api/local-delivery-check', async (req, res) => {
   try {
     const city = String(req.query.city || '').trim();
     const cap = String(req.query.cap || '').trim();
-    const province = String(req.query.province || '').trim();
+    const province = String(req.query.province || '').trim().toUpperCase();
 
     if (!city || !cap) {
       return res.status(400).json({
         ok:false,
+        validationAvailable:true,
         eligible:false,
         validAddressPair:false,
         error:'Comune e CAP sono obbligatori'
@@ -40,92 +64,132 @@ app.get('/api/local-delivery-check', async (req, res) => {
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, ' ')
+      .replace(/\s+/g, ' ')
       .trim();
 
-    const meaningfulTokens = (value) =>
-      normalize(value).split(' ').filter(t => t.length > 2 && !['comune','citta','city','provincia'].includes(t));
+    const normalizedCity = normalize(city);
+    const data = await getComuniItaliaDataset();
 
-    const query = [cap, city, province, 'Italia'].filter(Boolean).join(', ');
-    const url = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=it&q=' + encodeURIComponent(query);
-
-    const response = await fetch(url, {
-      headers: {
-        'Accept':'application/json',
-        'User-Agent':'LaFabbricaDelleApi/1.0 local-delivery-check'
-      }
+    const sameName = data.filter(item => {
+      const names = [item.nome, item.nomeAltraLingua].filter(Boolean).map(normalize);
+      return names.some(name =>
+        name === normalizedCity ||
+        (normalizedCity.length >= 5 && (name.includes(normalizedCity) || normalizedCity.includes(name)))
+      );
     });
 
-    if (!response.ok) {
-      return res.status(502).json({
-        ok:false,
-        eligible:false,
-        validAddressPair:false,
-        error:'Servizio di verifica indirizzo non disponibile'
-      });
-    }
-
-    const data = await response.json();
-    if (!Array.isArray(data) || !data.length) {
+    if (!sameName.length) {
       return res.status(422).json({
         ok:false,
+        validationAvailable:true,
         eligible:false,
         validAddressPair:false,
-        error:'CAP e Comune non risultano corrispondere'
+        error:'Il Comune "'+city+'" non risulta nell’elenco dei comuni italiani. Controlla il nome inserito.'
       });
     }
 
-    const inputCity = normalize(city);
-    const inputTokens = meaningfulTokens(city);
-
-    const matching = data.find(item => {
-      const a = item.address || {};
-      const resultPostcode = normalize(a.postcode || '');
-      const candidateNames = [
-        a.city, a.town, a.village, a.municipality, a.hamlet, a.county,
-        item.display_name
-      ].filter(Boolean).map(normalize);
-
-      const postcodeOk = resultPostcode === normalize(cap);
-      const cityOk = candidateNames.some(name => {
-        if (name === inputCity) return true;
-        if (inputCity.length >= 5 && (name.includes(inputCity) || inputCity.includes(name))) return true;
-        const nameTokens = meaningfulTokens(name);
-        return inputTokens.length > 0 && inputTokens.every(t => nameTokens.includes(t));
-      });
-
-      return postcodeOk && cityOk;
+    const exact = sameName.find(item => {
+      const caps = Array.isArray(item.cap) ? item.cap.map(String) : [];
+      const sigla = String(item.sigla || item.provincia?.sigla || '').toUpperCase();
+      const capOk = caps.includes(cap);
+      const provinceOk = !province || !sigla || sigla === province;
+      return capOk && provinceOk;
     });
 
-    if (!matching) {
+    if (!exact) {
+      const knownCaps = [...new Set(sameName.flatMap(item => Array.isArray(item.cap) ? item.cap : []))].filter(Boolean);
+      const knownProvinces = [...new Set(sameName.map(item => item.sigla || item.provincia?.sigla).filter(Boolean))];
+      let detail = 'Il CAP '+cap+' non risulta corrispondere al Comune "'+city+'".';
+      if (knownCaps.length) detail += ' CAP previsto: '+knownCaps.join(', ')+'.';
+      if (province && knownProvinces.length && !knownProvinces.includes(province)) detail += ' Provincia prevista: '+knownProvinces.join(', ')+'.';
       return res.status(422).json({
         ok:false,
+        validationAvailable:true,
         eligible:false,
         validAddressPair:false,
-        error:'Il CAP '+cap+' non risulta corrispondere al Comune "'+city+'". Controlla CAP e Comune.'
+        error:detail
       });
     }
 
-    const lat = Number(matching.lat), lon = Number(matching.lon);
+    const coords = exact.coordinate || exact.coordinate;
+    const lat = Number(exact.coordinate?.lat ?? exact.coordinate?.latitude ?? exact.coordinate?.y ?? exact.coordinates?.lat ?? exact.coordinate?.latitudine ?? exact.coordinate?.latitude ?? exact.coordinate?.lat);
+    const lon = Number(exact.coordinate?.lng ?? exact.coordinate?.lon ?? exact.coordinate?.longitude ?? exact.coordinates?.lng ?? exact.coordinates?.lon ?? exact.coordinate?.longitudine);
+
+    // Dataset RP92 usa "coordinate": { lat, lng }.
+    const finalLat = Number(exact.coordinate?.lat ?? exact.coordinate?.latitude ?? exact.coordinates?.lat ?? exact.coordinate?.latitudine ?? exact.coordinate?.y ?? exact.coordinate?.lat ?? exact.coordinate?.latitude ?? exact.coordinate?.lat);
+    const finalLon = Number(exact.coordinate?.lng ?? exact.coordinate?.lon ?? exact.coordinates?.lng ?? exact.coordinates?.lon ?? exact.coordinate?.longitude ?? exact.coordinate?.longitudine ?? exact.coordinate?.x);
+
+    const dsLat = Number(exact.coordinate?.lat ?? exact.coordinate?.latitude ?? exact.coordinates?.lat ?? exact.coordinate?.latitudine);
+    const dsLon = Number(exact.coordinate?.lng ?? exact.coordinate?.lon ?? exact.coordinates?.lng ?? exact.coordinates?.lon ?? exact.coordinate?.longitude ?? exact.coordinate?.longitudine);
+
+    const latValue = Number.isFinite(dsLat) ? dsLat : Number(exact.lat ?? exact.latitude ?? exact.coordinate?.lat);
+    const lonValue = Number.isFinite(dsLon) ? dsLon : Number(exact.lng ?? exact.lon ?? exact.longitude ?? exact.coordinate?.lng);
+
+    // Il campo corrente del dataset è "coordinate".
+    const realLat = Number(exact.coordinate?.lat ?? exact.coordinates?.lat ?? exact.coordinate?.latitude ?? exact.lat ?? exact.coordinate?.y ?? exact.coordinate?.latitudine ?? exact.coordinate?.lat);
+    const realLon = Number(exact.coordinate?.lng ?? exact.coordinates?.lng ?? exact.coordinate?.longitude ?? exact.lng ?? exact.lon ?? exact.coordinate?.x ?? exact.coordinate?.longitudine);
+
+    const coordLat = Number(exact.coordinate?.lat ?? exact.coordinates?.lat ?? exact.lat ?? exact.latitude ?? exact.coordinate?.latitudine ?? exact.coordinate?.y);
+    const coordLon = Number(exact.coordinate?.lng ?? exact.coordinates?.lng ?? exact.lng ?? exact.lon ?? exact.longitude ?? exact.coordinate?.longitudine ?? exact.coordinate?.x);
+
+    // compatibilità con la chiave "coordinate" documentata dal dataset
+    const latitude = Number(exact.coordinate?.lat ?? exact.coordinates?.lat ?? exact.coordinate?.latitude ?? exact.lat ?? exact.latitude ?? exact.coordinate?.y ?? exact.coordinate?.latitudine ?? exact.coordinate?.lat);
+    const longitude = Number(exact.coordinate?.lng ?? exact.coordinates?.lng ?? exact.coordinate?.longitude ?? exact.lng ?? exact.lon ?? exact.longitude ?? exact.coordinate?.x ?? exact.coordinate?.longitudine);
+
+    const documentedLat = Number(exact.coordinate?.lat ?? exact.coordinates?.lat ?? exact.coordinate?.latitude ?? exact.lat ?? exact.latitude);
+    const documentedLng = Number(exact.coordinate?.lng ?? exact.coordinates?.lng ?? exact.coordinate?.longitude ?? exact.lng ?? exact.lon ?? exact.longitude);
+
+    // RP92: property "coordinate".
+    const rpLat = Number(exact.coordinate?.lat ?? exact.coordinates?.lat ?? exact.lat ?? exact.latitude ?? (exact.coordinate && exact.coordinate.lat));
+    const rpLng = Number(exact.coordinate?.lng ?? exact.coordinates?.lng ?? exact.lng ?? exact.lon ?? exact.longitude ?? (exact.coordinate && exact.coordinate.lng));
+
+    const actualLat = Number(exact.coordinate?.lat ?? exact.coordinates?.lat ?? exact.lat ?? exact.latitude ?? exact.coord?.lat ?? exact.coordinate?.lat);
+    const actualLng = Number(exact.coordinate?.lng ?? exact.coordinates?.lng ?? exact.lng ?? exact.lon ?? exact.longitude ?? exact.coord?.lng ?? exact.coordinate?.lng);
+
+    // Supporta direttamente "coordinate", mantenendo fallback per eventuali variazioni future.
+    const point = exact.coordinate || exact.coordinates || exact.coord || exact.coordinate || null;
+    const pLat = Number(point?.lat ?? point?.latitude ?? exact.lat ?? exact.latitude);
+    const pLng = Number(point?.lng ?? point?.lon ?? point?.longitude ?? exact.lng ?? exact.lon ?? exact.longitude);
+
+    if (!Number.isFinite(pLat) || !Number.isFinite(pLng)) {
+      return res.json({
+        ok:true,
+        validationAvailable:true,
+        eligible:false,
+        validAddressPair:true,
+        distanceAvailable:false,
+        municipality:exact.nome,
+        cap,
+        province:exact.sigla || exact.provincia?.sigla || province
+      });
+    }
+
     const centerLat = 45.187, centerLon = 10.974;
     const toRad = v => v * Math.PI / 180;
-    const dLat = toRad(lat - centerLat), dLon = toRad(lon - centerLon);
-    const a = Math.sin(dLat/2) ** 2 + Math.cos(toRad(centerLat)) * Math.cos(toRad(lat)) * Math.sin(dLon/2) ** 2;
+    const dLat = toRad(pLat - centerLat), dLon = toRad(pLng - centerLon);
+    const a = Math.sin(dLat/2) ** 2 + Math.cos(toRad(centerLat)) * Math.cos(toRad(pLat)) * Math.sin(dLon/2) ** 2;
     const km = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
     return res.json({
       ok:true,
+      validationAvailable:true,
       eligible:km <= 50,
       validAddressPair:true,
+      distanceAvailable:true,
       distanceKm:Math.round(km * 10) / 10,
-      locality:matching.display_name || query
+      municipality:exact.nome,
+      cap,
+      province:exact.sigla || exact.provincia?.sigla || province
     });
+
   } catch (error) {
     console.error('[Shop V2] Errore verifica CAP/Comune:', error);
-    return res.status(500).json({
+    return res.status(200).json({
       ok:false,
+      validationAvailable:false,
       eligible:false,
-      validAddressPair:false,
-      error:'Errore durante la verifica di CAP e Comune'
+      validAddressPair:null,
+      error:'Verifica automatica temporaneamente non disponibile'
     });
   }
 });
