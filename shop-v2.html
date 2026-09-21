@@ -818,8 +818,29 @@ function apePelùReply(question){
   if(q.includes('sped')||q.includes('consegn')||q.includes('ordine')){
     return 'Nel nuovo shop l’ordine passa da cestino, dati, consegna, riepilogo e pagamento. La consegna locale entro 50 km da Castel d’Ario è gratuita; anche gli ordini da €200 o più hanno spedizione gratuita. Negli altri casi il costo viene mostrato chiaramente prima della conferma.';
   }
+  const asksMillefiori=q.includes('millefiori');
+  const asksMelone=q.includes('melone');
+  const asksFragola=q.includes('fragola');
+  const asksPesca=q.includes('pesca');
+  const asksArancia=q.includes('arancia');
+
+  if(asksMillefiori){
+    return '<strong>Miele Millefiori dell’Oasi del Busatello · 250 g · €4,90</strong><br>Nasce dalla varietà delle fioriture spontanee presenti nell’oasi. Ha un profilo armonico, una dolcezza equilibrata e profumi che possono cambiare naturalmente da raccolto a raccolto, seguendo le stagioni. È piacevole al cucchiaio, sul pane, nello yogurt oppure per dolcificare bevande e preparazioni. La naturale cristallizzazione è una caratteristica tipica del miele e non ne altera la qualità. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
+  }
+  if(asksMelone){
+    return '<strong>Miele al Melone · 250 g · €4,90</strong><br>È un miele dal gusto dolce e fruttato, con una nota di melone piacevole e immediata. Si presta bene al cucchiaio, sul pane, nello yogurt e in abbinamento a dessert o preparazioni fresche. Servito a temperatura ambiente esprime al meglio il suo profilo aromatico. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
+  }
+  if(asksFragola){
+    return '<strong>Miele alla Fragola · 250 g · €4,90</strong><br>Ha un gusto morbido e fruttato, con una nota di fragola ben riconoscibile. È adatto a colazione, nello yogurt, con formaggi freschi oppure nella preparazione di dolci semplici. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
+  }
+  if(asksPesca){
+    return '<strong>Miele alla Pesca · 250 g · €4,90</strong><br>Ha un profilo delicato e fruttato, con una nota di pesca morbida e piacevole. Si abbina bene a pane, fette biscottate, yogurt, ricotta, formaggi freschi e dessert. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
+  }
+  if(asksArancia){
+    return '<strong>Miele all’Arancia · 250 g · €4,90</strong><br>Ha un carattere fresco e agrumato, in cui le note di arancia accompagnano la naturale dolcezza del miele. È piacevole a colazione, nello yogurt, sul pane, con biscotti, dolci e formaggi freschi. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
+  }
   if(q.includes('miele')||q.includes('mieli')){
-    return 'Per scegliere un miele puoi partire dal gusto: <strong>Millefiori</strong> se vuoi qualcosa di armonico e rappresentativo del Busatello; <strong>Melone, Fragola, Pesca o Arancia</strong> se preferisci una nota più fruttata. Se mi dici che gusto ti piace, ti aiuto a orientarti.';
+    return 'Per scegliere un miele puoi partire dal gusto: <strong>Millefiori</strong> se vuoi qualcosa di armonico e rappresentativo del Busatello; <strong>Melone, Fragola, Pesca o Arancia</strong> se preferisci una nota più fruttata. Puoi chiedermi direttamente anche “com’è fatto il Millefiori?”, “che gusto ha il miele al melone?” oppure “quanto costa quello alla pesca?”.';
   }
   if(q.includes('velen')){
     return 'La <strong>Linea Veleni</strong> racconta uno degli elementi più sorprendenti dell’alveare attraverso prodotti cosmetici e da massaggio. Il linguaggio resta sempre prudente: niente promesse di cura, ma attenzione a gesti, massaggio, pelle e sensazioni di comfort.';
