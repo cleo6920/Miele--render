@@ -851,11 +851,64 @@ function apePelùReply(question){
   if(q.includes('prezzo')||q.includes('quanto costa')){
     return 'Posso aiutarti sui prezzi presenti nel nuovo shop. Al momento i Mieli del Busatello da 250 g mostrati nella V2 sono a <strong>€4,90</strong> ciascuno. Per gli altri prodotti preferisco usare solo i dati effettivamente presenti quando li inseriremo nella nuova struttura.';
   }
-  if(q.includes('ciao')||q.includes('buongiorno')||q.includes('salve')){
-    return 'Ciao! 🐝 Sono Ape Pelù. Dimmi cosa ti incuriosisce: Alveoterapia, Oasi, Galena, Mieli, Linea Veleni, Punti Ape oppure ordini e spedizioni.';
+  if(q.includes('alveare')||q.includes('arnia')){
+    return 'Un <strong>alveare</strong> è la casa organizzata della colonia di api. Al suo interno vivono la regina, migliaia di api operaie e, in alcuni periodi dell’anno, i fuchi. Le api costruiscono favi di cera con celle esagonali, dove allevano la covata e conservano miele e polline. L’arnia, invece, è la struttura costruita dall’uomo che ospita la colonia.';
   }
 
-  return 'Non voglio darti un’informazione imprecisa. Posso aiutarti sul mondo della Fabbrica delle Api: <strong>Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Mieli, Linea Veleni, Punti Ape, ordini e spedizioni</strong>. Prova a chiedermi qualcosa su uno di questi temi.';
+  if(q.includes('miele') && (q.includes('montagna')||q.includes('montano'))){
+    return 'Con “<strong>mieli di montagna</strong>” si indicano mieli prodotti in territori montani, dove le api raccolgono nettare o melata dalla vegetazione locale. A seconda della zona si possono trovare, per esempio, mieli di castagno, rododendro, tarassaco, millefiori di montagna o mieli di melata. Il gusto cambia molto con quota, stagione e fioriture presenti.';
+  }
+
+  if(q.includes('propoli')){
+    return 'La <strong>propoli</strong> è una sostanza resinosa che le api raccolgono dalle piante e trasformano per proteggere e sigillare l’alveare. Nel mondo dei prodotti dell’alveare viene utilizzata in diverse preparazioni. Posso spiegarti i prodotti presenti nel nostro shop, ma senza attribuire loro proprietà di cura o effetti terapeutici.';
+  }
+
+  if(q.includes('pappa reale')||q.includes('pappa')){
+    return 'La <strong>pappa reale</strong> è una sostanza prodotta dalle api nutrici. È il nutrimento delle larve nei primi giorni di vita e della regina per tutta la sua esistenza. È uno dei prodotti più caratteristici dell’alveare.';
+  }
+
+  if(q.includes('polline') && q.includes('pappa')){
+    return 'Sono due prodotti molto diversi. Il <strong>polline</strong> viene raccolto dalle api sui fiori e trasportato nell’alveare; la <strong>pappa reale</strong> viene invece prodotta direttamente dalle api nutrici ed è il nutrimento della regina. Se vuoi, posso anche spiegarti cos’è il Pane delle Api.';
+  }
+
+  if(q.includes('polline')){
+    return 'Il <strong>polline</strong> viene raccolto dalle api sui fiori e trasportato all’alveare. È una delle principali fonti nutritive della colonia. Nell’alveare può essere immagazzinato e trasformato nel cosiddetto <strong>Pane delle Api</strong>.';
+  }
+
+  if(q.includes('pane delle api')||q.includes('pane d')){
+    return 'Il <strong>Pane delle Api</strong> è polline immagazzinato nelle celle del favo e trasformato naturalmente all’interno dell’alveare attraverso un processo di fermentazione. È una riserva nutritiva importante per la colonia.';
+  }
+
+  if(q.includes('cristall')&&q.includes('miele')){
+    return 'La <strong>cristallizzazione del miele</strong> è un fenomeno naturale. Dipende soprattutto dal rapporto tra glucosio e fruttosio, dalla temperatura e dal tipo di miele. Un miele cristallizzato non è per questo deteriorato: spesso è semplicemente una caratteristica naturale del prodotto.';
+  }
+
+  if(q.includes('quante api')||q.includes('numero di api')||q.includes('api ci sono')){
+    return 'Il numero di api in una colonia cambia con la stagione. In primavera e in estate una colonia forte può arrivare a <strong>decine di migliaia di api</strong>; nei mesi freddi la popolazione si riduce sensibilmente.';
+  }
+
+  if(q.includes('regina')&&q.includes('ape')){
+    return 'L’<strong>ape regina</strong> è la femmina fertile della colonia. Il suo ruolo principale è deporre le uova e contribuire, attraverso i feromoni, alla coesione sociale dell’alveare. In condizioni favorevoli può deporre moltissime uova al giorno.';
+  }
+
+  if(q.includes('fuchi')||q.includes('fuco')){
+    return 'I <strong>fuchi</strong> sono i maschi della colonia. Il loro ruolo biologico principale è la riproduzione con una regina vergine. Sono presenti soprattutto nella stagione favorevole e non partecipano alla raccolta di nettare e polline.';
+  }
+
+  if(q.includes('operaie')||q.includes('ape operaia')){
+    return 'Le <strong>api operaie</strong> sono femmine non riproduttive che svolgono gran parte delle attività della colonia: pulizia, nutrimento della covata, costruzione dei favi, ventilazione, difesa e raccolta di nettare, polline, acqua e resine.';
+  }
+
+  if(q.includes('ciao')||q.includes('buongiorno')||q.includes('salve')){
+    return 'Ciao! 🐝 Sono Ape Pelù. Puoi chiedermi liberamente di api, alveari, miele, prodotti dell’alveare, Alveoterapia, Oasi, Galena, Linea Veleni, Punti Ape oppure ordini e spedizioni.';
+  }
+
+  const beeWorldWords=['ape','api','alveare','arnia','miele','mieli','apicolt','favo','cera','nettare','melata','fiore','fioritura','regina','fuco','operaia','propoli','polline','pappa reale','pane delle api','veleno'];
+  if(beeWorldWords.some(w=>q.includes(w))){
+    return 'È una domanda che riguarda il mondo delle api, quindi voglio poterti rispondere bene. Questa prima versione di Ape Pelù non ha ancora una risposta completa per questo argomento. Non voglio inventare: quando collegheremo il motore AI, potrò rispondere in modo naturale anche a domande molto più libere come questa.';
+  }
+
+  return 'Questa domanda è fuori dal mondo di cui mi occupo. Io sono Ape Pelù 🐝 e posso aiutarti con api, alveari, miele, prodotti dell’alveare, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.';
 }
 function apeAsk(text){
   const value=String(text||'').trim();
