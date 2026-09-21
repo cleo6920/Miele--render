@@ -99,12 +99,13 @@ section[id]{scroll-margin-top:92px}
 .venom-media img{display:block;max-width:100%;max-height:430px;object-fit:contain}
 .venom-detail .series{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#e4a72c;font-weight:800}
 .venom-detail h3{font-family:Georgia,'Times New Roman',serif;font-size:clamp(34px,4vw,52px);line-height:1.02;margin:10px 0 18px;color:#f1b63b}
-.venom-detail>p{font-size:17px;color:#f4eee4;margin:0 0 20px}
-.venom-facts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.venom-fact{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:17px}
-.venom-fact b{display:block;color:#f4c65b;margin-bottom:6px}
-.venom-fact p{font-size:14px;line-height:1.45;margin:0;color:#eee6d8}
-.venom-warning{margin-top:14px;background:#fff4d8;color:#3c2a0d;border-left:5px solid #e7aa28;border-radius:16px;padding:16px 18px;font-size:14px;line-height:1.5}
+.venom-detail>p{font-size:18px;color:#f7f0e5;margin:0 0 22px;line-height:1.55}
+.venom-storyline{font-family:Georgia,'Times New Roman',serif;font-size:clamp(24px,2.5vw,34px);line-height:1.12;color:#fff3cf;margin:0 0 18px}
+.venom-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.venom-fact{background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.045));border:1px solid rgba(244,198,91,.18);border-radius:20px;padding:18px;min-height:150px}
+.venom-fact b{display:block;color:#f4c65b;margin-bottom:8px;font-size:14px;letter-spacing:.02em}
+.venom-fact p{font-size:14px;line-height:1.5;margin:0;color:#f0e8dc}
+.venom-warning{margin-top:16px;background:rgba(255,244,216,.96);color:#3c2a0d;border-left:4px solid #e7aa28;border-radius:16px;padding:14px 17px;font-size:13px;line-height:1.45}
 .venom-warning strong{display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
 .venom-nav{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:24px}
 .venom-count{font-weight:800;color:#decaa7}
@@ -225,7 +226,7 @@ section[id]{scroll-margin-top:92px}
   <div class="wrap">
     <span class="eyebrow">Linea specialistica</span>
     <h2>VELENI</h2>
-    <p>Una linea dal carattere deciso e ricercato, ispirata a uno degli elementi più affascinanti dell’alveare. Qui ogni prodotto viene raccontato singolarmente: cosa contiene, a cosa è destinato, quali benefici cosmetici dichiara il produttore e quali precauzioni richiede.</p>
+    <p>Sei prodotti, sei modi diversi di raccontare il carattere dell’alveare. Scoprili uno alla volta: non come semplici referenze, ma come gesti, sensazioni e momenti diversi della quotidianità.</p>
     <div class="venom-launch">
       <button class="btn btn-gold" type="button" onclick="toggleVenomExperience()">Scopri la linea</button>
     </div>
@@ -238,12 +239,12 @@ section[id]{scroll-margin-top:92px}
           <div class="venom-detail">
             <span class="series">Linea funzionale · 15 ml</span>
             <h3>SOS DOL · Unguento al Veleno d’Api</h3>
-            <p>Unguento da massaggio formulato con veleno d’api, cera d’api e oli essenziali. Nel nostro racconto lo presentiamo come prodotto cosmetico da massaggio, senza attribuirgli funzione terapeutica.</p>
+            <div class="venom-storyline">Un gesto mirato, nato dal cuore dell’alveare.</div>
+            <p>Un prodotto dal carattere deciso, pensato per accompagnare quei momenti in cui vuoi dedicare attenzione a una zona precisa del corpo.</p>
             <div class="venom-facts">
-              <div class="venom-fact"><b>A cosa serve</b><p>Per il massaggio localizzato del corpo e per una sensazione di comfort durante l’applicazione.</p></div>
-              <div class="venom-fact"><b>Ingredienti caratterizzanti</b><p>Veleno d’api, cera d’api, oli di oliva e mandorle dolci, timo ed eucalipto.</p></div>
-              <div class="venom-fact"><b>Uso</b><p>Applicare sulla zona interessata con massaggio fino ad assorbimento, seguendo le indicazioni riportate sulla confezione.</p></div>
-              <div class="venom-fact"><b>Perché è particolare</b><p>Porta il veleno d’api in una formulazione cosmetica specifica dedicata al massaggio.</p></div>
+              <div class="venom-fact"><b>Il suo valore</b><p>Rende il massaggio un momento più intenzionale, semplice e personale.</p></div>
+              <div class="venom-fact"><b>Cosa lo distingue</b><p>Veleno d’api, cera d’api e oli essenziali gli danno un’identità forte e riconoscibile.</p></div>
+              <div class="venom-fact"><b>Il momento giusto</b><p>Quando senti il bisogno di fermarti e dedicare qualche minuto a una zona del corpo.</p></div>
             </div>
             <div class="venom-warning"><strong>Avvertenze del produttore</strong>Tenere fuori dalla portata dei bambini e lontano da luce diretta e fonti di calore. Evitare occhi e mucose. Non usare sotto i 3 anni. Non esporsi a sole o lampade UV dopo l’uso. Fare sempre riferimento all’etichetta aggiornata.</div>
           </div>
@@ -254,12 +255,12 @@ section[id]{scroll-margin-top:92px}
           <div class="venom-detail">
             <span class="series">Apis Regina · 50 ml</span>
             <h3>Crema Viso al Veleno d’Api · APIS1</h3>
-            <p>Crema viso multivitaminica formulata per viso, collo e décolleté. Il produttore la presenta come trattamento cosmetico idratante, tonificante ed elasticizzante.</p>
+            <div class="venom-storyline">La parte più preziosa della routine viso.</div>
+            <p>Una crema ricca e avvolgente, pensata per trasformare un gesto quotidiano in un momento più completo dedicato alla pelle.</p>
             <div class="venom-facts">
-              <div class="venom-fact"><b>A cosa serve</b><p>Per la routine quotidiana di viso, collo e décolleté, soprattutto quando si ricerca idratazione e una pelle dall’aspetto più compatto.</p></div>
-              <div class="venom-fact"><b>Benefici cosmetici dichiarati</b><p>Idratazione, tonicità, elasticità e maggiore luminosità dell’aspetto cutaneo.</p></div>
-              <div class="venom-fact"><b>Ingredienti caratterizzanti</b><p>Veleno d’api, pappa reale, acido ialuronico, vitamine A-C-E, karité, borragine, germe di grano e jojoba.</p></div>
-              <div class="venom-fact"><b>Uso</b><p>Applicare su viso, collo e décolleté e massaggiare fino a completo assorbimento.</p></div>
+              <div class="venom-fact"><b>Il suo valore</b><p>Accompagna la pelle con una sensazione di morbidezza, cura e pienezza.</p></div>
+              <div class="venom-fact"><b>Cosa la distingue</b><p>Veleno d’api, pappa reale e altri ingredienti dell’alveare le danno un carattere prezioso e riconoscibile.</p></div>
+              <div class="venom-fact"><b>Il momento giusto</b><p>Quando vuoi dedicare qualche minuto in più a viso, collo e décolleté.</p></div>
             </div>
             <div class="venom-warning"><strong>Avvertenze del produttore</strong>Tenere fuori dalla portata dei bambini e lontano da luce diretta e fonti di calore. Evitare occhi e mucose. Non usare sotto i 3 anni. Richiudere il contenitore dopo l’uso. In caso di sensibilità o allergie note ai prodotti dell’alveare, consultare sempre l’etichetta e le indicazioni del produttore.</div>
           </div>
@@ -270,12 +271,12 @@ section[id]{scroll-margin-top:92px}
           <div class="venom-detail">
             <span class="series">Apis Regina · 30 ml</span>
             <h3>Siero Viso al Veleno d’Api · APIS2</h3>
-            <p>Siero cosmetico leggero che combina veleno d’api, polline e miele con acido ialuronico e altri ingredienti funzionali della routine viso.</p>
+            <div class="venom-storyline">Leggero sulla pelle, forte nel carattere.</div>
+            <p>Un gesto semplice e immediato, pensato per accompagnare il viso con una sensazione più fresca, luminosa e leggera.</p>
             <div class="venom-facts">
-              <div class="venom-fact"><b>A cosa serve</b><p>Per una routine viso orientata a idratazione, tono e aspetto più disteso.</p></div>
-              <div class="venom-fact"><b>Benefici cosmetici dichiarati</b><p>Contribuisce a idratare, levigare e tonificare, lasciando la pelle più luminosa e compatta nell’aspetto.</p></div>
-              <div class="venom-fact"><b>Ingredienti caratterizzanti</b><p>Veleno d’api, polline, miele, acido ialuronico, olio di germe di grano e collagene idrolizzato.</p></div>
-              <div class="venom-fact"><b>Uso</b><p>Su pelle detersa, applicare su viso, collo e décolleté e massaggiare fino ad assorbimento.</p></div>
+              <div class="venom-fact"><b>Il suo valore</b><p>Porta nella routine quotidiana un momento rapido ma curato.</p></div>
+              <div class="venom-fact"><b>Cosa lo distingue</b><p>Veleno d’api, miele e polline raccontano in modo diretto l’identità dell’alveare.</p></div>
+              <div class="venom-fact"><b>Il momento giusto</b><p>Quando vuoi qualcosa di essenziale, piacevole e facile da inserire ogni giorno.</p></div>
             </div>
             <div class="venom-warning"><strong>Avvertenze del produttore</strong>Tenere fuori dalla portata dei bambini e lontano da luce diretta e fonti di calore. Evitare occhi e mucose. Non usare sotto i 3 anni. Richiudere dopo l’utilizzo. Fare riferimento alla confezione aggiornata.</div>
           </div>
@@ -286,12 +287,12 @@ section[id]{scroll-margin-top:92px}
           <div class="venom-detail">
             <span class="series">Veleno d’Oro · 250 ml</span>
             <h3>Crema Corpo Veleno d’Api · APIS4</h3>
-            <p>Crema corpo a rapido assorbimento con veleno d’api, aloe, karité, caffeina ed estratto di miele, pensata per una routine corpo ricca ma piacevole.</p>
+            <div class="venom-storyline">Un momento tutto per il corpo.</div>
+            <p>Una crema avvolgente che porta il carattere della linea in un gesto ampio, morbido e piacevole da vivere ogni giorno.</p>
             <div class="venom-facts">
-              <div class="venom-fact"><b>A cosa serve</b><p>Per idratare la pelle del corpo e mantenerla morbida, elastica e curata.</p></div>
-              <div class="venom-fact"><b>Benefici cosmetici dichiarati</b><p>Idratazione intensa e, con l’uso continuativo, un aspetto più tonico e compatto.</p></div>
-              <div class="venom-fact"><b>Ingredienti caratterizzanti</b><p>Veleno d’api, aloe vera, karité, olio d’oliva, caffeina ed estratto di miele.</p></div>
-              <div class="venom-fact"><b>Uso</b><p>Distribuire sul corpo con un leggero massaggio.</p></div>
+              <div class="venom-fact"><b>Il suo valore</b><p>Regala alla pelle una sensazione di morbidezza, comfort e attenzione.</p></div>
+              <div class="venom-fact"><b>Cosa la distingue</b><p>Il veleno d’api incontra miele, aloe e karité in una proposta dal carattere ricco.</p></div>
+              <div class="venom-fact"><b>Il momento giusto</b><p>Dopo la doccia o quando vuoi trasformare la cura del corpo in un momento per te.</p></div>
             </div>
             <div class="venom-warning"><strong>Avvertenze del produttore</strong>Tenere fuori dalla portata dei bambini e lontano da luce diretta e fonti di calore. Evitare occhi e mucose. Non usare sotto i 3 anni. Fare riferimento all’etichetta aggiornata.</div>
           </div>
@@ -302,12 +303,12 @@ section[id]{scroll-margin-top:92px}
           <div class="venom-detail">
             <span class="series">Veleno d’Oro · 250 ml</span>
             <h3>Gommage Viso e Corpo · APIS5</h3>
-            <p>Trattamento cosmetico esfoliante per viso e corpo che abbina veleno d’api e ingredienti dell’alveare a una funzione di levigatura superficiale della pelle.</p>
+            <div class="venom-storyline">Ricominciare dalla pelle.</div>
+            <p>Un gesto pensato per lasciare la pelle più liscia e luminosa nell’aspetto, preparando il momento successivo della routine.</p>
             <div class="venom-facts">
-              <div class="venom-fact"><b>A cosa serve</b><p>Per rimuovere delicatamente le cellule superficiali e preparare la pelle ai trattamenti cosmetici successivi.</p></div>
-              <div class="venom-fact"><b>Benefici cosmetici</b><p>Pelle più liscia, morbida e luminosa nell’aspetto dopo l’esfoliazione.</p></div>
-              <div class="venom-fact"><b>Particolarità</b><p>Unisce l’azione esfoliante al racconto della linea Veleno d’Oro e dei prodotti dell’alveare.</p></div>
-              <div class="venom-fact"><b>Uso</b><p>Seguire le modalità d’uso riportate sulla confezione aggiornata del prodotto.</p></div>
+              <div class="venom-fact"><b>Il suo valore</b><p>Dà alla pelle una sensazione di rinnovamento e leggerezza.</p></div>
+              <div class="venom-fact"><b>Cosa lo distingue</b><p>È il passaggio che prepara e rende più completo tutto ciò che viene dopo.</p></div>
+              <div class="venom-fact"><b>Il momento giusto</b><p>Quando vuoi ritrovare una pelle dall’aspetto più fresco, uniforme e luminoso.</p></div>
             </div>
             <div class="venom-warning"><strong>Avvertenze</strong>Per questa referenza mostriamo solo indicazioni generali: evitare occhi e mucose e attenersi sempre alle avvertenze riportate sull’etichetta aggiornata prima dell’utilizzo.</div>
           </div>
@@ -318,12 +319,12 @@ section[id]{scroll-margin-top:92px}
           <div class="venom-detail">
             <span class="series">Veleno d’Oro · 250 ml</span>
             <h3>Bagnodoccia Veleno d’Oro · APIS7</h3>
-            <p>Detergente corpo che abbina veleno d’api ed estratto di miele in una formula pensata per la detersione quotidiana.</p>
+            <div class="venom-storyline">Ogni giorno, un gesto che nasce dall’alveare.</div>
+            <p>Il prodotto più quotidiano della linea: semplice, immediato e pensato per trasformare anche la doccia in un momento più personale.</p>
             <div class="venom-facts">
-              <div class="venom-fact"><b>A cosa serve</b><p>Per detergere la pelle del corpo durante la doccia.</p></div>
-              <div class="venom-fact"><b>Benefici cosmetici dichiarati</b><p>Detersione delicata con una sensazione di pelle morbida, curata e piacevolmente vellutata.</p></div>
-              <div class="venom-fact"><b>Ingredienti caratterizzanti</b><p>Veleno d’api ed estratto di miele.</p></div>
-              <div class="venom-fact"><b>Uso</b><p>Applicare sulla pelle inumidita, massaggiare e risciacquare.</p></div>
+              <div class="venom-fact"><b>Il suo valore</b><p>Porta carattere e piacevolezza dentro un gesto che fai ogni giorno.</p></div>
+              <div class="venom-fact"><b>Cosa lo distingue</b><p>Veleno d’api ed estratto di miele danno alla detersione un’identità tutta sua.</p></div>
+              <div class="venom-fact"><b>Il momento giusto</b><p>Nella doccia quotidiana, quando vuoi che anche il gesto più semplice abbia più presenza.</p></div>
             </div>
             <div class="venom-warning"><strong>Avvertenze del produttore</strong>Tenere fuori dalla portata dei bambini e lontano da luce diretta e fonti di calore. Evitare occhi e mucose. Non usare sotto i 3 anni. Fare riferimento alla confezione aggiornata.</div>
           </div>
