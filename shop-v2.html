@@ -806,6 +806,34 @@ function apeAddContextLink(action){
   apeChatMessages.appendChild(link);
   apeChatMessages.scrollTop=apeChatMessages.scrollHeight;
 }
+
+function apeContextActionFromText(message,reply){
+  const l=apeCurrentLanguage();
+  const text=(String(message||'')+' '+String(reply||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const labels={
+    it:{millefiori:'Vai al Miele Millefiori',melone:'Vai al Miele al Melone',fragola:'Vai al Miele alla Fragola',pesca:'Vai al Miele alla Pesca',arancia:"Vai al Miele all'Arancia",mieli:'Scopri i Mieli del Busatello',punti:'Vai ai Punti Ape',oasi:"Scopri l'Oasi del Busatello",galena:'Scopri la Galena delle Api',alveoterapia:"Scopri l'Alveoterapia Integrata",veleni:'Scopri la Linea Veleni',bacheca:'Vai alla Bacheca',alveo:'Scopri Alveo Digitale'},
+    en:{millefiori:'Go to Millefiori Honey',melone:'Go to Melon Honey',fragola:'Go to Strawberry Honey',pesca:'Go to Peach Honey',arancia:'Go to Orange Honey',mieli:'Discover Busatello Honeys',punti:'Go to Bee Points',oasi:'Discover Busatello Oasis',galena:'Discover Galena delle Api',alveoterapia:'Discover Integrated Alveotherapy',veleni:'Discover the Bee Venom Line',bacheca:'Go to News',alveo:'Discover Alveo Digitale'},
+    de:{millefiori:'Zum Millefiori-Honig',melone:'Zum Melonenhonig',fragola:'Zum Erdbeerhonig',pesca:'Zum Pfirsichhonig',arancia:'Zum Orangenhonig',mieli:'Busatello-Honige entdecken',punti:'Zu den Bienenpunkten',oasi:'Oase Busatello entdecken',galena:'Galena delle Api entdecken',alveoterapia:'Integrierte Alveotherapie entdecken',veleni:'Bienengift-Linie entdecken',bacheca:'Zu den Neuigkeiten',alveo:'Alveo Digitale entdecken'},
+    fr:{millefiori:'Voir le Miel Millefiori',melone:'Voir le Miel au Melon',fragola:'Voir le Miel à la Fraise',pesca:'Voir le Miel à la Pêche',arancia:"Voir le Miel à l'Orange",mieli:'Découvrir les Miels du Busatello',punti:'Voir les Points Abeille',oasi:"Découvrir l'Oasis du Busatello",galena:'Découvrir Galena delle Api',alveoterapia:"Découvrir l'Alvéothérapie Intégrée",veleni:"Découvrir la Ligne Venin d'Abeille",bacheca:'Voir les Actualités',alveo:'Découvrir Alveo Digitale'},
+    es:{millefiori:'Ir a la Miel Millefiori',melone:'Ir a la Miel al Melón',fragola:'Ir a la Miel a la Fresa',pesca:'Ir a la Miel al Melocotón',arancia:'Ir a la Miel a la Naranja',mieli:'Descubrir las Mieles del Busatello',punti:'Ir a los Puntos Abeja',oasi:'Descubrir el Oasis del Busatello',galena:'Descubrir Galena delle Api',alveoterapia:'Descubrir la Alveoterapia Integrada',veleni:'Descubrir la Línea Veneno de Abeja',bacheca:'Ir a Novedades',alveo:'Descubrir Alveo Digitale'}
+  };
+  const L=labels[l]||labels.it;
+  const has=(...xs)=>xs.some(x=>text.includes(x));
+  if(has('millefiori'))return {href:'/shop#miele-millefiori',label:L.millefiori};
+  if(has('miele al melone','miele di melone','miel al melon','melon honey','melonenhonig'))return {href:'/shop#miele-melone',label:L.melone};
+  if(has('miele alla fragola','miele di fragola','miel a la fresa','strawberry honey','erdbeerhonig'))return {href:'/shop#miele-fragola',label:L.fragola};
+  if(has('miele alla pesca','miele di pesca','miel al melocoton','peach honey','pfirsichhonig'))return {href:'/shop#miele-pesca',label:L.pesca};
+  if(has("miele all'arancia",'miele di arancia','miel a la naranja','orange honey','orangenhonig'))return {href:'/shop#miele-arancia',label:L.arancia};
+  if(has('punti ape','bee points','bienenpunkte','points abeille','puntos abeja'))return {href:'/shop#punti-ape',label:L.punti};
+  if(has('oasi del busatello','oasis del busatello','busatello oasis','oase busatello','oasis du busatello'))return {href:'/alveoterapia',label:L.oasi};
+  if(has('galena delle api'))return {href:'/centro',label:L.galena};
+  if(has('alveo digitale'))return {href:'/alveo-digitale',label:L.alveo};
+  if(has('bacheca','news','novedades','actualites','aktuelles'))return {href:'/bacheca',label:L.bacheca};
+  if(has('linea veleni','bee venom line','bienengift-linie',"ligne venin d'abeille",'linea veneno de abeja'))return {href:'/#veleni',label:L.veleni};
+  if(has('alveoterapia integrata','integrated alveotherapy','integrierte alveotherapie','alveotherapie integree','alveoterapia integrada'))return {href:'/alveoterapia',label:L.alveoterapia};
+  if(has('miele','mieli','honey','honeys','honig','miel','miels'))return {href:'/shop#mieli',label:L.mieli};
+  return null;
+}
 function apeNormalize(text){
   return String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 }
@@ -1243,7 +1271,8 @@ async function apeAsk(text){
     if(res.ok && data?.ok && data?.reply){
       apeChatHistory.push({role:'assistant',content:data.reply});
       apeAddMessage(apeRenderAi(data.reply),'bot');
-      if(data.action)apeAddContextLink(data.action);
+      const contextualAction=data.action||apeContextActionFromText(value,data.reply);
+      if(contextualAction)apeAddContextLink(contextualAction);
       return;
     }
   }catch(_){}
