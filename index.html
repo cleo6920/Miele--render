@@ -2205,7 +2205,31 @@ const wrapRef = useRef(null);
 
             useEffect(() => {
                 try {
-                    const requestedLine = new URLSearchParams(window.location.search).get('linea');
+                    const params = new URLSearchParams(window.location.search);
+                    const requestedLine = params.get('linea');
+                    const requestedCategory = params.get('categoria');
+                    const requestedProduct = params.get('prodotto');
+                    const allowedCategories = new Set([
+                        'busatello','alimenti','integratori','cosmesi-cera',
+                        'veleno-api','alveoterapia','tesori','tris-alveare','alveo-digitale'
+                    ]);
+
+                    if (requestedProduct) {
+                        setSelectedCategory(null);
+                        setSelectedProductId(requestedProduct);
+                        setHasNavigatedAway(true);
+                        setTimeout(() => window.scrollTo({ top: 0, behavior: 'auto' }), 80);
+                        return;
+                    }
+
+                    if (requestedCategory && allowedCategories.has(requestedCategory)) {
+                        setSelectedProductId(null);
+                        setSelectedCategory(requestedCategory);
+                        setHasNavigatedAway(true);
+                        setTimeout(() => window.scrollTo({ top: 0, behavior: 'auto' }), 80);
+                        return;
+                    }
+
                     if (requestedLine === 'veleni') {
                         setSelectedProductId(null);
                         setSelectedCategory('veleno-api');
@@ -2213,7 +2237,7 @@ const wrapRef = useRef(null);
                         setTimeout(() => window.scrollTo({ top: 0, behavior: 'auto' }), 80);
                     }
                 } catch (error) {
-                    console.warn('Deep link linea Veleni non applicato:', error);
+                    console.warn('Deep link Shop non applicato:', error);
                 }
             }, []);
             const [products, setProducts] = useState([]);
