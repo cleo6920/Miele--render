@@ -1126,6 +1126,75 @@ function apeKeepConversation(question,reply){
   return reply+'<br><br><strong>'+follow+'</strong>';
 }
 
+const APE_UI_I18N={
+  it:{
+    subtitle:'La tua guida nella Fabbrica delle Api',
+    greeting:'<strong>Ciao, sono Ape Pelù 🐝</strong><br>Posso accompagnarti tra Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Mieli, Linea Veleni, Punti Ape, ordini e spedizioni. Cosa ti incuriosisce?',
+    placeholder:'Scrivi la tua domanda...',send:'Invia',
+    note:'Ape Pelù informa e orienta. Non sostituisce un medico o un professionista sanitario.',
+    quick:[['Alveoterapia',"Cos'è l'Alveoterapia Integrata?"],['Oasi',"Parlami dell'Oasi del Busatello"],['Galena',"Cos'è la Galena delle Api?"],['Mieli',"Come scelgo un miele?"],['Linea Veleni',"Parlami della Linea Veleni"],['Punti Ape',"Come funzionano i Punti Ape?"],['Ordini e spedizioni',"Come funzionano spedizioni e ordini?"]]
+  },
+  en:{
+    subtitle:'Your guide to La Fabbrica delle Api',
+    greeting:'<strong>Hi, I’m Ape Pelù 🐝</strong><br>I can guide you through Integrated Alveotherapy, Busatello Oasis, Galena delle Api, honeys, the Bee Venom Line, Bee Points, orders and shipping. What are you curious about?',
+    placeholder:'Write your question...',send:'Send',
+    note:'Ape Pelù informs and guides. It does not replace a doctor or healthcare professional.',
+    quick:[['Alveotherapy','What is Integrated Alveotherapy?'],['Oasis','Tell me about Busatello Oasis'],['Galena','What is Galena delle Api?'],['Honeys','How do I choose a honey?'],['Bee Venom Line','Tell me about the Bee Venom Line'],['Bee Points','How do Bee Points work?'],['Orders & shipping','How do orders and shipping work?']]
+  },
+  de:{
+    subtitle:'Deine Begleiterin in der Fabbrica delle Api',
+    greeting:'<strong>Hallo, ich bin Ape Pelù 🐝</strong><br>Ich begleite dich durch Integrierte Alveotherapie, die Oase Busatello, Galena delle Api, Honige, die Bienengift-Linie, Bienenpunkte sowie Bestellungen und Versand. Was möchtest du wissen?',
+    placeholder:'Schreibe deine Frage...',send:'Senden',
+    note:'Ape Pelù informiert und orientiert. Sie ersetzt keinen Arzt oder medizinisches Fachpersonal.',
+    quick:[['Alveotherapie','Was ist Integrierte Alveotherapie?'],['Oase','Erzähl mir von der Oase Busatello'],['Galena','Was ist Galena delle Api?'],['Honige','Wie wähle ich einen Honig aus?'],['Bienengift-Linie','Erzähl mir von der Bienengift-Linie'],['Bienenpunkte','Wie funktionieren die Bienenpunkte?'],['Bestellung & Versand','Wie funktionieren Bestellung und Versand?']]
+  },
+  fr:{
+    subtitle:'Votre guide dans La Fabbrica delle Api',
+    greeting:'<strong>Bonjour, je suis Ape Pelù 🐝</strong><br>Je peux vous accompagner à travers l’Alvéothérapie Intégrée, l’Oasis du Busatello, Galena delle Api, les miels, la Ligne Venin d’Abeille, les Points Abeille, les commandes et les livraisons. Qu’est-ce qui vous intrigue ?',
+    placeholder:'Écrivez votre question...',send:'Envoyer',
+    note:'Ape Pelù informe et oriente. Elle ne remplace pas un médecin ni un professionnel de santé.',
+    quick:[['Alvéothérapie',"Qu’est-ce que l’Alvéothérapie Intégrée ?"],['Oasis',"Parle-moi de l’Oasis du Busatello"],['Galena',"Qu’est-ce que Galena delle Api ?"],['Miels',"Comment choisir un miel ?"],['Ligne Venin d’Abeille',"Parle-moi de la Ligne Venin d’Abeille"],['Points Abeille',"Comment fonctionnent les Points Abeille ?"],['Commandes et livraisons',"Comment fonctionnent les commandes et les livraisons ?"]]
+  },
+  es:{
+    subtitle:'Tu guía en La Fabbrica delle Api',
+    greeting:'<strong>Hola, soy Ape Pelù 🐝</strong><br>Puedo acompañarte por la Alveoterapia Integrada, el Oasis del Busatello, Galena delle Api, las mieles, la Línea Veneno de Abeja, los Puntos Abeja, los pedidos y los envíos. ¿Qué te da curiosidad?',
+    placeholder:'Escribe tu pregunta...',send:'Enviar',
+    note:'Ape Pelù informa y orienta. No sustituye a un médico ni a un profesional sanitario.',
+    quick:[['Alveoterapia','¿Qué es la Alveoterapia Integrada?'],['Oasis','Háblame del Oasis del Busatello'],['Galena','¿Qué es Galena delle Api?'],['Mieles','¿Cómo elijo una miel?'],['Línea Veneno de Abeja','Háblame de la Línea Veneno de Abeja'],['Puntos Abeja','¿Cómo funcionan los Puntos Abeja?'],['Pedidos y envíos','¿Cómo funcionan los pedidos y los envíos?']]
+  }
+};
+
+function apeCurrentLanguage(){
+  try{
+    const saved=localStorage.getItem('fda-site-language');
+    if(['it','en','de','fr','es'].includes(saved))return saved;
+  }catch(_){}
+  const html=(document.documentElement.lang||'it').toLowerCase().slice(0,2);
+  return ['it','en','de','fr','es'].includes(html)?html:'it';
+}
+
+function apeApplyLanguage(){
+  const l=apeCurrentLanguage(), t=APE_UI_I18N[l]||APE_UI_I18N.it;
+  const panel=document.getElementById('apeChatPanel');
+  if(!panel)return;
+  const subtitle=panel.querySelector('.ape-chat-head small');
+  if(subtitle)subtitle.textContent=t.subtitle;
+  const messages=document.getElementById('apeChatMessages');
+  if(messages && messages.children.length===1)messages.children[0].innerHTML=t.greeting;
+  const input=document.getElementById('apeChatInput');
+  if(input)input.placeholder=t.placeholder;
+  const send=document.getElementById('apeChatSend');
+  if(send)send.textContent=t.send;
+  const note=panel.querySelector('.ape-note');
+  if(note)note.textContent=t.note;
+  document.querySelectorAll('#apeQuick [data-ape-q]').forEach((btn,i)=>{
+    const q=t.quick[i];
+    if(!q)return;
+    btn.textContent=q[0];
+    btn.dataset.apeQ=q[1];
+  });
+}
+
 const apeChatHistory=[];
 
 function apeRenderAi(text){
@@ -1150,7 +1219,7 @@ async function apeAsk(text){
     const res=await fetch('/api/ape-pelu-chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:value,history:historyToSend})
+      body:JSON.stringify({message:value,history:historyToSend,language:(()=>{try{return localStorage.getItem('fda-site-language')||document.documentElement.lang||'it';}catch(_){return document.documentElement.lang||'it';}})()})
     });
     const data=await res.json().catch(()=>null);
 
@@ -1176,6 +1245,7 @@ document.getElementById('apeChatSend').addEventListener('click',()=>apeAsk(apeCh
 apeChatInput.addEventListener('keydown',e=>{if(e.key==='Enter')apeAsk(apeChatInput.value);});
 document.querySelectorAll('[data-ape-q]').forEach(btn=>btn.addEventListener('click',()=>apeAsk(btn.dataset.apeQ)));
 
+apeApplyLanguage();
 ['coAddress','coCap','coCity','coProvince'].forEach(id=>{
   const el=document.getElementById(id);
   if(el)el.addEventListener('input',invalidateAddressValidation);
