@@ -836,6 +836,10 @@ function apePelùReply(question){
     return '<strong>La cera d’api</strong> viene prodotta dalle api operaie tramite speciali ghiandole.<br><br><strong>A cosa serve alle api?</strong><br>Serve per costruire i <strong>favi</strong>: le strutture con celle esagonali dove vengono allevate le giovani api e conservati miele e polline.<br><br><strong>A cosa serve a noi?</strong><br>Viene utilizzata, tra le altre cose, per candele, cosmetici, balsami, lavorazioni artigianali e prodotti protettivi.';
   }
 
+  if(has('cosmesi','cosmetica','cosmetici','crema','creme')){
+    return '<strong>Le api hanno un ruolo importante anche nella cosmesi</strong>, perché dall’alveare arrivano diverse sostanze che possono essere usate come ingredienti cosmetici.<br><br><strong>Miele:</strong> viene apprezzato per la sua capacità di trattenere umidità e per la sensazione morbida che può lasciare sulla pelle.<br><strong>Cera d’api:</strong> aiuta a dare consistenza a balsami e creme e crea una barriera protettiva sulla superficie della pelle.<br><strong>Propoli:</strong> viene utilizzata in alcune formulazioni cosmetiche, soprattutto in prodotti pensati per la cura quotidiana della pelle.<br><strong>Pappa reale:</strong> può comparire in creme e trattamenti cosmetici come ingrediente legato al mondo dell’alveare.<br><strong>Veleno d’api:</strong> viene utilizzato in alcune linee cosmetiche specialistiche, come la nostra <strong>Linea Veleni</strong>, sempre senza presentarlo come cura o trattamento medico.<br><br>In pratica, il mondo delle api entra nella cosmesi attraverso ingredienti naturali molto diversi tra loro, ognuno con una funzione precisa nella formulazione.';
+  }
+
   if(has('miele')){
     if(has('cristall','diventa duro','indurisce','granul')){
       return 'La <strong>cristallizzazione del miele</strong> è un fenomeno naturale. Alcuni mieli diventano più densi o formano cristalli più velocemente di altri, soprattutto in base alla quantità di glucosio, alla temperatura e alla composizione del miele. <strong>Non significa che il miele sia rovinato.</strong>';
@@ -1008,6 +1012,8 @@ function apeKeepConversation(question,reply){
     follow='Vuoi che ti spieghi anche come fanno le api a raccogliere e usare la propoli dentro l’alveare?';
   }else if(q.includes('velen')){
     follow='Vuoi che ti spieghi anche come funziona il pungiglione dell’ape e perché il veleno è legato alla difesa della colonia?';
+  }else if(q.includes('cosmesi')||q.includes('cosmetica')||q.includes('cosmetici')){
+    follow='Vuoi che ti faccia un esempio semplice di come cambiano i cosmetici quando contengono miele, cera d’api, propoli o veleno d’api?';
   }else if(q.includes('miele')||q.includes('mieli')){
     follow='Vuoi che ti aiuti a scegliere un miele in base al gusto oppure vuoi sapere come fanno le api a produrlo?';
   }else if(q.includes('regina')){
