@@ -1122,15 +1122,49 @@ function apeKeepConversation(question,reply){
   return reply+'<br><br><strong>'+follow+'</strong>';
 }
 
-function apeAsk(text){
+const apeChatHistory=[];
+
+function apeRenderAi(text){
+  const safe=apeEscape(String(text||''));
+  return safe
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n\n+/g,'<br><br>')
+    .replace(/\n/g,'<br>');
+}
+
+async function apeAsk(text){
   const value=String(text||'').trim();
   if(!value)return;
+
   apeAddMessage(value,'user');
   apeChatInput.value='';
-  setTimeout(()=>{
-    const reply=apePelùReply(value);
-    apeAddMessage(apeKeepConversation(value,reply),'bot');
-  },180);
+
+  const historyToSend=apeChatHistory.slice(-10);
+  apeChatHistory.push({role:'user',content:value});
+
+  try{
+    const res=await fetch('/api/ape-pelu-chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:value,history:historyToSend})
+    });
+    const data=await res.json().catch(()=>null);
+
+    if(res.ok && data?.ok && data?.reply){
+      apeChatHistory.push({role:'assistant',content:data.reply});
+      apeAddMessage(apeRenderAi(data.reply),'bot');
+      return;
+    }
+  }catch(_){}
+
+  // Rete di sicurezza: se l'AI non è configurata o non risponde,
+  // Ape Pelù continua a funzionare con la base di conoscenza locale.
+  const fallback=apeKeepConversation(value,apePelùReply(value));
+  apeChatHistory.push({
+    role:'assistant',
+    content:String(fallback).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim()
+  });
+  apeAddMessage(fallback,'bot');
 }
 document.getElementById('apeChatLaunch').addEventListener('click',()=>{apeChatPanel.classList.add('open');setTimeout(()=>apeChatInput.focus(),50);});
 document.getElementById('apeChatClose').addEventListener('click',()=>apeChatPanel.classList.remove('open'));
