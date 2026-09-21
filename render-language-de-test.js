@@ -1,340 +1,181 @@
 (function(){
 'use strict';
-const KEY='fda-render-language';
-const IT='it', DE='de';
-let lang=IT, busy=false, timer=null;
-const originals=new WeakMap(), translated=new Set(), attrOriginals=new WeakMap();
-let italianPreviewHtml=null;
 
-const T={
-"Centro di Alveoterapia Integrata - Castel d'Ario":"Zentrum für Integrierte Alveotherapie - Castel d'Ario",
-"A Castel d'Ario (MN) nasce il Centro di Alveoterapia Integrata":"In Castel d'Ario (MN) entsteht das Zentrum für Integrierte Alveotherapie",
-"ALVEOTERAPIA INTEGRATA":"INTEGRIERTE ALVEOTHERAPIE",
-"Castel d'Ario · Mantova":"Castel d'Ario · Mantua",
-"Il Centro":"Das Zentrum","Alveoterapia":"Alveotherapie","Bacheca":"Aktuelles","Chi siamo":"Über uns","Contatti":"Kontakt",
-"Prodotti & Shop":"Produkte & Shop","SHOP 🛒":"SHOP 🛒","Nuova apertura":"Neueröffnung","A Castel d'Ario":"In Castel d'Ario",
-"Centro di Alveoterapia Integrata":"Zentrum für Integrierte Alveotherapie","Nuova apertura · Castel d'Ario":"Neueröffnung · Castel d'Ario",
-"Il primo Centro di":"Das erste Zentrum für","Alveoterapia Integrata":"Integrierte Alveotherapie",
-"Un nuovo spazio dedicato al benessere dell'alveare, nel calore naturale del legno, con postazioni professionali e una selezione completa di mieli, prodotti dell'alveare e cosmesi naturale.":"Ein neuer Ort rund um die Welt des Bienenstocks, in der natürlichen Wärme von Holz, mit professionellen Plätzen sowie einer Auswahl an Honig, Bienenprodukten und Naturkosmetik.",
-"Le sedute di Alveoterapia Integrata sono offerte gratuitamente dal Centro a chiunque desideri provarle.":"Die Sitzungen der Integrierten Alveotherapie werden vom Zentrum allen Interessierten kostenlos angeboten.",
-"Scopri il Centro":"Zentrum entdecken","Entra nello Shop":"Zum Shop","Respira l'essenza dell'alveare":"Erlebe die Essenz des Bienenstocks",
-"Uno spazio per vivere l’esperienza dell’alveare":"Ein Ort, um die Welt des Bienenstocks zu erleben",
-"La struttura in legno ospita due postazioni dedicate e dispositivi professionali per la diffusione della propoli, in un ambiente raccolto e accogliente.":"Die Holzstruktur beherbergt zwei dafür vorgesehene Plätze und professionelle Geräte zur Propolis-Diffusion in einer ruhigen und einladenden Umgebung.",
-"Sedute gratuite":"Kostenlose Sitzungen","Il Centro offre gratuitamente l'esperienza a chiunque desideri provarla.":"Das Zentrum bietet diese Erfahrung allen Interessierten kostenlos an.",
-"Ambiente dedicato":"Eigener Bereich","Uno spazio protetto nel porticato di Via XX Settembre a Castel d'Ario.":"Ein geschützter Bereich unter dem Portikus in der Via XX Settembre in Castel d'Ario.",
-"Due postazioni":"Zwei Plätze","Un'esperienza organizzata per garantire comfort, ordine e riservatezza.":"Eine organisierte Erfahrung mit Komfort, Ruhe und Privatsphäre.",
-"Continuità anche a casa":"Auch zu Hause weiterführen","I prodotti dell'alveare accompagnano il percorso quotidiano di benessere.":"Bienenprodukte begleiten den Alltag auch zu Hause.",
-"Come funziona":"So funktioniert es","Un sito, un centro, un ecosistema":"Eine Website, ein Zentrum, ein Ökosystem",
-"Tutto il mondo dell'alveare, in un unico luogo":"Die ganze Welt des Bienenstocks an einem Ort",
-"Informazione, esperienza nel centro fisico e acquisto online convivono nello stesso sito.":"Information, die Erfahrung im Zentrum und der Online-Einkauf sind auf derselben Website vereint.",
-"Scopri la struttura, l'ambiente e il progetto di Castel d'Ario.":"Entdecke die Struktur, die Atmosphäre und das Projekt in Castel d'Ario.",
-"Entra nel Centro →":"Zum Zentrum →","Scopri come si svolge una seduta: il servizio è offerto gratuitamente dal Centro.":"Erfahre, wie eine Sitzung abläuft: Das Angebot des Zentrums ist kostenlos.",
-"Scopri il percorso →":"Ablauf entdecken →","Prodotti":"Produkte","Mieli, specialità, prodotti dell'alveare, cosmesi e linee BIO.":"Honig, Spezialitäten, Bienenprodukte, Kosmetik und BIO-Linien.",
-"Vai allo Shop →":"Zum Shop →","Apertura, iniziative, aggiornamenti e novità del Centro.":"Eröffnung, Initiativen, Neuigkeiten und Aktualisierungen des Zentrums.",
-"Leggi le novità →":"Neuigkeiten lesen →","L'e-commerce resta al centro":"Der Online-Shop bleibt zentral","Dal Centro alla tua casa":"Vom Zentrum zu dir nach Hause",
-"Lo shop mantiene lo stesso catalogo già attivo: ricerca, categorie, schede prodotto, prezzi, quantità, carrello, spedizione e checkout restano invariati.":"Der Shop behält seinen vollständigen Katalog mit Suche, Kategorien, Produktseiten, Preisen, Mengen, Warenkorb, Versand und Checkout.",
-"Apri il catalogo 🛒":"Katalog öffnen 🛒","Prodotti dell'alveare":"Bienenprodukte","Integratori e specialità BIO già presenti nello shop.":"BIO-Nahrungsergänzungen und Spezialitäten sind bereits im Shop verfügbar.",
-"Mieli e specialità":"Honig und Spezialitäten","Dai mieli del Busatello ai mieli selezionati e preparati.":"Von Busatello-Honig bis zu ausgewählten Honigspezialitäten.",
-"Cosmesi naturale":"Naturkosmetik","Prodotti a base di miele, propoli, aloe, pappa reale e polline.":"Produkte mit Honig, Propolis, Aloe, Gelée Royale und Pollen.",
-"Dove trovarci":"Wo du uns findest","Il Centro a Castel d'Ario":"Das Zentrum in Castel d'Ario",
-"Un progetto nato per valorizzare un porticato esistente trasformandolo in uno spazio dedicato al benessere dell'alveare.":"Ein Projekt, das einen bestehenden Portikus in einen Ort rund um die Welt des Bienenstocks verwandelt.",
-"Informazioni e contatti":"Informationen und Kontakt","Centro di Castel d'Ario e shop online dedicato ai prodotti dell'alveare.":"Zentrum in Castel d'Ario und Online-Shop für Bienenprodukte.",
-"Scopri":"Entdecken","Acquista":"Einkaufen","Home":"Startseite",
-"Il progetto":"Das Projekt","Una struttura in legno inserita nel porticato di Via XX Settembre a Castel d'Ario, progettata per creare un ambiente dedicato all'alveoterapia integrata, con sedute offerte gratuitamente dal Centro.":"Eine Holzstruktur unter dem Portikus in der Via XX Settembre in Castel d'Ario, geschaffen für die Integrierte Alveotherapie; die Sitzungen werden vom Zentrum kostenlos angeboten.",
-"La fabbrica delle api":"La Fabbrica delle Api","Il progetto valorizza il porticato esistente con una struttura lignea prefabbricata, inserita in modo funzionale e reversibile, senza perdere il rapporto con l'ambiente circostante.":"Das Projekt wertet den bestehenden Portikus mit einer funktionalen, reversiblen Holzstruktur auf und bewahrt dabei die Verbindung zur Umgebung.",
-"Il Centro offre gratuitamente le sedute di Alveoterapia Integrata a chiunque desideri provarle.":"Das Zentrum bietet Sitzungen der Integrierten Alveotherapie allen Interessierten kostenlos an.",
-"Castel d'Ario":"Castel d'Ario","Il Centro nasce in Via XX Settembre, in provincia di Mantova.":"Das Zentrum befindet sich in der Via XX Settembre in der Provinz Mantua.",
-"Legno naturale":"Naturholz","L'ambiente è pensato per essere raccolto, ordinato e accogliente.":"Die Umgebung ist ruhig, geordnet und einladend gestaltet.",
-"Lo spazio interno è organizzato per ospitare due postazioni dedicate.":"Der Innenraum ist für zwei eigene Plätze organisiert.",
-"Uno spazio pensato per stare bene":"Ein Ort zum Wohlfühlen","Un ambiente raccolto e accogliente, dove vivere con tranquillità l'esperienza dell'Alveoterapia Integrata e concedersi un momento di benessere.":"Eine ruhige und einladende Umgebung, in der du die Integrierte Alveotherapie entspannt erleben kannst.",
-"Un progetto integrato":"Ein integriertes Projekt","Il Centro non vive separato dallo shop: mieli, prodotti dell'alveare e cosmesi naturale rappresentano la continuità del percorso anche fuori dalla struttura.":"Zentrum und Shop gehören zusammen: Honig, Bienenprodukte und Naturkosmetik führen das Erlebnis auch außerhalb des Zentrums fort.",
-"Scopri i prodotti →":"Produkte entdecken →",
-"Sedute gratuite · Castel d'Ario":"Kostenlose Sitzungen · Castel d'Ario","Il Centro offre gratuitamente le sedute di Alveoterapia Integrata a chiunque desideri provarle, in un ambiente dedicato con diffusori professionali e capsule specifiche a base di propoli.":"Das Zentrum bietet die Sitzungen der Integrierten Alveotherapie kostenlos an, in einem eigenen Bereich mit professionellen Diffusoren und speziellen Propolis-Kapseln.",
-"Un servizio del Centro":"Ein Angebot des Zentrums","Le sedute sono gratuite":"Die Sitzungen sind kostenlos",
-"Vogliamo rendere l'esperienza accessibile: il Centro offre gratuitamente le sedute di Alveoterapia Integrata a chiunque desideri provarle.":"Wir möchten die Erfahrung zugänglich machen: Das Zentrum bietet die Sitzungen allen Interessierten kostenlos an.",
-"Informazioni":"Informationen","Come si svolge":"Ablauf einer Sitzung","All'interno della struttura sono previste due postazioni. La persona si accomoda e utilizza il dispositivo dedicato alla diffusione della propoli attraverso il sistema previsto dal produttore.":"Im Inneren gibt es zwei Plätze. Die Person nimmt Platz und nutzt das dafür vorgesehene Gerät zur Propolis-Diffusion entsprechend dem System des Herstellers.",
-"Il servizio è offerto gratuitamente dal Centro a chiunque desideri provare l'esperienza.":"Das Angebot ist für alle, die es ausprobieren möchten, kostenlos.",
-"Ambiente raccolto":"Ruhige Umgebung","La struttura in legno è parte dell'esperienza e favorisce una permanenza tranquilla e ordinata.":"Die Holzstruktur ist Teil der Erfahrung und schafft eine ruhige, geordnete Atmosphäre.",
-"Dispositivo professionale":"Professionelles Gerät","Il progetto prevede l'impiego di Propolair / Propoltherapy Professional.":"Zum Projekt gehört der Einsatz von Propolair / Propoltherapy Professional.",
-"Capsule dedicate":"Spezielle Kapseln","Il sistema utilizza capsule compatibili specifiche per il diffusore.":"Das System verwendet speziell für den Diffusor geeignete Kapseln.",
-"Il concetto di integrazione":"Das Konzept der Integration","Il Centro unisce esperienza nel luogo fisico e continuità quotidiana attraverso una selezione di prodotti dell'alveare disponibili anche nello shop online.":"Das Zentrum verbindet die Erfahrung vor Ort mit einer Auswahl an Bienenprodukten, die auch im Online-Shop erhältlich sind.",
-"Vai ai prodotti →":"Zu den Produkten →","Informazione responsabile":"Verantwortungsvolle Information",
-"Le informazioni presenti sul sito descrivono il progetto e l'esperienza proposta. Non sostituiscono diagnosi, indicazioni o trattamenti medici.":"Die Informationen auf dieser Website beschreiben das Projekt und die angebotene Erfahrung. Sie ersetzen keine medizinische Diagnose, Empfehlung oder Behandlung.",
-"Aggiornamenti dal Centro":"Neuigkeiten aus dem Zentrum","Uno spazio semplice per seguire l'apertura, le novità, le iniziative e gli aggiornamenti del Centro.":"Hier findest du Informationen zur Eröffnung, Neuigkeiten, Initiativen und Aktualisierungen des Zentrums.",
-"In evidenza":"Im Fokus","Nuova apertura a Castel d'Ario":"Neueröffnung in Castel d'Ario",
-"Il progetto del nuovo Centro di Alveoterapia Integrata prende forma in Via XX Settembre 20/A. In questa pagina pubblicheremo gli aggiornamenti utili sull'apertura e sulle attività.":"Das neue Zentrum für Integrierte Alveotherapie entsteht in der Via XX Settembre 20/A. Hier veröffentlichen wir Informationen zur Eröffnung und zu den Aktivitäten.",
-"Shop":"Shop","Il catalogo è già online":"Der Katalog ist bereits online","Mieli, prodotti dell'alveare, specialità e cosmesi naturale sono già consultabili nello shop integrato.":"Honig, Bienenprodukte, Spezialitäten und Naturkosmetik sind bereits im integrierten Shop verfügbar.",
-"Apri il catalogo →":"Katalog öffnen →","Prossimi aggiornamenti":"Weitere Neuigkeiten",
-"Questa bacheca potrà ospitare orari, giornate di presentazione, nuove linee di prodotto e comunicazioni del Centro senza modificare la struttura dell'e-commerce.":"Hier können Öffnungszeiten, Präsentationstage, neue Produktlinien und Mitteilungen des Zentrums veröffentlicht werden.",
-"Le date e gli orari ufficiali di apertura verranno pubblicati quando saranno definiti.":"Die offiziellen Eröffnungstage und -zeiten werden veröffentlicht, sobald sie feststehen.",
-"La nostra idea":"Unsere Idee","Un progetto che unisce cultura dell'alveare, prodotti selezionati e un nuovo spazio dedicato all'alveoterapia integrata.":"Ein Projekt, das die Welt des Bienenstocks, ausgewählte Produkte und einen neuen Ort für Integrierte Alveotherapie verbindet.",
-"Dall'e-commerce al Centro":"Vom Online-Shop zum Zentrum","Lo shop nasce dalla selezione di mieli, specialità e prodotti dell'alveare. Con il Centro di Castel d'Ario questa esperienza si amplia: il sito diventa il punto di incontro tra informazione, luogo fisico e acquisto online.":"Der Shop entstand aus einer Auswahl von Honig, Spezialitäten und Bienenprodukten. Mit dem Zentrum in Castel d'Ario wird dieses Erlebnis erweitert: Die Website verbindet Information, den physischen Ort und den Online-Einkauf.",
-"Territorio":"Region","Il progetto valorizza Castel d'Ario e le eccellenze legate all'Oasi del Busatello.":"Das Projekt stellt Castel d'Ario und die Besonderheiten rund um die Oasi del Busatello in den Mittelpunkt.",
-"Alveare":"Bienenstock","Miele, propoli, polline, pappa reale, pane d'api e cosmesi naturale sono il filo conduttore dell'offerta.":"Honig, Propolis, Pollen, Gelée Royale, Bienenbrot und Naturkosmetik bilden den roten Faden des Angebots.",
-"Continuità":"Kontinuität","Il Centro e lo shop sono due parti dello stesso percorso, non due attività separate.":"Zentrum und Shop sind zwei Teile desselben Weges und keine getrennten Aktivitäten.",
-"Dove siamo":"Wo wir sind","Il Centro di Alveoterapia Integrata si trova a Castel d'Ario, in provincia di Mantova.":"Das Zentrum für Integrierte Alveotherapie befindet sich in Castel d'Ario in der Provinz Mantua.",
-"Telefono":"Telefon","Email":"E-Mail","Per informazioni, disponibilità e modalità di accesso puoi contattarci telefonicamente oppure inviare un messaggio dal modulo qui sotto.":"Für Informationen, Verfügbarkeit und Zugangsmöglichkeiten kannst du uns telefonisch kontaktieren oder das Formular unten verwenden.",
-"Scopri come si svolge →":"Ablauf entdecken →","Vai alla Bacheca →":"Zu den Neuigkeiten →","Messaggio inviato. Grazie, ti risponderemo appena possibile.":"Nachricht gesendet. Vielen Dank, wir antworten so bald wie möglich.",
-"Contattaci direttamente":"Direkt kontaktieren","Invia un messaggio":"Nachricht senden","Compila i campi qui sotto. Il messaggio verrà inviato a":"Fülle die Felder aus. Die Nachricht wird gesendet an",
-"Nome e cognome *":"Vor- und Nachname *","Email *":"E-Mail *","Messaggio *":"Nachricht *","Invia messaggio":"Nachricht senden",
-"I dati inseriti vengono utilizzati esclusivamente per rispondere alla richiesta inviata.":"Die eingegebenen Daten werden ausschließlich zur Beantwortung deiner Anfrage verwendet.",
-"Vuoi vedere i prodotti?":"Möchtest du die Produkte sehen?","Lo shop online resta sempre accessibile dal sito del Centro.":"Der Online-Shop ist jederzeit über die Website des Zentrums erreichbar.",
-"Vai a Prodotti & Shop":"Zu Produkte & Shop",
-"← Home Centro":"← Startseite Zentrum","Le linee della Fabbrica delle Api":"Die Produktlinien der Fabbrica delle Api","Tutte le linee":"Alle Produktlinien",
-"Carrello":"Warenkorb","Scegli il formato:":"Format wählen:","➕ Aggiungi al carrello":"➕ In den Warenkorb","Non Disponibile":"Nicht verfügbar","Esaurito / Stock Insuff.":"Ausverkauft / Bestand nicht ausreichend",
-"Consegna prevista entro 5–6 giorni • Spedizione gratuita per ordini da €200 in su":"Voraussichtliche Lieferung in 5–6 Tagen • Kostenloser Versand ab 200 €",
-"Spedizione gratuita":"Kostenloser Versand","Consegna locale":"Lokale Lieferung","Corriere":"Kurier",
-"Linea Alimenti":"Lebensmittel","Linea Integratori":"Nahrungsergänzung","Linea Cosmesi e Tesori in Cera d’Api":"Kosmetik & Bienenwachs","I Tesori di Francesco":"Francescos Spezialitäten","I Tris dell’Alveare":"Bienenstock-Dreier-Sets","Linea Cosmetica al Veleno d’Api":"Kosmetik mit Bienengift",
-"ALVEO DIGITALE":"ALVEO DIGITAL","Ricette, video e idee regalo da usare subito":"Rezepte, Videos und digitale Geschenkideen - sofort nutzbar","Scopri Alveo Digitale":"Alveo Digital entdecken","Ricette, video e regali digitali":"Digitale Rezepte, Videos und Geschenke","← Torna alle linee":"← Zurück zu den Produktlinien","Ricetta digitale":"Digitales Rezept","10 Colazioni dell’Alveare":"10 Frühstücke aus dem Bienenstock","👁 Sfoglia anteprima":"👁 Vorschau ansehen","Acquista PDF":"PDF kaufen (Test)","Video narrato":"Erzähltes Video","Un Momento nell’Alveare":"Ein Moment im Bienenstock","Guarda esempio":"Beispiel ansehen","Regalo digitale":"Digitales Geschenk","Regala l’Alveare":"Verschenke den Bienenstock","Esempio":"Beispiel","Come funziona":"So funktioniert es","1. Scegli":"1. Auswählen","2. Acquista":"2. Kaufen","3. Apri subito":"3. Sofort öffnen","Prodotto digitale · nessuna spedizione":"Digitales Produkt · kein Versand",
-"NOVITÀ ASSOLUTA!":"ABSOLUTE NEUHEIT!","Avvertenze:":"Hinweise:","Solo per uso cosmetico esterno.":"Nur zur äußerlichen kosmetischen Anwendung.","Le informazioni riportate descrivono esclusivamente l’uso cosmetico del prodotto e non costituiscono indicazioni mediche.":"Die Angaben beschreiben ausschließlich die kosmetische Verwendung des Produkts und stellen keine medizinischen Hinweise dar.",
-"Miele di Acacia":"Akazienhonig","Miele di Acacia in Favo":"Akazienhonig mit Wabe","Miele Millefiori":"Blütenhonig","Miele di Castagno":"Kastanienhonig","Miele Eucalipto":"Eukalyptushonig","Miele di Acacia e Zenzero":"Akazienhonig mit Ingwer","Polline Italiano":"Italienischer Blütenpollen","Pappa Reale - 10 g":"Gelée Royale - 10 g","Pappa Reale Italiana fresca Bio":"Frisches italienisches Bio-Gelée-Royale","Pane delle Api Bio":"Bio-Bienenbrot","Favo Integrale Bio":"Bio-Honigwabe",
-"Bee Energy BIO":"Bee Energy BIO","Propol Active BIO":"Propol Active BIO","Spray Gola BIO":"Bio-Halsspray","Soluzione Propoli 30% Spray":"Propolis-Lösung 30 % Spray","Soluzione Propoli 30% con Contagocce - Alcolica":"Propolis-Lösung 30 % mit Tropfer - alkoholisch","Soluzione Propoli con Contagocce Analcolica":"Alkoholfreie Propolis-Lösung mit Tropfer",
-"Crema Mani":"Handcreme","Burrocacao Propoli e Aloe Vera":"Lippenpflege Propolis & Aloe Vera","Burrocacao Miele e Pappa Reale":"Lippenpflege Honig & Gelée Royale","Shampoo Multivitaminico":"Multivitamin-Shampoo","Saponetta Miele e Frutti di Bosco":"Pflanzenseife Honig & Waldbeeren","Saponetta Miele e Lavanda":"Pflanzenseife Honig & Lavendel","Saponetta Miele e Aloe Vera":"Pflanzenseife Honig & Aloe Vera","Candela Alveare Grande in Cera d’Api":"Große Bienenstockkerze aus Bienenwachs",
-"Limoncello “I Tesori di Francesco”":"Limoncello „Francescos Spezialitäten“","Liquore di Caffè “I Tesori di Francesco”":"Kaffeelikör „Francescos Spezialitäten“","Castagne al Rum “I Tesori di Francesco”":"Kastanien in Rum „Francescos Spezialitäten“",
-"SOS DOL – Unguento al Veleno d’Api – 15 ml":"SOS DOL – Salbe mit Bienengift – 15 ml","Crema Viso al Veleno d’Api – 50 ml – APIS1":"Gesichtscreme mit Bienengift – 50 ml – APIS1","Siero Viso al Veleno d’Api – 30 ml – APIS2":"Gesichtsserum mit Bienengift – 30 ml – APIS2","Crema Corpo Veleno d’Api e Miele di Manuka – 250 ml – APIS4":"Körpercreme mit Bienengift und Manuka-Honig – 250 ml – APIS4","Gommage Viso e Corpo Veleno d’Api e Miele di Manuka – 250 ml – APIS5":"Gesichts- und Körperpeeling mit Bienengift und Manuka-Honig – 250 ml – APIS5","Bagnodoccia Veleno d’Oro – 250 ml – APIS7":"Duschbad Veleno d’Oro – 250 ml – APIS7",
-"1 confezione":"1 Packung","1 vasetto (250 g)":"1 Glas (250 g)","1 vasetto (250g)":"1 Glas (250 g)","1 vasetto (200 g)":"1 Glas (200 g)","1 vasetto (40 g)":"1 Glas (40 g)","1 confezione (200 g)":"1 Packung (200 g)","1 confezione (125 g)":"1 Packung (125 g)","1 confezione (80 g)":"1 Packung (80 g)","1 flacone spray - 20 ml":"1 Sprühflasche - 20 ml","1 flacone con contagocce - 20 ml":"1 Tropfflasche - 20 ml","1 flacone - 250 ml":"1 Flasche - 250 ml","1 stick - 5 ml":"1 Stick - 5 ml","1 saponetta - 100 g":"1 Seife - 100 g","1 candela - cera d’api":"1 Kerze - Bienenwachs","1 bottiglia - 250 ml":"1 Flasche - 250 ml","1 Tris - 3 prodotti":"1 Dreier-Set - 3 Produkte",
-"Privacy Policy":"Datenschutzerklärung","Condizioni di vendita":"Verkaufsbedingungen","Resi e recesso":"Rückgabe und Widerruf","Ultimo aggiornamento: 15 settembre 2026.":"Letzte Aktualisierung: 15. September 2026.","Titolare del trattamento":"Verantwortlicher für die Datenverarbeitung","Venditore":"Verkäufer","Resi, recesso e rimborsi":"Rückgabe, Widerruf und Erstattungen","Contatto per recesso e resi":"Kontakt für Widerruf und Rückgabe",
-"1. Dati trattati":"1. Verarbeitete Daten","2. Finalità e basi giuridiche":"2. Zwecke und Rechtsgrundlagen","3. Pagamenti":"3. Zahlungen","4. Destinatari":"4. Empfänger","5. Conservazione":"5. Aufbewahrung","6. Cookie e tecnologie tecniche":"6. Cookies und technische Technologien","7. Diritti dell'interessato":"7. Rechte der betroffenen Person","8. Contatti":"8. Kontakt",
-"Condizioni generali di vendita":"Allgemeine Verkaufsbedingungen","1. Ambito di applicazione":"1. Anwendungsbereich","2. Prodotti e informazioni":"2. Produkte und Informationen","3. Prezzi":"3. Preise","4. Ordine e conclusione del contratto":"4. Bestellung und Vertragsschluss","5. Pagamenti":"5. Zahlungen","6. Disponibilità":"6. Verfügbarkeit","7. Spedizione e consegna":"7. Versand und Lieferung","8. Diritto di recesso e resi":"8. Widerrufsrecht und Rückgabe","9. Garanzia legale":"9. Gesetzliche Gewährleistung","10. Assistenza":"10. Kundenservice","11. Legge applicabile":"11. Anwendbares Recht",
-"1. Diritto di recesso":"1. Widerrufsrecht","2. Come esercitarlo":"2. Ausübung des Widerrufs","3. Restituzione dei prodotti":"3. Rücksendung der Produkte","4. Condizioni dei beni restituiti":"4. Zustand der zurückgesandten Waren","5. Eccezioni al recesso":"5. Ausnahmen vom Widerrufsrecht","6. Rimborso":"6. Erstattung","7. Prodotti danneggiati o non conformi":"7. Beschädigte oder nicht vertragsgemäße Produkte",
-"🐝 SALDO API":"🐝 BIENENPUNKTE","Controlla tutte le tue Api in un unico posto.":"Prüfe alle deine Bienenpunkte an einem Ort.","I codici non scadono.":"Die Codes verfallen nicht.","🐝 CONTROLLA IL MIO SALDO":"🐝 MEINEN PUNKTESTAND PRÜFEN","Il tuo Saldo Api":"Deine Bienenpunkte","➕ Aggiungi un Coupon Api":"➕ Bienenpunkte-Coupon hinzufügen","AGGIUNGI AL SALDO":"ZUM PUNKTESTAND HINZUFÜGEN","🎁 Componi il Cesto":"🎁 Korb zusammenstellen","5 prodotti":"5 Produkte","Pagamento":"Zahlung","Spedizione":"Versand","Totale da pagare":"Zu zahlender Gesamtbetrag","← Torna al negozio":"← Zurück zum Shop","Nome e cognome *":"Vor- und Nachname *","Telefono *":"Telefon *","Via e numero civico *":"Straße und Hausnummer *","CAP *":"PLZ *","Comune / Città *":"Ort / Stadt *","Provincia (es. MN) *":"Provinz (z. B. MN) *","Paese":"Land","Note per la consegna (facoltative)":"Hinweise zur Lieferung (optional)",
-"Pagamento Completato!":"Zahlung abgeschlossen!","Grazie per il tuo ordine!":"Vielen Dank für deine Bestellung!","Il tuo pagamento è stato completato con successo. Riceverai una conferma via email a breve.":"Deine Zahlung wurde erfolgreich abgeschlossen. Du erhältst in Kürze eine Bestätigung per E-Mail.","Torna al Negozio":"Zurück zum Shop","Pagamento Annullato":"Zahlung abgebrochen","Il pagamento è stato annullato. Puoi riprovare o contattarci per assistenza.":"Die Zahlung wurde abgebrochen. Du kannst es erneut versuchen oder uns kontaktieren."
+const KEY='fda-site-language';
+const IT='it', EN='en';
+let lang=IT;
+let translating=false;
+const cacheKey='fda-en-translation-cache-v1';
+let cache={};
+try{cache=JSON.parse(localStorage.getItem(cacheKey)||'{}')||{};}catch(_){cache={};}
+
+const STATIC={
+"Home":"Home",
+"Alveoterapia":"Alveotherapy",
+"Alveoterapia Integrata":"Integrated Alveotherapy",
+"ALVEOTERAPIA INTEGRATA":"INTEGRATED ALVEOTHERAPY",
+"Chi siamo":"About us",
+"Bacheca":"News",
+"Contatti":"Contact",
+"Prodotti & Shop":"Products & Shop",
+"Parliamone":"Let's talk",
+"Linea Veleni":"Bee Venom Line",
+"LINEA VELENI":"BEE VENOM LINE",
+"Scopri la Linea Veleni":"Discover the Bee Venom Line",
+"Vai alla Linea Veleni nello Shop →":"Go to the Bee Venom Line in the Shop →",
+"Il Centro":"The Centre",
+"Galena delle Api":"Galena delle Api",
+"Oasi del Busatello":"Busatello Oasis",
+"Primavera · Estate":"Spring · Summer",
+"Autunno · Inverno":"Autumn · Winter",
+"L’esperienza dell’alveare durante tutto l’anno.":"The beehive experience, all year round.",
+"L'esperienza dell'alveare durante tutto l'anno.":"The beehive experience, all year round.",
+"Due stagioni, due ambienti, un unico percorso per avvicinarsi all’atmosfera, ai profumi, ai suoni e all’universo dell’alveare.":"Two seasons, two settings, one journey into the atmosphere, scents, sounds and world of the beehive.",
+"Alveoterapia tutto l’anno":"Alveotherapy all year round",
+"L’esperienza continua.":"The experience continues.",
+"Dentro il paesaggio dell’alveare":"Inside the beehive landscape",
+"Il calore dell’alveare, al coperto":"The warmth of the beehive, indoors",
+"Scopri l’esperienza all’aperto →":"Discover the outdoor experience →",
+"Entra nella Galena delle Api →":"Enter the Galena delle Api →",
+"Cos’è l’Alveoterapia":"What is Alveotherapy",
+"Un incontro sensoriale con il mondo delle api.":"A sensory encounter with the world of bees.",
+"Il luogo naturale":"The natural setting",
+"Il luogo accogliente":"The welcoming setting",
+"Conosci l’esperienza del Busatello →":"Discover the Busatello experience →",
+"Scopri la Galena delle Api →":"Discover the Galena delle Api →",
+"Come si svolge":"How it works",
+"Un’esperienza semplice, guidata e consapevole.":"A simple, guided and mindful experience.",
+"Accoglienza":"Welcome",
+"Avvicinamento":"Getting closer",
+"Esperienza":"Experience",
+"Scoperta":"Discovery",
+"Il mondo delle api":"The world of bees",
+"Piccole protagoniste di un universo immenso.":"Small protagonists of an immense world.",
+"Conoscere per rispettare":"Learn to respect",
+"Dall’alveare alla tavola":"From the beehive to the table",
+"Perché proprio il veleno d’api?":"Why bee venom?",
+"Non una promessa di cura.":"Not a promise of treatment.",
+"Un modo diverso di scoprire il carattere dell’alveare.":"A different way to discover the character of the beehive.",
+"Il massaggio diventa un momento di comfort.":"Massage becomes a moment of comfort.",
+"Il suo valore":"Its value",
+"Cosa lo distingue":"What makes it different",
+"Il momento giusto":"The right moment",
+"Avvertenze del produttore":"Manufacturer warnings",
+"Dall’esperienza ai prodotti":"From the experience to the products",
+"Quello che conosci nell’alveare, puoi continuare a scoprirlo anche a casa.":"What you discover in the beehive can continue with you at home.",
+"Mieli del Busatello":"Busatello Honeys",
+"Polline e Pane delle Api":"Pollen and Bee Bread",
+"Propoli e mondo dell’alveare":"Propolis and the beehive world",
+"Entra nello Shop con un’altra prospettiva →":"Enter the Shop with a different perspective →",
+"Richiedi informazioni":"Request information",
+"Quale stagione vuoi vivere?":"Which season would you like to experience?",
+"L'alveare si vive nella natura.":"Experience the beehive in nature.",
+"Il luogo naturale":"The natural setting",
+"Qui non si entra in una sala: si entra in un ambiente vivo. Il verde, l'acqua, i suoni e la presenza delle api diventano parte dell'esperienza.":"You do not enter a room here: you enter a living environment. Greenery, water, sounds and the presence of bees all become part of the experience.",
+"Vicino alle arnie vere":"Close to real beehives",
+"Il paesaggio non è lo sfondo dell'esperienza. È una parte dell'esperienza.":"The landscape is not the backdrop to the experience. It is part of the experience.",
+"Cosa rende diversa questa esperienza":"What makes this experience different",
+"La stagione cambia tutto.":"The season changes everything.",
+"Arnie vere":"Real beehives",
+"Natura intorno":"Nature all around",
+"Stagioni e fioriture":"Seasons and blossoms",
+"Alveoterapia Integrata tutto l'anno":"Integrated Alveotherapy all year round",
+"Quando arriva il freddo, l'esperienza non finisce.":"When the cold season arrives, the experience does not end.",
+"Entra nella Galena delle Api →":"Enter the Galena delle Api →",
+"Dal luogo ai prodotti":"From the place to the products",
+"I Mieli del Busatello raccontano anche questo paesaggio.":"Busatello Honeys also tell the story of this landscape.",
+"Continua nello Shop →":"Continue in the Shop →",
+"Il mondo dell'alveare continua anche al coperto.":"The world of the beehive continues indoors.",
+"Un luogo che invita a fermarsi.":"A place that invites you to slow down.",
+"Entrare in un'atmosfera diversa":"Step into a different atmosphere",
+"L'alveare cambia con le stagioni. L'esperienza continua.":"The beehive changes with the seasons. The experience continues.",
+"Come si vive":"How it feels",
+"Più esperienza, meno tecnica.":"More experience, less technical detail.",
+"Atmosfera":"Atmosphere",
+"Continuità stagionale":"Seasonal continuity",
+"I diffusori fanno parte dell'esperienza, non sono il racconto.":"The diffusers are part of the experience, not the story itself.",
+"Un unico percorso":"One continuous journey",
+"Dalla natura alla Galena, senza interrompere il filo.":"From nature to the Galena, without breaking the thread.",
+"La scoperta continua":"The discovery continues",
+"Dall'esperienza ai prodotti dell'alveare.":"From the experience to beehive products.",
+"Le linee della Fabbrica delle Api":"La Fabbrica delle Api collections",
+"Tutte le linee":"All collections",
+"Carrello":"Cart",
+"Il tuo carrello":"Your cart",
+"← Torna alle Categorie":"← Back to Categories",
+"← Torna alle linee":"← Back to collections",
+"Selezione":"Selection",
+"Scegli il formato:":"Choose size:",
+"➕ Aggiungi al carrello":"➕ Add to cart",
+"Non Disponibile":"Unavailable",
+"Esaurito / Stock Insuff.":"Sold out / Insufficient stock",
+"Consegna prevista entro 5–6 giorni • Spedizione gratuita per ordini da €200 in su":"Estimated delivery within 5–6 days • Free shipping on orders over €200",
+"Spedizione gratuita":"Free shipping",
+"Consegna locale":"Local delivery",
+"Corriere":"Courier",
+"Linea Alimenti":"Food Collection",
+"Linea Integratori":"Supplements Collection",
+"Linea Cosmesi e Tesori in Cera d’Api":"Cosmetics & Beeswax Treasures",
+"I Tesori di Francesco":"Francesco's Treasures",
+"I Tris dell’Alveare":"Beehive Trios",
+"Linea Cosmetica al Veleno d’Api":"Bee Venom Cosmetic Line",
+"ALVEO DIGITALE":"ALVEO DIGITAL",
+"Ricette, video e idee regalo da usare subito":"Recipes, videos and gift ideas ready to use",
+"Scopri Alveo Digitale":"Discover Alveo Digital",
+"Ricette, video e regali digitali":"Recipes, videos and digital gifts",
+"Ricetta digitale":"Digital recipe",
+"10 Colazioni dell’Alveare":"10 Beehive Breakfasts",
+"👁 Sfoglia anteprima":"👁 Browse preview",
+"Acquista PDF":"Buy PDF",
+"Video narrato":"Narrated video",
+"Guarda esempio":"Watch example",
+"Regalo digitale":"Digital gift",
+"Come funziona":"How it works",
+"1. Scegli":"1. Choose",
+"2. Acquista":"2. Buy",
+"3. Apri subito":"3. Open instantly",
+"Prodotto digitale · nessuna spedizione":"Digital product · no shipping",
+"NOVITÀ ASSOLUTA!":"BRAND NEW!",
+"Avvertenze:":"Warnings:",
+"Solo per uso cosmetico esterno.":"For external cosmetic use only.",
+"Privacy Policy":"Privacy Policy",
+"Condizioni di vendita":"Terms of sale",
+"Resi e recesso":"Returns and withdrawal",
+"Venditore":"Seller",
+"Pagamento":"Payment",
+"Spedizione":"Shipping",
+"Totale da pagare":"Total to pay",
+"← Torna al negozio":"← Back to shop",
+"Nome e cognome *":"Full name *",
+"Telefono *":"Phone *",
+"Via e numero civico *":"Street and number *",
+"CAP *":"Postcode *",
+"Comune / Città *":"Town / City *",
+"Provincia (es. MN) *":"Province (e.g. MN) *",
+"Paese":"Country",
+"Note per la consegna (facoltative)":"Delivery notes (optional)",
+"Pagamento Completato!":"Payment completed!",
+"Grazie per il tuo ordine!":"Thank you for your order!",
+"Torna al Negozio":"Back to Shop",
+"Pagamento Annullato":"Payment cancelled",
+"Informazioni":"Information",
+"Invia un messaggio":"Send a message",
+"Invia messaggio":"Send message",
+"Email":"Email",
+"Telefono":"Phone",
+"Dove siamo":"Where we are"
 };
 
-Object.assign(T,{
-"Miele Con essenze alla Pesca":"Honigspezialität Pfirsich",
-"Miele Con essenze alla Fragola":"Honigspezialität Erdbeere",
-"Miele Con essenze al Melone":"Honigspezialität Melone",
-"Miele Con essenze all’Arancia":"Honigspezialität Orange",
-"Miele Con essenze all'Arancia":"Honigspezialität Orange",
-"Balsamico Italiano - 200 g":"Italienische balsamische Honigspezialität - 200 g",
-"Miele Italiano di Acacia - 40 g":"Italienischer Akazienhonig - 40 g",
-"Miele Italiano di Acacia in Favo - 200 g":"Italienischer Akazienhonig mit Wabe - 200 g",
-"Polline Italiano - 125 g":"Italienischer Blütenpollen - 125 g",
-"Orsetti Gommosi BIO con Propoli e Miele – 80 g":"BIO-Gummibärchen mit Propolis und Honig – 80 g",
-"Orsetti Gelé BIO con Propoli e Miele – 80 g":"BIO-Gelee-Bärchen mit Propolis und Honig – 80 g",
-"Unguento Apis – 15 ml":"Apis-Salbe – 15 ml",
-"Crema Viso Aloe e Miele – 50 ml":"Gesichtscreme Aloe & Honig – 50 ml",
-"Bagno Doccia alla Propoli – 500 ml":"Duschbad mit Propolis – 500 ml",
-"Shampoo Propoli e Aloe – 250 ml":"Shampoo Propolis & Aloe – 250 ml",
-"Shampoo Aloe e Pappa Reale – 250 ml":"Shampoo Aloe & Gelée Royale – 250 ml",
-"Balsamo Maschera Capelli al Polline – 150 ml":"Haarbalsam-Maske mit Pollen – 150 ml",
-
-"Il Millefiori dell’Oasi del Busatello nasce dalla varietà di fioriture spontanee presenti nell’oasi. Ha un profilo aromatico armonico, con dolcezza equilibrata e profumi che possono variare naturalmente da raccolto a raccolto. È ottimo da gustare al cucchiaio, sul pane, nello yogurt o per dolcificare bevande e preparazioni. La naturale cristallizzazione è una caratteristica tipica del miele e non ne altera la qualità.":"Der Blütenhonig aus der Oasi del Busatello entsteht aus der Vielfalt spontaner Blüten in der Oase. Er besitzt ein harmonisches Aroma mit ausgewogener Süße; Duft und Geschmack können je nach Ernte natürlich variieren. Er schmeckt pur, auf Brot, im Joghurt oder zum Süßen von Getränken und Speisen. Die natürliche Kristallisation ist eine typische Eigenschaft von Honig und beeinträchtigt seine Qualität nicht.",
-"Specialità al miele dal gusto dolce e fruttato, caratterizzata da note di melone piacevoli e immediate. È pensata per chi cerca un sapore originale da gustare al cucchiaio, sul pane, nello yogurt o in abbinamento a dessert e preparazioni fresche. Servita a temperatura ambiente sprigiona al meglio il suo profilo aromatico.":"Honigspezialität mit süßem, fruchtigem Geschmack und deutlich wahrnehmbaren Melonennoten. Ideal pur, auf Brot, im Joghurt oder zu Desserts und frischen Speisen. Bei Zimmertemperatur entfaltet sie ihr Aroma besonders gut.",
-"Specialità al miele dal gusto morbido e fruttato, con una nota di fragola ben riconoscibile. Si presta bene alla prima colazione, allo yogurt, ai formaggi freschi e alla preparazione di dolci semplici. Il sapore dolce e profumato la rende adatta anche come piccola degustazione al cucchiaio.":"Honigspezialität mit weichem, fruchtigem Geschmack und klarer Erdbeernote. Passt zum Frühstück, zu Joghurt, Frischkäse und einfachen Desserts und eignet sich auch zum puren Probieren.",
-"Specialità al miele dal profilo delicato e fruttato, con una nota di pesca morbida e piacevole. È ideale da provare su pane e fette biscottate, nello yogurt, con ricotta o formaggi freschi e come accompagnamento a dessert. Il gusto rotondo la rende facile da apprezzare anche da chi preferisce sapori non troppo intensi.":"Feine, fruchtige Honigspezialität mit angenehm weicher Pfirsichnote. Ideal auf Brot und Zwieback, im Joghurt, zu Ricotta oder Frischkäse sowie als Begleitung zu Desserts. Der runde Geschmack eignet sich auch für alle, die mildere Aromen bevorzugen.",
-"Specialità al miele dal carattere fresco e agrumato, con note di arancia che accompagnano la naturale dolcezza del miele. È piacevole a colazione, nello yogurt, su pane e biscotti oppure in abbinamento a dolci e formaggi freschi. Ottima anche per dare una nota aromatica a bevande tiepide e preparazioni da dessert.":"Frische Honigspezialität mit Zitruscharakter und Orangennoten, die die natürliche Süße des Honigs begleiten. Köstlich zum Frühstück, im Joghurt, auf Brot und Gebäck, zu Desserts oder Frischkäse und auch zum Aromatisieren lauwarmer Getränke.",
-"Miele dal colore ambrato scuro, dal profumo deciso e dal gusto intenso, poco dolce e con una caratteristica nota leggermente amarognola. È apprezzato da chi cerca un miele dal sapore forte e persistente. Si abbina molto bene a formaggi stagionati, pane rustico e preparazioni dal gusto marcato. La cristallizzazione, quando presente, è un fenomeno naturale.":"Dunkel bernsteinfarbener Honig mit kräftigem Duft und intensivem, wenig süßem Geschmack mit einer typisch leicht herben Note. Besonders geeignet für Liebhaber markanter Honige. Passt hervorragend zu gereiftem Käse, rustikalem Brot und kräftigen Speisen. Eine mögliche Kristallisation ist vollkommen natürlich.",
-"Specialità alimentare a base di miele italiano di acacia e zenzero. Il miele di acacia offre una base dolce e delicata, mentre lo zenzero aggiunge una nota speziata e vivace. È piacevole da gustare al cucchiaio, sul pane, nello yogurt o come ingrediente per bevande e ricette dal profilo aromatico originale. Formato pratico da 200 g.":"Lebensmittelspezialität aus italienischem Akazienhonig und Ingwer. Der Akazienhonig bildet eine feine, süße Basis, während Ingwer eine lebendige würzige Note hinzufügt. Pur, auf Brot, im Joghurt oder als Zutat für Getränke und Rezepte genießen. Praktisches 200-g-Format.",
-"Miele italiano di eucalipto dal profumo intenso e dal gusto aromatico, con caratteristiche note fresche e balsamiche. Ha una personalità più marcata rispetto ai mieli delicati ed è adatto a chi ama sapori decisi. Si può gustare al cucchiaio, sul pane, con formaggi oppure per dolcificare bevande calde senza portarle a temperature troppo elevate.":"Italienischer Eukalyptushonig mit intensivem Duft und aromatischem Geschmack sowie frischen, balsamischen Noten. Kräftiger als milde Honige und ideal für Liebhaber markanter Aromen. Pur, auf Brot, zu Käse oder zum Süßen warmer Getränke genießen.",
-"Specialità alimentare dal gusto fresco e intensamente balsamico, preparata con miele di eucalipto e soluzioni idroalcoliche di pino mugo, eucalipto e menta, con eucaliptolo e mentolo. È pensata soprattutto per chi apprezza sapori aromatici e freschi, particolarmente gradevoli nella stagione fredda. Può essere consumata da sola oppure sciolta in un infuso o in una tisana, come indicato dal produttore Apinfiore.":"Lebensmittelspezialität mit frischem, intensiv balsamischem Geschmack aus Eukalyptushonig sowie hydroalkoholischen Auszügen aus Latschenkiefer, Eukalyptus und Minze mit Eukalyptol und Menthol. Für Liebhaber frischer, aromatischer Geschmacksnoten, besonders angenehm in der kalten Jahreszeit. Pur oder nach Herstellerangabe in einem Aufguss oder Kräutertee genießen.",
-"Miele italiano di acacia dal colore molto chiaro, dal profumo delicato e dal gusto dolce e fine. Rimane generalmente liquido a lungo e per questo è particolarmente pratico da versare e dosare. È ideale a colazione, nello yogurt, sulle fette biscottate e per dolcificare bevande senza coprirne il sapore. Il formato da 40 g è comodo anche per assaggio o regalo.":"Italienischer Akazienhonig von sehr heller Farbe, mit feinem Duft und mild-süßem Geschmack. Er bleibt meist lange flüssig und lässt sich dadurch besonders gut dosieren. Ideal zum Frühstück, im Joghurt, auf Zwieback und zum Süßen von Getränken, ohne deren Geschmack zu überdecken. Das 40-g-Format eignet sich auch zum Probieren oder Verschenken.",
-"Miele di acacia presentato direttamente nel favo, per un’esperienza di degustazione molto vicina al prodotto così come viene conservato dalle api. Il favo può essere tagliato in piccoli pezzi e masticato lentamente insieme al miele. È particolarmente adatto a degustazioni, taglieri e abbinamenti con formaggi. Conservare in luogo fresco e asciutto, lontano da fonti di calore.":"Akazienhonig direkt in der Wabe für ein besonders ursprüngliches Genusserlebnis. Die Wabe kann in kleine Stücke geschnitten und langsam zusammen mit dem Honig gekaut werden. Ideal für Verkostungen, Platten und Käsekombinationen. Kühl und trocken sowie fern von Wärmequellen lagern.",
-"Polline italiano raccolto dalle api e selezionato come prodotto dell’alveare. Ha un gusto caratteristico e può essere consumato tal quale oppure aggiunto a yogurt, miele, frutta o altre preparazioni fredde. Per apprezzarne meglio aroma e consistenza è consigliabile iniziare con piccole quantità. Conservare secondo le indicazioni riportate sulla confezione.":"Von Bienen gesammelter italienischer Blütenpollen. Er besitzt einen charakteristischen Geschmack und kann pur oder in Joghurt, Honig, Obst und kalten Speisen verwendet werden. Zum Kennenlernen von Aroma und Konsistenz empfiehlt es sich, mit kleinen Mengen zu beginnen. Nach den Angaben auf der Verpackung lagern.",
-"Pappa reale fresca in formato da 10 g, prodotto dell’alveare dalla consistenza cremosa e dal gusto intenso e caratteristico. Si utilizza in piccole quantità, preferibilmente seguendo le indicazioni riportate sull’etichetta del prodotto. Per mantenere al meglio le sue caratteristiche va conservata secondo le indicazioni del produttore, generalmente in frigorifero.":"Frisches Gelée Royale im 10-g-Format mit cremiger Konsistenz und intensivem, charakteristischem Geschmack. In kleinen Mengen und vorzugsweise nach den Hinweisen auf dem Etikett verwenden. Zur bestmöglichen Erhaltung gemäß Herstellerangaben lagern, in der Regel im Kühlschrank.",
-"Morbide caramelle gommose dalla forma di orsetto, pensate come piccolo momento goloso. La consistenza morbida e il gusto dolce le rendono pratiche da condividere o portare con sé. Confezione da 80 g, adatta anche come idea regalo insieme ad altri prodotti della Fabbrica delle Api.":"Weiche Gummibärchen für einen kleinen Genussmoment. Dank ihrer weichen Konsistenz und ihres süßen Geschmacks lassen sie sich gut teilen oder mitnehmen. 80-g-Packung, auch als kleine Geschenkidee zusammen mit anderen Produkten der Fabbrica delle Api geeignet.",
-
-"Integratore alimentare biologico con miele italiano, pappa reale, polline, propoli, mirtillo, limone e rosmarino, proposto in pratici flaconcini.":"Bio-Nahrungsergänzung mit italienischem Honig, Gelée Royale, Pollen, Propolis, Heidelbeere, Zitrone und Rosmarin in praktischen Trinkfläschchen.",
-"Integratore in compresse masticabili a base di propoli italiana biologica al 20%. Ogni compressa da 500 mg contiene 100 mg di propoli.":"Nahrungsergänzung in Kautabletten mit 20 % italienischer Bio-Propolis. Jede 500-mg-Tablette enthält 100 mg Propolis.",
-"Estratto di propoli al 30% in soluzione alcolica con pratico erogatore spray reclinabile, pensato per un’applicazione semplice e mirata nel cavo orale. Ingredienti indicati da Apinfiore: propoli 30%, alcool 80% e acqua. Senza glutine. Modo d’uso del produttore: 5-6 nebulizzazioni, 2-3 volte al giorno o al bisogno; può essere applicato direttamente oppure assunto con un po’ di miele, zucchero o un alimento. Per l’elevato contenuto alcolico non è adatto ai bambini o a chi non può assumere alcool; in gravidanza o allattamento è indicato chiedere consiglio al medico.":"30%iger Propolisextrakt in alkoholischer Lösung mit praktischem schwenkbarem Sprühkopf für eine gezielte Anwendung im Mundraum. Laut Hersteller: 30 % Propolis, 80%iger Alkohol und Wasser; glutenfrei. Anwendung nach Herstellerangabe: 5–6 Sprühstöße 2–3-mal täglich oder nach Bedarf. Wegen des hohen Alkoholgehalts nicht für Kinder oder Personen geeignet, die keinen Alkohol zu sich nehmen dürfen; während Schwangerschaft oder Stillzeit ärztlichen Rat einholen.",
-"Integratore alimentare per adulti a base di propoli al 30% in soluzione alcolica. Ingredienti indicati da Apinfiore: propoli 30%, alcool 80% e acqua. Senza glutine. Il contagocce permette un dosaggio preciso e versatile. Modo d’uso del produttore: 10-15 gocce, 2-3 volte al giorno o al bisogno, da assumere con miele, zucchero, pane o biscotto oppure direttamente. Per l’elevato contenuto alcolico non è adatto ai bambini o a chi non può assumere alcool; in gravidanza o allattamento è indicato chiedere consiglio al medico.":"Nahrungsergänzung für Erwachsene mit 30 % Propolis in alkoholischer Lösung. Laut Hersteller: 30 % Propolis, 80%iger Alkohol und Wasser; glutenfrei. Der Tropfer ermöglicht eine genaue Dosierung. Anwendung nach Herstellerangabe: 10–15 Tropfen 2–3-mal täglich oder nach Bedarf. Wegen des hohen Alkoholgehalts nicht für Kinder oder Personen geeignet, die keinen Alkohol zu sich nehmen dürfen; während Schwangerschaft oder Stillzeit ärztlichen Rat einholen.",
-"Estratto di propoli al 30% in soluzione idroglicerica senza alcool. Ingredienti indicati da Apinfiore: propoli 30%, gliceroli, acqua e aromi naturali. Senza glutine. Il produttore la indica anche per bambini sopra i 3 anni. Modo d’uso: 10-20 gocce sciolte in un cucchiaio di miele o in una bevanda, 2 volte al giorno e preferibilmente lontano dai pasti. Non utilizzare nei bambini di età inferiore ai 3 anni.":"30%iger alkoholfreier Propolisextrakt in hydroglycerischer Lösung. Laut Hersteller: 30 % Propolis, Glycerine, Wasser und natürliche Aromen; glutenfrei. Vom Hersteller auch für Kinder über 3 Jahre vorgesehen. Anwendung: 10–20 Tropfen in einem Löffel Honig oder einem Getränk auflösen, zweimal täglich möglichst zwischen den Mahlzeiten. Nicht bei Kindern unter 3 Jahren anwenden.",
-
-"Crema formulata con propoli, cera d’api ed echinacea, pensata per mani secche o fragili. Nutre e protegge la pelle, aiutando a mantenerla morbida e curata.":"Handcreme mit Propolis, Bienenwachs und Echinacea für trockene oder beanspruchte Hände. Pflegt und schützt die Haut und hilft, sie weich und gepflegt zu halten.",
-"Burrocacao cremoso formulato con propoli e aloe vera, pensato per proteggere e mantenere le labbra morbide e idratate. Aiuta a contrastare secchezza e screpolature, lasciando una piacevole sensazione di comfort.":"Cremige Lippenpflege mit Propolis und Aloe Vera zum Schutz und zur Pflege weicher, mit Feuchtigkeit versorgter Lippen. Hilft gegen Trockenheit und spröde Lippen.",
-"Burrocacao cremoso formulato con miele e pappa reale, pensato per nutrire e proteggere le labbra. Aiuta a contrastare secchezza e screpolature, mantenendo le labbra morbide, elastiche e confortevoli.":"Cremige Lippenpflege mit Honig und Gelée Royale zum Nähren und Schützen der Lippen. Hilft gegen Trockenheit und spröde Lippen und hält sie weich und geschmeidig.",
-"Shampoo formulato con proteine del frumento, rosmarino e pappa reale, pensato per capelli fragili, stressati o spenti. Aiuta a nutrire e rinforzare la fibra capillare, lasciando i capelli più curati e vitali.":"Shampoo mit Weizenproteinen, Rosmarin und Gelée Royale für brüchiges, beanspruchtes oder glanzloses Haar. Unterstützt die Pflege und Kräftigung der Haarfaser.",
-"Sapone vegetale formulato con miele e frutti di bosco, adatto alla detersione quotidiana della pelle. Deterge delicatamente e aiuta a mantenere la pelle morbida, lasciando una piacevole profumazione fruttata.":"Pflanzliche Seife mit Honig und Waldbeeren für die tägliche Hautreinigung. Reinigt sanft, hilft die Haut weich zu halten und hinterlässt einen angenehmen fruchtigen Duft.",
-"Sapone vegetale formulato con miele e lavanda, adatto alla detersione quotidiana della pelle. Deterge delicatamente e lascia una piacevole sensazione di freschezza, con la caratteristica profumazione della lavanda.":"Pflanzliche Seife mit Honig und Lavendel für die tägliche Hautreinigung. Reinigt sanft und hinterlässt ein frisches Gefühl mit dem typischen Lavendelduft.",
-"Sapone vegetale formulato con miele e aloe vera, pensato per una detersione delicata della pelle. Aiuta a mantenere la pelle morbida e idratata, lasciando una piacevole sensazione di comfort.":"Pflanzliche Seife mit Honig und Aloe Vera für eine sanfte Reinigung. Hilft, die Haut weich und gepflegt zu halten und hinterlässt ein angenehmes Hautgefühl.",
-"Candela artigianale realizzata in cera d’api, modellata nella caratteristica forma dell’alveare. La cera d’api è una sostanza naturale prodotta dalle api e utilizzata nell’alveare per costruire le celle dei favi.":"Handgefertigte Kerze aus Bienenwachs in charakteristischer Bienenstockform. Bienenwachs ist ein natürlicher Stoff, den Bienen zur Bildung der Wabenzellen verwenden.",
-
-"Unguento da massaggio formulato con veleno d’api, cera d’api e oli essenziali.":"Massagesalbe mit Bienengift, Bienenwachs und ätherischen Ölen.",
-"È pensato per il massaggio del corpo e lascia una piacevole sensazione di comfort dopo l’applicazione.":"Für die Körpermassage entwickelt und für ein angenehmes Hautgefühl nach der Anwendung.",
-"È importante sapere che il veleno d’api viene utilizzato qui all’interno di una formulazione cosmetica specifica per il massaggio.":"Wichtig: Das Bienengift wird hier innerhalb einer speziell für die Massage entwickelten kosmetischen Formulierung verwendet.",
-"Crema viso formulata con veleno d’api, pensata per viso, collo e décolleté.":"Gesichtscreme mit Bienengift für Gesicht, Hals und Dekolleté.",
-"Aiuta a mantenere la pelle idratata, tonica ed elastica, contribuendo a un aspetto più compatto e curato.":"Hilft, die Haut mit Feuchtigkeit zu versorgen und ihr ein gepflegtes, strafferes Erscheinungsbild zu verleihen.",
-"È importante sapere che il veleno d’api è inserito in una formulazione cosmetica specifica per il trattamento della pelle.":"Wichtig: Das Bienengift ist Bestandteil einer speziell für die kosmetische Hautpflege entwickelten Formulierung.",
-"Siero viso cosmetico levigante e tonificante, formulato con veleno d’api.":"Glättendes und tonisierendes Gesichtsserum mit Bienengift.",
-
-"Limoncello della linea I Tesori di Francesco, dal profilo fresco e intensamente agrumato. Nasce da un’infusione di scorze di limone selezionate per ottenere un gusto pieno, equilibrato e persistente. È piacevole servito ben fresco a fine pasto oppure come piccolo liquore da degustazione. La bottiglia da 250 ml è adatta anche come idea regalo.":"Limoncello aus der Linie „Francescos Spezialitäten“ mit frischem, intensivem Zitrusprofil. Aus ausgewählten Zitronenschalen für einen vollen, ausgewogenen und anhaltenden Geschmack. Gut gekühlt nach dem Essen oder als kleiner Verkostungslikör servieren. Die 250-ml-Flasche eignet sich auch als Geschenkidee.",
-"Liquore al caffè della linea I Tesori di Francesco, dal gusto intenso e avvolgente. L’aroma del caffè si unisce alla dolcezza del liquore creando un profilo pieno e persistente. Si può servire fresco o a temperatura ambiente, da solo oppure in abbinamento a dessert. Formato da 250 ml, adatto anche come piccolo regalo gastronomico.":"Kaffeelikör aus der Linie „Francescos Spezialitäten“ mit intensivem, vollmundigem Geschmack. Das Kaffeearoma verbindet sich mit der Süße des Likörs zu einem vollen, anhaltenden Profil. Gekühlt oder bei Zimmertemperatur pur oder zu Desserts servieren. 250-ml-Format, auch als kleine kulinarische Geschenkidee geeignet.",
-"Castagne al rum della linea I Tesori di Francesco, una specialità dal gusto ricco in cui la dolcezza naturale delle castagne incontra le note aromatiche del rum. Sono pensate come prodotto da degustazione e si prestano bene a essere servite a fine pasto o insieme a dessert. Il formato compatto le rende adatte anche come idea regalo gastronomica.":"Kastanien in Rum aus der Linie „Francescos Spezialitäten“: eine vollmundige Spezialität, bei der die natürliche Süße der Kastanien auf die aromatischen Noten des Rums trifft. Ideal zum Verkosten nach dem Essen oder zu Desserts und auch als kleine kulinarische Geschenkidee."
-});
-
-Object.assign(T,{
-"L' Italiano – Prodotti esclusivi dei tesori dell' alveare":"L' Italiano – Exklusive Schätze aus dem Bienenstock",
-"L' Italiano Miele":"L' Italiano Honig",
-"L' Italiano":"L' Italiano",
-"Prodotti esclusivi dei tesori dell' alveare":"Exklusive Schätze aus dem Bienenstock",
-"Bandiera italiana":"Italienische Flagge",
-"Alveoterapia integrata":"Integrierte Alveotherapie",
-"Scopri di più":"Mehr erfahren",
-"Accedi come Admin":"Als Admin anmelden",
-"Inserisci le tue credenziali di amministratore per gestire l'inventario.":"Gib deine Administrator-Zugangsdaten ein, um den Bestand zu verwalten.",
-"Password":"Passwort",
-"Carrello":"Warenkorb",
-"Apri carrello":"Warenkorb öffnen",
-"Il tuo carrello":"Dein Warenkorb",
-"🛒 Il tuo carrello":"🛒 Dein Warenkorb",
-"Il carrello è vuoto. Aggiungi i tuoi mieli preferiti!":"Dein Warenkorb ist leer. Füge deine Lieblingsprodukte hinzu!",
-"Scegli il formato:":"Format wählen:",
-"Nessun pacchetto disponibile per questo prodotto.":"Für dieses Produkt ist derzeit keine Variante verfügbar.",
-"Quantità:":"Menge:",
-"Subtotale merce":"Zwischensumme",
-"Spedizione":"Versand",
-"TOTALE ORDINE":"BESTELLSUMME",
-"Finalizza il tuo Ordine":"Bestellung abschließen",
-"Compila i dati per la spedizione e scegli come inviare l'ordine.":"Gib die Versanddaten ein und wähle, wie du die Bestellung senden möchtest.",
-"Seleziona Provincia":"Provinz auswählen",
-"Invia ordine via WhatsApp":"Bestellung per WhatsApp senden",
-"Invia ordine via Email":"Bestellung per E-Mail senden",
-"Paga con carta":"Mit Karte bezahlen",
-"Preparazione pagamento…":"Zahlung wird vorbereitet…",
-"Nome e cognome":"Vor- und Nachname",
-"Telefono":"Telefon",
-"Indirizzo e n° civico":"Straße und Hausnummer",
-"Note per il corriere (facoltative)":"Hinweise für den Kurier (optional)",
-"Rimuovi dal carrello":"Aus dem Warenkorb entfernen",
-"Inserisci quantità":"Menge eingeben",
-"+ quantità":"+ Menge",
-"Contatti:":"Kontakt:",
-"I mieli del Busatello":"Honig aus dem Busatello",
-"I tesori dell’alveare":"Schätze aus dem Bienenstock",
-"Le leccornie delle api":"Köstlichkeiten der Bienen",
-"La terapia delle api":"Die Welt der Bienenprodukte",
-"La cosmesi delle api":"Bienenkosmetik",
-"I Tesori di francesco":"Francescos Spezialitäten",
-"L' Alveoterapia":"Alveotherapie",
-"La Bacheca de L' Italiano":"Aktuelles von L' Italiano",
-"La Bacheca de L’ Italiano con annunci, offerte ed eventi sarà online a breve.":"Der Bereich mit Ankündigungen, Angeboten und Veranstaltungen ist in Kürze verfügbar.",
-"Stiamo preparando una selezione speciale:":"Wir bereiten eine besondere Auswahl vor:",
-"🍋 Limoncello artigianale":"🍋 Handwerklicher Limoncello",
-"☕ Liquore al caffè":"☕ Kaffeelikör",
-"🌰 Castagne al rum":"🌰 Kastanien in Rum",
-"← Torna alle categorie":"← Zurück zu den Kategorien",
-"Presto qui troverai contenuti utili per la community:":"Hier findest du bald nützliche Inhalte für die Community:",
-"📣 Annunci e novità dai produttori":"📣 Neuigkeiten von Herstellern",
-"🎟️ Offerte ed eventi":"🎟️ Angebote und Veranstaltungen",
-"🤝 Collaborazioni e contatti":"🤝 Kooperationen und Kontakte",
-"Annunci e novità dai produttori":"Neuigkeiten von Herstellern",
-"Offerte ed eventi":"Angebote und Veranstaltungen",
-"Collaborazioni e contatti":"Kooperationen und Kontakte",
-"Guide pratiche e FAQ":"Praktische Leitfäden und FAQ",
-"Mieli e prodotti dell'alveare":"Honig und Produkte aus dem Bienenstock",
-"Mieli e prodotti dell’alveare":"Honig und Produkte aus dem Bienenstock",
-"Ogni acquisto ti regala Punti Api. A 100 Punti Api ricevi il Cesto delle Api in omaggio. Clicca qui per vedere il tuo saldo.":"Bei jedem Einkauf sammelst du Bienenpunkte. Mit 100 Bienenpunkten erhältst du den Bienenkorb als Geschenk. Klicke hier, um deinen Punktestand zu sehen.",
-"Alveoterapia naturale":"Natürliche Alveotherapie",
-"Con le api":"Mit den Bienen",
-"Alveoterapia all'Oasi del Busatello":"Alveotherapie in der Oasi del Busatello",
-"Respirazione dell'aria proveniente dagli alveari, senza contatto diretto con le api, in un'esperienza immersiva nella natura.":"Einatmen der aus den Bienenstöcken kommenden Luft ohne direkten Kontakt mit den Bienen – als intensive Erfahrung inmitten der Natur.",
-"Oasi del Busatello – Capitale della Natura":"Oasi del Busatello – Hauptstadt der Natur",
-"Respira il mondo delle api":"Atme die Welt der Bienen",
-"Con le api nella natura, con i diffusori nel nostro Centro":"Mit den Bienen in der Natur, mit Diffusoren in unserem Zentrum",
-"Linea Alveoterapia":"Alveotherapie-Linie",
-"Alveoterapia con diffusori":"Alveotherapie mit Diffusoren",
-"Con diffusore e capsule":"Mit Diffusor und Kapseln",
-"Diffusore professionale con capsule dedicate contenenti sostanze dell'alveare, per un'esperienza pratica e confortevole in ambiente dedicato.":"Professioneller Diffusor mit speziellen Kapseln aus Bestandteilen des Bienenstocks – für eine praktische und angenehme Anwendung in einem dafür vorgesehenen Raum.",
-"Centro di Alveoterapia Integrata – Farmacia delle Api":"Zentrum für Integrierte Alveotherapie – Farmacia delle Api",
-"Centro di Alveoterapia con diffusori e prodotti della Fabbrica delle Api":"Alveotherapie-Zentrum mit Diffusoren und Produkten der Fabbrica delle Api",
-"Scopri i prodotti della Fabbrica delle Api":"Entdecke die Produkte der Fabbrica delle Api",
-"L’esperienza dell’alveare continua attraverso le nostre linee di prodotti, pensate per accompagnarti anche dopo la visita alla Galena delle Api.":"Das Erlebnis rund um den Bienenstock geht mit unseren Produktlinien weiter – auch nach deinem Besuch in der Galena delle Api.",
-"🐝 Coupon delle Api":"🐝 Bienenpunkte-Coupons",
-"Accumula i Coupon delle Api con i tuoi acquisti.":"Sammle Bienenpunkte-Coupons mit deinen Einkäufen.",
-"Raggiungi 100 api e richiedi il tuo Cesto dell’Alveare in omaggio.":"Erreiche 100 Bienenpunkte und fordere deinen Bienenkorb als Geschenk an.",
-"Scopri tutte le linee":"Alle Produktlinien entdecken",
-"Una selezione di mieli e specialità dell’alveare: dalle referenze dell’Oasi del Busatello ad Acacia, Castagno, Eucalipto, favo, polline e pappa reale.":"Eine Auswahl an Honig und Bienenstock-Spezialitäten: von Produkten aus der Oasi del Busatello bis zu Akazien-, Kastanien- und Eukalyptushonig, Wabenhonig, Pollen und Gelée Royale.",
-"Scopri la gamma":"Sortiment entdecken",
-"La Bacheca della Galena delle Api":"Aktuelles aus der Galena delle Api",
-"Il Cuore del Nostro Miele":"Das Herz unseres Honigs",
-"Offriamo un prodotto autentico, frutto del lavoro delle api e del nostro rispetto per la natura.":"Wir bieten ein authentisches Produkt, entstanden aus der Arbeit der Bienen und unserem Respekt vor der Natur.",
-"100% Naturale":"100 % natürlich",
-"Raccolto con cura nella Valle delle Regine, senza aggiunte.":"Sorgfältig in der Valle delle Regine geerntet, ohne Zusätze.",
-"Sapore Vero":"Echter Geschmack",
-"Un viaggio sensoriale nei sapori unici dei fiori italiani.":"Eine sinnliche Reise durch die einzigartigen Aromen italienischer Blüten.",
-"Maestria Artigianale":"Handwerkliches Können",
-"La nostra dedizione garantisce una qualità superiore.":"Unsere Sorgfalt steht für hohe Qualität.",
-"Orgoglio Italiano":"Italienische Tradition",
-"Il meglio della tradizione apistica, con l'autenticità del territorio.":"Das Beste der Imkereitradition, verbunden mit der Authentizität der Region.",
-"I Nostri Valori":"Unsere Werte",
-"100% Naturale • Qualità Superiore • Lavoro Artigianale • Orgoglio Italiano":"100 % natürlich • Hohe Qualität • Handwerkliche Arbeit • Italienische Tradition",
-"© 2026 Oasi del Busatello – Miele Artigianale. Tutti i diritti riservati.":"© 2026 Oasi del Busatello – Handwerklicher Honig. Alle Rechte vorbehalten.",
-"Tutti i diritti riservati.":"Alle Rechte vorbehalten.",
-"Spedizione gratuita e contatti":"Kostenloser Versand und Kontakt",
-"Telefono 1":"Telefon 1",
-"Telefono 2":"Telefon 2"
-});
-
-Object.assign(T,{
-"Scegli una linea e scopri i prodotti disponibili.":"Wähle eine Produktlinie und entdecke die verfügbaren Produkte.",
-"← Torna alla presentazione":"← Zurück zur Übersicht",
-
-"Immagine rappresentativa della Linea Benessere Veleno d'Api":"Repräsentatives Bild der Bienengift-Kosmetiklinie",
-"Esclusiva":"Exklusiv",
-"Uno dei punti di forza del nostro Centro":"Eine der besonderen Linien unseres Zentrums",
-"LINEA COSMETICA AL VELENO D’API":"KOSMETIKLINIE MIT BIENENGIFT",
-"Una selezione esclusiva dedicata al veleno d’api, con cosmetici per viso, corpo e massaggio scelti per rappresentare una delle linee più distintive della Fabbrica delle Api. La gamma riunisce 6 referenze: crema e siero viso, prodotti per il corpo, gommage, bagnodoccia e unguento da massaggio. In alcune formulazioni il veleno d’api è abbinato ad altri ingredienti dell’alveare, come miele, polline e cera d’api. Scopri ogni prodotto e consulta la scheda completa con caratteristiche, formato e prezzo.":"Eine exklusive Auswahl rund um Bienengift mit Kosmetik für Gesicht, Körper und Massage. Die Linie umfasst 6 Produkte: Gesichtscreme und -serum, Körperpflege, Peeling, Duschbad und Massagesalbe. In einigen Formulierungen wird Bienengift mit weiteren Bestandteilen aus dem Bienenstock wie Honig, Pollen und Bienenwachs kombiniert. Entdecke jedes Produkt und öffne die vollständige Produktseite mit Eigenschaften, Format und Preis.",
-"Viso":"Gesicht",
-"Corpo":"Körper",
-"Massaggio":"Massage",
-"La linea in breve":"Die Linie im Überblick",
-"Viso · crema e siero":"Gesicht · Creme und Serum",
-"Corpo · crema, gommage e bagnodoccia":"Körper · Creme, Peeling und Duschbad",
-"Massaggio · SOS DOL":"Massage · SOS DOL",
-"Scopri la linea":"Linie entdecken",
-
-"Ricette, video e idee regalo della linea Alveo Digitale":"Rezepte, Videos und digitale Geschenkideen der Linie Alveo Digital",
-"Ricette, video e idee regalo digitali da scegliere, acquistare e ricevere subito dopo il pagamento.":"Digitale Rezepte, Videos und Geschenkideen auswählen, kaufen und direkt nach der Zahlung erhalten.",
-
-"Energia naturale dalle api":"Natürliche Energie aus der Welt der Bienen",
-"Presentazione della Linea Integratori":"Präsentation der Nahrungsergänzungslinie",
-"Integratori e preparazioni a base di prodotti dell’alveare, selezionati per un uso semplice e quotidiano.":"Nahrungsergänzungen und Zubereitungen auf Basis von Bienenprodukten, ausgewählt für eine einfache Anwendung im Alltag.",
-
-"Bellezza e trattamento quotidiano per il corpo e creazioni in cera d’api":"Schönheit, tägliche Körperpflege und Kreationen aus Bienenwachs",
-"Presentazione della Linea Cosmesi e Tesori in Cera d’Api":"Präsentation der Kosmetik- und Bienenwachslinie",
-"Cosmesi con ingredienti dell’alveare, saponette per la detersione quotidiana e creazioni artigianali in cera d’api.":"Kosmetik mit Inhaltsstoffen aus dem Bienenstock, Seifen für die tägliche Reinigung und handwerkliche Kreationen aus Bienenwachs.",
-
-"Linea I Tesori di Francesco":"Linie „Francescos Spezialitäten“",
-"Sapori artigianali, intensi e sorprendenti":"Handwerkliche, intensive und überraschende Aromen",
-"Presentazione della Linea I Tesori di Francesco":"Präsentation der Linie „Francescos Spezialitäten“",
-"Una piccola selezione di specialità dal carattere deciso: limoncello, liquore al caffè e castagne al rum, riuniti nella linea I Tesori di Francesco.":"Eine kleine Auswahl charaktervoller Spezialitäten: Limoncello, Kaffeelikör und Kastanien in Rum, vereint in der Linie „Francescos Spezialitäten“.",
-
-"Tre prodotti, una proposta già pronta":"Drei Produkte, bereits passend zusammengestellt",
-"Presentazione I Tris dell’Alveare":"Präsentation der Bienenstock-Dreier-Sets",
-"Una selezione di 30 tris composti da tre prodotti della Fabbrica delle Api, già abbinati e pronti da acquistare.":"Eine Auswahl von 30 Dreier-Sets mit jeweils drei Produkten der Fabbrica delle Api, bereits kombiniert und direkt bestellbar.",
-"Vivi un’esperienza a 360° e ottimizza la spedizione con i nostri tris.":"Entdecke mehrere Produkte auf einmal und nutze unsere Dreier-Sets für eine besonders praktische Bestellung.",
-
-"Referenze reali della Linea Alimenti della Fabbrica delle Api":"Produkte der Lebensmittel-Linie der Fabbrica delle Api",
-"Marco Zago durante una seduta di alveoterapia naturale all'Oasi del Busatello":"Marco Zago während einer natürlichen Alveotherapie-Sitzung in der Oasi del Busatello",
-"Marco Zago utilizza il diffusore nel Centro di Alveoterapia Integrata":"Marco Zago verwendet den Diffusor im Zentrum für Integrierte Alveotherapie"
-});
-
-Object.assign(T,{
-"← Torna alle Categorie":"← Zurück zu den Kategorien",
-"Linea Benessere Veleno d'Api":"Bienengift-Kosmetiklinie",
-"La LINEA COSMETICA AL VELENO D’API comprende 6 prodotti esclusivi. Apri ogni scheda per consultare descrizione completa e prezzo della selezione aggiornata.":"Die KOSMETIKLINIE MIT BIENENGIFT umfasst 6 exklusive Produkte. Öffne jede Produktseite, um die vollständige Beschreibung und den aktuellen Preis zu sehen.",
-"ESCLUSIVA":"EXKLUSIV",
-"Miele Artigianale":"Handwerklicher Honig",
-"© 2026 Oasi del Busatello – Miele Artigianale. Tutti i diritti riservati.":"© 2026 Oasi del Busatello – Handwerklicher Honig. Alle Rechte vorbehalten."
-});
-
-const SUB=[
-["confezioni","Packungen"],["confezione","Packung"],["vasetti","Gläser"],["vasetto","Glas"],["flacone","Flasche"],["bottiglia","Flasche"],["saponetta","Seife"],["candela","Kerze"],["prodotti","Produkte"],["prodotto","Produkt"],["sconto","Rabatt"],["Spedizione:","Versand:"],["gratuita","kostenlos"],["Disponibile","Verfügbar"],["Esaurito","Ausverkauft"],["Quantità","Menge"],["Prezzo","Preis"],["Totale","Gesamt"],["Continua gli acquisti","Weiter einkaufen"],["Vai al carrello","Zum Warenkorb"],["Procedi al checkout","Zur Kasse"],["Rimuovi","Entfernen"],["Cerca","Suchen"],["Categorie","Kategorien"]
-];
-
-const ATTRS=['placeholder','aria-label','title','alt'];
-const DE_PREVIEW=
-'<div class="alveo-preview-page alveo-de-sheet alveo-active-page"><div class="de-cover"><div class="de-kicker">ALVEO DIGITAL · DEUTSCHE DEMO</div><div class="de-title">10 FRÜHSTÜCKE<br>AUS DEM BIENENSTOCK</div><div class="de-gold">ZEHN MORGEN. ZEHN KLEINE GENUSSMOMENTE.</div><p>Ein kleines Magazin zum Kochen, Blättern und jeden Morgen neu Entdecken.</p><div class="de-grid"><b>10 VOLLSTÄNDIGE REZEPTE</b><b>20 SCHNELLE IDEEN</b><b>WOCHENPLANER UND EINKAUFSLISTE</b><b>QUIZ UND HONIGVERKOSTUNG</b></div><small>RENDER-TEST · 5 SEITEN</small></div><span>Cover</span></div>'+
-'<div class="alveo-preview-page alveo-de-sheet"><div class="de-paper"><div class="de-kicker gold">DER WEG DURCH DEN RATGEBER</div><h2>Was dich erwartet</h2><p>Rezepte, praktische Hilfen, Honigwissen und schnelle Ideen.</p><div class="de-index"><div><b>01 · DIE 10 FRÜHSTÜCKE</b><p>01 Joghurt, Obst und Blütenhonig</p><p>02 Brot, Ricotta und Akazienhonig</p><p>03 Apfel-Kastanien-Porridge</p><p>04 Bananen-Pancakes mit Orangenhonig</p><p>05 Knuspriges Honig-Granola</p></div><div><b>02 · ORGANISIERE DEINE MORGEN</b><p>Wochenplaner</p><p>Einkaufsliste</p><b>03 · ENTDECKE DEINEN HONIG</b><p>Quiz · Verkostung · Geschmackspass</p><b>04 · 20 SCHNELLE IDEEN</b></div></div></div><span>Inhalt</span></div>'+
-'<div class="alveo-preview-page alveo-de-sheet"><div class="de-section"><div class="de-big">01</div><div class="de-line"></div><h2>Die 10 Frühstücke</h2><p>Zehn vollständige Rezepte. Jedes Frühstück wird auf der nächsten Seite mit Varianten und praktischen Tipps fortgesetzt.</p></div><span>Die 10 Frühstücke</span></div>'+
-'<div class="alveo-preview-page alveo-de-sheet"><div class="de-paper recipe"><div class="de-kicker gold">FRÜHSTÜCK 01 · REZEPT</div><h2>Joghurt, Obst und Blütenhonig</h2><p>Frisch, farbenfroh und in wenigen Minuten fertig.</p><div class="de-stats"><b>ZEIT<br><em>5 Minuten</em></b><b>SCHWIERIGKEIT<br><em>Sehr einfach</em></b><b>FÜR<br><em>1 Person</em></b></div><div class="de-index"><div><b>DU BRAUCHST</b><p>150 g Naturjoghurt</p><p>100 g Obst der Saison</p><p>2 EL Haferflocken</p><p>1 TL Blütenhonig</p></div><div><b>SO GEHT’S</b><p><strong>01</strong> Joghurt in eine Schüssel geben.</p><p><strong>02</strong> Obst und Haferflocken dazugeben.</p><p><strong>03</strong> Kurz vor dem Servieren mit Honig verfeinern.</p></div></div><div class="de-honey"><b>EMPFOHLENER HONIG · Blütenhonig</b><br>Mild und ausgewogen: verbindet Joghurt, Getreide und Obst.</div></div><span>Erstes vollständiges Rezept</span></div>'+
-'<div class="alveo-preview-page alveo-de-sheet"><div class="de-paper recipe"><div class="de-kicker gold">FRÜHSTÜCK 01 · VARIANTEN UND IDEEN</div><h2>Mach es noch mehr zu deinem</h2><h3>DREI VARIANTEN</h3><p><strong>01 Pfirsich</strong><br>Pfirsichwürfel und ein wenig Blütenhonig.</p><p><strong>02 Beeren</strong><br>Heidelbeeren, Himbeeren oder Erdbeeren.</p><p><strong>03 Apfel und Zimt</strong><br>Dünne Apfelscheiben, Zimt und geröstete Haferflocken.</p><h3>VORBEREITEN</h3><p><strong>Am Vorabend vorbereiten:</strong> Obst abends waschen und schneiden. Getreide und Honig getrennt aufbewahren.</p><div class="de-note"><b>MEINE VARIANTE</b><br><br>________________________________<br><br>________________________________</div></div><span>Varianten und Ideen</span></div>';
+const ATTRS=['title','aria-label','placeholder','alt'];
+const originals=new WeakMap();
+const attrOriginals=new WeakMap();
+const pending=new Map();
+let observer=null;
 
 function style(){
- if(document.getElementById('fda-lang-style'))return;
- const s=document.createElement('style');s.id='fda-lang-style';s.textContent=
- '#fda-language-test{display:flex;align-items:center;gap:7px;margin-left:auto;padding:5px 7px;border:1px solid rgba(245,190,65,.7);border-radius:999px;background:#111;color:#fff;font:800 12px/1 system-ui,sans-serif;z-index:1000001}#fda-language-test select{border:0;border-radius:999px;background:#f2b83f;color:#171717;padding:7px 9px;font-weight:900;outline:none}#fda-language-test.fallback{position:fixed;right:10px;top:10px;margin:0;box-shadow:0 5px 20px rgba(0,0,0,.35)}.alveo-lang-points{display:inline-flex;margin-top:8px;border:1px solid rgba(250,204,21,.5);background:rgba(113,63,18,.35);color:#fde68a;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:950}.alveo-de-sheet>div{box-sizing:border-box;width:100%;aspect-ratio:210/297;border-radius:8px;overflow:hidden;text-align:left}.de-cover{background:#0d493a;color:#fff;padding:8%;display:flex;flex-direction:column;justify-content:center}.de-title{font-family:Georgia,serif;font-size:clamp(30px,6vw,62px);font-weight:900;line-height:1.02;margin:8% 0 4%}.de-gold,.gold{color:#e0a018;font-weight:900}.de-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10%;padding-top:5%;border-top:1px solid rgba(255,255,255,.35)}.de-paper{background:#f8f1e2;color:#19251f;padding:7%;height:100%}.de-paper h2{font-family:Georgia,serif;color:#0d493a;font-size:clamp(28px,5vw,52px)}.de-index{display:grid;grid-template-columns:1fr 1fr;gap:5%;margin-top:7%}.de-section{height:100%;padding:9%;background:linear-gradient(135deg,#74410e,#2f1b08);color:white;display:flex;flex-direction:column;justify-content:center}.de-big{font:400 clamp(90px,20vw,190px)/.9 Georgia,serif;color:#e8b33a}.de-line{width:35%;border-top:4px solid #e8b33a;margin:4% 0}.de-section h2{font:900 clamp(36px,7vw,74px)/1.05 Georgia,serif}.de-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:3%;border-bottom:2px solid #d99a12;padding:4% 0}.de-honey{margin:7% -7% -7%;padding:4% 7%;background:#0d493a;color:#fff}.de-note{margin-top:7%;padding:4%;border:1px solid #ead08d;border-radius:12px;background:#fff0bd}@media(max-width:760px){#fda-language-test{font-size:11px}.de-index,.de-grid{grid-template-columns:1fr}.alveo-de-sheet>div{min-height:72vh;aspect-ratio:auto}.de-title{font-size:34px}}';
+ if(document.getElementById('fda-language-style'))return;
+ const s=document.createElement('style');s.id='fda-language-style';
+ s.textContent='#fda-language-test{display:flex;align-items:center;gap:9px;color:#fff;font:800 12px/1.1 Arial,sans-serif;border:1px solid rgba(255,255,255,.32);border-radius:999px;padding:5px 6px 5px 10px;background:rgba(0,0,0,.18);white-space:nowrap}#fda-language-test span{font-weight:800}#fda-language-select{border:0;border-radius:999px;background:#f2b83f;color:#171717;padding:8px 10px;font-weight:900;outline:none;cursor:pointer}#fda-language-test.fallback{position:fixed;right:12px;top:12px;z-index:99999;box-shadow:0 5px 20px rgba(0,0,0,.3)}@media(max-width:900px){#fda-language-test{font-size:11px;padding-left:8px}#fda-language-test span{display:none}}';
  document.head.appendChild(s);
 }
 
@@ -342,8 +183,9 @@ function selector(){
  style();
  let box=document.getElementById('fda-language-test');
  if(!box){
-   box=document.createElement('div');box.id='fda-language-test';
-   box.innerHTML='<span>🌐 Lingua / Sprache</span><select id="fda-language-select"><option value="it">🇮🇹 Italiano</option><option value="de">🇩🇪 Deutsch</option></select>';
+   box=document.createElement('div');
+   box.id='fda-language-test';
+   box.innerHTML='<span>🌐 Lingua / Language</span><select id="fda-language-select" aria-label="Lingua / Language"><option value="it">🇮🇹 Italiano</option><option value="en">🇬🇧 English</option></select>';
    const target=document.getElementById('center-home-bar')||document.querySelector('header nav')||document.querySelector('header .nav')||document.querySelector('header');
    if(target)target.appendChild(box);else{box.classList.add('fallback');document.body.appendChild(box);}
    box.querySelector('select').addEventListener('change',e=>setLang(e.target.value));
@@ -351,105 +193,134 @@ function selector(){
  const sel=document.getElementById('fda-language-select');if(sel)sel.value=lang;
 }
 
-function trText(v){
- const raw=String(v||'');const x=raw.trim();if(!x)return raw;
- let out=T[x]||x;
-
- if(out===x && lang===DE){
-   const beePoints=x.match(/^(\\d+)\\s+API\\s*\\+\\s*(\\d+)\\s+BONUS\\s*=\\s*(\\d+)\\s+API$/i);
-   if(beePoints){
-     out=beePoints[1]+' BIENENPUNKTE + '+beePoints[2]+' BONUS = '+beePoints[3]+' BIENENPUNKTE';
-   }
- }
-
- if(out===x && lang===DE){
-   const footer=x.match(/^©\\s*(\\d{4})\\s+Oasi del Busatello\\s*[–-]\\s*Miele Artigianale\\.\\s*Tutti i diritti riservati\\.$/i);
-   if(footer){
-     out='© '+footer[1]+' Oasi del Busatello – Handwerklicher Honig. Alle Rechte vorbehalten.';
-   }
- }
-
- if(out===x)return raw;
- return raw.replace(x,out);
+function cleanText(v){return String(v||'').replace(/\s+/g,' ').trim();}
+function shouldTranslate(x){
+ if(!x||x.length<2)return false;
+ if(/^[-+€$£%\d\s.,:/()]+$/.test(x))return false;
+ if(/^(APIS\d+|BIO|INCI|PDF|QR|URL)$/i.test(x))return false;
+ if(/^https?:\/\//i.test(x))return false;
+ return /[A-Za-zÀ-ÿ]/.test(x);
 }
-function translateNode(node){
- if(!node||node.nodeType!==3)return;
- const p=node.parentElement;if(!p||/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA)$/i.test(p.tagName))return;
- const old=node.nodeValue;if(!String(old||'').trim())return;
- if(!originals.has(node))originals.set(node,old);
- const nv=trText(old);
- if(nv!==old){node.nodeValue=nv;translated.add(node);}
+function cacheSave(){try{localStorage.setItem(cacheKey,JSON.stringify(cache));}catch(_){}}
+
+async function remoteTranslate(text){
+ if(STATIC[text])return STATIC[text];
+ if(cache[text])return cache[text];
+ if(pending.has(text))return pending.get(text);
+ const job=(async()=>{
+   try{
+     const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=it&tl=en&dt=t&q='+encodeURIComponent(text);
+     const res=await fetch(url,{method:'GET',credentials:'omit',referrerPolicy:'no-referrer'});
+     if(!res.ok)throw new Error('translate '+res.status);
+     const data=await res.json();
+     const out=Array.isArray(data&&data[0])?data[0].map(x=>Array.isArray(x)?(x[0]||''):'').join(''):text;
+     if(out&&out!==text){cache[text]=out;cacheSave();return out;}
+   }catch(_){}
+   return text;
+ })();
+ pending.set(text,job);
+ try{return await job;}finally{pending.delete(text);}
 }
-function translateAttrs(el){
- if(!el||el.nodeType!==1)return;
- let map=attrOriginals.get(el);if(!map){map={};attrOriginals.set(el,map);}
+
+function setOriginal(node,val){
+ if(!originals.has(node))originals.set(node,val);
+}
+async function translateTextNode(node){
+ if(lang!==EN||!node||node.nodeType!==3)return;
+ const p=node.parentElement;
+ if(!p||/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|OPTION)$/i.test(p.tagName))return;
+ const raw=node.nodeValue||'', x=cleanText(raw);
+ if(!shouldTranslate(x))return;
+ setOriginal(node,raw);
+ const out=STATIC[x]||await remoteTranslate(x);
+ if(lang!==EN||!out||out===x)return;
+ const leading=raw.match(/^\s*/)?.[0]||'';
+ const trailing=raw.match(/\s*$/)?.[0]||'';
+ node.nodeValue=leading+out+trailing;
+}
+async function translateElementAttrs(el){
+ if(lang!==EN||!el||el.nodeType!==1)return;
+ let map=attrOriginals.get(el);
+ if(!map){map={};attrOriginals.set(el,map);}
  for(const a of ATTRS){
    if(!el.hasAttribute(a))continue;
-   const v=el.getAttribute(a);if(!v)continue;
-   if(!(a in map))map[a]=v;
-   const n=trText(v);if(n!==v)el.setAttribute(a,n);
+   const raw=el.getAttribute(a)||'', x=cleanText(raw);
+   if(!shouldTranslate(x))continue;
+   if(!(a in map))map[a]=raw;
+   const out=STATIC[x]||await remoteTranslate(x);
+   if(lang===EN&&out&&out!==x)el.setAttribute(a,out);
  }
 }
-function walk(root){
- if(!root)return;
- if(root.nodeType===1)translateAttrs(root);
- const w=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT);let n;
- while((n=w.nextNode())){if(n.nodeType===3)translateNode(n);else translateAttrs(n);}
-}
-function restore(){
- translated.forEach(n=>{if(n&&originals.has(n))n.nodeValue=originals.get(n);});translated.clear();
- document.querySelectorAll('*').forEach(el=>{const m=attrOriginals.get(el);if(m)for(const a in m)el.setAttribute(a,m[a]);});
+
+function collect(root){
+ const texts=[], els=[];
+ if(!root)return {texts,els};
+ if(root.nodeType===3)texts.push(root);
+ if(root.nodeType===1)els.push(root);
+ const w=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT);
+ let n; while((n=w.nextNode())){if(n.nodeType===3)texts.push(n);else els.push(n);}
+ return {texts,els};
 }
 
-function productFacts(){
- const panel=document.getElementById('alveo-digitale-inline-panel');if(!panel)return;
- const article=Array.from(panel.querySelectorAll('article')).find(a=>/10 Colazioni|10 Frühstücke/i.test(a.textContent||''));if(!article)return;
- const title=article.querySelector('h3');if(title)title.textContent=lang===DE?'10 Frühstücke aus dem Bienenstock':'10 Colazioni dell’Alveare';
- const desc=article.querySelector('p');if(desc)desc.textContent=lang===DE?'Deutsche Sprachdemo: fünf Beispielseiten. Die endgültige deutsche Ausgabe wird erst nach Freigabe des Tests erstellt.':'37 pagine con 10 ricette complete, 20 idee lampo, planner, lista della spesa, quiz e degustazione dei mieli.';
- const price=Array.from(article.querySelectorAll('div')).find(el=>/^€\s*[234][,.]90$/.test(String(el.textContent||'').trim()));if(price)price.textContent='€4,90';
- let b=article.querySelector('.alveo-lang-points');if(!b){b=document.createElement('div');b.className='alveo-lang-points';article.appendChild(b);}b.textContent=lang===DE?'🐝 2 Bienenpunkte':'🐝 2 Punti Ape';
- const buy=article.querySelector('[data-alveo-buy="colazioni"]');if(buy)buy.textContent=lang===DE?'PDF kaufen (Test)':'Acquista PDF';
+async function translateRoot(root){
+ if(lang!==EN||translating)return;
+ translating=true;
+ try{
+   const {texts,els}=collect(root||document.body);
+   const immediate=[];
+   const deferred=[];
+   texts.forEach(n=>{
+     const x=cleanText(n.nodeValue||'');
+     if(!shouldTranslate(x))return;
+     if(STATIC[x]||cache[x])immediate.push(n); else deferred.push(n);
+   });
+   for(const n of immediate)await translateTextNode(n);
+   for(const el of els)await translateElementAttrs(el);
+   const workers=Array.from({length:4},async()=>{
+     while(deferred.length&&lang===EN){
+       const n=deferred.shift();
+       await translateTextNode(n);
+     }
+   });
+   await Promise.all(workers);
+   if(document.title){
+     const t=cleanText(document.title);
+     const out=STATIC[t]||cache[t]||await remoteTranslate(t);
+     if(lang===EN&&out)document.title=out;
+   }
+   document.documentElement.lang='en';
+ }finally{translating=false;}
 }
 
-function purchase(){
- const o=document.getElementById('alveo-sim-overlay');if(!o)return;
- const $=s=>o.querySelector(s), d=document.getElementById('alveo-sim-download');
- if(d&&!d.dataset.itHref)d.dataset.itHref=d.getAttribute('href')||'';
- const values=lang===DE?{
- eye:'ALVEO DIGITAL · RENDER-TEST',title:'Kauf simulieren',prod:'10 Frühstücke aus dem Bienenstock - deutsche Demo (5 Seiten)',notice:'🧪 Technischer Test auf Render. Es wird kein echter Betrag belastet. Nach der Simulation wird die deutsche PDF-Demo angeboten.',lab:'E-Mail für den Test',pay:'💳 Karte · Zahlung simulieren',proc:'Simulierter Kauf läuft...',close:'Abbrechen und zurück zu den Produkten',ok:'Simulierter Kauf abgeschlossen',okp:'Es wurde keine echte Zahlung ausgeführt. Die deutsche Testversion steht bereit.',down:'⬇ Deutsche PDF-Demo herunterladen',close2:'Schließen'
- }:{eye:'ALVEO DIGITALE · PROVA RENDER',title:"Simula l'acquisto",prod:"10 Colazioni dell'Alveare - Edizione Premium · 37 pagine",notice:'🧪 Questa è una simulazione solo su Render. Nessun importo verrà addebitato e non devi inserire dati reali della carta.',lab:'Email per la prova',pay:'💳 Carta · Simula pagamento',proc:'Acquisto simulato in corso...',close:'Annulla e torna ai prodotti',ok:'Acquisto simulato completato',okp:'Nessun pagamento reale è stato eseguito. Il prodotto digitale è pronto.',down:'⬇ Scarica il prodotto',close2:'Chiudi'};
- const set=(sel,v)=>{const e=$(sel);if(e)e.textContent=v;};set('#alveo-sim-head .eyebrow',values.eye);set('#alveo-sim-title',values.title);set('#alveo-sim-product strong',values.prod);set('#alveo-sim-product span','€4,90');set('#alveo-sim-notice',values.notice);set('label[for="alveo-sim-email"]',values.lab);const pay=$('#alveo-sim-card');if(pay&&!pay.disabled)pay.textContent=values.pay;set('#alveo-sim-processing',values.proc);set('#alveo-sim-close',values.close);set('#alveo-sim-success h4',values.ok);set('#alveo-sim-success p',values.okp);set('#alveo-sim-close-success',values.close2);
- if(d){d.textContent=values.down;if(lang===DE){d.href='/downloads/10-fruehstuecke-bienenstock-demo-de.pdf';d.setAttribute('download','10-Fruehstuecke-aus-dem-Bienenstock-DEMO.pdf');}else{if(d.dataset.itHref)d.href=d.dataset.itHref;d.removeAttribute('download');}}
+function setLang(v){
+ const next=v===EN?EN:IT;
+ try{localStorage.setItem(KEY,next);}catch(_){}
+ if(next===lang)return;
+ lang=next;
+ location.reload();
 }
 
-function preview(){
- const pages=document.getElementById('alveo-preview-pages');if(!pages)return;if(italianPreviewHtml===null)italianPreviewHtml=pages.innerHTML;
- const h=document.querySelector('#alveo-preview-head strong'),i=document.getElementById('alveo-preview-intro'),n=document.getElementById('alveo-preview-note'),p=document.getElementById('alveo-preview-prev'),nx=document.getElementById('alveo-preview-next'),c=document.getElementById('alveo-preview-counter');
- if(lang===DE){if(pages.dataset.lang!=='de'){pages.innerHTML=DE_PREVIEW;pages.dataset.lang='de';}if(h)h.textContent='10 Frühstücke aus dem Bienenstock · Vorschau';if(i)i.textContent='Fünf deutsche Demoseiten zeigen den Sprachwechsel vor dem Kauf.';if(n)n.textContent='Render-Sprachtest · die endgültige deutsche 37-Seiten-Ausgabe wird erst nach Freigabe erstellt.';if(p)p.textContent='← Zurück';if(nx)nx.textContent='Weiter →';if(c)c.textContent='1 / 5';}
- else{if(pages.dataset.lang==='de'){pages.innerHTML=italianPreviewHtml;delete pages.dataset.lang;}if(h)h.textContent='10 Colazioni dell’Alveare · Anteprima';if(p)p.textContent='← Indietro';if(nx)nx.textContent='Avanti →';}
+function startObserver(){
+ if(observer)observer.disconnect();
+ observer=new MutationObserver(ms=>{
+   if(lang!==EN||translating)return;
+   const roots=[];
+   ms.forEach(m=>m.addedNodes&&m.addedNodes.forEach(n=>{if(n.nodeType===1||n.nodeType===3)roots.push(n.nodeType===3?n.parentNode:n);}));
+   roots.forEach(r=>translateRoot(r));
+ });
+ observer.observe(document.body,{childList:true,subtree:true});
 }
 
-function sync(){
- if(busy)return;busy=true;
- try{selector();if(lang===DE)walk(document.body);productFacts();purchase();preview();document.documentElement.lang=lang;if(document.title)document.title=T[document.title]||document.title;const s=document.getElementById('fda-language-select');if(s)s.value=lang;}finally{busy=false;}
+async function start(){
+ let s='';
+ try{s=localStorage.getItem(KEY)||'';}catch(_){}
+ lang=(s===EN)?EN:IT;
+ selector();
+ const sel=document.getElementById('fda-language-select');if(sel)sel.value=lang;
+ if(lang===EN)await translateRoot(document.body);
+ else document.documentElement.lang='it';
+ startObserver();
 }
-function setLang(v){lang=v===DE?DE:IT;try{localStorage.setItem(KEY,lang);}catch(_){}if(lang===IT){restore();location.reload();return;}sync();}
-function schedule(){clearTimeout(timer);timer=setTimeout(sync,50);}
-function start(){let s='';try{s=localStorage.getItem(KEY)||'';}catch(_){}if(s!==IT&&s!==DE)s=(navigator.language||'').toLowerCase().startsWith('de')?DE:IT;lang=s;selector();sync();new MutationObserver(ms=>{
-  if(busy)return;
-  if(lang===DE){
-    ms.forEach(m=>{
-      if(m.type==='characterData' && m.target){
-        translateNode(m.target);
-      }
-      if(m.addedNodes){
-        m.addedNodes.forEach(n=>{
-          if(n.nodeType===1||n.nodeType===3) walk(n.nodeType===1?n:n.parentNode);
-        });
-      }
-    });
-  }
-  schedule();
-}).observe(document.body,{childList:true,subtree:true,characterData:true});document.addEventListener('click',()=>setTimeout(sync,80),true);}
+
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start,{once:true}):start();
 })();
