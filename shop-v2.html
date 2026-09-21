@@ -839,8 +839,14 @@ function apePelùReply(question){
   if(asksArancia){
     return '<strong>Miele all’Arancia · 250 g · €4,90</strong><br>Ha un carattere fresco e agrumato, in cui le note di arancia accompagnano la naturale dolcezza del miele. È piacevole a colazione, nello yogurt, sul pane, con biscotti, dolci e formaggi freschi. <br><br>🐝 Vale <strong>2 Punti Ape</strong>.';
   }
+  if((q.includes('miele')||q.includes('mieli')) && (q.includes('colazione')||q.includes('mattina'))){
+    return '<strong>Per colazione dipende soprattutto da quello che ti piace 🐝</strong><br><br>Se vuoi un miele semplice e versatile, partirei dal <strong>Millefiori del Busatello</strong>: va bene sul pane, sulle fette biscottate, nello yogurt e nelle bevande calde.<br><br>Se invece preferisci qualcosa di più fruttato, puoi scegliere <strong>Fragola, Pesca, Melone o Arancia</strong>.<br><br>Se mi dici cosa mangi di solito a colazione — pane, yogurt, biscotti, latte o altro — ti aiuto a scegliere quello più vicino ai tuoi gusti.';
+  }
+  if((q.includes('miele')||q.includes('mieli')) && (q.includes('montagna')||q.includes('montano'))){
+    return 'Con “<strong>mieli di montagna</strong>” si indicano mieli prodotti in territori montani, dove le api raccolgono nettare o melata dalla vegetazione locale. A seconda della zona si possono trovare, per esempio, mieli di castagno, rododendro, tarassaco, millefiori di montagna o mieli di melata. Il gusto cambia molto con quota, stagione e fioriture presenti.';
+  }
   if(q.includes('miele')||q.includes('mieli')){
-    return 'Per scegliere un miele puoi partire dal gusto: <strong>Millefiori</strong> se vuoi qualcosa di armonico e rappresentativo del Busatello; <strong>Melone, Fragola, Pesca o Arancia</strong> se preferisci una nota più fruttata. Puoi chiedermi direttamente anche “com’è fatto il Millefiori?”, “che gusto ha il miele al melone?” oppure “quanto costa quello alla pesca?”.';
+    return 'Possiamo scegliere insieme in base a <strong>gusto e momento d’uso</strong>. Se vuoi qualcosa di armonico e versatile c’è il <strong>Millefiori</strong>; se preferisci note più fruttate ci sono <strong>Melone, Fragola, Pesca e Arancia</strong>. Dimmi come pensi di usarlo — colazione, yogurt, formaggi, dolci o semplicemente al cucchiaio — e ti aiuto a restringere la scelta.';
   }
   if(q.includes('velen')){
     return 'La <strong>Linea Veleni</strong> racconta uno degli elementi più sorprendenti dell’alveare attraverso prodotti cosmetici e da massaggio. Il linguaggio resta sempre prudente: niente promesse di cura, ma attenzione a gesti, massaggio, pelle e sensazioni di comfort.';
@@ -853,10 +859,6 @@ function apePelùReply(question){
   }
   if(q.includes('alveare')||q.includes('arnia')){
     return 'Un <strong>alveare</strong> è la casa organizzata della colonia di api. Al suo interno vivono la regina, migliaia di api operaie e, in alcuni periodi dell’anno, i fuchi. Le api costruiscono favi di cera con celle esagonali, dove allevano la covata e conservano miele e polline. L’arnia, invece, è la struttura costruita dall’uomo che ospita la colonia.';
-  }
-
-  if(q.includes('miele') && (q.includes('montagna')||q.includes('montano'))){
-    return 'Con “<strong>mieli di montagna</strong>” si indicano mieli prodotti in territori montani, dove le api raccolgono nettare o melata dalla vegetazione locale. A seconda della zona si possono trovare, per esempio, mieli di castagno, rododendro, tarassaco, millefiori di montagna o mieli di melata. Il gusto cambia molto con quota, stagione e fioriture presenti.';
   }
 
   if(q.includes('propoli')){
