@@ -235,6 +235,73 @@ app.get('/api/local-delivery-check', async (req, res) => {
       }
     }
 
+    // Secondo verificatore indipendente: Photon/Komoot.
+    // Serve quando Nominatim non censisce bene una strada o un civico.
+    if (!verified) {
+      try {
+        const photonQuery = [rawAddress, municipality.nome, cap, province, 'Italia'].join(', ');
+        const photonUrl = 'https://photon.komoot.io/api/?limit=10&q=' + encodeURIComponent(photonQuery);
+        const photonResponse = await fetch(photonUrl, {
+          headers:{
+            'Accept':'application/json',
+            'User-Agent':'LaFabbricaDelleApi/1.0 address-validator'
+          }
+        });
+
+        if (photonResponse.ok) {
+          const photonData = await photonResponse.json();
+          const features = Array.isArray(photonData?.features) ? photonData.features : [];
+
+          const photonMatch = features.find(feature => {
+            const p = feature.properties || {};
+            const coords = feature.geometry?.coordinates || [];
+            const photonStreet = normalizePlace(p.street || p.name || '');
+            const photonHouse = normalizePlace(p.housenumber || '');
+            const photonCityValues = [p.city, p.locality, p.district, p.county]
+              .filter(Boolean)
+              .map(normalizePlace);
+            const photonPostcode = String(p.postcode || '');
+            const photonState = normalizePlace(p.state || '');
+            const wantedNumberNorm = normalizePlace(wantedNumber);
+
+            const cityOk = photonCityValues.some(name =>
+              name === wantedCity ||
+              name.includes(wantedCity) ||
+              wantedCity.includes(name)
+            );
+            const capOk = !photonPostcode || photonPostcode === cap;
+            const provinceOk = true; // Comune+CAP+sigla sono già stati validati sul dataset dei comuni italiani.
+            const streetOk = !streetWords ||
+              photonStreet.includes(streetWords) ||
+              streetWords.includes(photonStreet);
+            const numberOk = !wantedNumberNorm ||
+              !photonHouse ||
+              photonHouse === wantedNumberNorm;
+
+            return cityOk && capOk && provinceOk && streetOk && numberOk &&
+              Array.isArray(coords) && coords.length >= 2;
+          });
+
+          if (photonMatch) {
+            const coords = photonMatch.geometry.coordinates;
+            verified = {
+              lat:String(coords[1]),
+              lon:String(coords[0]),
+              display_name:[
+                photonMatch.properties?.street || photonMatch.properties?.name || streetOnly,
+                photonMatch.properties?.housenumber || wantedNumber,
+                municipality.nome,
+                cap,
+                province
+              ].filter(Boolean).join(', ')
+            };
+          }
+        }
+      } catch (error) {
+        console.warn('[Shop V2] Fallback Photon non disponibile:', error.message);
+      }
+    }
+
     if (!verified) {
       return res.status(422).json({
         ok:false,
