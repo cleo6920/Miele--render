@@ -2189,7 +2189,13 @@ const wrapRef = useRef(null);
             const [isLocalShipping, setIsLocalShipping] = useState(false);
             
             // STATO CHIAVE: per tracciare se l'utente ha navigato via dalla home iniziale.
-            const [hasNavigatedAway, setHasNavigatedAway] = useState(false);
+            const [hasNavigatedAway, setHasNavigatedAway] = useState(() => {
+                try {
+                    return new URLSearchParams(window.location.search).get('linea') === 'veleni';
+                } catch (error) {
+                    return false;
+                }
+            });
 
             const [firestoreDb, setFirestoreDb] = useState(null);
             const [firebaseAuth, setFirebaseAuth] = useState(null);
