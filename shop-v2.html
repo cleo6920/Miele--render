@@ -535,12 +535,19 @@ async function calculateShipping(){
     return shippingState;
   }
   const local=await checkLocalDelivery();
-  if(local && local.ok && local.eligible){
+  if(local && local.ok && local.validAddressPair===true && local.eligible){
     shippingState={cost:0,label:'Gratuita',reason:'Consegna locale gratuita · '+local.distanceKm+' km da Castel d’Ario'};
     return shippingState;
   }
+
   const cost=cartUnits()>=3?10:8;
-  shippingState={cost,label:euro(cost),reason:'Corriere · consegna indicativa 5–6 giorni'};
+  shippingState={
+    cost,
+    label:euro(cost),
+    reason:(local && local.validationAvailable===false)
+      ? 'Corriere · verifica area locale non disponibile, applicata tariffa standard'
+      : 'Corriere · consegna indicativa 5–6 giorni'
+  };
   return shippingState;
 }
 
@@ -589,9 +596,13 @@ async function validStepOne(){
   if(!/^\d{5}$/.test(cap)){alert('Il CAP deve essere composto da 5 cifre.');return false;}
 
   const result=await checkLocalDelivery();
-  if(!result || !result.ok || result.validAddressPair===false){
-    alert(result?.error || 'Non riesco a verificare la corrispondenza tra CAP e Comune. Controlla i dati inseriti.');
+  if(result && result.validationAvailable===true && result.validAddressPair===false){
+    alert(result.error || 'CAP e Comune non corrispondono. Controlla i dati inseriti.');
     return false;
+  }
+
+  if(!result || result.validationAvailable===false){
+    console.warn('Verifica CAP/Comune temporaneamente non disponibile: il checkout prosegue con spedizione standard.');
   }
 
   return true;
