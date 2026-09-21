@@ -799,6 +799,16 @@ function findOfficialProductContext(value){
   }
   return best?.product||null;
 }
+function findOfficialProductsContext(value){
+  const hay=officialProductContextNormalize(value);
+  return SHOP_OFFICIAL_PRODUCTS.filter(product=>{
+    const candidates=[product.name,...(SHOP_OFFICIAL_PRODUCT_ALIASES[product.id]||[])];
+    return candidates.some(raw=>{
+      const candidate=officialProductContextNormalize(raw);
+      return candidate.length>=4 && hay.includes(candidate);
+    });
+  });
+}
 function officialCatalogEsc(v){return apeEscape(String(v||''));}
 function officialCatalogCategory(section){
   return ({
@@ -887,7 +897,9 @@ function apeAddContextLink(action){
 
 function apeContextActionFromText(message,reply){
   const l=apeCurrentLanguage();
-  const text=(String(message||'')+' '+String(reply||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const normalize=(v)=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const messageText=normalize(message);
+  const replyText=normalize(reply);
   const labels={
     it:{millefiori:'Vai al Miele Millefiori',melone:'Vai al Miele al Melone',fragola:'Vai al Miele alla Fragola',pesca:'Vai al Miele alla Pesca',arancia:"Vai al Miele all'Arancia",mieli:'Scopri i Mieli del Busatello',punti:'Vai ai Punti Ape',oasi:"Scopri l'Oasi del Busatello",galena:'Scopri la Galena delle Api',alveoterapia:"Scopri l'Alveoterapia Integrata",veleni:'Scopri la Linea Veleni',bacheca:'Vai alla Bacheca',alveo:'Scopri Alveo Digitale'},
     en:{millefiori:'Go to Millefiori Honey',melone:'Go to Melon Honey',fragola:'Go to Strawberry Honey',pesca:'Go to Peach Honey',arancia:'Go to Orange Honey',mieli:'Discover Busatello Honeys',punti:'Go to Bee Points',oasi:'Discover Busatello Oasis',galena:'Discover Galena delle Api',alveoterapia:'Discover Integrated Alveotherapy',veleni:'Discover the Bee Venom Line',bacheca:'Go to News',alveo:'Discover Alveo Digitale'},
@@ -896,25 +908,37 @@ function apeContextActionFromText(message,reply){
     es:{millefiori:'Ir a la Miel Millefiori',melone:'Ir a la Miel al Melón',fragola:'Ir a la Miel a la Fresa',pesca:'Ir a la Miel al Melocotón',arancia:'Ir a la Miel a la Naranja',mieli:'Descubrir las Mieles del Busatello',punti:'Ir a los Puntos Abeja',oasi:'Descubrir el Oasis del Busatello',galena:'Descubrir Galena delle Api',alveoterapia:'Descubrir la Alveoterapia Integrada',veleni:'Descubrir la Línea Veneno de Abeja',bacheca:'Ir a Novedades',alveo:'Descubrir Alveo Digitale'}
   };
   const L=labels[l]||labels.it;
-  const has=(...xs)=>xs.some(x=>text.includes(x));
-  const exact=findOfficialProductContext(text);
-  if(exact){
+  const hasMsg=(...xs)=>xs.some(x=>messageText.includes(x));
+  const promotionIntent=/(^|\s)(offerta|offerte|promozione|promozioni|sconto|sconti)(\s|$)|\b(on sale|discounts?|promotions?|deals?|angebot|angebote|rabatt|rabatte|promo|promos|remise|remises|oferta|ofertas|descuento|descuentos)\b/i.test(messageText);
+  if(promotionIntent)return null;
+
+  const exactMessage=findOfficialProductContext(messageText);
+  if(exactMessage){
+    const prefix={it:'Vai a',en:'Go to',de:'Zum Produkt',fr:'Voir',es:'Ir a'}[l]||'Vai a';
+    return {href:'/shop#prodotto-'+exactMessage.id,label:prefix+' '+exactMessage.name};
+  }
+
+  if(hasMsg('millefiori'))return {href:'/shop#miele-millefiori',label:L.millefiori};
+  if(hasMsg('miele al melone','miele di melone','miel al melon','melon honey','melonenhonig'))return {href:'/shop#miele-melone',label:L.melone};
+  if(hasMsg('miele alla fragola','miele di fragola','miel a la fresa','strawberry honey','erdbeerhonig'))return {href:'/shop#miele-fragola',label:L.fragola};
+  if(hasMsg('miele alla pesca','miele di pesca','miel al melocoton','peach honey','pfirsichhonig'))return {href:'/shop#miele-pesca',label:L.pesca};
+  if(hasMsg("miele all'arancia",'miele di arancia','miel a la naranja','orange honey','orangenhonig'))return {href:'/shop#miele-arancia',label:L.arancia};
+
+  const replyProducts=findOfficialProductsContext(replyText);
+  if(replyProducts.length===1){
+    const exact=replyProducts[0];
     const prefix={it:'Vai a',en:'Go to',de:'Zum Produkt',fr:'Voir',es:'Ir a'}[l]||'Vai a';
     return {href:'/shop#prodotto-'+exact.id,label:prefix+' '+exact.name};
   }
-  if(has('millefiori'))return {href:'/shop#miele-millefiori',label:L.millefiori};
-  if(has('miele al melone','miele di melone','miel al melon','melon honey','melonenhonig'))return {href:'/shop#miele-melone',label:L.melone};
-  if(has('miele alla fragola','miele di fragola','miel a la fresa','strawberry honey','erdbeerhonig'))return {href:'/shop#miele-fragola',label:L.fragola};
-  if(has('miele alla pesca','miele di pesca','miel al melocoton','peach honey','pfirsichhonig'))return {href:'/shop#miele-pesca',label:L.pesca};
-  if(has("miele all'arancia",'miele di arancia','miel a la naranja','orange honey','orangenhonig'))return {href:'/shop#miele-arancia',label:L.arancia};
-  if(has('punti ape','bee points','bienenpunkte','points abeille','puntos abeja'))return {href:'/shop#punti-ape',label:L.punti};
-  if(has('oasi del busatello','oasis del busatello','busatello oasis','oase busatello','oasis du busatello'))return {href:'/alveoterapia',label:L.oasi};
-  if(has('galena delle api'))return {href:'/centro',label:L.galena};
-  if(has('alveo digitale'))return {href:'/alveo-digitale',label:L.alveo};
-  if(has('bacheca','news','novedades','actualites','aktuelles'))return {href:'/bacheca',label:L.bacheca};
-  if(has('linea veleni','bee venom line','bienengift-linie',"ligne venin d'abeille",'linea veneno de abeja'))return {href:'/shop#linea-veleni',label:L.veleni};
-  if(has('alveoterapia integrata','integrated alveotherapy','integrierte alveotherapie','alveotherapie integree','alveoterapia integrada'))return {href:'/alveoterapia',label:L.alveoterapia};
-  if(has('miele','mieli','honey','honeys','honig','miel','miels'))return {href:'/shop#mieli',label:L.mieli};
+
+  if(hasMsg('punti ape','bee points','bienenpunkte','points abeille','puntos abeja'))return {href:'/shop#punti-ape',label:L.punti};
+  if(hasMsg('oasi del busatello','oasis del busatello','busatello oasis','oase busatello','oasis du busatello'))return {href:'/alveoterapia',label:L.oasi};
+  if(hasMsg('galena delle api'))return {href:'/centro',label:L.galena};
+  if(hasMsg('alveo digitale'))return {href:'/alveo-digitale',label:L.alveo};
+  if(hasMsg('bacheca','news','novedades','actualites','aktuelles'))return {href:'/bacheca',label:L.bacheca};
+  if(hasMsg('linea veleni','bee venom line','bienengift-linie',"ligne venin d'abeille",'linea veneno de abeja'))return {href:'/shop#linea-veleni',label:L.veleni};
+  if(hasMsg('alveoterapia integrata','integrated alveotherapy','integrierte alveotherapie','alveotherapie integree','alveoterapia integrada'))return {href:'/alveoterapia',label:L.alveoterapia};
+  if(hasMsg('miele','mieli','honey','honeys','honig','miel','miels'))return {href:'/shop#mieli',label:L.mieli};
   return null;
 }
 function apeNormalize(text){
@@ -934,6 +958,10 @@ function apePelùReply(question,history=[]){
     {id:'miele-arancia',name:"Miele all'Arancia",size:'250 g',price:4.9}
   ];
   const allCatalogProducts=[...busatelloCatalog,...SHOP_OFFICIAL_PRODUCTS];
+  const promotionIntent=/(^|\s)(offerta|offerte|promozione|promozioni|sconto|sconti)(\s|$)|\b(on sale|discounts?|promotions?|deals?|angebot|angebote|rabatt|rabatte|promo|promos|remise|remises|oferta|ofertas|descuento|descuentos)\b/i.test(q);
+  if(promotionIntent){
+    return 'Nel catalogo V2 che ho a disposizione <strong>non risultano al momento offerte, sconti o promozioni configurati</strong>. I prezzi mostrati sono i prezzi correnti del catalogo.<br><br>Se vuoi, posso invece dirti qual è il prodotto che costa meno, mostrarti i prodotti sotto una certa cifra oppure confrontare due prodotti.';
+  }
   const priceIntent=/\b(costa|costano|prezzo|prezzi|economico|economica|economici|economiche|caro|cara|cari|care)\b/.test(q);
   const explicitCatalogSubject=/\b(prodotto|prodotti|articolo|articoli|referenza|referenze|catalogo|shop)\b/.test(q);
   const inheritedCatalogSubject=/\b(prodotto|prodotti|articolo|articoli|referenza|referenze|catalogo|shop|miele|propoli|polline|pappa reale|crema|unguento|apis|tesori)\b/.test(recent);
@@ -1394,7 +1422,7 @@ async function apeAsk(text){
     if(res.ok && data?.ok && data?.reply){
       apeChatHistory.push({role:'assistant',content:data.reply});
       apeAddMessage(apeRenderAi(data.reply),'bot');
-      const contextualAction=apeContextActionFromText(value,data.reply)||data.action;
+      const contextualAction=data.suppressAction?null:(apeContextActionFromText(value,data.reply)||data.action);
       if(contextualAction)apeAddContextLink(contextualAction);
       return;
     }
