@@ -32,6 +32,25 @@ app.get('/api/ape-pelu-status', (req, res) => {
   });
 });
 
+const APE_V2_OFFICIAL_PRODUCTS = [{"id":"propolterapy-professional","name":"PropolTerapy Professional","size":"Diffusore + 5 capsule BIO","price":180},{"id":"capsule-pb","name":"Capsule Propoli P+B (5 pz)","size":"Scatola da 5 capsule","price":19.9},{"id":"capsule-propolit","name":"Capsule PROPOLIT (5 pz)","size":"Scatola da 5 capsule","price":19.9},{"id":"castagno","name":"Miele di Castagno","size":"250 g","price":6.9},{"id":"acacia-zenzero-apinfiore","name":"Miele di Acacia e Zenzero","size":"200 g","price":7.9},{"id":"miele-eucalipto-apinfiore","name":"Miele Eucalipto","size":"250 g","price":6.9},{"id":"balsammiel","name":"Balsamico Italiano","size":"200 g","price":11.9},{"id":"acacia","name":"Miele Italiano di Acacia","size":"40 g","price":2.9},{"id":"favo-integrale-bio","name":"Miele Italiano di Acacia in Favo","size":"200 g","price":11.9},{"id":"polline-italiano","name":"Polline Italiano","size":"125 g","price":10.9},{"id":"pappa-reale-italiana-bio","name":"Pappa Reale","size":"10 g","price":6.9},{"id":"orsetti-gommosi","name":"Orsetti Gommosi BIO con Propoli e Miele","size":"80 g","price":3.9},{"id":"bee-energy-bio","name":"Bee Energy BIO","size":"12 flaconcini da 10 ml","price":14.9},{"id":"propol-active-bio","name":"Propol Active BIO","size":"30 compresse masticabili","price":10.9},{"id":"propoli-30-spray-integratore","name":"Soluzione Propoli 30% Spray","size":"20 ml","price":7.9},{"id":"propoli-30-alcolica-integratore","name":"Soluzione Propoli 30% con Contagocce - Alcolica","size":"20 ml","price":5.9},{"id":"propoli-analcolica-integratore","name":"Soluzione Propoli con Contagocce Analcolica","size":"20 ml","price":5.9},{"id":"cosmesi-crema-mani","name":"Crema Mani","size":"100 ml","price":9.9},{"id":"cosmesi-burrocacao-propoli-aloe","name":"Burrocacao Propoli e Aloe Vera","size":"5 ml","price":4.9},{"id":"cosmesi-burrocacao-miele-pappa-reale","name":"Burrocacao Miele e Pappa Reale","size":"5 ml","price":4.9},{"id":"cosmesi-shampoo-multivitaminico","name":"Shampoo Multivitaminico","size":"250 ml","price":9.9},{"id":"cosmesi-saponetta-frutti-bosco","name":"Saponetta Miele e Frutti di Bosco","size":"100 g","price":3.9},{"id":"cosmesi-saponetta-lavanda","name":"Saponetta Miele e Lavanda","size":"100 g","price":3.9},{"id":"cosmesi-saponetta-aloe-vera","name":"Saponetta Miele e Aloe Vera","size":"100 g","price":3.9},{"id":"cosmesi-candela-alveare-cera-api","name":"Candela Alveare Grande in Cera d’Api","size":"1 candela","price":5.9},{"id":"cosmesi-travel-kit-benessere","name":"Kit da Viaggio Benessere dell’Alveare","size":"4 x 50 ml + pochette","price":17.9},{"id":"unguento-apis","name":"SOS DOL – Unguento al Veleno d’Api","size":"15 ml","price":29.9},{"id":"apis1-crema-viso-veleno-api","name":"Crema Viso al Veleno d’Api – APIS1","size":"50 ml","price":39.9},{"id":"apis2-siero-viso-veleno-api","name":"Siero Viso al Veleno d’Api – APIS2","size":"30 ml","price":34.9},{"id":"apis4-crema-corpo-veleno-api-manuka","name":"Crema Corpo Veleno d’Api e Miele di Manuka – APIS4","size":"250 ml","price":31.9},{"id":"apis5-gommage-veleno-api-manuka","name":"Gommage Viso e Corpo Veleno d’Api e Miele di Manuka – APIS5","size":"250 ml","price":34.9},{"id":"bagnodoccia-veleno-oro","name":"Bagnodoccia Veleno d’Oro – APIS7","size":"250 ml","price":14.9},{"id":"tesori-limoncello","name":"Limoncello “I Tesori di Francesco”","size":"250 ml","price":5.9},{"id":"tesori-liquore-caffe","name":"Liquore di Caffè “I Tesori di Francesco”","size":"250 ml","price":5.9},{"id":"tesori-castagne-rum","name":"Castagne al Rum “I Tesori di Francesco”","size":"250 ml","price":5.9}];
+const APE_V2_PRODUCT_ALIASES = {"propolterapy-professional":["propolterapy professional","propolterapy","diffusore professional"],"capsule-pb":["capsule p+b","capsule propoli p+b","p+b"],"capsule-propolit":["capsule propolit","propolit"],"acacia-zenzero-apinfiore":["acacia e zenzero","acacia zenzero"],"miele-eucalipto-apinfiore":["miele di eucalipto"],"balsammiel":["balsammiel","balsam miel"],"acacia":["acacia 40 g","acacia 40g"],"favo-integrale-bio":["acacia in favo","miele in favo","favo integrale"],"orsetti-gommosi":["orsetti gommosi"],"bee-energy-bio":["bee energy"],"propol-active-bio":["propol active"],"propoli-30-spray-integratore":["propoli 30% spray","propoli spray"],"propoli-30-alcolica-integratore":["propoli 30% alcolica","propoli alcolica"],"propoli-analcolica-integratore":["propoli analcolica"],"cosmesi-burrocacao-propoli-aloe":["burrocacao propoli aloe"],"cosmesi-burrocacao-miele-pappa-reale":["burrocacao miele pappa reale"],"cosmesi-shampoo-multivitaminico":["shampoo multivitaminico"],"cosmesi-saponetta-frutti-bosco":["saponetta frutti di bosco"],"cosmesi-saponetta-lavanda":["saponetta lavanda"],"cosmesi-saponetta-aloe-vera":["saponetta aloe vera"],"cosmesi-candela-alveare-cera-api":["candela alveare","candela in cera d api"],"cosmesi-travel-kit-benessere":["kit da viaggio","travel kit apinfiore","travel kit"],"unguento-apis":["sos dol"],"apis1-crema-viso-veleno-api":["apis1"],"apis2-siero-viso-veleno-api":["apis2"],"apis4-crema-corpo-veleno-api-manuka":["apis4"],"apis5-gommage-veleno-api-manuka":["apis5"],"bagnodoccia-veleno-oro":["apis7"],"tesori-limoncello":["tesori limoncello"],"tesori-liquore-caffe":["tesori liquore caffe","liquore al caffe"],"tesori-castagne-rum":["tesori castagne rum","castagne al rum"]};
+function apeProductNormalize(value){
+  return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
+}
+function findApeV2ProductContext(value){
+  const hay=apeProductNormalize(value);
+  let best=null;
+  for(const product of APE_V2_OFFICIAL_PRODUCTS){
+    const candidates=[product.name,...(APE_V2_PRODUCT_ALIASES[product.id]||[])];
+    for(const candidateRaw of candidates){
+      const candidate=apeProductNormalize(candidateRaw);
+      if(candidate.length<4 || !hay.includes(candidate)) continue;
+      if(!best || candidate.length>best.length) best={product,length:candidate.length};
+    }
+  }
+  return best?.product||null;
+}
+
 function getApeContextAction(message, reply, lang='it') {
   const text=(String(message||'')+' '+String(reply||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
   const labels={
@@ -43,6 +62,11 @@ function getApeContextAction(message, reply, lang='it') {
   };
   const L=labels[lang]||labels.it;
   const has=(...xs)=>xs.some(x=>text.includes(x));
+  const product=findApeV2ProductContext(text);
+  if(product){
+    const prefix={it:'Vai a',en:'Go to',de:'Zum Produkt',fr:'Voir',es:'Ir a'}[lang]||'Vai a';
+    return {href:'/shop#prodotto-'+product.id,label:prefix+' '+product.name};
+  }
 
   if(has('millefiori')) return {href:'/shop#miele-millefiori',label:L.millefiori};
   if(has('miele al melone','miele melone','miel al melon','melon honey','melonenhonig')) return {href:'/shop#miele-melone',label:L.melone};
@@ -54,7 +78,7 @@ function getApeContextAction(message, reply, lang='it') {
   if(has('galena delle api')) return {href:'/centro',label:L.galena};
   if(has('alveo digitale')) return {href:'/alveo-digitale',label:L.alveo};
   if(has('bacheca','news','novedades','actualites','aktuelles')) return {href:'/bacheca',label:L.bacheca};
-  if(has('linea veleni','bee venom line','bienengift-linie',"ligne venin d'abeille",'linea veneno de abeja')) return {href:'/#veleni',label:L.veleni};
+  if(has('linea veleni','bee venom line','bienengift-linie',"ligne venin d'abeille",'linea veneno de abeja')) return {href:'/shop#linea-veleni',label:L.veleni};
   if(has('alveoterapia integrata','integrated alveotherapy','integrierte alveotherapie','alveotherapie integree','alveoterapia integrada')) return {href:'/alveoterapia',label:L.alveoterapia};
   if(has('miele','mieli','honey','honeys','honig','miel','miels')) return {href:'/shop#mieli',label:L.mieli};
   return null;
@@ -137,6 +161,9 @@ CONTESTO DEL PROGETTO
 - Nella V2 attuale i Mieli del Busatello da 250 g visibili sono: Miele Millefiori, Miele al Melone, Miele alla Fragola, Miele alla Pesca, Miele all'Arancia, ciascuno a €4,90 e 2 Punti Ape.
 - Usa SEMPRE questi nomi ufficiali esatti in italiano: "Miele Millefiori", "Miele al Melone", "Miele alla Fragola", "Miele alla Pesca", "Miele all'Arancia". Non trasformarli in "Miele di Melone", "Miele di Fragola", "Miele di Pesca" o "Miele di Arancia".
 - Non inventare prezzi, disponibilità, formati o condizioni commerciali non presenti in queste informazioni.
+- CATALOGO V2 ATTUALE VINCOLANTE: oltre ai 5 Mieli del Busatello sopra indicati, le sole referenze presenti sono:\n${APE_V2_OFFICIAL_PRODUCTS.map(p=>'- '+p.name+' | '+p.size+' | €'+Number(p.price).toFixed(2).replace('.',',')).join('\\n')}
+- Quando parli di una di queste referenze, usa almeno una volta il nome ufficiale esatto riportato nel catalogo: serve anche a collegare correttamente il pulsante diretto al prodotto.
+- Non proporre come prodotto dello shop nessuna vecchia referenza legacy che non compare in questo elenco o nei 5 Mieli del Busatello.
 
 COME INTERPRETARE LE DOMANDE
 - Se una domanda è ambigua ("cosa scelgo a mezzanotte?"), interpretala prima nel contesto Fabbrica delle Api / prodotti dell'alveare / esperienza.
