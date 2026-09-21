@@ -88,6 +88,19 @@ section[id]{scroll-margin-top:92px}
 .venom::after{content:"VELENI";position:absolute;right:-20px;bottom:-70px;font-family:Georgia,'Times New Roman',serif;font-size:150px;color:rgba(237,181,55,.055);font-weight:700}
 .venom h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(58px,7vw,88px);color:#e8ad35;margin:10px 0 12px}
 .venom p{max-width:760px;font-size:18px;color:#f6f0e4}
+.venom-carousel{margin-top:38px;position:relative}
+.venom-track{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:4px 4px 16px;scrollbar-width:none}
+.venom-track::-webkit-scrollbar{display:none}
+.venom-card{flex:0 0 260px;scroll-snap-align:start;background:#fff;border-radius:22px;overflow:hidden;color:#17130e;box-shadow:0 16px 34px rgba(0,0,0,.28)}
+.venom-card img{display:block;width:100%;height:300px;object-fit:cover;background:#eee}
+.venom-card-body{padding:18px 18px 20px}
+.venom-card .tag{font-size:11px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#9a6616}
+.venom-card h3{font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.1;margin:8px 0 8px}
+.venom-card p{font-size:14px;color:#5b584f;margin:0;line-height:1.45}
+.venom-controls{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+.venom-arrow{border:1px solid rgba(255,255,255,.34);background:rgba(255,255,255,.08);color:#fff;width:44px;height:44px;border-radius:50%;font-size:20px;cursor:pointer}
+.venom-footer{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-top:14px}
+.venom-hint{font-size:13px;color:#d9cfbf}
 .btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;padding:13px 19px;border-radius:999px;font-weight:800;margin-top:18px}
 .btn-gold{background:#e9ad35;color:#171008}.btn-dark{background:var(--green);color:#fff}
 .products h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(44px,5vw,68px);line-height:1.03;margin:14px 0 36px;max-width:850px}
@@ -112,7 +125,7 @@ section[id]{scroll-margin-top:92px}
  .hero{min-height:700px}.hero-inner{padding:145px 0 38px}.hero h1{font-size:clamp(48px,15vw,70px)}
  .section{padding:64px 0}.section-title{gap:18px}.seasons,.places,.steps,.product-grid{grid-template-columns:1fr}
  .season{min-height:420px;padding:25px}.hex-grid{grid-template-columns:repeat(3,92px);gap:8px}.hex{width:92px;height:82px;font-size:11px}
- .place{padding:54px 24px}.bee-card,.bee-info{padding:28px}.conversation{padding:54px 0}.footer-inner{grid-template-columns:1fr}
+ .place{padding:54px 24px}.bee-card,.bee-info{padding:28px}.venom-card{flex-basis:78vw;max-width:310px}.venom-card img{height:280px}.conversation{padding:54px 0}.footer-inner{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -197,7 +210,50 @@ section[id]{scroll-margin-top:92px}
 </section>
 
 <section class="venom" id="veleni">
-  <div class="wrap"><span class="eyebrow">Linea specialistica</span><h2>VELENI</h2><p>Una linea dal carattere deciso e ricercato, ispirata a uno degli elementi più affascinanti dell’alveare. Formulazioni e prodotti da scoprire con informazioni chiare, identità premium e attenzione all’uso consapevole.</p><a class="btn btn-gold" href="/shop">Scopri la linea</a></div>
+  <div class="wrap">
+    <span class="eyebrow">Linea specialistica</span>
+    <h2>VELENI</h2>
+    <p>Una linea dal carattere deciso e ricercato, ispirata a uno degli elementi più affascinanti dell’alveare. Prima di entrare nello shop, scorri alcuni dei prodotti che compongono la linea.</p>
+
+    <div class="venom-carousel" aria-label="Carrellata prodotti linea Veleni">
+      <div class="venom-track" id="venomTrack">
+        <article class="venom-card">
+          <img src="https://www.apinfiore.com/wp-content/uploads/2023/03/Crema-Viso-al-Veleno-dApi_web-41.jpg.webp" alt="Crema viso al veleno d'api">
+          <div class="venom-card-body"><span class="tag">Apis Regina</span><h3>Crema viso al veleno d’api</h3><p>Una delle referenze simbolo della linea dedicata al viso.</p></div>
+        </article>
+        <article class="venom-card">
+          <img src="/images/veleno-apis2.jpg?v=veleni-home1" alt="Siero al veleno d'api">
+          <div class="venom-card-body"><span class="tag">Apis Regina</span><h3>Siero al veleno d’api</h3><p>Una formulazione dedicata alla routine viso della linea specialistica.</p></div>
+        </article>
+        <article class="venom-card">
+          <img src="https://www.apinfiore.com/wp-content/uploads/2023/09/Maschera-Viso-Notte-al-Veleno-dApi_web-31.jpg.webp" alt="Maschera viso notte al veleno d'api">
+          <div class="venom-card-body"><span class="tag">Apis Regina</span><h3>Maschera viso notte</h3><p>Un prodotto dedicato al trattamento serale della pelle.</p></div>
+        </article>
+        <article class="venom-card">
+          <img src="/images/veleno-apis4.jpg?v=veleni-home1" alt="Crema corpo Veleno d'Oro">
+          <div class="venom-card-body"><span class="tag">Veleno d’Oro</span><h3>Crema corpo</h3><p>La linea corpo incontra il veleno d’api in una veste dedicata.</p></div>
+        </article>
+        <article class="venom-card">
+          <img src="https://www.apinfiore.com/wp-content/uploads/2025/11/Veleno-doro-Bagnodoccia_web-2.jpg.webp" alt="Bagnodoccia Veleno d'Oro">
+          <div class="venom-card-body"><span class="tag">Veleno d’Oro</span><h3>Bagnodoccia</h3><p>Un altro tassello della linea Veleno d’Oro dedicata al corpo.</p></div>
+        </article>
+        <article class="venom-card">
+          <img src="https://www.apinfiore.com/wp-content/uploads/2023/03/SOS-Doll_web-5.jpg.webp" alt="SOS DOL unguento al veleno d'api">
+          <div class="venom-card-body"><span class="tag">Linea funzionale</span><h3>SOS DOL</h3><p>Unguento della linea specialistica al veleno d’api.</p></div>
+        </article>
+      </div>
+
+      <div class="venom-footer">
+        <span class="venom-hint">Scorri la linea con il mouse, il dito o le frecce.</span>
+        <div class="venom-controls">
+          <button class="venom-arrow" type="button" aria-label="Prodotti precedenti" onclick="document.getElementById('venomTrack').scrollBy({left:-560,behavior:'smooth'})">←</button>
+          <button class="venom-arrow" type="button" aria-label="Prodotti successivi" onclick="document.getElementById('venomTrack').scrollBy({left:560,behavior:'smooth'})">→</button>
+        </div>
+      </div>
+
+      <a class="btn btn-gold" href="/shop">Vedi tutta la linea nello Shop →</a>
+    </div>
+  </div>
 </section>
 
 <section class="section products">
