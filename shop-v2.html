@@ -78,6 +78,39 @@ img{display:block;max-width:100%}
 .path h3{font-family:Georgia,serif;font-size:28px;line-height:1.06;margin:22px 0 10px}
 .path p{color:#69736e;margin:0 0 20px}
 .path a{margin-top:auto;font-weight:900;color:#96640d}
+.product-world{padding:96px 0;background:#fffdf8}
+.product-world-head{display:grid;grid-template-columns:1.05fr .95fr;gap:45px;align-items:end;margin-bottom:44px}
+.product-world-head h2{font-family:Georgia,serif;font-size:clamp(48px,6vw,76px);line-height:.96;margin:9px 0 0}
+.product-world-head p{font-size:18px;color:#647069;margin:0}
+.taste-guide{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px}
+.taste-guide span{background:#efe6d4;border:1px solid #dfd1b6;border-radius:999px;padding:9px 13px;font-size:13px;font-weight:800}
+.products-new{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.product-new{display:grid;grid-template-columns:190px 1fr;background:#fff;border:1px solid #e5dccd;border-radius:28px;overflow:hidden;min-height:280px;box-shadow:0 14px 38px rgba(28,36,31,.07)}
+.product-new-media{background:#f3ead9;display:flex;align-items:center;justify-content:center;min-height:280px;padding:18px}
+.product-new-media img{width:100%;height:100%;max-height:245px;object-fit:contain}
+.product-new-copy{padding:27px;display:flex;flex-direction:column}
+.product-new-copy small{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:900;color:#9d6b12}
+.product-new-copy h3{font-family:Georgia,serif;font-size:29px;line-height:1.04;margin:8px 0 9px}
+.product-new-copy p{margin:0;color:#657069;font-size:15px}
+.product-choice{font-family:Georgia,serif;font-size:18px!important;color:#7b5616!important;margin:14px 0!important}
+.product-buy{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:auto;padding-top:18px}
+.product-price strong{display:block;font-size:25px}.product-price span{font-size:12px;color:#7b817d}
+.add-btn{border:0;background:#dfaa2d;color:#172019;font-weight:900;border-radius:999px;padding:12px 16px;cursor:pointer}
+.cart-fab{position:fixed;right:18px;bottom:18px;z-index:80;border:0;background:#0b3025;color:#fff;border-radius:999px;padding:13px 18px;font-weight:900;box-shadow:0 12px 32px rgba(0,0,0,.25);cursor:pointer}
+.cart-fab b{display:inline-grid;place-items:center;min-width:23px;height:23px;margin-left:7px;background:#e5aa2d;color:#172019;border-radius:999px}
+.cart-drawer{position:fixed;inset:0 0 0 auto;width:min(430px,100%);background:#fffaf1;z-index:100;box-shadow:-20px 0 60px rgba(0,0,0,.22);transform:translateX(105%);transition:.28s ease;display:flex;flex-direction:column}
+.cart-drawer.open{transform:translateX(0)}
+.cart-head{padding:22px 24px;border-bottom:1px solid #e6ddcf;display:flex;justify-content:space-between;align-items:center}
+.cart-head h2{font-family:Georgia,serif;font-size:30px;margin:0}
+.cart-close{border:0;background:#ece4d6;width:38px;height:38px;border-radius:50%;font-size:20px;cursor:pointer}
+.cart-items{padding:18px 24px;overflow:auto;flex:1}
+.cart-empty{color:#69736d;padding:25px 0}
+.cart-item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:15px 0;border-bottom:1px solid #e6ddcf}
+.cart-item strong{display:block}.cart-item small{color:#747c77}.cart-item button{border:0;background:transparent;color:#93620d;text-decoration:underline;cursor:pointer}
+.cart-foot{padding:20px 24px;border-top:1px solid #e6ddcf;background:#fff}
+.cart-total{display:flex;justify-content:space-between;font-size:20px;font-weight:900;margin-bottom:14px}
+.checkout-new{display:block;width:100%;border:0;border-radius:999px;padding:14px;background:#0b3025;color:#fff;font-weight:900;text-align:center}
+.cart-note{font-size:12px;color:#747c77;margin-top:10px;text-align:center}
 .journal{background:#fffdf8}
 .journal-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:25px}
 .journal-main{background:#0c2d22;color:#fff;border-radius:30px;padding:44px;min-height:370px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
@@ -126,12 +159,14 @@ img{display:block;max-width:100%}
 @media(max-width:620px){.project-bar{top:60px}.quick-head{display:block}.quick-head p{margin-top:14px}.quick-grid{grid-template-columns:1fr}}
 
 @media(max-width:950px){
- .links{overflow-x:auto}.section-head,.feature-story,.journal-grid,.bottega-inner{grid-template-columns:1fr}
+ .links{overflow-x:auto}.section-head,.feature-story,.journal-grid,.bottega-inner,.product-world-head{grid-template-columns:1fr}
+ .products-new{grid-template-columns:1fr}
  .today-grid{grid-template-columns:1fr 1fr}.today-card:first-child{grid-column:1/-1}
  .story-flow-grid{grid-template-columns:1fr}.path-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:620px){
- .wrap{width:min(100% - 24px,1200px)}.nav{width:calc(100% - 18px)}.links{gap:12px}.links a:not(.legacy):not(.pill){display:none}
+ .wrap{width:min(100% - 24px,1200px)}
+ .product-new{grid-template-columns:1fr}.product-new-media{min-height:220px}.product-new-media img{max-height:190px}.nav{width:calc(100% - 18px)}.links{gap:12px}.links a:not(.legacy):not(.pill){display:none}
  .hero{min-height:760px}.hero-inner{padding:145px 0 105px}.hero h1{font-size:clamp(52px,16vw,76px)}
  .chapter{padding:68px 0}.section-head{gap:18px}.today-grid,.path-grid{grid-template-columns:1fr}.today-card:first-child{grid-column:auto}
  .feature-copy{padding:52px 24px}.story-flow-grid{gap:8px}.footer-grid{grid-template-columns:1fr}
@@ -148,7 +183,7 @@ img{display:block;max-width:100%}
       <a href="#scegli">Scegli prodotti</a>
       <a href="/bacheca">Bacheca</a>
       <a href="/contatti" class="pill">Parliamone</a>
-      <a href="#scegli" class="legacy">Acquista ↓</a>
+      <a href="#scegli" class="shop-jump">Acquista ↓</a>
     </div>
   </nav>
 </header>
@@ -263,6 +298,38 @@ img{display:block;max-width:100%}
   <div class="feature-image"><img src="/images/veleno-apis1-hd.svg" alt="Linea Veleni d'Api"></div>
 </section>
 
+<section class="product-world" id="mieli">
+  <div class="wrap">
+    <div class="product-world-head">
+      <div><span class="eyebrow">Dal Busatello alla tua tavola</span><h2>Scegli il miele dal gusto che vuoi vivere.</h2></div>
+      <p>Non serve conoscere termini tecnici. Parti da una sensazione: classico, fruttato, delicato o agrumato. Ogni scelta ti porta a un prodotto reale, con formato e prezzo chiari.</p>
+    </div>
+    <div class="taste-guide"><span>🍯 Classico e armonico</span><span>🍈 Dolce e fruttato</span><span>🍓 Morbido e profumato</span><span>🍑 Delicato</span><span>🍊 Fresco e agrumato</span></div>
+    <div class="products-new">
+      <article class="product-new">
+        <div class="product-new-media"><img src="https://i.postimg.cc/Wpky9NLX/millefiori.png" alt="Miele Millefiori dell'Oasi del Busatello"></div>
+        <div class="product-new-copy"><small>Oasi del Busatello · 250 g</small><h3>Miele Millefiori</h3><p>Il gusto più diretto per iniziare dal Busatello: armonico, naturalmente variabile da raccolto a raccolto e facile da portare nella colazione di ogni giorno.</p><p class="product-choice">Sceglilo se vuoi partire dal sapore più rappresentativo dell'Oasi.</p><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="millefiori" data-name="Miele Millefiori" data-price="4.90" data-size="250 g">Aggiungi</button></div></div>
+      </article>
+      <article class="product-new">
+        <div class="product-new-media"><img src="https://i.postimg.cc/4NN3kxLt/Chat-GPT-Image-15-ago-2025-12-16-12.png" alt="Specialità al miele con note di melone"></div>
+        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Specialità al Melone</h3><p>Dolce, fruttata e immediata. Piace a chi cerca qualcosa di diverso dal miele classico, da provare sul pane, nello yogurt o con un dessert.</p><p class="product-choice">Sceglila se vuoi un gusto morbido e originale.</p><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="melone" data-name="Specialità al Melone" data-price="4.90" data-size="250 g">Aggiungi</button></div></div>
+      </article>
+      <article class="product-new">
+        <div class="product-new-media"><img src="https://i.postimg.cc/VvP0zWCN/Chat-GPT-Image-15-ago-2025-11-43-11.png" alt="Specialità al miele con note di fragola"></div>
+        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Specialità alla Fragola</h3><p>Morbida, profumata e facile da abbinare alla colazione. È una scelta semplice per chi ama sapori fruttati e riconoscibili.</p><p class="product-choice">Sceglila se vuoi una nota dolce e profumata.</p><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="fragola" data-name="Specialità alla Fragola" data-price="4.90" data-size="250 g">Aggiungi</button></div></div>
+      </article>
+      <article class="product-new">
+        <div class="product-new-media"><img src="https://i.postimg.cc/HszhfSqB/Chat-GPT-Image-15-ago-2025-12-04-55.png" alt="Specialità al miele con note di pesca"></div>
+        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Specialità alla Pesca</h3><p>Delicata e rotonda, pensata per chi preferisce sapori meno intensi. Buona a colazione, con yogurt, ricotta o dessert.</p><p class="product-choice">Sceglila se vuoi un gusto gentile e facile da apprezzare.</p><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="pesca" data-name="Specialità alla Pesca" data-price="4.90" data-size="250 g">Aggiungi</button></div></div>
+      </article>
+      <article class="product-new">
+        <div class="product-new-media"><img src="/images/arancia.png" alt="Specialità al miele con note di arancia"></div>
+        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Specialità all'Arancia</h3><p>Una nota fresca e agrumata che accompagna la dolcezza del miele. Ideale quando cerchi qualcosa di più vivace.</p><p class="product-choice">Sceglila se ami profumi agrumati e un finale più fresco.</p><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="arancia" data-name="Specialità all'Arancia" data-price="4.90" data-size="250 g">Aggiungi</button></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
 <section class="chapter pathways" id="percorsi">
   <div class="wrap">
     <div class="section-head">
@@ -317,6 +384,43 @@ img{display:block;max-width:100%}
     <div><h3>Continua</h3><a href="#scegli">Scegli prodotti</a><a href="/contatti">Parliamone</a><a href="/">Home Centro</a></div>
   </div>
 </footer>
+
+<button class="cart-fab" type="button" id="cartFab">Il tuo cestino <b id="cartCount">0</b></button>
+<aside class="cart-drawer" id="cartDrawer" aria-label="Cestino">
+  <div class="cart-head"><h2>Il tuo cestino</h2><button class="cart-close" id="cartClose" type="button">×</button></div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot"><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><a class="checkout-new" href="/contatti?motivo=ordine-v2">Continua con l'ordine →</a><div class="cart-note">Stiamo costruendo anche il nuovo checkout. In questa fase il cestino appartiene già interamente alla V2.</div></div>
+</aside>
+
+<script>
+const SHOP_V2_CART_KEY='fda-shop-v2-cart';
+let shopV2Cart=[];
+try{shopV2Cart=JSON.parse(localStorage.getItem(SHOP_V2_CART_KEY)||'[]')||[];}catch(_){shopV2Cart=[];}
+function saveV2Cart(){localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));renderV2Cart();}
+function euro(v){return '€'+Number(v||0).toFixed(2).replace('.',',');}
+function addV2Product(btn){
+  const id=btn.dataset.id;
+  const found=shopV2Cart.find(x=>x.id===id);
+  if(found)found.qty+=1;
+  else shopV2Cart.push({id,name:btn.dataset.name,price:Number(btn.dataset.price),size:btn.dataset.size,qty:1});
+  saveV2Cart();
+  document.getElementById('cartDrawer').classList.add('open');
+}
+function removeV2Product(id){shopV2Cart=shopV2Cart.filter(x=>x.id!==id);saveV2Cart();}
+function renderV2Cart(){
+  const box=document.getElementById('cartItems');
+  const count=shopV2Cart.reduce((s,x)=>s+x.qty,0);
+  const total=shopV2Cart.reduce((s,x)=>s+x.qty*x.price,0);
+  document.getElementById('cartCount').textContent=count;
+  document.getElementById('cartTotal').textContent=euro(total);
+  if(!shopV2Cart.length){box.innerHTML='<div class="cart-empty">Il cestino è ancora vuoto. Scegli ciò che ti incuriosisce e aggiungilo qui.</div>';return;}
+  box.innerHTML=shopV2Cart.map(x=>'<div class="cart-item"><div><strong>'+x.name+'</strong><small>'+x.size+' · quantità '+x.qty+'</small></div><div><strong>'+euro(x.price*x.qty)+'</strong><button type="button" onclick="removeV2Product(\''+x.id+'\')">rimuovi</button></div></div>').join('');
+}
+document.querySelectorAll('.add-btn').forEach(btn=>btn.addEventListener('click',()=>addV2Product(btn)));
+document.getElementById('cartFab').addEventListener('click',()=>document.getElementById('cartDrawer').classList.add('open'));
+document.getElementById('cartClose').addEventListener('click',()=>document.getElementById('cartDrawer').classList.remove('open'));
+renderV2Cart();
+</script>
 
 <script src="/render-language-de-test.js?v=shop-experience-v2"></script>
 </body>
