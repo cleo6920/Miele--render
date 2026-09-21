@@ -111,6 +111,31 @@ img{display:block;max-width:100%}
 .cart-total{display:flex;justify-content:space-between;font-size:20px;font-weight:900;margin-bottom:14px}
 .checkout-new{display:block;width:100%;border:0;border-radius:999px;padding:14px;background:#0b3025;color:#fff;font-weight:900;text-align:center}
 .cart-note{font-size:12px;color:#747c77;margin-top:10px;text-align:center}
+.api-explainer{margin:28px 0 36px;background:linear-gradient(135deg,#fff5cf,#f4d77e);border:1px solid #e8c452;border-radius:24px;padding:22px 24px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}
+.api-bee{font-size:34px}.api-explainer strong{display:block;font-family:Georgia,serif;font-size:24px;line-height:1.05}.api-explainer p{margin:5px 0 0;color:#5c4b1e}.api-goal{font-weight:900;background:#153629;color:#fff;border-radius:999px;padding:10px 14px;white-space:nowrap}
+.api-badge{display:inline-flex;align-items:center;gap:5px;background:#ffcf43;color:#2a230c;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:950;margin:10px 0 0;width:max-content}
+.cart-points{display:flex;justify-content:space-between;gap:12px;margin:0 0 14px;padding:12px 14px;border-radius:16px;background:#fff1bb;font-weight:900;color:#49380d}
+.checkout-new{cursor:pointer}
+.checkout-overlay{position:fixed;inset:0;background:rgba(4,19,14,.72);z-index:150;display:none;align-items:center;justify-content:center;padding:18px}
+.checkout-overlay.open{display:flex}
+.checkout-panel{width:min(920px,100%);max-height:94vh;overflow:auto;background:#fffaf1;border-radius:30px;box-shadow:0 30px 90px rgba(0,0,0,.35)}
+.checkout-top{padding:24px 28px;border-bottom:1px solid #e7ddce;display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.checkout-top h2{font-family:Georgia,serif;font-size:36px;margin:4px 0 0}.checkout-top p{margin:4px 0 0;color:#66726b}
+.checkout-close{border:0;background:#eee5d6;width:42px;height:42px;border-radius:50%;font-size:22px;cursor:pointer}
+.checkout-body{padding:28px}
+.sim-banner{background:#2f2410;color:#ffe08a;border-radius:18px;padding:14px 16px;font-weight:900;margin-bottom:22px}
+.checkout-steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.checkout-step{padding:8px 11px;border-radius:999px;background:#eee6da;font-size:12px;font-weight:900}.checkout-step.active{background:#17382b;color:#fff}
+.checkout-screen{display:none}.checkout-screen.active{display:block}
+.checkout-screen h3{font-family:Georgia,serif;font-size:30px;margin:0 0 18px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:900;color:#49554f}.field input,.field select,.field textarea{width:100%;border:1px solid #d8cfbf;background:#fff;border-radius:14px;padding:12px 13px;font:inherit}.field textarea{min-height:90px;resize:vertical}
+.delivery-options{display:grid;grid-template-columns:1fr 1fr;gap:14px}.delivery-option{border:1px solid #d8cfbf;border-radius:18px;padding:18px;cursor:pointer;background:#fff}.delivery-option input{margin-right:8px}.delivery-option strong{display:block;margin-bottom:5px}.delivery-option p{margin:0;color:#66726b;font-size:14px}
+.order-summary{display:grid;gap:10px}.summary-row{display:flex;justify-content:space-between;gap:20px;padding:10px 0;border-bottom:1px solid #eee5d7}.summary-row.total{font-size:20px;font-weight:900;border:0;padding-top:16px}.summary-api{background:#fff0ae;border-radius:18px;padding:16px;margin-top:18px}.summary-api strong{font-size:19px}
+.fake-card{background:#102f24;color:#fff;border-radius:22px;padding:22px;margin-top:14px}.fake-card label{display:block;font-weight:900;margin-bottom:7px}.fake-card .mock-line{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:12px;color:#e9f0eb;margin-top:8px}
+.checkout-actions{display:flex;justify-content:space-between;gap:12px;margin-top:24px}.checkout-actions button{border:0;border-radius:999px;padding:13px 18px;font-weight:900;cursor:pointer}.back-btn{background:#ece4d7;color:#26342d}.next-btn{background:#17382b;color:#fff;margin-left:auto}.pay-btn{background:#dfa72c;color:#162319;margin-left:auto}
+.success-wrap{text-align:center;padding:20px 10px 10px}.success-bee{font-size:58px}.success-wrap h3{font-family:Georgia,serif;font-size:42px;margin:8px 0 10px}.success-order{font-weight:900;color:#6d5315}.success-api{margin:22px auto;background:#fff0ae;border-radius:22px;padding:18px;max-width:560px}.success-api strong{display:block;font-family:Georgia,serif;font-size:28px;margin-bottom:6px}
+@media(max-width:700px){.api-explainer{grid-template-columns:auto 1fr}.api-goal{grid-column:1/-1;width:max-content}.form-grid,.delivery-options{grid-template-columns:1fr}.field.full{grid-column:auto}}
 .journal{background:#fffdf8}
 .journal-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:25px}
 .journal-main{background:#0c2d22;color:#fff;border-radius:30px;padding:44px;min-height:370px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
@@ -305,26 +330,31 @@ img{display:block;max-width:100%}
       <p>Non serve conoscere termini tecnici. Parti da una sensazione: classico, fruttato, delicato o agrumato. Ogni scelta ti porta a un prodotto reale, con formato e prezzo chiari.</p>
     </div>
     <div class="taste-guide"><span>🍯 Classico e armonico</span><span>🍈 Dolce e fruttato</span><span>🍓 Morbido e profumato</span><span>🍑 Delicato</span><span>🍊 Fresco e agrumato</span></div>
+    <div class="api-explainer">
+      <div class="api-bee">🐝</div>
+      <div><strong>Ogni acquisto fa crescere il tuo Saldo Api.</strong><p>Questi mieli valgono <b>2 Punti Ape ciascuno</b>. I punti si sommano acquisto dopo acquisto.</p></div>
+      <div class="api-goal">100 punti = cesto omaggio · 5 prodotti</div>
+    </div>
     <div class="products-new">
       <article class="product-new">
         <div class="product-new-media"><img src="https://i.postimg.cc/Wpky9NLX/millefiori.png" alt="Miele Millefiori dell'Oasi del Busatello"></div>
-        <div class="product-new-copy"><small>Oasi del Busatello · 250 g</small><h3>Miele Millefiori</h3><p>Il Millefiori dell’Oasi del Busatello nasce dalla varietà di fioriture spontanee presenti nell’oasi. Il suo profilo è armonico, con una dolcezza equilibrata e profumi che possono cambiare naturalmente da raccolto a raccolto, proprio perché seguono il ritmo reale delle stagioni. È piacevole da gustare al cucchiaio, sul pane, nello yogurt oppure per dolcificare bevande e preparazioni. La naturale cristallizzazione è una caratteristica tipica del miele e non ne altera la qualità.</p><p class="product-choice">Sceglilo se vuoi partire dal miele che racconta in modo più diretto il paesaggio del Busatello.</p><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="millefiori" data-name="Miele Millefiori" data-price="4.90" data-size="250 g">Aggiungi</button></div></div>
+        <div class="product-new-copy"><small>Oasi del Busatello · 250 g</small><h3>Miele Millefiori</h3><p>Il Millefiori dell’Oasi del Busatello nasce dalla varietà di fioriture spontanee presenti nell’oasi. Il suo profilo è armonico, con una dolcezza equilibrata e profumi che possono cambiare naturalmente da raccolto a raccolto, proprio perché seguono il ritmo reale delle stagioni. È piacevole da gustare al cucchiaio, sul pane, nello yogurt oppure per dolcificare bevande e preparazioni. La naturale cristallizzazione è una caratteristica tipica del miele e non ne altera la qualità.</p><p class="product-choice">Sceglilo se vuoi partire dal miele che racconta in modo più diretto il paesaggio del Busatello.</p><div class="api-badge">🐝 +2 Punti Ape</div><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="millefiori" data-name="Miele Millefiori" data-price="4.90" data-size="250 g" data-points="2">Aggiungi</button></div></div>
       </article>
       <article class="product-new">
         <div class="product-new-media"><img src="https://i.postimg.cc/4NN3kxLt/Chat-GPT-Image-15-ago-2025-12-16-12.png" alt="Specialità al miele con note di melone"></div>
-        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Miele al Melone</h3><p>Un miele dal gusto dolce e fruttato, arricchito da una nota di melone piacevole e immediata. È pensato per chi vuole scoprire un sapore diverso dal miele più classico, ma sempre semplice da gustare. Si presta bene al cucchiaio, sul pane, nello yogurt oppure in abbinamento a dessert e preparazioni fresche. Servito a temperatura ambiente esprime al meglio il suo profilo aromatico.</p><p class="product-choice">Sceglilo se vuoi un miele morbido, fruttato e originale, senza perdere il carattere del prodotto da cui parte.</p><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="melone" data-name="Miele al Melone" data-price="4.90" data-size="250 g">Aggiungi</button></div></div>
+        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Miele al Melone</h3><p>Un miele dal gusto dolce e fruttato, arricchito da una nota di melone piacevole e immediata. È pensato per chi vuole scoprire un sapore diverso dal miele più classico, ma sempre semplice da gustare. Si presta bene al cucchiaio, sul pane, nello yogurt oppure in abbinamento a dessert e preparazioni fresche. Servito a temperatura ambiente esprime al meglio il suo profilo aromatico.</p><p class="product-choice">Sceglilo se vuoi un miele morbido, fruttato e originale, senza perdere il carattere del prodotto da cui parte.</p><div class="api-badge">🐝 +2 Punti Ape</div><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="melone" data-name="Miele al Melone" data-price="4.90" data-size="250 g" data-points="2">Aggiungi</button></div></div>
       </article>
       <article class="product-new">
         <div class="product-new-media"><img src="https://i.postimg.cc/VvP0zWCN/Chat-GPT-Image-15-ago-2025-11-43-11.png" alt="Specialità al miele con note di fragola"></div>
-        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Miele alla Fragola</h3><p>Un miele dal gusto morbido e fruttato, con una nota di fragola ben riconoscibile che lo rende immediato e piacevole. È facile da portare a colazione, nello yogurt, con formaggi freschi oppure nella preparazione di dolci semplici. Il suo profilo dolce e profumato lo rende adatto anche a una piccola degustazione al cucchiaio.</p><p class="product-choice">Sceglilo se ami un miele più profumato, fruttato e facile da riconoscere fin dal primo assaggio.</p><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="fragola" data-name="Miele alla Fragola" data-price="4.90" data-size="250 g">Aggiungi</button></div></div>
+        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Miele alla Fragola</h3><p>Un miele dal gusto morbido e fruttato, con una nota di fragola ben riconoscibile che lo rende immediato e piacevole. È facile da portare a colazione, nello yogurt, con formaggi freschi oppure nella preparazione di dolci semplici. Il suo profilo dolce e profumato lo rende adatto anche a una piccola degustazione al cucchiaio.</p><p class="product-choice">Sceglilo se ami un miele più profumato, fruttato e facile da riconoscere fin dal primo assaggio.</p><div class="api-badge">🐝 +2 Punti Ape</div><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="fragola" data-name="Miele alla Fragola" data-price="4.90" data-size="250 g" data-points="2">Aggiungi</button></div></div>
       </article>
       <article class="product-new">
         <div class="product-new-media"><img src="https://i.postimg.cc/HszhfSqB/Chat-GPT-Image-15-ago-2025-12-04-55.png" alt="Specialità al miele con note di pesca"></div>
-        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Miele alla Pesca</h3><p>Un miele dal profilo delicato e fruttato, con una nota di pesca morbida e piacevole. Si abbina facilmente al pane e alle fette biscottate, allo yogurt, alla ricotta, ai formaggi freschi e ai dessert. Il gusto rotondo e non troppo intenso lo rende particolarmente adatto a chi preferisce sapori gentili e facili da apprezzare.</p><p class="product-choice">Sceglilo se cerchi un miele delicato, morbido e fruttato, senza note troppo marcate.</p><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="pesca" data-name="Miele alla Pesca" data-price="4.90" data-size="250 g">Aggiungi</button></div></div>
+        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Miele alla Pesca</h3><p>Un miele dal profilo delicato e fruttato, con una nota di pesca morbida e piacevole. Si abbina facilmente al pane e alle fette biscottate, allo yogurt, alla ricotta, ai formaggi freschi e ai dessert. Il gusto rotondo e non troppo intenso lo rende particolarmente adatto a chi preferisce sapori gentili e facili da apprezzare.</p><p class="product-choice">Sceglilo se cerchi un miele delicato, morbido e fruttato, senza note troppo marcate.</p><div class="api-badge">🐝 +2 Punti Ape</div><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="pesca" data-name="Miele alla Pesca" data-price="4.90" data-size="250 g" data-points="2">Aggiungi</button></div></div>
       </article>
       <article class="product-new">
         <div class="product-new-media"><img src="/images/arancia.png" alt="Specialità al miele con note di arancia"></div>
-        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Miele all'Arancia</h3><p>Un miele dal carattere fresco e agrumato, in cui le note di arancia accompagnano la naturale dolcezza del miele senza coprirla. È piacevole a colazione, nello yogurt, sul pane e sui biscotti, ma si abbina bene anche a dolci e formaggi freschi. Può inoltre dare una nota aromatica interessante a bevande tiepide e preparazioni da dessert.</p><p class="product-choice">Sceglilo se ami i profumi agrumati e vuoi un miele dal carattere più fresco e vivace.</p><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="arancia" data-name="Miele all'Arancia" data-price="4.90" data-size="250 g">Aggiungi</button></div></div>
+        <div class="product-new-copy"><small>Busatello · 250 g</small><h3>Miele all'Arancia</h3><p>Un miele dal carattere fresco e agrumato, in cui le note di arancia accompagnano la naturale dolcezza del miele senza coprirla. È piacevole a colazione, nello yogurt, sul pane e sui biscotti, ma si abbina bene anche a dolci e formaggi freschi. Può inoltre dare una nota aromatica interessante a bevande tiepide e preparazioni da dessert.</p><p class="product-choice">Sceglilo se ami i profumi agrumati e vuoi un miele dal carattere più fresco e vivace.</p><div class="api-badge">🐝 +2 Punti Ape</div><div class="product-buy"><div class="product-price"><strong>€4,90</strong><span>1 vasetto · 250 g</span></div><button class="add-btn" data-id="arancia" data-name="Miele all'Arancia" data-price="4.90" data-size="250 g" data-points="2">Aggiungi</button></div></div>
       </article>
     </div>
   </div>
@@ -389,20 +419,91 @@ img{display:block;max-width:100%}
 <aside class="cart-drawer" id="cartDrawer" aria-label="Cestino">
   <div class="cart-head"><h2>Il tuo cestino</h2><button class="cart-close" id="cartClose" type="button">×</button></div>
   <div class="cart-items" id="cartItems"></div>
-  <div class="cart-foot"><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><a class="checkout-new" href="/contatti?motivo=ordine-v2">Continua con l'ordine →</a><div class="cart-note">Stiamo costruendo anche il nuovo checkout. In questa fase il cestino appartiene già interamente alla V2.</div></div>
+  <div class="cart-foot"><div class="cart-points"><span>🐝 Punti Ape di questo ordine</span><span id="cartPoints">0</span></div><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><button class="checkout-new" type="button" id="startCheckout">Continua con l'ordine →</button><div class="cart-note">100 Punti Ape = cesto omaggio con 5 prodotti a scelta.</div></div>
 </aside>
+
+<div class="checkout-overlay" id="checkoutOverlay" aria-hidden="true">
+  <section class="checkout-panel">
+    <div class="checkout-top">
+      <div><span class="eyebrow">Ordine V2</span><h2>Concludi il tuo ordine</h2><p>Un percorso semplice, dall'indirizzo alla conferma finale.</p></div>
+      <button class="checkout-close" id="checkoutClose" type="button">×</button>
+    </div>
+    <div class="checkout-body">
+      <div class="sim-banner">🧪 ACQUISTO SIMULATO — nessun pagamento reale e nessun importo verrà addebitato.</div>
+      <div class="checkout-steps"><span class="checkout-step active" data-step-pill="1">1 · Dati</span><span class="checkout-step" data-step-pill="2">2 · Consegna</span><span class="checkout-step" data-step-pill="3">3 · Riepilogo</span><span class="checkout-step" data-step-pill="4">4 · Pagamento</span></div>
+
+      <div class="checkout-screen active" data-step="1">
+        <h3>Dove possiamo associare questo ordine?</h3>
+        <div class="form-grid">
+          <div class="field"><label>Nome e cognome *</label><input id="coName" autocomplete="name"></div>
+          <div class="field"><label>Email *</label><input id="coEmail" type="email" autocomplete="email"></div>
+          <div class="field"><label>Telefono *</label><input id="coPhone" autocomplete="tel"></div>
+          <div class="field"><label>Comune / Città *</label><input id="coCity" autocomplete="address-level2"></div>
+          <div class="field full"><label>Via e numero civico *</label><input id="coAddress" autocomplete="street-address"></div>
+          <div class="field"><label>CAP *</label><input id="coCap" inputmode="numeric" maxlength="5"></div>
+          <div class="field"><label>Provincia *</label><input id="coProvince" maxlength="2" placeholder="es. MN"></div>
+        </div>
+        <div class="checkout-actions"><button class="next-btn" type="button" data-next="2">Continua →</button></div>
+      </div>
+
+      <div class="checkout-screen" data-step="2">
+        <h3>Come vuoi ricevere l'ordine?</h3>
+        <div class="delivery-options">
+          <label class="delivery-option"><input type="radio" name="delivery" value="courier" checked><strong>Corriere</strong><p>Consegna indicativa entro 5–6 giorni.</p></label>
+          <label class="delivery-option"><input type="radio" name="delivery" value="pickup"><strong>Ritiro / accordo diretto</strong><p>Lo definiamo con te senza aggiungere passaggi inutili.</p></label>
+        </div>
+        <div class="field" style="margin-top:16px"><label>Note per la consegna</label><textarea id="coNotes" placeholder="Facoltativo"></textarea></div>
+        <div class="checkout-actions"><button class="back-btn" type="button" data-back="1">← Indietro</button><button class="next-btn" type="button" data-next="3">Vedi il riepilogo →</button></div>
+      </div>
+
+      <div class="checkout-screen" data-step="3">
+        <h3>Controlla tutto prima di continuare</h3>
+        <div id="checkoutSummary" class="order-summary"></div>
+        <div class="summary-api"><strong>🐝 <span id="summaryPoints">0</span> Punti Ape con questo ordine</strong><div>Si aggiungono al tuo Saldo Api. A 100 punti puoi comporre un cesto omaggio con 5 prodotti a scelta.</div></div>
+        <div class="checkout-actions"><button class="back-btn" type="button" data-back="2">← Indietro</button><button class="next-btn" type="button" data-next="4">Vai al pagamento simulato →</button></div>
+      </div>
+
+      <div class="checkout-screen" data-step="4">
+        <h3>Pagamento simulato</h3>
+        <p>Questa schermata serve soltanto a provare l'intero percorso del nuovo shop. Non inserire dati reali di carta.</p>
+        <div class="fake-card">
+          <label>Metodo di prova</label>
+          <div class="mock-line">💳 Carta · SIMULAZIONE</div>
+          <div class="mock-line">Numero prova: •••• •••• •••• 0000</div>
+          <div class="mock-line">Nessun addebito verrà effettuato</div>
+        </div>
+        <div class="checkout-actions"><button class="back-btn" type="button" data-back="3">← Indietro</button><button class="pay-btn" id="simulatePay" type="button">Simula pagamento e completa ordine →</button></div>
+      </div>
+
+      <div class="checkout-screen" data-step="5">
+        <div class="success-wrap">
+          <div class="success-bee">🐝</div>
+          <h3>Ordine completato!</h3>
+          <div class="success-order" id="successOrder"></div>
+          <p>La simulazione è arrivata fino alla fine. Nessun pagamento reale è stato eseguito.</p>
+          <div class="success-api"><strong>Hai guadagnato <span id="successPoints">0</span> Punti Ape</strong><div>Continua ad accumularli: a 100 punti puoi comporre un cesto omaggio con 5 prodotti a scelta.</div></div>
+          <button class="next-btn" id="finishCheckout" type="button">Torna alla Fabbrica delle Api</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
 
 <script>
 const SHOP_V2_CART_KEY='fda-shop-v2-cart';
+const SHOP_V2_ORDERS_KEY='fda-shop-v2-sim-orders';
 let shopV2Cart=[];
 try{shopV2Cart=JSON.parse(localStorage.getItem(SHOP_V2_CART_KEY)||'[]')||[];}catch(_){shopV2Cart=[];}
+
 function saveV2Cart(){localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));renderV2Cart();}
 function euro(v){return '€'+Number(v||0).toFixed(2).replace('.',',');}
+function cartPoints(){return shopV2Cart.reduce((s,x)=>s+(Number(x.points||0)*x.qty),0);}
+function cartTotal(){return shopV2Cart.reduce((s,x)=>s+(x.qty*x.price),0);}
 function addV2Product(btn){
   const id=btn.dataset.id;
   const found=shopV2Cart.find(x=>x.id===id);
   if(found)found.qty+=1;
-  else shopV2Cart.push({id,name:btn.dataset.name,price:Number(btn.dataset.price),size:btn.dataset.size,qty:1});
+  else shopV2Cart.push({id,name:btn.dataset.name,price:Number(btn.dataset.price),size:btn.dataset.size,points:Number(btn.dataset.points||0),qty:1});
   saveV2Cart();
   document.getElementById('cartDrawer').classList.add('open');
 }
@@ -410,15 +511,75 @@ function removeV2Product(id){shopV2Cart=shopV2Cart.filter(x=>x.id!==id);saveV2Ca
 function renderV2Cart(){
   const box=document.getElementById('cartItems');
   const count=shopV2Cart.reduce((s,x)=>s+x.qty,0);
-  const total=shopV2Cart.reduce((s,x)=>s+x.qty*x.price,0);
   document.getElementById('cartCount').textContent=count;
-  document.getElementById('cartTotal').textContent=euro(total);
+  document.getElementById('cartTotal').textContent=euro(cartTotal());
+  document.getElementById('cartPoints').textContent=cartPoints();
   if(!shopV2Cart.length){box.innerHTML='<div class="cart-empty">Il cestino è ancora vuoto. Scegli ciò che ti incuriosisce e aggiungilo qui.</div>';return;}
-  box.innerHTML=shopV2Cart.map(x=>'<div class="cart-item"><div><strong>'+x.name+'</strong><small>'+x.size+' · quantità '+x.qty+'</small></div><div><strong>'+euro(x.price*x.qty)+'</strong><button type="button" onclick="removeV2Product(\''+x.id+'\')">rimuovi</button></div></div>').join('');
+  box.innerHTML=shopV2Cart.map(x=>'<div class="cart-item"><div><strong>'+x.name+'</strong><small>'+x.size+' · quantità '+x.qty+' · 🐝 '+(x.points*x.qty)+' Punti Ape</small></div><div><strong>'+euro(x.price*x.qty)+'</strong><button type="button" onclick="removeV2Product(\''+x.id+'\')">rimuovi</button></div></div>').join('');
 }
+
+function showCheckoutStep(step){
+  document.querySelectorAll('.checkout-screen').forEach(el=>el.classList.toggle('active',el.dataset.step===String(step)));
+  document.querySelectorAll('.checkout-step').forEach(el=>el.classList.toggle('active',Number(el.dataset.stepPill)<=Math.min(Number(step),4)));
+  if(step===3)renderCheckoutSummary();
+}
+function validStepOne(){
+  const ids=['coName','coEmail','coPhone','coCity','coAddress','coCap','coProvince'];
+  const missing=ids.filter(id=>!document.getElementById(id).value.trim());
+  if(missing.length){alert('Completa i campi obbligatori prima di continuare.');return false;}
+  if(!document.getElementById('coEmail').value.includes('@')){alert('Inserisci un indirizzo email valido per la simulazione.');return false;}
+  return true;
+}
+function renderCheckoutSummary(){
+  const delivery=document.querySelector('input[name="delivery"]:checked')?.value==='pickup'?'Ritiro / accordo diretto':'Corriere · 5–6 giorni';
+  const rows=shopV2Cart.map(x=>'<div class="summary-row"><span>'+x.name+' × '+x.qty+'</span><strong>'+euro(x.price*x.qty)+'</strong></div>').join('');
+  document.getElementById('checkoutSummary').innerHTML=rows+'<div class="summary-row"><span>Consegna</span><strong>'+delivery+'</strong></div><div class="summary-row total"><span>Totale simulato</span><span>'+euro(cartTotal())+'</span></div>';
+  document.getElementById('summaryPoints').textContent=cartPoints();
+}
+function completeSimulatedOrder(){
+  const orderId='API-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+String(Date.now()).slice(-5);
+  const order={
+    id:orderId,
+    simulated:true,
+    createdAt:new Date().toISOString(),
+    customer:{
+      name:document.getElementById('coName').value.trim(),
+      email:document.getElementById('coEmail').value.trim(),
+      phone:document.getElementById('coPhone').value.trim(),
+      city:document.getElementById('coCity').value.trim(),
+      address:document.getElementById('coAddress').value.trim(),
+      cap:document.getElementById('coCap').value.trim(),
+      province:document.getElementById('coProvince').value.trim()
+    },
+    delivery:document.querySelector('input[name="delivery"]:checked')?.value||'courier',
+    notes:document.getElementById('coNotes').value.trim(),
+    items:shopV2Cart,
+    total:cartTotal(),
+    points:cartPoints()
+  };
+  let orders=[];try{orders=JSON.parse(localStorage.getItem(SHOP_V2_ORDERS_KEY)||'[]')||[];}catch(_){}
+  orders.unshift(order);localStorage.setItem(SHOP_V2_ORDERS_KEY,JSON.stringify(orders.slice(0,20)));
+  document.getElementById('successOrder').textContent='Ordine simulato '+orderId;
+  document.getElementById('successPoints').textContent=order.points;
+  shopV2Cart=[];saveV2Cart();
+  showCheckoutStep(5);
+}
+
 document.querySelectorAll('.add-btn').forEach(btn=>btn.addEventListener('click',()=>addV2Product(btn)));
 document.getElementById('cartFab').addEventListener('click',()=>document.getElementById('cartDrawer').classList.add('open'));
 document.getElementById('cartClose').addEventListener('click',()=>document.getElementById('cartDrawer').classList.remove('open'));
+document.getElementById('startCheckout').addEventListener('click',()=>{
+  if(!shopV2Cart.length){alert('Aggiungi almeno un prodotto prima di continuare.');return;}
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('checkoutOverlay').classList.add('open');
+  document.getElementById('checkoutOverlay').setAttribute('aria-hidden','false');
+  showCheckoutStep(1);
+});
+document.getElementById('checkoutClose').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');});
+document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('click',()=>{const next=Number(btn.dataset.next);if(next===2&&!validStepOne())return;showCheckoutStep(next);}));
+document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>showCheckoutStep(Number(btn.dataset.back))));
+document.getElementById('simulatePay').addEventListener('click',completeSimulatedOrder);
+document.getElementById('finishCheckout').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');window.scrollTo({top:0,behavior:'smooth'});});
 renderV2Cart();
 </script>
 
