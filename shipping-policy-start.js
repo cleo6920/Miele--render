@@ -42,6 +42,9 @@ require('./bee-points-card-prestart.js');
 require('./bonus-formula-prestart.js');
 require('./alimenti-render-final-prestart.js');
 
+// Selettore lingua globale persistente: IT / EN / DE / FR / ES.
+require('./render-language-de-test-prestart.js');
+
 // Modalità temporanea per collaudare gli acquisti senza chiamare Stripe.
 require('./test-purchase-prestart.js');
 
