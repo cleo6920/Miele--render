@@ -26,21 +26,86 @@ app.get('/api/local-delivery-check', async (req, res) => {
     const city = String(req.query.city || '').trim();
     const cap = String(req.query.cap || '').trim();
     const province = String(req.query.province || '').trim();
-    if (!city && !cap) return res.status(400).json({ ok:false, eligible:false, error:'Comune o CAP mancanti' });
+
+    if (!city || !cap) {
+      return res.status(400).json({
+        ok:false,
+        eligible:false,
+        validAddressPair:false,
+        error:'Comune e CAP sono obbligatori'
+      });
+    }
+
+    const normalize = (value) => String(value || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+
+    const meaningfulTokens = (value) =>
+      normalize(value).split(' ').filter(t => t.length > 2 && !['comune','citta','city','provincia'].includes(t));
 
     const query = [cap, city, province, 'Italia'].filter(Boolean).join(', ');
-    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=it&q=' + encodeURIComponent(query);
+    const url = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=it&q=' + encodeURIComponent(query);
+
     const response = await fetch(url, {
       headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'LaFabbricaDelleApi/1.0 local-delivery-check'
+        'Accept':'application/json',
+        'User-Agent':'LaFabbricaDelleApi/1.0 local-delivery-check'
       }
     });
-    if (!response.ok) return res.status(502).json({ ok:false, eligible:false, error:'Geocodifica non disponibile' });
-    const data = await response.json();
-    if (!Array.isArray(data) || !data[0]) return res.status(404).json({ ok:false, eligible:false, error:'Località non trovata' });
 
-    const lat = Number(data[0].lat), lon = Number(data[0].lon);
+    if (!response.ok) {
+      return res.status(502).json({
+        ok:false,
+        eligible:false,
+        validAddressPair:false,
+        error:'Servizio di verifica indirizzo non disponibile'
+      });
+    }
+
+    const data = await response.json();
+    if (!Array.isArray(data) || !data.length) {
+      return res.status(422).json({
+        ok:false,
+        eligible:false,
+        validAddressPair:false,
+        error:'CAP e Comune non risultano corrispondere'
+      });
+    }
+
+    const inputCity = normalize(city);
+    const inputTokens = meaningfulTokens(city);
+
+    const matching = data.find(item => {
+      const a = item.address || {};
+      const resultPostcode = normalize(a.postcode || '');
+      const candidateNames = [
+        a.city, a.town, a.village, a.municipality, a.hamlet, a.county,
+        item.display_name
+      ].filter(Boolean).map(normalize);
+
+      const postcodeOk = resultPostcode === normalize(cap);
+      const cityOk = candidateNames.some(name => {
+        if (name === inputCity) return true;
+        if (inputCity.length >= 5 && (name.includes(inputCity) || inputCity.includes(name))) return true;
+        const nameTokens = meaningfulTokens(name);
+        return inputTokens.length > 0 && inputTokens.every(t => nameTokens.includes(t));
+      });
+
+      return postcodeOk && cityOk;
+    });
+
+    if (!matching) {
+      return res.status(422).json({
+        ok:false,
+        eligible:false,
+        validAddressPair:false,
+        error:'Il CAP '+cap+' non risulta corrispondere al Comune "'+city+'". Controlla CAP e Comune.'
+      });
+    }
+
+    const lat = Number(matching.lat), lon = Number(matching.lon);
     const centerLat = 45.187, centerLon = 10.974;
     const toRad = v => v * Math.PI / 180;
     const dLat = toRad(lat - centerLat), dLon = toRad(lon - centerLon);
@@ -49,13 +114,19 @@ app.get('/api/local-delivery-check', async (req, res) => {
 
     return res.json({
       ok:true,
-      eligible: km <= 50,
-      distanceKm: Math.round(km * 10) / 10,
-      locality: data[0].display_name || query
+      eligible:km <= 50,
+      validAddressPair:true,
+      distanceKm:Math.round(km * 10) / 10,
+      locality:matching.display_name || query
     });
   } catch (error) {
-    console.error('[Shop V2] Errore verifica consegna locale:', error);
-    return res.status(500).json({ ok:false, eligible:false, error:'Errore verifica distanza' });
+    console.error('[Shop V2] Errore verifica CAP/Comune:', error);
+    return res.status(500).json({
+      ok:false,
+      eligible:false,
+      validAddressPair:false,
+      error:'Errore durante la verifica di CAP e Comune'
+    });
   }
 });
 app.use('/images', express.static(path.join(__dirname, 'images'), { etag:true,lastModified:true,maxAge:0,setHeaders:(res)=>{res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');res.setHeader('Pragma','no-cache');res.setHeader('Expires','0');} }));
