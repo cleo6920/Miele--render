@@ -381,6 +381,47 @@ function setLang(v){
   location.reload();
 }
 
+async function translateNow(root){
+  if(lang==='it'||!root)return;
+  applyCoreImmediately(root);
+  const {texts,els}=collect(root);
+  const textNodes=texts.filter(n=>{
+    const p=n.parentElement;
+    if(!p||/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|OPTION)$/i.test(p.tagName))return false;
+    return shouldTranslate(cleanText(n.nodeValue||''));
+  });
+  const attrEls=els.filter(el=>ATTRS.some(a=>el.hasAttribute(a)&&shouldTranslate(cleanText(el.getAttribute(a)||''))));
+  const batch=[];
+  textNodes.forEach(n=>batch.push(cleanText(n.nodeValue||'')));
+  attrEls.forEach(el=>ATTRS.forEach(a=>{
+    if(el.hasAttribute(a)){
+      const x=cleanText(el.getAttribute(a)||'');
+      if(shouldTranslate(x))batch.push(x);
+    }
+  }));
+  await remoteTranslateBatch(batch);
+
+  for(const node of textNodes){
+    const raw=node.nodeValue||'', x=cleanText(raw);
+    const out=(CORE[lang]||{})[x]||cache[x]||x;
+    if(out&&out!==x){
+      const leading=(raw.match(/^\s*/)||[''])[0];
+      const trailing=(raw.match(/\s*$/)||[''])[0];
+      node.nodeValue=leading+out+trailing;
+    }
+  }
+  for(const el of attrEls){
+    for(const a of ATTRS){
+      if(!el.hasAttribute(a))continue;
+      const raw=el.getAttribute(a)||'', x=cleanText(raw);
+      const out=(CORE[lang]||{})[x]||cache[x]||x;
+      if(out&&out!==x)el.setAttribute(a,out);
+    }
+  }
+}
+window.fdaTranslateNow=translateNow;
+window.fdaCurrentSiteLanguage=()=>lang;
+
 function startObserver(){
   if(observer)observer.disconnect();
   observer=new MutationObserver(ms=>{
