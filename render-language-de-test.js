@@ -181,6 +181,39 @@ function shouldTranslate(x){
   return /[A-Za-zÀ-ÿ]/.test(x);
 }
 
+async function remoteTranslateBatch(texts){
+  if(lang==='it')return texts;
+  const unique=[...new Set((texts||[]).map(cleanText).filter(shouldTranslate))];
+  const unresolved=unique.filter(text=>!(CORE[lang]||{})[text]&&!cache[text]);
+  if(!unresolved.length)return unique.map(text=>(CORE[lang]||{})[text]||cache[text]||text);
+
+  for(let start=0;start<unresolved.length;start+=50){
+    const chunk=unresolved.slice(start,start+50);
+    try{
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),12000);
+      let res;
+      try{
+        res=await fetch('/api/site-translate',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({target:lang,texts:chunk}),
+          signal:controller.signal
+        });
+      }finally{clearTimeout(timer);}
+      const data=await res.json().catch(()=>null);
+      if(res.ok&&data?.ok&&Array.isArray(data.translations)){
+        chunk.forEach((text,i)=>{
+          const out=String(data.translations[i]||text);
+          if(out&&out!==text)cache[text]=out;
+        });
+        saveCache();
+      }
+    }catch(_){}
+  }
+  return unique.map(text=>(CORE[lang]||{})[text]||cache[text]||text);
+}
+
 async function remoteTranslate(text){
   if(lang==='it')return text;
   const fixed=(CORE[lang]||{})[text];
@@ -189,15 +222,8 @@ async function remoteTranslate(text){
   const k=lang+'\n'+text;
   if(pending.has(k))return pending.get(k);
   const job=(async()=>{
-    try{
-      const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=it&tl='+encodeURIComponent(lang)+'&dt=t&q='+encodeURIComponent(text);
-      const res=await fetch(url,{method:'GET',credentials:'omit',referrerPolicy:'no-referrer'});
-      if(!res.ok)throw new Error('translate '+res.status);
-      const data=await res.json();
-      const out=Array.isArray(data&&data[0])?data[0].map(x=>Array.isArray(x)?(x[0]||''):'').join(''):text;
-      if(out&&out!==text){cache[text]=out;saveCache();return out;}
-    }catch(_){}
-    return text;
+    await remoteTranslateBatch([text]);
+    return cache[text]||text;
   })();
   pending.set(k,job);
   try{return await job;}finally{pending.delete(k);}
@@ -303,6 +329,19 @@ async function translateRoot(root){
       return ATTRS.some(a=>el.hasAttribute(a)&&shouldTranslate(cleanText(el.getAttribute(a)||'')));
     });
 
+    const batchTexts=[];
+    for(const n of textQueue)batchTexts.push(cleanText(n.nodeValue||''));
+    for(const el of attrQueue){
+      for(const a of ATTRS){
+        if(el.hasAttribute(a)){
+          const x=cleanText(el.getAttribute(a)||'');
+          if(shouldTranslate(x))batchTexts.push(x);
+        }
+      }
+    }
+    if(document.title)batchTexts.push(cleanText(document.title));
+    await remoteTranslateBatch(batchTexts);
+
     const textWorkers=Array.from({length:10},async()=>{
       while(textQueue.length&&lang!=='it'){
         const n=textQueue.shift();
@@ -356,6 +395,9 @@ function startObserver(){
 }
 
 async function start(){
+  if(!document.querySelector('meta[name="google"][content="notranslate"]')){
+    const meta=document.createElement('meta');meta.name='google';meta.content='notranslate';document.head.appendChild(meta);
+  }
   let saved='';
   try{saved=localStorage.getItem(KEY)||'';}catch(_){}
   lang=SUPPORTED.includes(saved)?saved:'it';
