@@ -11,7 +11,7 @@ it:{
  cartTitle:'Il tuo cestino',cartEmpty:'Il cestino è ancora vuoto. Scegli ciò che ti incuriosisce e aggiungilo qui.',quantity:'quantità',points:'Punti Ape',remove:'rimuovi',orderPoints:'Punti Ape di questo ordine',totalProducts:'Totale prodotti',continueOrder:"Continua con l'ordine →",goal:'100 Punti Ape = cesto omaggio con 5 prodotti a scelta.',cartFab:'Il tuo cestino',addFirst:'Aggiungi almeno un prodotto prima di continuare.',
  checkoutEyebrow:'Il tuo ordine',checkoutTitle:'Concludi il tuo ordine',checkoutIntro:"Un percorso semplice, dall'indirizzo alla conferma finale.",steps:['1 · Dati','2 · Consegna','3 · Riepilogo','4 · Conferma'],
  step1Title:'Dove possiamo associare questo ordine?',name:'Nome e cognome *',email:'Email *',phone:'Telefono *',city:'Comune / Città *',address:'Via e numero civico *',cap:'CAP *',province:'Provincia *',provincePh:'es. MN',continue:'Continua →',
- step2Title:"Come vuoi ricevere l'ordine?",courier:'Corriere',courierDesc:'Consegna indicativa entro 5–6 giorni.',pickup:'Ritiro / accordo diretto',pickupDesc:'Lo definiamo con te senza aggiungere passaggi inutili.',notes:'Note per la consegna',optional:'Facoltativo',back:'← Indietro',showSummary:'Vedi il riepilogo →',
+ step2Title:"Come vuoi ricevere l'ordine?",courier:'Corriere',courierDesc:'Consegna indicativa entro 5–6 giorni.',courierDescEU:'Poste Delivery International Standard · consegna indicativa in 10–15 giorni lavorativi, oltre il giorno di spedizione.',courierDescExtraEU:'Poste Delivery International Standard · consegna indicativa in 10–25 giorni lavorativi, oltre il giorno di spedizione e salvo formalità doganali.',pickup:'Ritiro / accordo diretto',pickupDesc:'Lo definiamo con te senza aggiungere passaggi inutili.',notes:'Note per la consegna',optional:'Facoltativo',back:'← Indietro',showSummary:'Vedi il riepilogo →',
  step3Title:'Controlla tutto prima di continuare',shipping:'Spedizione',checking:'Verifica in corso…',total:'Totale',free:'Gratuita',pointsOrder:'Punti Ape con questo ordine',pointsGoal:'Si aggiungono al tuo Saldo Api. A 100 punti puoi comporre un cesto omaggio con 5 prodotti a scelta.',
  step4Title:'Invia il tuo ordine',step4Intro:"Confermando, i dati dell’ordine verranno inviati alla Fabbrica delle Api.",sendOrder:"Invia l'ordine →",sending:'Invio in corso…',
  successTitle:'Ordine inviato',orderCode:'Codice ordine',successIntro:'Abbiamo ricevuto il tuo ordine. Ti contatteremo utilizzando i recapiti che hai indicato.',earned:'Hai guadagnato',successGoal:'Continua ad accumularli: a 100 punti puoi comporre un cesto omaggio con 5 prodotti a scelta.',downloadPdf:'Scarica il riepilogo PDF',backSite:'Torna alla Fabbrica delle Api',
@@ -24,7 +24,7 @@ en:{
  cartTitle:'Your cart',cartEmpty:'Your cart is still empty. Choose what interests you and add it here.',quantity:'quantity',points:'Bee Points',remove:'remove',orderPoints:'Bee Points for this order',totalProducts:'Products total',continueOrder:'Continue with order →',goal:'100 Bee Points = complimentary basket with 5 products of your choice.',cartFab:'Your cart',addFirst:'Add at least one product before continuing.',
  checkoutEyebrow:'Your order',checkoutTitle:'Complete your order',checkoutIntro:'A simple journey from your address to final confirmation.',steps:['1 · Details','2 · Delivery','3 · Summary','4 · Confirmation'],
  step1Title:'Who should we associate this order with?',name:'Full name *',email:'Email *',phone:'Phone *',city:'Town / City *',address:'Street and number *',cap:'Postal code *',province:'Province *',provincePh:'e.g. MN',continue:'Continue →',
- step2Title:'How would you like to receive your order?',courier:'Courier',courierDesc:'Estimated delivery within 5–6 days.',pickup:'Pickup / direct arrangement',pickupDesc:'We will arrange it with you without unnecessary steps.',notes:'Delivery notes',optional:'Optional',back:'← Back',showSummary:'View summary →',
+ step2Title:'How would you like to receive your order?',courier:'Courier',courierDesc:'Estimated delivery within 5–6 days.',courierDescEU:'Poste Delivery International Standard · estimated delivery in 10–15 working days, plus the shipping day.',courierDescExtraEU:'Poste Delivery International Standard · estimated delivery in 10–25 working days, plus the shipping day and excluding customs clearance.',pickup:'Pickup / direct arrangement',pickupDesc:'We will arrange it with you without unnecessary steps.',notes:'Delivery notes',optional:'Optional',back:'← Back',showSummary:'View summary →',
  step3Title:'Check everything before continuing',shipping:'Shipping',checking:'Checking…',total:'Total',free:'Free',pointsOrder:'Bee Points with this order',pointsGoal:'They are added to your Bee Points balance. At 100 points you can create a complimentary basket with 5 products of your choice.',
  step4Title:'Send your order',step4Intro:'By confirming, your order details will be sent to La Fabbrica delle Api.',sendOrder:'Send order →',sending:'Sending…',
  successTitle:'Order sent',orderCode:'Order code',successIntro:'We have received your order. We will contact you using the details you provided.',earned:'You earned',successGoal:'Keep collecting them: at 100 points you can create a complimentary basket with 5 products of your choice.',downloadPdf:'Download order PDF',backSite:'Back to La Fabbrica delle Api',
@@ -37,7 +37,7 @@ de:{
  cartTitle:'Dein Warenkorb',cartEmpty:'Dein Warenkorb ist noch leer. Wähle etwas aus und füge es hier hinzu.',quantity:'Menge',points:'Bienenpunkte',remove:'entfernen',orderPoints:'Bienenpunkte dieser Bestellung',totalProducts:'Produktsumme',continueOrder:'Bestellung fortsetzen →',goal:'100 Bienenpunkte = Geschenkkorb mit 5 Produkten nach Wahl.',cartFab:'Dein Warenkorb',addFirst:'Füge mindestens ein Produkt hinzu, bevor du fortfährst.',
  checkoutEyebrow:'Deine Bestellung',checkoutTitle:'Bestellung abschließen',checkoutIntro:'Ein einfacher Weg von der Adresse bis zur endgültigen Bestätigung.',steps:['1 · Daten','2 · Lieferung','3 · Übersicht','4 · Bestätigung'],
  step1Title:'Wem dürfen wir diese Bestellung zuordnen?',name:'Vor- und Nachname *',email:'E-Mail *',phone:'Telefon *',city:'Ort / Stadt *',address:'Straße und Hausnummer *',cap:'PLZ *',province:'Provinz *',provincePh:'z. B. MN',continue:'Weiter →',
- step2Title:'Wie möchtest du deine Bestellung erhalten?',courier:'Kurier',courierDesc:'Voraussichtliche Lieferung innerhalb von 5–6 Tagen.',pickup:'Abholung / direkte Vereinbarung',pickupDesc:'Wir stimmen die Abholung direkt mit dir ab.',notes:'Hinweise zur Lieferung',optional:'Optional',back:'← Zurück',showSummary:'Übersicht anzeigen →',
+ step2Title:'Wie möchtest du deine Bestellung erhalten?',courier:'Kurier',courierDesc:'Voraussichtliche Lieferung innerhalb von 5–6 Tagen.',courierDescEU:'Poste Delivery International Standard · voraussichtliche Lieferung in 10–15 Werktagen zuzüglich Versandtag.',courierDescExtraEU:'Poste Delivery International Standard · voraussichtliche Lieferung in 10–25 Werktagen zuzüglich Versandtag und vorbehaltlich Zollabfertigung.',pickup:'Abholung / direkte Vereinbarung',pickupDesc:'Wir stimmen die Abholung direkt mit dir ab.',notes:'Hinweise zur Lieferung',optional:'Optional',back:'← Zurück',showSummary:'Übersicht anzeigen →',
  step3Title:'Bitte alles prüfen, bevor du fortfährst',shipping:'Versand',checking:'Wird geprüft…',total:'Gesamt',free:'Kostenlos',pointsOrder:'Bienenpunkte mit dieser Bestellung',pointsGoal:'Sie werden deinem Bienenpunkte-Konto gutgeschrieben. Bei 100 Punkten kannst du einen Geschenkkorb mit 5 Produkten nach Wahl zusammenstellen.',
  step4Title:'Bestellung senden',step4Intro:'Mit der Bestätigung werden deine Bestelldaten an La Fabbrica delle Api gesendet.',sendOrder:'Bestellung senden →',sending:'Wird gesendet…',
  successTitle:'Bestellung gesendet',orderCode:'Bestellcode',successIntro:'Wir haben deine Bestellung erhalten. Wir kontaktieren dich über die angegebenen Kontaktdaten.',earned:'Du hast erhalten',successGoal:'Sammle weiter: Bei 100 Punkten kannst du einen Geschenkkorb mit 5 Produkten nach Wahl zusammenstellen.',downloadPdf:'Bestellübersicht als PDF',backSite:'Zurück zu La Fabbrica delle Api',
@@ -50,7 +50,7 @@ fr:{
  cartTitle:'Votre panier',cartEmpty:'Votre panier est encore vide. Choisissez ce qui vous intéresse et ajoutez-le ici.',quantity:'quantité',points:'Points Abeille',remove:'supprimer',orderPoints:'Points Abeille de cette commande',totalProducts:'Total des produits',continueOrder:'Continuer la commande →',goal:'100 Points Abeille = panier cadeau avec 5 produits au choix.',cartFab:'Votre panier',addFirst:'Ajoutez au moins un produit avant de continuer.',
  checkoutEyebrow:'Votre commande',checkoutTitle:'Finaliser votre commande',checkoutIntro:"Un parcours simple, de l'adresse à la confirmation finale.",steps:['1 · Coordonnées','2 · Livraison','3 · Récapitulatif','4 · Confirmation'],
  step1Title:'À qui devons-nous associer cette commande ?',name:'Nom et prénom *',email:'E-mail *',phone:'Téléphone *',city:'Commune / Ville *',address:'Rue et numéro *',cap:'Code postal *',province:'Province *',provincePh:'ex. MN',continue:'Continuer →',
- step2Title:'Comment souhaitez-vous recevoir votre commande ?',courier:'Transporteur',courierDesc:'Livraison estimée sous 5–6 jours.',pickup:'Retrait / accord direct',pickupDesc:'Nous le définirons avec vous sans étapes inutiles.',notes:'Notes de livraison',optional:'Facultatif',back:'← Retour',showSummary:'Voir le récapitulatif →',
+ step2Title:'Comment souhaitez-vous recevoir votre commande ?',courier:'Transporteur',courierDesc:'Livraison estimée sous 5–6 jours.',courierDescEU:'Poste Delivery International Standard · livraison indicative sous 10–15 jours ouvrés, en plus du jour d’expédition.',courierDescExtraEU:'Poste Delivery International Standard · livraison indicative sous 10–25 jours ouvrés, en plus du jour d’expédition et hors formalités douanières.',pickup:'Retrait / accord direct',pickupDesc:'Nous le définirons avec vous sans étapes inutiles.',notes:'Notes de livraison',optional:'Facultatif',back:'← Retour',showSummary:'Voir le récapitulatif →',
  step3Title:'Vérifiez tout avant de continuer',shipping:'Livraison',checking:'Vérification…',total:'Total',free:'Gratuite',pointsOrder:'Points Abeille avec cette commande',pointsGoal:'Ils sont ajoutés à votre solde Points Abeille. À 100 points, vous pouvez composer un panier cadeau avec 5 produits au choix.',
  step4Title:'Envoyer votre commande',step4Intro:'En confirmant, les informations de la commande seront envoyées à La Fabbrica delle Api.',sendOrder:'Envoyer la commande →',sending:'Envoi en cours…',
  successTitle:'Commande envoyée',orderCode:'Code commande',successIntro:'Nous avons reçu votre commande. Nous vous contacterons avec les coordonnées indiquées.',earned:'Vous avez gagné',successGoal:'Continuez à les cumuler : à 100 points, vous pouvez composer un panier cadeau avec 5 produits au choix.',downloadPdf:'Télécharger le récapitulatif PDF',backSite:'Retour à La Fabbrica delle Api',
@@ -63,7 +63,7 @@ es:{
  cartTitle:'Tu carrito',cartEmpty:'Tu carrito todavía está vacío. Elige lo que te interese y añádelo aquí.',quantity:'cantidad',points:'Puntos Abeja',remove:'eliminar',orderPoints:'Puntos Abeja de este pedido',totalProducts:'Total productos',continueOrder:'Continuar con el pedido →',goal:'100 Puntos Abeja = cesta regalo con 5 productos a elegir.',cartFab:'Tu carrito',addFirst:'Añade al menos un producto antes de continuar.',
  checkoutEyebrow:'Tu pedido',checkoutTitle:'Completa tu pedido',checkoutIntro:'Un recorrido sencillo desde la dirección hasta la confirmación final.',steps:['1 · Datos','2 · Entrega','3 · Resumen','4 · Confirmación'],
  step1Title:'¿A quién debemos asociar este pedido?',name:'Nombre y apellidos *',email:'Email *',phone:'Teléfono *',city:'Municipio / Ciudad *',address:'Calle y número *',cap:'Código postal *',province:'Provincia *',provincePh:'ej. MN',continue:'Continuar →',
- step2Title:'¿Cómo quieres recibir el pedido?',courier:'Mensajería',courierDesc:'Entrega estimada en 5–6 días.',pickup:'Recogida / acuerdo directo',pickupDesc:'Lo acordaremos contigo sin pasos innecesarios.',notes:'Notas para la entrega',optional:'Opcional',back:'← Atrás',showSummary:'Ver resumen →',
+ step2Title:'¿Cómo quieres recibir el pedido?',courier:'Mensajería',courierDesc:'Entrega estimada en 5–6 días.',courierDescEU:'Poste Delivery International Standard · entrega estimada en 10–15 días laborables, más el día del envío.',courierDescExtraEU:'Poste Delivery International Standard · entrega estimada en 10–25 días laborables, más el día del envío y salvo trámites aduaneros.',pickup:'Recogida / acuerdo directo',pickupDesc:'Lo acordaremos contigo sin pasos innecesarios.',notes:'Notas para la entrega',optional:'Opcional',back:'← Atrás',showSummary:'Ver resumen →',
  step3Title:'Revísalo todo antes de continuar',shipping:'Envío',checking:'Comprobando…',total:'Total',free:'Gratis',pointsOrder:'Puntos Abeja con este pedido',pointsGoal:'Se añaden a tu saldo de Puntos Abeja. Con 100 puntos puedes crear una cesta regalo con 5 productos a elegir.',
  step4Title:'Enviar tu pedido',step4Intro:'Al confirmar, los datos del pedido se enviarán a La Fabbrica delle Api.',sendOrder:'Enviar pedido →',sending:'Enviando…',
  successTitle:'Pedido enviado',orderCode:'Código de pedido',successIntro:'Hemos recibido tu pedido. Nos pondremos en contacto contigo utilizando los datos indicados.',earned:'Has ganado',successGoal:'Sigue acumulándolos: con 100 puntos puedes crear una cesta regalo con 5 productos a elegir.',downloadPdf:'Descargar resumen PDF',backSite:'Volver a La Fabbrica delle Api',
@@ -110,6 +110,7 @@ function productSize(id,fallback){
   return cachedTranslation(fallback,l);
 }
 
+const CHECKOUT_EU_COUNTRIES=new Set(['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE']);
 const CHECKOUT_COUNTRIES={
   AL:{dial:"+355"},
   AD:{dial:"+376"},
@@ -231,6 +232,10 @@ function applyCountryFields(forceDial=false){
     courierInput.checked=true;
     pickupInput.checked=false;
   }
+  const courierText=deliveryOptions[0]?.querySelector('p');
+  if(courierText){
+    courierText.textContent=code==='IT'?x.courierDesc:(CHECKOUT_EU_COUNTRIES.has(code)?x.courierDescEU:x.courierDescExtraEU);
+  }
 }
 window.purchaseNormalizePhone=normalizePhone;
 window.purchaseCountryName=countryName;
@@ -257,7 +262,14 @@ function apply(){
 
   setText('.checkout-screen[data-step="2"] h3',x.step2Title);
   const opts=document.querySelectorAll('.delivery-option');
-  if(opts[0]){const s=opts[0].querySelector('strong'),p=opts[0].querySelector('p');if(s)s.textContent=x.courier;if(p)p.textContent=x.courierDesc;}
+  if(opts[0]){
+    const s=opts[0].querySelector('strong'),p=opts[0].querySelector('p');
+    if(s)s.textContent=x.courier;
+    if(p){
+      const cc=countryCode();
+      p.textContent=cc==='IT'?x.courierDesc:(CHECKOUT_EU_COUNTRIES.has(cc)?x.courierDescEU:x.courierDescExtraEU);
+    }
+  }
   if(opts[1]){const s=opts[1].querySelector('strong'),p=opts[1].querySelector('p');if(s)s.textContent=x.pickup;if(p)p.textContent=x.pickupDesc;}
   fieldLabel('coNotes',x.notes);const notes=document.getElementById('coNotes');if(notes)notes.placeholder=x.optional;
   setText('.checkout-screen[data-step="2"] [data-back="1"]',x.back);setText('.checkout-screen[data-step="2"] [data-next="3"]',x.showSummary);
