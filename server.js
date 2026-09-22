@@ -1143,6 +1143,8 @@ const sendPage=(filename)=>(_req,res)=>{
     if(!/name=["']google["'][^>]*content=["']notranslate["']/i.test(html)){
       html=html.includes('<head>')?html.replace('<head>','<head><meta name="google" content="notranslate">'):html;
     }
+    html=html.replace(/<html(?![^>]*\btranslate=)([^>]*)>/i,'<html$1 translate="no" class="notranslate">');
+    html=html.replace(/<body(?![^>]*\btranslate=)([^>]*)>/i,'<body$1 translate="no" class="notranslate">');
     if(!html.includes('id="globalToolsBar"')){
       html=html.includes('</header>')?html.replace('</header>','</header>'+GLOBAL_TOOLS_MARKUP):GLOBAL_TOOLS_MARKUP+html;
     }
