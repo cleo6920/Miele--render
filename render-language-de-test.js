@@ -305,7 +305,7 @@ async function translateRoot(root){
   try{
     const target=root||document.body;
     applyCoreImmediately(target);
-    document.documentElement.lang=lang;
+    document.documentElement.dataset.siteLanguage=lang;
 
     const {texts,els}=collect(target);
     const textQueue=texts.filter(n=>{
@@ -372,7 +372,7 @@ function setLang(v){
   try{localStorage.setItem(KEY,next);}catch(_){}
   const sel=document.getElementById('fda-language-select');
   if(sel)sel.value=next;
-  document.documentElement.lang=next;
+  document.documentElement.dataset.siteLanguage=next;
   if(next===lang){
     if(next!=='it')translateRoot(document.body);
     return;
@@ -398,6 +398,11 @@ async function start(){
   if(!document.querySelector('meta[name="google"][content="notranslate"]')){
     const meta=document.createElement('meta');meta.name='google';meta.content='notranslate';document.head.appendChild(meta);
   }
+  document.documentElement.setAttribute('translate','no');
+  document.documentElement.classList.add('notranslate');
+  if(document.body){document.body.setAttribute('translate','no');document.body.classList.add('notranslate');}
+  document.documentElement.classList.remove('translated-ltr','translated-rtl');
+  if(document.body)document.body.classList.remove('translated-ltr','translated-rtl');
   let saved='';
   try{saved=localStorage.getItem(KEY)||'';}catch(_){}
   lang=SUPPORTED.includes(saved)?saved:'it';
@@ -407,9 +412,9 @@ async function start(){
   if(sel)sel.value=lang;
   if(lang!=='it'){
     applyCoreImmediately(document.body);
-    document.documentElement.lang=lang;
+    document.documentElement.dataset.siteLanguage=lang;
     await translateRoot(document.body);
-  }else document.documentElement.lang='it';
+  }else document.documentElement.dataset.siteLanguage='it';
   startObserver();
 }
 
