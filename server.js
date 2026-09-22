@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
+const nodemailer = require('nodemailer');
 const createCheckoutSession = require('./api/create-checkout-session');
 
 const app = express();
@@ -33,6 +34,224 @@ app.get('/api/ape-pelu-status', (req, res) => {
 });
 
 const APE_V2_OFFICIAL_PRODUCTS = [{"id":"propolterapy-professional","section":"alveoterapia-prodotti","name":"PropolTerapy Professional","size":"Diffusore + 5 capsule BIO","price":180,"desc":"Diffusore professionale per l’esperienza di alveoterapia negli ambienti, con accessori dedicati e confezione iniziale di 5 capsule BIO."},{"id":"capsule-pb","section":"alveoterapia-prodotti","name":"Capsule Propoli P+B (5 pz)","size":"Scatola da 5 capsule","price":19.9,"desc":"Capsule monouso P+B dedicate ai diffusori compatibili, con propoli italiana e Boswellia Serrata."},{"id":"capsule-propolit","section":"alveoterapia-prodotti","name":"Capsule PROPOLIT (5 pz)","size":"Scatola da 5 capsule","price":19.9,"desc":"Capsule monouso di propoli per diffusori PROPOLAIR/PROPOLIT compatibili."},{"id":"castagno","section":"alveare","name":"Miele di Castagno","size":"250 g","price":6.9,"desc":"Miele dal profumo deciso e dal gusto intenso, poco dolce e con una caratteristica nota leggermente amarognola."},{"id":"acacia-zenzero-apinfiore","section":"alveare","name":"Miele di Acacia e Zenzero","size":"200 g","price":7.9,"desc":"Specialità alimentare a base di miele italiano di acacia e zenzero, dal profilo dolce e delicatamente speziato."},{"id":"miele-eucalipto-apinfiore","section":"alveare","name":"Miele Eucalipto","size":"250 g","price":6.9,"desc":"Miele italiano di eucalipto dal profumo intenso e dal gusto aromatico, con caratteristiche note fresche e balsamiche."},{"id":"balsammiel","section":"alveare","name":"Balsamico Italiano","size":"200 g","price":11.9,"desc":"Specialità alimentare dal gusto fresco e intensamente balsamico, preparata con miele di eucalipto e ingredienti aromatici."},{"id":"acacia","section":"alveare","name":"Miele Italiano di Acacia","size":"40 g","price":2.9,"desc":"Miele italiano di acacia dal colore chiaro e dal gusto dolce e delicato, nel pratico formato da 40 g."},{"id":"favo-integrale-bio","section":"alveare","name":"Miele Italiano di Acacia in Favo","size":"200 g","price":11.9,"desc":"Miele di acacia presentato direttamente nel favo, per una degustazione molto vicina al prodotto così come viene conservato dalle api."},{"id":"polline-italiano","section":"alveare","name":"Polline Italiano","size":"125 g","price":10.9,"desc":"Polline italiano raccolto dalle api e selezionato come prodotto dell’alveare."},{"id":"pappa-reale-italiana-bio","section":"alveare","name":"Pappa Reale","size":"10 g","price":6.9,"desc":"Pappa reale in formato da 10 g, uno dei prodotti più particolari dell’alveare."},{"id":"orsetti-gommosi","section":"alveare","name":"Orsetti Gommosi BIO con Propoli e Miele","size":"80 g","price":3.9,"desc":"Orsetti gommosi biologici con propoli e miele, in confezione da 80 g."},{"id":"bee-energy-bio","section":"propoli","name":"Bee Energy BIO","size":"12 flaconcini da 10 ml","price":14.9,"desc":"Integratore alimentare biologico con ingredienti dell’alveare, proposto in pratici flaconcini."},{"id":"propol-active-bio","section":"propoli","name":"Propol Active BIO","size":"30 compresse masticabili","price":10.9,"desc":"Integratore in compresse masticabili a base di propoli italiana biologica."},{"id":"propoli-30-spray-integratore","section":"propoli","name":"Soluzione Propoli 30% Spray","size":"20 ml","price":7.9,"desc":"Soluzione di propoli al 30% con pratico erogatore spray reclinabile."},{"id":"propoli-30-alcolica-integratore","section":"propoli","name":"Soluzione Propoli 30% con Contagocce - Alcolica","size":"20 ml","price":5.9,"desc":"Soluzione alcolica di propoli al 30% con contagocce, formato da 20 ml."},{"id":"propoli-analcolica-integratore","section":"propoli","name":"Soluzione Propoli con Contagocce Analcolica","size":"20 ml","price":5.9,"desc":"Soluzione analcolica di propoli con contagocce, formato da 20 ml."},{"id":"cosmesi-crema-mani","section":"cosmesi","name":"Crema Mani","size":"100 ml","price":9.9,"desc":"Crema mani formulata con ingredienti dell’alveare, pensata per un gesto cosmetico quotidiano."},{"id":"cosmesi-burrocacao-propoli-aloe","section":"cosmesi","name":"Burrocacao Propoli e Aloe Vera","size":"5 ml","price":4.9,"desc":"Stick labbra con propoli e aloe vera, pensato per mantenere le labbra morbide e protette."},{"id":"cosmesi-burrocacao-miele-pappa-reale","section":"cosmesi","name":"Burrocacao Miele e Pappa Reale","size":"5 ml","price":4.9,"desc":"Stick labbra con miele e pappa reale, per un gesto cosmetico quotidiano."},{"id":"cosmesi-shampoo-multivitaminico","section":"cosmesi","name":"Shampoo Multivitaminico","size":"250 ml","price":9.9,"desc":"Shampoo multivitaminico per la detersione quotidiana dei capelli."},{"id":"cosmesi-saponetta-frutti-bosco","section":"cosmesi","name":"Saponetta Miele e Frutti di Bosco","size":"100 g","price":3.9,"desc":"Sapone vegetale con miele e frutti di bosco, per la detersione quotidiana."},{"id":"cosmesi-saponetta-lavanda","section":"cosmesi","name":"Saponetta Miele e Lavanda","size":"100 g","price":3.9,"desc":"Sapone vegetale con miele e lavanda, per la detersione quotidiana."},{"id":"cosmesi-saponetta-aloe-vera","section":"cosmesi","name":"Saponetta Miele e Aloe Vera","size":"100 g","price":3.9,"desc":"Sapone vegetale con miele e aloe vera, per la detersione quotidiana."},{"id":"cosmesi-candela-alveare-cera-api","section":"cosmesi","name":"Candela Alveare Grande in Cera d’Api","size":"1 candela","price":5.9,"desc":"Candela artigianale in cera d’api, modellata nella caratteristica forma dell’alveare."},{"id":"cosmesi-travel-kit-benessere","section":"cosmesi","name":"Kit da Viaggio Benessere dell’Alveare","size":"4 x 50 ml + pochette","price":17.9,"desc":"Quattro formati da viaggio raccolti in una pochette riutilizzabile, pensati per corpo e capelli."},{"id":"unguento-apis","section":"linea-veleni","name":"SOS DOL – Unguento al Veleno d’Api","size":"15 ml","price":29.9,"desc":"Unguento cosmetico da massaggio formulato con veleno d’api e ingredienti cosmetici selezionati."},{"id":"apis1-crema-viso-veleno-api","section":"linea-veleni","name":"Crema Viso al Veleno d’Api – APIS1","size":"50 ml","price":39.9,"desc":"Crema viso cosmetica formulata con veleno d’api, pensata per viso, collo e décolleté."},{"id":"apis2-siero-viso-veleno-api","section":"linea-veleni","name":"Siero Viso al Veleno d’Api – APIS2","size":"30 ml","price":34.9,"desc":"Siero viso cosmetico formulato con veleno d’api e altri ingredienti dell’alveare."},{"id":"apis4-crema-corpo-veleno-api-manuka","section":"linea-veleni","name":"Crema Corpo Veleno d’Api e Miele di Manuka – APIS4","size":"250 ml","price":31.9,"desc":"Crema corpo cosmetica formulata con veleno d’api e miele di Manuka."},{"id":"apis5-gommage-veleno-api-manuka","section":"linea-veleni","name":"Gommage Viso e Corpo Veleno d’Api e Miele di Manuka – APIS5","size":"250 ml","price":34.9,"desc":"Gommage cosmetico per viso e corpo formulato con veleno d’api e miele di Manuka."},{"id":"bagnodoccia-veleno-oro","section":"linea-veleni","name":"Bagnodoccia Veleno d’Oro – APIS7","size":"250 ml","price":14.9,"desc":"Bagnodoccia cosmetico formulato con veleno d’api e miele di Manuka."},{"id":"tesori-limoncello","section":"tesori-francesco","name":"Limoncello “I Tesori di Francesco”","size":"250 ml","price":5.9,"desc":"Limoncello della linea I Tesori di Francesco, dal profilo fresco e agrumato."},{"id":"tesori-liquore-caffe","section":"tesori-francesco","name":"Liquore di Caffè “I Tesori di Francesco”","size":"250 ml","price":5.9,"desc":"Liquore al caffè della linea I Tesori di Francesco, dal gusto intenso e avvolgente."},{"id":"tesori-castagne-rum","section":"tesori-francesco","name":"Castagne al Rum “I Tesori di Francesco”","size":"250 ml","price":5.9,"desc":"Castagne al rum della linea I Tesori di Francesco, una piccola specialità da degustazione."}];
+
+const ORDER_BUSATELLO_PRODUCTS = [
+  {id:'millefiori',name:'Miele Millefiori',size:'250 g',price:4.90,points:2},
+  {id:'melone',name:'Miele al Melone',size:'250 g',price:4.90,points:2},
+  {id:'fragola',name:'Miele alla Fragola',size:'250 g',price:4.90,points:2},
+  {id:'pesca',name:'Miele alla Pesca',size:'250 g',price:4.90,points:2},
+  {id:'arancia',name:"Miele all'Arancia",size:'250 g',price:4.90,points:2}
+];
+const ORDER_CATALOG = new Map([
+  ...ORDER_BUSATELLO_PRODUCTS,
+  ...APE_V2_OFFICIAL_PRODUCTS.map(p=>({...p,points:0}))
+].map(p=>[p.id,p]));
+
+const orderMailRate = new Map();
+const recentOrderRefs = new Map();
+
+function cleanOrderText(value,max=300){
+  return String(value||'').replace(/[\u0000-\u001f\u007f]/g,' ').replace(/\s+/g,' ').trim().slice(0,max);
+}
+function escapeOrderHtml(value){
+  return String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function euroOrder(value){
+  return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(value||0));
+}
+function orderMailConfigured(){
+  return Boolean(String(process.env.ORDER_EMAIL_USER||'').trim() && String(process.env.ORDER_EMAIL_APP_PASSWORD||'').trim());
+}
+function orderTransporter(){
+  if(!orderMailConfigured()) return null;
+  const user=String(process.env.ORDER_EMAIL_USER||'').trim();
+  const pass=String(process.env.ORDER_EMAIL_APP_PASSWORD||'').trim();
+  const host=String(process.env.ORDER_SMTP_HOST||'').trim();
+  if(host){
+    const port=Number(process.env.ORDER_SMTP_PORT||587);
+    const secure=String(process.env.ORDER_SMTP_SECURE||'').toLowerCase()==='true' || port===465;
+    return nodemailer.createTransport({host,port,secure,auth:{user,pass}});
+  }
+  return nodemailer.createTransport({service:'gmail',auth:{user,pass}});
+}
+function allowOrderMail(req){
+  const key=String(req.ip||req.socket?.remoteAddress||'unknown');
+  const now=Date.now(), windowMs=10*60*1000, max=6;
+  const arr=(orderMailRate.get(key)||[]).filter(ts=>now-ts<windowMs);
+  if(arr.length>=max){orderMailRate.set(key,arr);return false;}
+  arr.push(now);orderMailRate.set(key,arr);
+  return true;
+}
+function parseOrderPayload(body){
+  const customer=body?.customer||{};
+  const parsedCustomer={
+    name:cleanOrderText(customer.name,120),
+    email:cleanOrderText(customer.email,180).toLowerCase(),
+    phone:cleanOrderText(customer.phone,80),
+    city:cleanOrderText(customer.city,120),
+    address:cleanOrderText(customer.address,180),
+    cap:cleanOrderText(customer.cap,10),
+    province:cleanOrderText(customer.province,10).toUpperCase()
+  };
+  if(!parsedCustomer.name || !parsedCustomer.phone || !parsedCustomer.city || !parsedCustomer.address || !parsedCustomer.cap || !parsedCustomer.province){
+    throw new Error('Dati cliente incompleti.');
+  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parsedCustomer.email)) throw new Error('Email cliente non valida.');
+  if(!/^\d{5}$/.test(parsedCustomer.cap)) throw new Error('CAP non valido.');
+
+  const rawItems=Array.isArray(body?.items)?body.items:[];
+  if(!rawItems.length || rawItems.length>40) throw new Error('Prodotti ordine non validi.');
+  const items=[];
+  for(const raw of rawItems){
+    const id=cleanOrderText(raw?.id,100);
+    const catalog=ORDER_CATALOG.get(id);
+    if(!catalog) throw new Error('Prodotto non riconosciuto: '+id);
+    const qty=Math.max(1,Math.min(50,Math.floor(Number(raw?.qty||1))));
+    items.push({
+      id,
+      name:catalog.name,
+      size:catalog.size,
+      unitPrice:Number(catalog.price),
+      qty,
+      points:Number(catalog.points||0),
+      subtotal:Number(catalog.price)*qty
+    });
+  }
+
+  const goodsTotal=items.reduce((sum,item)=>sum+item.subtotal,0);
+  const points=items.reduce((sum,item)=>sum+(item.points*item.qty),0);
+  const delivery=body?.delivery==='pickup'?'pickup':'courier';
+  let shipping=Number(body?.shipping);
+  if(!Number.isFinite(shipping) || shipping<0 || shipping>50) shipping=0;
+  shipping=Math.round(shipping*100)/100;
+  const shippingReason=cleanOrderText(body?.shippingReason,220);
+  const notes=cleanOrderText(body?.notes,1200);
+  const clientReference=/^API-\d{8}-\d{5,8}$/.test(String(body?.id||''))?String(body.id):'API-'+Date.now();
+  return {
+    id:clientReference,
+    createdAt:new Date().toISOString(),
+    customer:parsedCustomer,
+    delivery,
+    notes,
+    items,
+    goodsTotal,
+    shipping,
+    shippingReason,
+    total:goodsTotal+shipping,
+    points
+  };
+}
+function buildOrderMail(order){
+  const deliveryLabel=order.delivery==='pickup'?'Ritiro / accordo diretto':'Corriere';
+  const itemRows=order.items.map(item=>`
+    <tr>
+      <td style="padding:10px;border-bottom:1px solid #e6e0d4"><strong>${escapeOrderHtml(item.name)}</strong><br><span style="color:#6b746f;font-size:12px">${escapeOrderHtml(item.size)}</span></td>
+      <td style="padding:10px;text-align:center;border-bottom:1px solid #e6e0d4">${item.qty}</td>
+      <td style="padding:10px;text-align:right;border-bottom:1px solid #e6e0d4">${euroOrder(item.unitPrice)}</td>
+      <td style="padding:10px;text-align:right;border-bottom:1px solid #e6e0d4"><strong>${euroOrder(item.subtotal)}</strong></td>
+    </tr>`).join('');
+
+  const html=`
+  <div style="font-family:Arial,Helvetica,sans-serif;background:#f6f1e7;padding:28px;color:#17251f">
+    <div style="max-width:760px;margin:auto;background:#fff;border-radius:20px;overflow:hidden;border:1px solid #ded5c5">
+      <div style="background:#10392c;color:#fff;padding:24px 28px">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.12em;color:#f0bd4d">LA FABBRICA DELLE API</div>
+        <h1 style="margin:8px 0 0;font-size:26px">Nuovo ordine ricevuto</h1>
+        <div style="margin-top:8px;font-size:14px">Codice: <strong>${escapeOrderHtml(order.id)}</strong></div>
+      </div>
+      <div style="padding:26px 28px">
+        <h2 style="font-size:18px;margin:0 0 12px">Dati acquirente</h2>
+        <p style="line-height:1.65;margin:0 0 22px">
+          <strong>${escapeOrderHtml(order.customer.name)}</strong><br>
+          Email: <a href="mailto:${escapeOrderHtml(order.customer.email)}">${escapeOrderHtml(order.customer.email)}</a><br>
+          Telefono: ${escapeOrderHtml(order.customer.phone)}<br>
+          Indirizzo: ${escapeOrderHtml(order.customer.address)}, ${escapeOrderHtml(order.customer.cap)} ${escapeOrderHtml(order.customer.city)} (${escapeOrderHtml(order.customer.province)})
+        </p>
+
+        <h2 style="font-size:18px;margin:0 0 12px">Prodotti</h2>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <thead><tr style="background:#f5eddf"><th style="padding:9px;text-align:left">Prodotto</th><th style="padding:9px">Q.tà</th><th style="padding:9px;text-align:right">Prezzo</th><th style="padding:9px;text-align:right">Subtotale</th></tr></thead>
+          <tbody>${itemRows}</tbody>
+        </table>
+
+        <div style="margin-top:20px;padding:16px;background:#faf6ee;border-radius:14px;line-height:1.65">
+          <div><strong>Consegna:</strong> ${escapeOrderHtml(deliveryLabel)}</div>
+          <div><strong>Dettaglio spedizione:</strong> ${escapeOrderHtml(order.shippingReason||'—')}</div>
+          <div><strong>Note cliente:</strong> ${escapeOrderHtml(order.notes||'Nessuna nota')}</div>
+        </div>
+
+        <div style="margin-top:20px;font-size:15px;line-height:1.8;text-align:right">
+          Prodotti: <strong>${euroOrder(order.goodsTotal)}</strong><br>
+          Spedizione: <strong>${euroOrder(order.shipping)}</strong><br>
+          <span style="font-size:20px">Totale: <strong>${euroOrder(order.total)}</strong></span><br>
+          <span style="color:#7a5a0a">🐝 Punti Ape: <strong>${order.points}</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  const text=[
+    'LA FABBRICA DELLE API - NUOVO ORDINE',
+    'Codice: '+order.id,
+    '',
+    'ACQUIRENTE',
+    order.customer.name,
+    order.customer.email,
+    order.customer.phone,
+    order.customer.address+', '+order.customer.cap+' '+order.customer.city+' ('+order.customer.province+')',
+    '',
+    'PRODOTTI',
+    ...order.items.map(i=>'- '+i.name+' | '+i.size+' | q.tà '+i.qty+' | '+euroOrder(i.subtotal)),
+    '',
+    'Consegna: '+deliveryLabel,
+    'Dettaglio spedizione: '+(order.shippingReason||'—'),
+    'Note: '+(order.notes||'Nessuna nota'),
+    'Prodotti: '+euroOrder(order.goodsTotal),
+    'Spedizione: '+euroOrder(order.shipping),
+    'Totale: '+euroOrder(order.total),
+    'Punti Ape: '+order.points
+  ].join('\n');
+  return {html,text};
+}
+
+app.get('/api/order-email-status', (_req,res)=>{
+  res.setHeader('Cache-Control','no-store');
+  return res.json({ok:true,configured:orderMailConfigured()});
+});
+
+app.post('/api/order-notification', async (req,res)=>{
+  if(!allowOrderMail(req)) return res.status(429).json({ok:false,error:'Troppe richieste. Riprova tra qualche minuto.'});
+  if(!orderMailConfigured()){
+    console.warn('[Ordini] Notifica email non configurata.');
+    return res.status(503).json({ok:false,error:'Il servizio di invio ordini non è ancora configurato.'});
+  }
+  try{
+    const order=parseOrderPayload(req.body);
+    const cached=recentOrderRefs.get(order.id);
+    if(cached && Date.now()-cached.time<30*60*1000) return res.json({ok:true,orderId:order.id,duplicate:true});
+
+    const transporter=orderTransporter();
+    const user=String(process.env.ORDER_EMAIL_USER||'').trim();
+    const to=String(process.env.ORDER_EMAIL_TO||'althea12830@gmail.com').trim();
+    const mail=buildOrderMail(order);
+    await transporter.sendMail({
+      from:'"La Fabbrica delle Api" <'+user+'>',
+      to,
+      replyTo:order.customer.email,
+      subject:'Nuovo ordine '+order.id+' · '+order.customer.name+' · '+euroOrder(order.total),
+      text:mail.text,
+      html:mail.html
+    });
+    recentOrderRefs.set(order.id,{time:Date.now()});
+    for(const [key,val] of recentOrderRefs){if(Date.now()-val.time>30*60*1000)recentOrderRefs.delete(key);}
+    console.log('[Ordini] Notifica inviata:',order.id);
+    return res.json({ok:true,orderId:order.id});
+  }catch(error){
+    console.error('[Ordini] Errore invio notifica:',error?.message||error);
+    return res.status(500).json({ok:false,error:'Non è stato possibile inviare l’ordine. Riprova tra poco.'});
+  }
+});
+
 const APE_V2_PRODUCT_ALIASES = {"propolterapy-professional":["propolterapy professional","propolterapy","diffusore professional"],"capsule-pb":["capsule p+b","capsule propoli p+b","p+b"],"capsule-propolit":["capsule propolit","propolit"],"acacia-zenzero-apinfiore":["acacia e zenzero","acacia zenzero"],"miele-eucalipto-apinfiore":["miele di eucalipto"],"balsammiel":["balsammiel","balsam miel"],"acacia":["acacia 40 g","acacia 40g"],"favo-integrale-bio":["acacia in favo","miele in favo","favo integrale"],"orsetti-gommosi":["orsetti gommosi"],"bee-energy-bio":["bee energy"],"propol-active-bio":["propol active"],"propoli-30-spray-integratore":["propoli 30% spray","propoli spray"],"propoli-30-alcolica-integratore":["propoli 30% alcolica","propoli alcolica"],"propoli-analcolica-integratore":["propoli analcolica"],"cosmesi-burrocacao-propoli-aloe":["burrocacao propoli aloe"],"cosmesi-burrocacao-miele-pappa-reale":["burrocacao miele pappa reale"],"cosmesi-shampoo-multivitaminico":["shampoo multivitaminico"],"cosmesi-saponetta-frutti-bosco":["saponetta frutti di bosco"],"cosmesi-saponetta-lavanda":["saponetta lavanda"],"cosmesi-saponetta-aloe-vera":["saponetta aloe vera"],"cosmesi-candela-alveare-cera-api":["candela alveare","candela in cera d api"],"cosmesi-travel-kit-benessere":["kit da viaggio","travel kit apinfiore","travel kit"],"unguento-apis":["sos dol"],"apis1-crema-viso-veleno-api":["apis1"],"apis2-siero-viso-veleno-api":["apis2"],"apis4-crema-corpo-veleno-api-manuka":["apis4"],"apis5-gommage-veleno-api-manuka":["apis5"],"bagnodoccia-veleno-oro":["apis7"],"tesori-limoncello":["tesori limoncello"],"tesori-liquore-caffe":["tesori liquore caffe","liquore al caffe"],"tesori-castagne-rum":["tesori castagne rum","castagne al rum"]};
 function apeProductNormalize(value){
   return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();

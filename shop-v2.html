@@ -649,17 +649,18 @@ img{display:block;max-width:100%}
       </div>
 
       <div class="checkout-screen" data-step="4">
-        <h3>Conferma finale</h3>
-        <p>Controlla il riepilogo e completa il percorso dell'ordine.</p>
-        <div class="checkout-actions"><button class="back-btn" type="button" data-back="3">← Indietro</button><button class="pay-btn" id="confirmOrder" type="button">Completa il riepilogo →</button></div>
+        <h3>Invia il tuo ordine</h3>
+        <p>Confermando, i dati dell’ordine verranno inviati alla Fabbrica delle Api.</p>
+        <div id="orderSubmitStatus" style="min-height:20px;margin:12px 0;color:#8a3b1f;font-weight:800"></div>
+        <div class="checkout-actions"><button class="back-btn" type="button" data-back="3">← Indietro</button><button class="pay-btn" id="confirmOrder" type="button">Invia l'ordine →</button></div>
       </div>
 
       <div class="checkout-screen" data-step="5">
         <div class="success-wrap">
           <div class="success-bee">🐝</div>
-          <h3>Riepilogo completato</h3>
+          <h3>Ordine inviato</h3>
           <div class="success-order" id="successOrder"></div>
-          <p>Il riepilogo dell'ordine è pronto.</p>
+          <p>Abbiamo ricevuto il tuo ordine. Ti contatteremo utilizzando i recapiti che hai indicato.</p>
           <div class="success-api"><strong>Hai guadagnato <span id="successPoints">0</span> Punti Ape</strong><div>Continua ad accumularli: a 100 punti puoi comporre un cesto omaggio con 5 prodotti a scelta.</div></div>
           <button class="next-btn" id="finishCheckout" type="button">Torna alla Fabbrica delle Api</button>
         </div>
@@ -839,36 +840,71 @@ async function renderCheckoutSummary(){
     '<div class="summary-row"><span>Spedizione</span><span style="text-align:right">'+shippingText+'</span></div>'+
     '<div class="summary-row total"><span>Totale</span><span>'+euro(grand)+'</span></div>';
 }
-function completeOrderDraft(){
-  const orderId='API-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+String(Date.now()).slice(-5);
-  const order={
-    id:orderId,
-    draft:true,
-    createdAt:new Date().toISOString(),
-    customer:{
-      name:document.getElementById('coName').value.trim(),
-      email:document.getElementById('coEmail').value.trim(),
-      phone:document.getElementById('coPhone').value.trim(),
-      city:document.getElementById('coCity').value.trim(),
-      address:document.getElementById('coAddress').value.trim(),
-      cap:document.getElementById('coCap').value.trim(),
-      province:document.getElementById('coProvince').value.trim()
-    },
-    delivery:document.querySelector('input[name="delivery"]:checked')?.value||'courier',
-    notes:document.getElementById('coNotes').value.trim(),
-    items:shopV2Cart,
-    goodsTotal:cartTotal(),
-    shipping:Number(shippingState.cost||0),
-    shippingReason:shippingState.reason,
-    total:cartTotal()+Number(shippingState.cost||0),
-    points:cartPoints()
-  };
-  let orders=[];try{orders=JSON.parse(localStorage.getItem(SHOP_V2_ORDERS_KEY)||'[]')||[];}catch(_){}
-  orders.unshift(order);localStorage.setItem(SHOP_V2_ORDERS_KEY,JSON.stringify(orders.slice(0,20)));
-  document.getElementById('successOrder').textContent='Codice ordine '+orderId;
-  document.getElementById('successPoints').textContent=order.points;
-  shopV2Cart=[];saveV2Cart();
-  showCheckoutStep(5);
+async function completeOrderDraft(){
+  const confirmBtn=document.getElementById('confirmOrder');
+  const statusBox=document.getElementById('orderSubmitStatus');
+  if(!shopV2Cart.length){statusBox.textContent='Il cestino è vuoto.';return;}
+
+  confirmBtn.disabled=true;
+  const oldLabel=confirmBtn.textContent;
+  confirmBtn.textContent='Invio in corso…';
+  statusBox.textContent='';
+
+  try{
+    await calculateShipping();
+    const orderId='API-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+String(Date.now()).slice(-5);
+    const order={
+      id:orderId,
+      createdAt:new Date().toISOString(),
+      customer:{
+        name:document.getElementById('coName').value.trim(),
+        email:document.getElementById('coEmail').value.trim(),
+        phone:document.getElementById('coPhone').value.trim(),
+        city:document.getElementById('coCity').value.trim(),
+        address:document.getElementById('coAddress').value.trim(),
+        cap:document.getElementById('coCap').value.trim(),
+        province:document.getElementById('coProvince').value.trim()
+      },
+      delivery:document.querySelector('input[name="delivery"]:checked')?.value||'courier',
+      notes:document.getElementById('coNotes').value.trim(),
+      items:shopV2Cart.map(x=>({id:x.id,qty:x.qty})),
+      shipping:Number(shippingState.cost||0),
+      shippingReason:shippingState.reason
+    };
+
+    const response=await fetch('/api/order-notification',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(order)
+    });
+    const data=await response.json().catch(()=>null);
+    if(!response.ok || !data?.ok) throw new Error(data?.error||'Non è stato possibile inviare l’ordine.');
+
+    const savedOrder={
+      ...order,
+      id:data.orderId||orderId,
+      sent:true,
+      sentAt:new Date().toISOString(),
+      items:shopV2Cart,
+      goodsTotal:cartTotal(),
+      shipping:Number(shippingState.cost||0),
+      shippingReason:shippingState.reason,
+      total:cartTotal()+Number(shippingState.cost||0),
+      points:cartPoints()
+    };
+    let orders=[];try{orders=JSON.parse(localStorage.getItem(SHOP_V2_ORDERS_KEY)||'[]')||[];}catch(_){}
+    orders.unshift(savedOrder);localStorage.setItem(SHOP_V2_ORDERS_KEY,JSON.stringify(orders.slice(0,20)));
+
+    document.getElementById('successOrder').textContent='Codice ordine '+savedOrder.id;
+    document.getElementById('successPoints').textContent=savedOrder.points;
+    shopV2Cart=[];saveV2Cart();
+    showCheckoutStep(5);
+  }catch(error){
+    statusBox.textContent=error?.message||'Non è stato possibile inviare l’ordine. Riprova.';
+  }finally{
+    confirmBtn.disabled=false;
+    confirmBtn.textContent=oldLabel;
+  }
 }
 
 
