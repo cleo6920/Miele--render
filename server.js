@@ -387,12 +387,31 @@ function buildOrderMail(order){
 }
 
 app.get('/api/phone-normalize',(req,res)=>{
-  const country=String(req.query.country||'').trim().toUpperCase();
-  const raw=String(req.query.phone||'').trim();
-  if(!ORDER_COUNTRIES[country]) return res.status(400).json({ok:false,error:'Paese non supportato.'});
-  const phone=parsePhoneNumberFromString(raw,country);
-  if(!phone || !phone.isValid()) return res.status(422).json({ok:false,error:'Numero di telefono non valido per il Paese selezionato.'});
-  return res.json({ok:true,e164:phone.number,international:phone.formatInternational()});
+  let prefix=String(req.query.prefix||'').trim().replace(/[\s().-]/g,'');
+  let national=String(req.query.phone||'').trim().replace(/[\s().-]/g,'');
+  if(prefix.startsWith('00'))prefix='+'+prefix.slice(2);
+  if(!prefix.startsWith('+'))prefix='+'+prefix.replace(/\D/g,'');
+  national=national.replace(/^\+/, '').replace(/\D/g,'');
+  if(!/^\+\d{1,4}$/.test(prefix) || !/^\d{4,14}$/.test(national)){
+    return res.status(422).json({ok:false,error:'Prefisso o numero non valido.'});
+  }
+  const full=prefix+national;
+  const phone=parsePhoneNumberFromString(full);
+  if(!phone || !phone.isValid()){
+    return res.status(422).json({ok:false,error:'La combinazione prefisso + numero non risulta valida.'});
+  }
+  const callingCode='+'+phone.countryCallingCode;
+  if(callingCode!==prefix){
+    return res.status(422).json({ok:false,error:'Il numero non è compatibile con il prefisso indicato.'});
+  }
+  return res.json({
+    ok:true,
+    e164:phone.number,
+    international:phone.formatInternational(),
+    callingCode,
+    national:phone.nationalNumber,
+    phoneCountry:phone.country||''
+  });
 });
 
 app.get('/api/order-email-status', (_req,res)=>{
