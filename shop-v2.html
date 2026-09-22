@@ -155,10 +155,33 @@ img{display:block;max-width:100%}
 .footer-grid{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:30px}
 .footer h3{color:#f1c55f;margin-top:0}.footer a{display:block;margin:7px 0}
 .project-bar{position:sticky;top:61px;z-index:45;background:#10392c;color:#fff;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08)}
-.project-bar .wrap{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
-.project-bar .wrap::-webkit-scrollbar{display:none}
-.project-bar a{white-space:nowrap;font-size:12px;font-weight:850;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10)}
-.project-bar a:last-child{background:var(--gold);color:#152119;border-color:transparent}
+.project-bar .wrap{display:flex;align-items:center;gap:10px;overflow:visible;padding:8px 0;position:relative}
+.project-links{display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1}
+.project-links::-webkit-scrollbar{display:none}
+.project-links a{white-space:nowrap;font-size:12px;font-weight:850;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10)}
+.project-links a:last-child{background:var(--gold);color:#152119;border-color:transparent}
+.site-search{position:relative;flex:0 0 clamp(220px,24vw,310px);z-index:72}
+.site-search-box{height:38px;display:flex;align-items:center;gap:8px;border-radius:999px;background:#fff;color:#173126;border:1px solid rgba(255,255,255,.55);box-shadow:0 4px 14px rgba(0,0,0,.12);padding:0 7px 0 13px}
+.site-search-box svg{width:17px;height:17px;flex:0 0 17px;color:#31594b}
+.site-search-box input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#173126;font:700 13px/1 Arial,Helvetica,sans-serif}
+.site-search-box input::placeholder{color:#718077;font-weight:600}
+.site-search-go{width:29px;height:29px;flex:0 0 29px;border:0;border-radius:999px;background:#e0aa2d;color:#152119;display:grid;place-items:center;cursor:pointer;padding:0}
+.site-search-go svg{width:15px;height:15px;color:currentColor}
+.site-search-results{position:absolute;top:calc(100% + 7px);right:0;width:min(440px,calc(100vw - 24px));max-height:min(460px,65vh);overflow:auto;background:#fffaf1;color:#16261e;border:1px solid #ddcfb8;border-radius:18px;box-shadow:0 20px 55px rgba(0,0,0,.28);padding:7px;display:none}
+.site-search-results.open{display:block}
+.site-search-result{width:100%;border:0;background:transparent;color:inherit;text-align:left;border-radius:13px;padding:10px 11px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;cursor:pointer;font:inherit}
+.site-search-result:hover,.site-search-result.active{background:#f2e7d3}
+.site-search-result strong{font-size:13px;line-height:1.25}
+.site-search-result small{grid-column:1;color:#69756e;font-size:11px;line-height:1.25}
+.site-search-result em{font-style:normal;align-self:start;background:#0f392c;color:#fff;border-radius:999px;padding:3px 7px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.site-search-empty{padding:13px 12px;color:#66736c;font-size:12px;line-height:1.4}
+.site-search-hint{padding:6px 11px 4px;color:#8a7760;font-size:10px;border-top:1px solid #eadfcd;margin-top:4px}
+@media(max-width:760px){
+ .project-bar .wrap{flex-wrap:wrap;gap:7px;padding:7px 0 9px}
+ .project-links{flex:1 1 100%;order:1}
+ .site-search{flex:1 1 100%;order:2}
+ .site-search-results{left:0;right:auto;width:100%}
+}
 .quick-buy{background:#fff8eb;padding:76px 0}
 .quick-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:26px}
 .quick-head h2{font-family:Georgia,serif;font-size:clamp(40px,5vw,62px);line-height:.98;margin:8px 0 0}
@@ -267,13 +290,25 @@ img{display:block;max-width:100%}
 </header>
 <div class="project-bar" aria-label="Percorso La Fabbrica delle Api">
   <div class="wrap">
-    <a href="/">Alveoterapia Integrata</a>
-    <a href="/alveoterapia">Oasi del Busatello</a>
-    <a href="/centro">Galena delle Api</a>
-    <a href="/#veleni">Linea Veleni</a>
-    <a href="/bacheca">Bacheca</a>
-    <a href="#punti-ape">🐝 Punti Ape</a>
-    <a href="#scegli">Bottega · scegli e acquista</a>
+    <div class="project-links">
+      <a href="/">Alveoterapia Integrata</a>
+      <a href="/alveoterapia">Oasi del Busatello</a>
+      <a href="/centro">Galena delle Api</a>
+      <a href="/#veleni">Linea Veleni</a>
+      <a href="/bacheca">Bacheca</a>
+      <a href="#punti-ape">🐝 Punti Ape</a>
+      <a href="#scegli">Bottega · scegli e acquista</a>
+    </div>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search-box">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="siteSearchInput" type="search" placeholder="Cerca nel sito..." autocomplete="off" aria-label="Cerca nella Fabbrica delle Api" aria-autocomplete="list" aria-controls="siteSearchResults">
+        <button class="site-search-go" id="siteSearchGo" type="button" aria-label="Avvia la ricerca">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="site-search-results" id="siteSearchResults" role="listbox" aria-label="Risultati della ricerca"></div>
+    </div>
   </div>
 </div>
 
@@ -820,6 +855,194 @@ function renderOfficialCatalog(){
   });
 }
 renderOfficialCatalog();
+
+function siteSearchNormalize(value){
+  return String(value||'')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase()
+    .replace(/[’‘]/g,"'")
+    .replace(/[^a-z0-9+]+/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function buildSiteSearchIndex(){
+  const fixed=[
+    {title:'Alveoterapia Integrata',type:'Esperienza',href:'/alveoterapia',keywords:'alveoterapia api respirazione alveare esperienza primavera estate autunno inverno diffusori'},
+    {title:'Oasi del Busatello',type:'Luogo',href:'/alveoterapia',keywords:'oasi busatello arnie api natura territorio primavera estate'},
+    {title:'Galena delle Api',type:'Luogo',href:'/centro',keywords:'galena centro castel d ario ambienti diffusori autunno inverno'},
+    {title:'Bacheca',type:'Sezione',href:'/bacheca',keywords:'novita aggiornamenti notizie iniziative diario'},
+    {title:'Chi siamo',type:'Pagina',href:'/chi-siamo',keywords:'progetto fabbrica delle api storia chi siamo'},
+    {title:'Contatti',type:'Pagina',href:'/contatti',keywords:'contatti telefono email informazioni scrivici'},
+    {title:'Alveo Digitale',type:'Contenuto',href:'/alveo-digitale',keywords:'alveo digitale ricette contenuti ebook pdf colazioni'},
+    {title:'Punti Ape',type:'Programma',href:'/shop#punti-ape',keywords:'punti ape saldo api 100 punti cesto omaggio'},
+    {title:'Mieli del Busatello',type:'Sezione',href:'/shop#mieli',keywords:'miele mieli busatello sapori vasetti territorio millefiori melone fragola pesca arancia'},
+    {title:'Alveoterapia · diffusore e capsule',type:'Sezione',href:'/shop#alveoterapia-prodotti',keywords:'alveoterapia diffusore capsule propolterapy propolit p+b'},
+    {title:'Prodotti dell’alveare',type:'Sezione',href:'/shop#alveare',keywords:'alimenti alveare miele favo polline pappa reale orsetti'},
+    {title:'Propoli e integratori',type:'Sezione',href:'/shop#propoli',keywords:'propoli integratori spray contagocce bee energy propol active'},
+    {title:'Cosmesi dell’alveare',type:'Sezione',href:'/shop#cosmesi',keywords:'cosmesi crema mani shampoo sapone saponetta burrocacao cera candela kit viaggio'},
+    {title:'Linea Veleni d’Api',type:'Sezione',href:'/shop#linea-veleni',keywords:'linea veleni veleno api sos dol apis1 apis2 apis4 apis5 apis7 massaggio viso corpo gommage bagnodoccia'},
+    {title:'I Tesori di Francesco',type:'Sezione',href:'/shop#tesori-francesco',keywords:'tesori francesco limoncello caffe castagne rum degustazione'},
+    {title:'Storie della Fabbrica',type:'Sezione',href:'/shop#storie',keywords:'storie racconto territorio progetto'},
+    {title:'Oggi nella Fabbrica delle Api',type:'Sezione',href:'/shop#oggi',keywords:'oggi novita stagione fioriture centro oasi'},
+    {title:'Scegli prodotti',type:'Sezione',href:'/shop#scegli',keywords:'scegli prodotti bottega compra acquista'}
+  ];
+
+  const busatello=[
+    {id:'millefiori',name:'Miele Millefiori',keywords:'millefiori classico armonico oasi busatello'},
+    {id:'melone',name:'Miele al Melone',keywords:'melone dolce fruttato busatello'},
+    {id:'fragola',name:'Miele alla Fragola',keywords:'fragola morbido profumato busatello'},
+    {id:'pesca',name:'Miele alla Pesca',keywords:'pesca delicato fruttato busatello'},
+    {id:'arancia',name:"Miele all'Arancia",keywords:'arancia agrumato fresco busatello'}
+  ].map(p=>({title:p.name,type:'Prodotto',href:'/shop#miele-'+p.id,keywords:'miele 250 g '+p.keywords}));
+
+  const dynamic=SHOP_OFFICIAL_PRODUCTS.map(p=>({
+    title:p.name,
+    type:'Prodotto',
+    href:'/shop#prodotto-'+p.id,
+    keywords:[
+      officialCatalogCategory(p.section),
+      p.size,
+      p.desc,
+      ...(SHOP_OFFICIAL_PRODUCT_ALIASES[p.id]||[])
+    ].join(' ')
+  }));
+
+  return [...fixed,...busatello,...dynamic].map((item,index)=>({
+    ...item,
+    index,
+    search:siteSearchNormalize(item.title+' '+item.type+' '+item.keywords)
+  }));
+}
+
+const SITE_SEARCH_INDEX=buildSiteSearchIndex();
+const siteSearchInput=document.getElementById('siteSearchInput');
+const siteSearchResults=document.getElementById('siteSearchResults');
+const siteSearchGo=document.getElementById('siteSearchGo');
+let siteSearchMatches=[];
+let siteSearchActive=-1;
+
+function siteSearchScore(item,query){
+  const q=siteSearchNormalize(query);
+  if(!q)return -1;
+  const title=siteSearchNormalize(item.title);
+  const words=q.split(' ').filter(Boolean);
+  if(!words.every(word=>item.search.includes(word)))return -1;
+  let score=0;
+  if(title===q)score+=1000;
+  if(title.startsWith(q))score+=520;
+  if(title.includes(q))score+=260;
+  for(const word of words){
+    if(title.split(' ').includes(word))score+=120;
+    else if(title.includes(word))score+=75;
+    else score+=25;
+  }
+  if(item.type==='Sezione'||item.type==='Luogo'||item.type==='Esperienza')score+=15;
+  return score;
+}
+
+function siteSearchFind(query){
+  return SITE_SEARCH_INDEX
+    .map(item=>({item,score:siteSearchScore(item,query)}))
+    .filter(x=>x.score>=0)
+    .sort((a,b)=>b.score-a.score || a.item.index-b.item.index)
+    .slice(0,8)
+    .map(x=>x.item);
+}
+
+function closeSiteSearch(){
+  siteSearchResults.classList.remove('open');
+  siteSearchResults.innerHTML='';
+  siteSearchMatches=[];
+  siteSearchActive=-1;
+  siteSearchInput.removeAttribute('aria-activedescendant');
+}
+
+function goToSiteSearchResult(item){
+  if(!item)return;
+  closeSiteSearch();
+  siteSearchInput.blur();
+  const href=String(item.href||'');
+  const hashIndex=href.indexOf('#');
+  if(hashIndex>=0 && (href.startsWith('#')||href.startsWith('/shop#')||location.pathname==='/shop'||location.pathname==='/shop-v2'||location.pathname==='/shop.html')){
+    const hash=href.slice(hashIndex);
+    const target=document.querySelector(hash);
+    if(target){
+      history.replaceState(null,'',hash);
+      setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'start'}),40);
+      return;
+    }
+  }
+  location.href=href;
+}
+
+function renderSiteSearch(query){
+  const q=String(query||'').trim();
+  siteSearchResults.innerHTML='';
+  siteSearchActive=-1;
+  if(!q){closeSiteSearch();return;}
+
+  siteSearchMatches=siteSearchFind(q);
+  if(!siteSearchMatches.length){
+    const empty=document.createElement('div');
+    empty.className='site-search-empty';
+    empty.textContent='Nessun risultato. Prova con un prodotto, una linea, un luogo o un argomento.';
+    siteSearchResults.appendChild(empty);
+    siteSearchResults.classList.add('open');
+    return;
+  }
+
+  siteSearchMatches.forEach((item,i)=>{
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='site-search-result';
+    btn.id='site-search-result-'+i;
+    btn.setAttribute('role','option');
+    btn.innerHTML='<strong>'+apeEscape(item.title)+'</strong><em>'+apeEscape(item.type)+'</em><small>'+apeEscape(item.keywords.split(' ').slice(0,11).join(' '))+'</small>';
+    btn.addEventListener('mousedown',e=>e.preventDefault());
+    btn.addEventListener('click',()=>goToSiteSearchResult(item));
+    siteSearchResults.appendChild(btn);
+  });
+
+  const hint=document.createElement('div');
+  hint.className='site-search-hint';
+  hint.textContent='Invio apre il primo risultato · ↑ ↓ per scegliere';
+  siteSearchResults.appendChild(hint);
+  siteSearchResults.classList.add('open');
+}
+
+function setSiteSearchActive(index){
+  if(!siteSearchMatches.length)return;
+  const buttons=[...siteSearchResults.querySelectorAll('.site-search-result')];
+  buttons.forEach(b=>b.classList.remove('active'));
+  siteSearchActive=(index+siteSearchMatches.length)%siteSearchMatches.length;
+  const active=buttons[siteSearchActive];
+  if(active){
+    active.classList.add('active');
+    active.scrollIntoView({block:'nearest'});
+    siteSearchInput.setAttribute('aria-activedescendant',active.id);
+  }
+}
+
+siteSearchInput.addEventListener('input',()=>renderSiteSearch(siteSearchInput.value));
+siteSearchInput.addEventListener('focus',()=>{if(siteSearchInput.value.trim())renderSiteSearch(siteSearchInput.value);});
+siteSearchInput.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){e.preventDefault();if(!siteSearchResults.classList.contains('open'))renderSiteSearch(siteSearchInput.value);setSiteSearchActive(siteSearchActive+1);}
+  else if(e.key==='ArrowUp'){e.preventDefault();setSiteSearchActive(siteSearchActive-1);}
+  else if(e.key==='Enter'){
+    e.preventDefault();
+    if(!siteSearchMatches.length)renderSiteSearch(siteSearchInput.value);
+    const chosen=siteSearchMatches[siteSearchActive>=0?siteSearchActive:0];
+    if(chosen)goToSiteSearchResult(chosen);
+  }else if(e.key==='Escape'){closeSiteSearch();siteSearchInput.blur();}
+});
+siteSearchGo.addEventListener('click',()=>{
+  if(!siteSearchInput.value.trim()){siteSearchInput.focus();return;}
+  siteSearchMatches=siteSearchFind(siteSearchInput.value);
+  if(siteSearchMatches[0])goToSiteSearchResult(siteSearchMatches[0]);
+  else renderSiteSearch(siteSearchInput.value);
+});
+document.addEventListener('click',e=>{if(!document.getElementById('siteSearch').contains(e.target))closeSiteSearch();});
 
 document.querySelectorAll('.add-btn').forEach(btn=>btn.addEventListener('click',()=>addV2Product(btn)));
 document.getElementById('cartFab').addEventListener('click',()=>document.getElementById('cartDrawer').classList.add('open'));
