@@ -244,26 +244,85 @@ function collect(root){
   return {texts,els};
 }
 
+function applyCoreImmediately(root){
+  if(lang==='it')return;
+  const dict=CORE[lang]||{};
+  const {texts,els}=collect(root||document.body);
+  for(const node of texts){
+    const p=node.parentElement;
+    if(!p||/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|OPTION)$/i.test(p.tagName))continue;
+    if(p.closest && p.closest('#apeChatPanel,#checkoutOverlay,#cartDrawer'))continue;
+    const raw=node.nodeValue||'', x=cleanText(raw);
+    if(!x||!dict[x])continue;
+    if(!originals.has(node))originals.set(node,raw);
+    const leading=(raw.match(/^\s*/)||[''])[0];
+    const trailing=(raw.match(/\s*$/)||[''])[0];
+    node.nodeValue=leading+dict[x]+trailing;
+  }
+  for(const el of els){
+    if(el.closest && el.closest('#apeChatPanel,#checkoutOverlay,#cartDrawer'))continue;
+    let map=attrOriginals.get(el);
+    if(!map){map={};attrOriginals.set(el,map);}
+    for(const a of ATTRS){
+      if(!el.hasAttribute(a))continue;
+      const raw=el.getAttribute(a)||'', x=cleanText(raw);
+      if(!x||!dict[x])continue;
+      if(!(a in map))map[a]=raw;
+      el.setAttribute(a,dict[x]);
+    }
+  }
+}
+
 async function translateRoot(root){
   if(lang==='it'||translating)return;
   translating=true;
   try{
-    const {texts,els}=collect(root||document.body);
-    const queue=texts.filter(n=>shouldTranslate(cleanText(n.nodeValue||'')));
-    for(const el of els)await translateElementAttrs(el);
-    const workers=Array.from({length:5},async()=>{
-      while(queue.length&&lang!=='it'){
-        const n=queue.shift();
+    const target=root||document.body;
+    applyCoreImmediately(target);
+    document.documentElement.lang=lang;
+
+    const {texts,els}=collect(target);
+    const textQueue=texts.filter(n=>{
+      const p=n.parentElement;
+      if(!p||/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|OPTION)$/i.test(p.tagName))return false;
+      if(p.closest && p.closest('#apeChatPanel,#checkoutOverlay,#cartDrawer'))return false;
+      return shouldTranslate(cleanText(n.nodeValue||''));
+    });
+
+    // Give visible text priority so the page changes language immediately.
+    textQueue.sort((a,b)=>{
+      const ar=a.parentElement?.getBoundingClientRect?.();
+      const br=b.parentElement?.getBoundingClientRect?.();
+      const av=ar && ar.bottom>=0 && ar.top<=innerHeight*1.5 ? 0 : 1;
+      const bv=br && br.bottom>=0 && br.top<=innerHeight*1.5 ? 0 : 1;
+      return av-bv;
+    });
+
+    const attrQueue=els.filter(el=>{
+      if(el.closest && el.closest('#apeChatPanel,#checkoutOverlay,#cartDrawer'))return false;
+      return ATTRS.some(a=>el.hasAttribute(a)&&shouldTranslate(cleanText(el.getAttribute(a)||'')));
+    });
+
+    const textWorkers=Array.from({length:10},async()=>{
+      while(textQueue.length&&lang!=='it'){
+        const n=textQueue.shift();
         await translateTextNode(n);
       }
     });
-    await Promise.all(workers);
+    const attrWorkers=Array.from({length:4},async()=>{
+      while(attrQueue.length&&lang!=='it'){
+        const el=attrQueue.shift();
+        await translateElementAttrs(el);
+      }
+    });
+
+    await Promise.all([...textWorkers,...attrWorkers]);
+
     if(document.title){
       const title=cleanText(document.title);
       const out=await remoteTranslate(title);
       if(lang!=='it'&&out)document.title=out;
     }
-    document.documentElement.lang=lang;
   }finally{
     translating=false;
   }
@@ -272,7 +331,13 @@ async function translateRoot(root){
 function setLang(v){
   const next=SUPPORTED.includes(v)?v:'it';
   try{localStorage.setItem(KEY,next);}catch(_){}
-  if(next===lang)return;
+  const sel=document.getElementById('fda-language-select');
+  if(sel)sel.value=next;
+  document.documentElement.lang=next;
+  if(next===lang){
+    if(next!=='it')translateRoot(document.body);
+    return;
+  }
   lang=next;
   location.reload();
 }
@@ -298,8 +363,11 @@ async function start(){
   selector();
   const sel=document.getElementById('fda-language-select');
   if(sel)sel.value=lang;
-  if(lang!=='it')await translateRoot(document.body);
-  else document.documentElement.lang='it';
+  if(lang!=='it'){
+    applyCoreImmediately(document.body);
+    document.documentElement.lang=lang;
+    await translateRoot(document.body);
+  }else document.documentElement.lang='it';
   startObserver();
 }
 
