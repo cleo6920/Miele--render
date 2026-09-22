@@ -223,6 +223,14 @@ function applyCountryFields(forceDial=false){
     }
   }
 }
+  const deliveryOptions=document.querySelectorAll('.delivery-option');
+  const courierInput=document.querySelector('input[name="delivery"][value="courier"]');
+  const pickupInput=document.querySelector('input[name="delivery"][value="pickup"]');
+  if(deliveryOptions[1])deliveryOptions[1].style.display=code==='IT'?'':'none';
+  if(code!=='IT' && pickupInput?.checked && courierInput){
+    courierInput.checked=true;
+    pickupInput.checked=false;
+  }
 window.purchaseNormalizePhone=normalizePhone;
 window.purchaseCountryName=countryName;
 window.purchaseApplyCountryFields=applyCountryFields;
