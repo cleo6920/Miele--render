@@ -553,7 +553,9 @@ app.post('/api/order-notification', async (req,res)=>{
   try{
     const order=parseOrderPayload(req.body);
     const cached=recentOrderRefs.get(order.id);
-    if(cached && Date.now()-cached.time<30*60*1000) return res.json({ok:true,orderId:order.id,duplicate:true});
+    if(cached && Date.now()-cached.time<30*60*1000){
+      return res.json({ok:true,orderId:order.id,duplicate:true,order:cached.order||order});
+    }
 
     const to=String(process.env.ORDER_EMAIL_TO||'althea12830@gmail.com').trim();
     const mail=buildOrderMail(order);
@@ -602,10 +604,10 @@ app.post('/api/order-notification', async (req,res)=>{
         html:mail.html
       });
     }
-    recentOrderRefs.set(order.id,{time:Date.now()});
+    recentOrderRefs.set(order.id,{time:Date.now(),order});
     for(const [key,val] of recentOrderRefs){if(Date.now()-val.time>30*60*1000)recentOrderRefs.delete(key);}
     console.log('[Ordini] Notifica inviata:',order.id);
-    return res.json({ok:true,orderId:order.id});
+    return res.json({ok:true,orderId:order.id,order});
   }catch(error){
     console.error('[Ordini] Errore invio notifica:',error?.message||error);
     return res.status(500).json({ok:false,error:'Non è stato possibile inviare l’ordine. Riprova tra poco.'});
