@@ -7,7 +7,7 @@ const LOCALE={it:'it-IT',en:'en-GB',de:'de-DE',fr:'fr-FR',es:'es-ES'};
 
 const T={
 it:{
- country:'Paese di consegna *',selectCountry:'Seleziona Paese',province:'Provincia / Regione',provincePh:'es. MN / Madrid',invalidProvince:'Per l’Italia inserisci la sigla della provincia di 2 lettere.',invalidPhone:'Inserisci un numero di telefono valido per il Paese selezionato.',shippingPending:'Da confermare',internationalReason:'Spedizione internazionale: costo da confermare prima dell’evasione.',goodsTotalPending:'Totale prodotti · spedizione da confermare',
+ country:'Paese di consegna *',phonePrefix:'Prefisso',phoneNumber:'Numero',selectCountry:'Seleziona Paese',province:'Provincia / Regione',provincePh:'es. MN / Madrid',invalidProvince:'Per l’Italia inserisci la sigla della provincia di 2 lettere.',invalidPhone:'Inserisci un numero di telefono valido per il Paese selezionato.',shippingPending:'Da confermare',internationalReason:'Spedizione internazionale: costo da confermare prima dell’evasione.',goodsTotalPending:'Totale prodotti · spedizione da confermare',
  cartTitle:'Il tuo cestino',cartEmpty:'Il cestino è ancora vuoto. Scegli ciò che ti incuriosisce e aggiungilo qui.',quantity:'quantità',points:'Punti Ape',remove:'rimuovi',orderPoints:'Punti Ape di questo ordine',totalProducts:'Totale prodotti',continueOrder:"Continua con l'ordine →",goal:'100 Punti Ape = cesto omaggio con 5 prodotti a scelta.',cartFab:'Il tuo cestino',addFirst:'Aggiungi almeno un prodotto prima di continuare.',
  checkoutEyebrow:'Il tuo ordine',checkoutTitle:'Concludi il tuo ordine',checkoutIntro:"Un percorso semplice, dall'indirizzo alla conferma finale.",steps:['1 · Dati','2 · Consegna','3 · Riepilogo','4 · Conferma'],
  step1Title:'Dove possiamo associare questo ordine?',name:'Nome e cognome *',email:'Email *',phone:'Telefono *',city:'Comune / Città *',address:'Via e numero civico *',cap:'CAP *',province:'Provincia *',provincePh:'es. MN',continue:'Continua →',
@@ -20,7 +20,7 @@ it:{
  pdfCountry:'Paese',pdfShippingPending:'Da confermare', pdfTitle:"Riepilogo dell'ordine",pdfCustomer:'Dati acquirente',pdfProducts:'Prodotti',pdfProduct:'Prodotto',pdfQty:'Q.tà',pdfUnit:'Prezzo',pdfSubtotal:'Subtotale',pdfDelivery:'Consegna',pdfNotes:'Note',pdfNoNotes:'Nessuna nota',pdfGoods:'Prodotti',pdfShipping:'Spedizione',pdfTotal:'Totale',pdfPoints:'Punti Ape',pdfDate:'Data ordine',pdfNonFiscal:'Riepilogo ordine - documento non fiscale',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'Non riesco a creare il PDF in questo momento. Riprova.',pdfFile:'ordine'
 },
 en:{
- country:'Delivery country *',selectCountry:'Select country',province:'Province / Region',provincePh:'e.g. MN / Madrid',invalidProvince:'For Italy, enter the 2-letter province code.',invalidPhone:'Enter a valid phone number for the selected country.',shippingPending:'To be confirmed',internationalReason:'International shipping: cost will be confirmed before fulfilment.',goodsTotalPending:'Products total · shipping to be confirmed',
+ country:'Delivery country *',phonePrefix:'Country code',phoneNumber:'Number',selectCountry:'Select country',province:'Province / Region',provincePh:'e.g. MN / Madrid',invalidProvince:'For Italy, enter the 2-letter province code.',invalidPhone:'Enter a valid phone number for the selected country.',shippingPending:'To be confirmed',internationalReason:'International shipping: cost will be confirmed before fulfilment.',goodsTotalPending:'Products total · shipping to be confirmed',
  cartTitle:'Your cart',cartEmpty:'Your cart is still empty. Choose what interests you and add it here.',quantity:'quantity',points:'Bee Points',remove:'remove',orderPoints:'Bee Points for this order',totalProducts:'Products total',continueOrder:'Continue with order →',goal:'100 Bee Points = complimentary basket with 5 products of your choice.',cartFab:'Your cart',addFirst:'Add at least one product before continuing.',
  checkoutEyebrow:'Your order',checkoutTitle:'Complete your order',checkoutIntro:'A simple journey from your address to final confirmation.',steps:['1 · Details','2 · Delivery','3 · Summary','4 · Confirmation'],
  step1Title:'Who should we associate this order with?',name:'Full name *',email:'Email *',phone:'Phone *',city:'Town / City *',address:'Street and number *',cap:'Postal code *',province:'Province *',provincePh:'e.g. MN',continue:'Continue →',
@@ -33,7 +33,7 @@ en:{
  pdfCountry:'Country',pdfShippingPending:'To be confirmed', pdfTitle:'Order summary',pdfCustomer:'Customer details',pdfProducts:'Products',pdfProduct:'Product',pdfQty:'Qty',pdfUnit:'Price',pdfSubtotal:'Subtotal',pdfDelivery:'Delivery',pdfNotes:'Notes',pdfNoNotes:'No notes',pdfGoods:'Products',pdfShipping:'Shipping',pdfTotal:'Total',pdfPoints:'Bee Points',pdfDate:'Order date',pdfNonFiscal:'Order summary - non-fiscal document',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'I cannot create the PDF right now. Please try again.',pdfFile:'order'
 },
 de:{
- country:'Lieferland *',selectCountry:'Land auswählen',province:'Provinz / Region',provincePh:'z. B. MN / Madrid',invalidProvince:'Für Italien bitte das zweistellige Provinzkürzel eingeben.',invalidPhone:'Gib eine gültige Telefonnummer für das gewählte Land ein.',shippingPending:'Zu bestätigen',internationalReason:'Internationaler Versand: Die Kosten werden vor der Bearbeitung bestätigt.',goodsTotalPending:'Produktsumme · Versand wird bestätigt',
+ country:'Lieferland *',phonePrefix:'Vorwahl',phoneNumber:'Nummer',selectCountry:'Land auswählen',province:'Provinz / Region',provincePh:'z. B. MN / Madrid',invalidProvince:'Für Italien bitte das zweistellige Provinzkürzel eingeben.',invalidPhone:'Gib eine gültige Telefonnummer für das gewählte Land ein.',shippingPending:'Zu bestätigen',internationalReason:'Internationaler Versand: Die Kosten werden vor der Bearbeitung bestätigt.',goodsTotalPending:'Produktsumme · Versand wird bestätigt',
  cartTitle:'Dein Warenkorb',cartEmpty:'Dein Warenkorb ist noch leer. Wähle etwas aus und füge es hier hinzu.',quantity:'Menge',points:'Bienenpunkte',remove:'entfernen',orderPoints:'Bienenpunkte dieser Bestellung',totalProducts:'Produktsumme',continueOrder:'Bestellung fortsetzen →',goal:'100 Bienenpunkte = Geschenkkorb mit 5 Produkten nach Wahl.',cartFab:'Dein Warenkorb',addFirst:'Füge mindestens ein Produkt hinzu, bevor du fortfährst.',
  checkoutEyebrow:'Deine Bestellung',checkoutTitle:'Bestellung abschließen',checkoutIntro:'Ein einfacher Weg von der Adresse bis zur endgültigen Bestätigung.',steps:['1 · Daten','2 · Lieferung','3 · Übersicht','4 · Bestätigung'],
  step1Title:'Wem dürfen wir diese Bestellung zuordnen?',name:'Vor- und Nachname *',email:'E-Mail *',phone:'Telefon *',city:'Ort / Stadt *',address:'Straße und Hausnummer *',cap:'PLZ *',province:'Provinz *',provincePh:'z. B. MN',continue:'Weiter →',
@@ -46,7 +46,7 @@ de:{
  pdfCountry:'Land',pdfShippingPending:'Zu bestätigen', pdfTitle:'Bestellübersicht',pdfCustomer:'Kundendaten',pdfProducts:'Produkte',pdfProduct:'Produkt',pdfQty:'Menge',pdfUnit:'Preis',pdfSubtotal:'Zwischensumme',pdfDelivery:'Lieferung',pdfNotes:'Hinweise',pdfNoNotes:'Keine Hinweise',pdfGoods:'Produkte',pdfShipping:'Versand',pdfTotal:'Gesamt',pdfPoints:'Bienenpunkte',pdfDate:'Bestelldatum',pdfNonFiscal:'Bestellübersicht - kein Steuerbeleg',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'Das PDF kann momentan nicht erstellt werden. Bitte versuche es erneut.',pdfFile:'bestellung'
 },
 fr:{
- country:'Pays de livraison *',selectCountry:'Sélectionnez le pays',province:'Province / Région',provincePh:'ex. MN / Madrid',invalidProvince:"Pour l’Italie, saisissez le code de province à 2 lettres.",invalidPhone:'Saisissez un numéro de téléphone valide pour le pays sélectionné.',shippingPending:'À confirmer',internationalReason:'Livraison internationale : le coût sera confirmé avant traitement.',goodsTotalPending:'Total produits · livraison à confirmer',
+ country:'Pays de livraison *',phonePrefix:'Indicatif',phoneNumber:'Numéro',selectCountry:'Sélectionnez le pays',province:'Province / Région',provincePh:'ex. MN / Madrid',invalidProvince:"Pour l’Italie, saisissez le code de province à 2 lettres.",invalidPhone:'Saisissez un numéro de téléphone valide pour le pays sélectionné.',shippingPending:'À confirmer',internationalReason:'Livraison internationale : le coût sera confirmé avant traitement.',goodsTotalPending:'Total produits · livraison à confirmer',
  cartTitle:'Votre panier',cartEmpty:'Votre panier est encore vide. Choisissez ce qui vous intéresse et ajoutez-le ici.',quantity:'quantité',points:'Points Abeille',remove:'supprimer',orderPoints:'Points Abeille de cette commande',totalProducts:'Total des produits',continueOrder:'Continuer la commande →',goal:'100 Points Abeille = panier cadeau avec 5 produits au choix.',cartFab:'Votre panier',addFirst:'Ajoutez au moins un produit avant de continuer.',
  checkoutEyebrow:'Votre commande',checkoutTitle:'Finaliser votre commande',checkoutIntro:"Un parcours simple, de l'adresse à la confirmation finale.",steps:['1 · Coordonnées','2 · Livraison','3 · Récapitulatif','4 · Confirmation'],
  step1Title:'À qui devons-nous associer cette commande ?',name:'Nom et prénom *',email:'E-mail *',phone:'Téléphone *',city:'Commune / Ville *',address:'Rue et numéro *',cap:'Code postal *',province:'Province *',provincePh:'ex. MN',continue:'Continuer →',
@@ -59,7 +59,7 @@ fr:{
  pdfCountry:'Pays',pdfShippingPending:'À confirmer', pdfTitle:'Récapitulatif de commande',pdfCustomer:'Coordonnées client',pdfProducts:'Produits',pdfProduct:'Produit',pdfQty:'Qté',pdfUnit:'Prix',pdfSubtotal:'Sous-total',pdfDelivery:'Livraison',pdfNotes:'Notes',pdfNoNotes:'Aucune note',pdfGoods:'Produits',pdfShipping:'Livraison',pdfTotal:'Total',pdfPoints:'Points Abeille',pdfDate:'Date de commande',pdfNonFiscal:'Récapitulatif de commande - document non fiscal',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'Impossible de créer le PDF pour le moment. Réessayez.',pdfFile:'commande'
 },
 es:{
- country:'País de entrega *',selectCountry:'Selecciona el país',province:'Provincia / Región',provincePh:'ej. MN / Madrid',invalidProvince:'Para Italia, introduce la sigla de provincia de 2 letras.',invalidPhone:'Introduce un número de teléfono válido para el país seleccionado.',shippingPending:'Por confirmar',internationalReason:'Envío internacional: el coste se confirmará antes de tramitar el pedido.',goodsTotalPending:'Total productos · envío por confirmar',
+ country:'País de entrega *',phonePrefix:'Prefijo',phoneNumber:'Número',selectCountry:'Selecciona el país',province:'Provincia / Región',provincePh:'ej. MN / Madrid',invalidProvince:'Para Italia, introduce la sigla de provincia de 2 letras.',invalidPhone:'Introduce un número de teléfono válido para el país seleccionado.',shippingPending:'Por confirmar',internationalReason:'Envío internacional: el coste se confirmará antes de tramitar el pedido.',goodsTotalPending:'Total productos · envío por confirmar',
  cartTitle:'Tu carrito',cartEmpty:'Tu carrito todavía está vacío. Elige lo que te interese y añádelo aquí.',quantity:'cantidad',points:'Puntos Abeja',remove:'eliminar',orderPoints:'Puntos Abeja de este pedido',totalProducts:'Total productos',continueOrder:'Continuar con el pedido →',goal:'100 Puntos Abeja = cesta regalo con 5 productos a elegir.',cartFab:'Tu carrito',addFirst:'Añade al menos un producto antes de continuar.',
  checkoutEyebrow:'Tu pedido',checkoutTitle:'Completa tu pedido',checkoutIntro:'Un recorrido sencillo desde la dirección hasta la confirmación final.',steps:['1 · Datos','2 · Entrega','3 · Resumen','4 · Confirmación'],
  step1Title:'¿A quién debemos asociar este pedido?',name:'Nombre y apellidos *',email:'Email *',phone:'Teléfono *',city:'Municipio / Ciudad *',address:'Calle y número *',cap:'Código postal *',province:'Provincia *',provincePh:'ej. MN',continue:'Continuar →',
@@ -172,7 +172,7 @@ function normalizePhone(value,country){
   if(raw.startsWith('+'))return raw;
   return CHECKOUT_COUNTRIES[country].dial+' '+raw;
 }
-function applyCountryFields(){
+function applyCountryFields(forceDial=false){
   const x=T[language()]||T.it;
   const select=document.getElementById('coCountry');
   if(select){
@@ -182,9 +182,26 @@ function applyCountryFields(){
     select.value=selected;
   }
   fieldLabel('coCountry',x.country);
-  const phone=document.getElementById('coPhone');
+  fieldLabel('coPhone',x.phone);
   const code=countryCode();
-  if(phone)phone.placeholder=code&&CHECKOUT_COUNTRIES[code]?CHECKOUT_COUNTRIES[code].dial+' …':'';
+  const prefix=document.getElementById('coPhonePrefix');
+  const phone=document.getElementById('coPhone');
+  const suggested=code&&CHECKOUT_COUNTRIES[code]?CHECKOUT_COUNTRIES[code].dial:'';
+  if(prefix){
+    const previousAuto=prefix.dataset.autoDial||'';
+    const current=prefix.value.trim();
+    if(forceDial || !current || current===previousAuto){
+      prefix.value=suggested;
+      prefix.dataset.autoDial=suggested;
+      if(phone)phone.dataset.e164='';
+    }
+    prefix.placeholder=x.phonePrefix;
+    prefix.setAttribute('aria-label',x.phonePrefix);
+  }
+  if(phone){
+    phone.placeholder=x.phoneNumber;
+    phone.setAttribute('aria-label',x.phoneNumber);
+  }
   const prov=document.getElementById('coProvince');
   if(prov){
     prov.placeholder=x.provincePh;
