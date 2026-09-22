@@ -61,6 +61,75 @@ const ORDER_COUNTRIES={
   VA:{name:"Città del Vaticano",nominatim:"va"}
 };
 
+/*
+ * Pesi di spedizione stimati (grammi): prodotto + confezione primaria.
+ * Il peso del pacco aggiunge poi scatola e materiale protettivo.
+ * Tariffe Poste: Poste Delivery Web nazionale e Poste Delivery International
+ * Standard "prezzi speciali" (pre-accettazione web), listino Poste maggio 2026.
+ */
+const ORDER_SHIP_WEIGHT_G={
+  'millefiori':430,'melone':430,'fragola':430,'pesca':430,'arancia':430,
+  'propolterapy-professional':1500,'capsule-pb':120,'capsule-propolit':120,
+  'castagno':430,'acacia-zenzero-apinfiore':370,'miele-eucalipto-apinfiore':430,'balsammiel':370,
+  'acacia':110,'favo-integrale-bio':300,'polline-italiano':220,'pappa-reale-italiana-bio':80,'orsetti-gommosi':125,
+  'bee-energy-bio':360,'propol-active-bio':90,'propoli-30-spray-integratore':85,'propoli-30-alcolica-integratore':85,'propoli-analcolica-integratore':85,
+  'cosmesi-crema-mani':145,'cosmesi-burrocacao-propoli-aloe':25,'cosmesi-burrocacao-miele-pappa-reale':25,
+  'cosmesi-shampoo-multivitaminico':320,'cosmesi-saponetta-frutti-bosco':125,'cosmesi-saponetta-lavanda':125,'cosmesi-saponetta-aloe-vera':125,
+  'cosmesi-candela-alveare-cera-api':180,'cosmesi-travel-kit-benessere':330,
+  'unguento-apis':80,'apis1-crema-viso-veleno-api':160,'apis2-siero-viso-veleno-api':130,
+  'apis4-crema-corpo-veleno-api-manuka':340,'apis5-gommage-veleno-api-manuka':340,'bagnodoccia-veleno-oro':320,
+  'tesori-limoncello':500,'tesori-liquore-caffe':500,'tesori-castagne-rum':500
+};
+const POSTE_ZONE_BY_COUNTRY={
+  AT:'1',BE:'1',BA:'1',HR:'1',DK:'1',EE:'1',FI:'1',FR:'1',DE:'1',GR:'1',IE:'1',XK:'1',LV:'1',LI:'1',LT:'1',LU:'1',MT:'1',NL:'1',PL:'1',PT:'1',CZ:'1',RO:'1',SK:'1',SI:'1',ES:'1',SE:'1',CH:'1',HU:'1',
+  BG:'2',CY:'2',RS:'2',TR:'2',
+  AL:'3',IS:'3',NO:'3',UA:'3',
+  AZ:'4',MK:'4',MD:'4',ME:'4',
+  BY:'7',GB:'8',AM:'4TRIS',GE:'4QUATER',RU:'4QUATER'
+};
+const POSTE_INTL_2026={
+  '1':[24.75,29.60,32.80,43.00,47.85,58.10],
+  '2':[26.35,32.80,37.65,53.25,63.45,79.55],
+  '3':[28.50,34.95,43.00,55.40,69.35,84.95],
+  '4':[30.65,36.55,46.25,61.30,76.90,91.95],
+  '5':[34.95,43.00,52.15,72.60,104.30,125.85],
+  '6':[43.00,47.85,57.00,93.05,129.60,176.90],
+  '7':[28.50,34.95,43.00,56.45,71.50,88.70],
+  '8':[24.75,27.40,32.80,46.80,51.05,63.45],
+  '3BIS':[31.20,38.15,60.75,80.65,103.80,126.90],
+  '4BIS':[32.80,41.90,64.55,88.70,112.90,137.65],
+  '4TRIS':[31.20,38.15,50.00,67.75,86.00,106.45],
+  '4QUATER':[31.20,38.15,48.40,72.05,91.95,114.00]
+};
+const POSTE_INTL_LIMITS_KG=[1,3,5,10,15,20];
+const POSTE_ITALY_2026=[
+  [1,5.65],[2,5.90],[3,6.70],[5,7.30],[10,10.40],[15,11.70],[20,12.30],[25,14.80],[30,14.80],[40,28.30],[50,32.30],[70,39.70]
+];
+
+function estimateParcelWeight(items){
+  let productGrams=0;
+  for(const item of items){
+    const unit=Number(ORDER_SHIP_WEIGHT_G[item.id]||250);
+    productGrams+=unit*Math.max(1,Number(item.qty||1));
+  }
+  const packing=Math.min(1200,Math.max(180,Math.round(120+productGrams*0.10)));
+  const totalGrams=productGrams+packing;
+  return {productGrams,packingGrams:packing,totalGrams,kg:Math.ceil(totalGrams/10)/100};
+}
+function calcPosteShipping(country,items){
+  const weight=estimateParcelWeight(items);
+  if(country==='IT'){
+    const band=POSTE_ITALY_2026.find(([maxKg])=>weight.kg<=maxKg);
+    if(!band) return {ok:true,pending:true,weightKg:weight.kg,reasonCode:'overweight',carrier:'Poste Italiane'};
+    return {ok:true,pending:false,cost:band[1],weightKg:weight.kg,bandKg:band[0],carrier:'Poste Italiane',service:'Poste Delivery Web'};
+  }
+  const zone=POSTE_ZONE_BY_COUNTRY[country];
+  if(!zone) return {ok:true,pending:true,weightKg:weight.kg,reasonCode:'no-zone',carrier:'Poste Italiane'};
+  const idx=POSTE_INTL_LIMITS_KG.findIndex(max=>weight.kg<=max);
+  if(idx<0) return {ok:true,pending:true,weightKg:weight.kg,zone,reasonCode:'overweight',carrier:'Poste Italiane',service:'Poste Delivery International Standard'};
+  return {ok:true,pending:false,cost:POSTE_INTL_2026[zone][idx],weightKg:weight.kg,bandKg:POSTE_INTL_LIMITS_KG[idx],zone,carrier:'Poste Italiane',service:'Poste Delivery International Standard'};
+}
+
 try {
   const encodedImagePath = path.join(__dirname, 'images', 'centro-porticato-home-fixed.txt');
   const targetImagePath = path.join(__dirname, 'images', 'centro-porticato-home.jpg');
@@ -290,12 +359,17 @@ function parseOrderPayload(body){
   const goodsTotal=items.reduce((sum,item)=>sum+item.subtotal,0);
   const points=items.reduce((sum,item)=>sum+(item.points*item.qty),0);
   const delivery=body?.delivery==='pickup'?'pickup':'courier';
-  const shippingPending=body?.shippingPending===true;
-  let shipping=Number(body?.shipping);
-  if(!Number.isFinite(shipping) || shipping<0 || shipping>50) shipping=0;
+  const clientShipping=Number(body?.shipping);
+  const clientReason=cleanOrderText(body?.shippingReason,220);
+  const explicitFreeItaly=country==='IT' && delivery==='courier' && clientShipping===0 && (clientReason.toLowerCase().includes('gratuit')||clientReason.toLowerCase().includes('ritiro'));
+  const poste=delivery==='pickup'?{pending:false,cost:0,weightKg:estimateParcelWeight(items).kg}:{...calcPosteShipping(country,items)};
+  const shippingPending=delivery==='pickup'?false:Boolean(poste.pending);
+  let shipping=delivery==='pickup'?0:Number(poste.cost||0);
+  if(explicitFreeItaly) shipping=0;
   shipping=Math.round(shipping*100)/100;
-  if(shippingPending) shipping=0;
-  const shippingReason=cleanOrderText(body?.shippingReason,220);
+  const shippingWeightKg=Number(poste.weightKg||0);
+  const shippingZone=poste.zone||'';
+  const shippingReason=clientReason;
   const notes=cleanOrderText(body?.notes,1200);
   const clientReference=/^API-\d{8}-\d{5,8}$/.test(String(body?.id||''))?String(body.id):'API-'+Date.now();
   return {
@@ -308,6 +382,8 @@ function parseOrderPayload(body){
     goodsTotal,
     shipping,
     shippingPending,
+    shippingWeightKg,
+    shippingZone,
     shippingReason,
     total:goodsTotal+shipping,
     points
@@ -385,6 +461,23 @@ function buildOrderMail(order){
   ].join('\n');
   return {html,text};
 }
+
+app.post('/api/shipping-estimate',(req,res)=>{
+  try{
+    const country=String(req.body?.country||'').trim().toUpperCase();
+    if(!ORDER_COUNTRIES[country]) return res.status(400).json({ok:false,error:'Paese non supportato.'});
+    const raw=Array.isArray(req.body?.items)?req.body.items:[];
+    if(!raw.length||raw.length>40) return res.status(400).json({ok:false,error:'Carrello non valido.'});
+    const items=raw.map(x=>({
+      id:cleanOrderText(x?.id,100),
+      qty:Math.max(1,Math.min(50,Math.floor(Number(x?.qty||1))))
+    })).filter(x=>ORDER_CATALOG.has(x.id));
+    if(items.length!==raw.length) return res.status(400).json({ok:false,error:'Prodotto non riconosciuto.'});
+    return res.json(calcPosteShipping(country,items));
+  }catch(error){
+    return res.status(500).json({ok:false,error:'Impossibile calcolare la spedizione.'});
+  }
+});
 
 app.get('/api/phone-normalize',(req,res)=>{
   let prefix=String(req.query.prefix||'').trim().replace(/[\s().-]/g,'');
