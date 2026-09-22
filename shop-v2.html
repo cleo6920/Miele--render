@@ -134,6 +134,9 @@ img{display:block;max-width:100%}
 .fake-card{background:#102f24;color:#fff;border-radius:22px;padding:22px;margin-top:14px}.fake-card label{display:block;font-weight:900;margin-bottom:7px}.fake-card .mock-line{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:12px;color:#e9f0eb;margin-top:8px}
 .checkout-actions{display:flex;justify-content:space-between;gap:12px;margin-top:24px}.checkout-actions button{border:0;border-radius:999px;padding:13px 18px;font-weight:900;cursor:pointer}.back-btn{background:#ece4d7;color:#26342d}.next-btn{background:#17382b;color:#fff;margin-left:auto}.pay-btn{background:#dfa72c;color:#162319;margin-left:auto}
 .success-wrap{text-align:center;padding:20px 10px 10px}.success-bee{font-size:58px}.success-wrap h3{font-family:Georgia,serif;font-size:42px;margin:8px 0 10px}.success-order{font-weight:900;color:#6d5315}.success-api{margin:22px auto;background:#fff0ae;border-radius:22px;padding:18px;max-width:560px}.success-api strong{display:block;font-family:Georgia,serif;font-size:28px;margin-bottom:6px}
+.success-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.download-order-pdf{border:0;border-radius:999px;background:#dfaa2d;color:#172019;padding:14px 20px;font-weight:950;cursor:pointer}
+@media(max-width:560px){.success-actions{flex-direction:column}.success-actions button{width:100%}}
 @media(max-width:700px){.api-explainer{grid-template-columns:auto 1fr}.api-goal{grid-column:1/-1;width:max-content}.form-grid,.delivery-options{grid-template-columns:1fr}.field.full{grid-column:auto}}
 .journal{background:#fffdf8}
 .journal-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:25px}
@@ -671,13 +674,18 @@ img{display:block;max-width:100%}
           <div class="success-order" id="successOrder"></div>
           <p>Abbiamo ricevuto il tuo ordine. Ti contatteremo utilizzando i recapiti che hai indicato.</p>
           <div class="success-api"><strong>Hai guadagnato <span id="successPoints">0</span> Punti Ape</strong><div>Continua ad accumularli: a 100 punti puoi comporre un cesto omaggio con 5 prodotti a scelta.</div></div>
-          <button class="next-btn" id="finishCheckout" type="button">Torna alla Fabbrica delle Api</button>
+          <div class="success-actions">
+            <button class="download-order-pdf" id="downloadOrderPdf" type="button">Scarica il riepilogo PDF</button>
+            <button class="next-btn" id="finishCheckout" type="button">Torna alla Fabbrica delle Api</button>
+          </div>
         </div>
       </div>
     </div>
   </section>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="/shop-purchase-i18n.js?v=20260922-1"></script>
 <script>
 const SHOP_V2_CART_KEY='fda-shop-v2-cart';
 const SHOP_V2_ORDERS_KEY='fda-shop-order-drafts';
@@ -730,11 +738,11 @@ shopV2Cart=shopV2Cart.map(x=>({...x,points:defaultPointsFor(x.id)}));
 localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));
 
 function saveV2Cart(){localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));renderV2Cart();}
-function euro(v){return '€'+Number(v||0).toFixed(2).replace('.',',');}
+function euro(v){return purchaseCurrency(v);}
 function cartPoints(){return shopV2Cart.reduce((s,x)=>s+(Number(x.points||defaultPointsFor(x.id))*x.qty),0);}
 function cartTotal(){return shopV2Cart.reduce((s,x)=>s+(x.qty*x.price),0);}
 function cartUnits(){return shopV2Cart.reduce((s,x)=>s+x.qty,0);}
-let shippingState={cost:null,label:'Da calcolare',reason:''};
+let shippingState={cost:null,label:purchaseT('toCalculate'),reason:''};
 
 function kmBetween(lat1,lon1,lat2,lon2){
   const R=6371,toRad=v=>v*Math.PI/180;
@@ -757,7 +765,7 @@ function currentAddressSignature(){
 function invalidateAddressValidation(){
   lastAddressValidation=null;
   lastAddressSignature='';
-  shippingState={cost:null,label:'Da calcolare',reason:''};
+  shippingState={cost:null,label:purchaseT('toCalculate'),reason:''};
 }
 
 async function checkLocalDelivery(force=false){
@@ -787,30 +795,30 @@ async function checkLocalDelivery(force=false){
 async function calculateShipping(){
   const method=document.querySelector('input[name="delivery"]:checked')?.value||'courier';
   if(method==='pickup'){
-    shippingState={cost:0,label:'Gratuita',reason:'Ritiro / accordo diretto'};
+    shippingState={cost:0,label:purchaseT('free'),reason:purchaseT('pickupReason')};
     return shippingState;
   }
   if(cartTotal()>=200){
-    shippingState={cost:0,label:'Gratuita',reason:'Ordine da €200 o più'};
+    shippingState={cost:0,label:purchaseT('free'),reason:purchaseT('order200Reason')};
     return shippingState;
   }
 
   const local=await checkLocalDelivery(false);
   if(!local || local.ok!==true || local.validFullAddress!==true){
-    throw new Error(local?.error || 'Indirizzo non verificato');
+    throw new Error(purchaseT('addressVerify'));
   }
 
   if(local.eligible){
     shippingState={
       cost:0,
-      label:'Gratuita',
-      reason:'Consegna locale gratuita · '+local.distanceKm+' km da Castel d’Ario'
+      label:purchaseT('free'),
+      reason:purchaseT('localReason')(local.distanceKm)
     };
     return shippingState;
   }
 
   const cost=cartUnits()>=3?10:8;
-  shippingState={cost,label:euro(cost),reason:'Corriere · consegna indicativa 5–6 giorni'};
+  shippingState={cost,label:euro(cost),reason:purchaseT('courierReason')};
   return shippingState;
 }
 
@@ -840,8 +848,11 @@ function renderV2Cart(){
   document.getElementById('cartCount').textContent=count;
   document.getElementById('cartTotal').textContent=euro(cartTotal());
   document.getElementById('cartPoints').textContent=cartPoints();
-  if(!shopV2Cart.length){box.innerHTML='<div class="cart-empty">Il cestino è ancora vuoto. Scegli ciò che ti incuriosisce e aggiungilo qui.</div>';return;}
-  box.innerHTML=shopV2Cart.map(x=>'<div class="cart-item"><div><strong>'+x.name+'</strong><small>'+x.size+' · quantità '+x.qty+' · 🐝 '+(x.points*x.qty)+' Punti Ape</small></div><div><strong>'+euro(x.price*x.qty)+'</strong><button type="button" onclick="removeV2Product(\''+x.id+'\')">rimuovi</button></div></div>').join('');
+  if(!shopV2Cart.length){box.innerHTML='<div class="cart-empty">'+purchaseT('cartEmpty')+'</div>';return;}
+  box.innerHTML=shopV2Cart.map(x=>{
+    const name=purchaseProductName(x.id,x.name),size=purchaseProductSize(x.id,x.size);
+    return '<div class="cart-item"><div><strong>'+officialCatalogEsc(name)+'</strong><small>'+officialCatalogEsc(size)+' · '+purchaseT('quantity')+' '+x.qty+' · '+(x.points*x.qty)+' '+purchaseT('points')+'</small></div><div><strong>'+euro(x.price*x.qty)+'</strong><button type="button" onclick="removeV2Product(\''+x.id+'\')">'+purchaseT('remove')+'</button></div></div>';
+  }).join('');
 }
 
 function showCheckoutStep(step){
@@ -852,52 +863,53 @@ function showCheckoutStep(step){
 async function validStepOne(){
   const ids=['coName','coEmail','coPhone','coCity','coAddress','coCap','coProvince'];
   const missing=ids.filter(id=>!document.getElementById(id).value.trim());
-  if(missing.length){alert('Completa i campi obbligatori prima di continuare.');return false;}
-  if(!document.getElementById('coEmail').value.includes('@')){alert('Inserisci un indirizzo email valido.');return false;}
+  if(missing.length){alert(purchaseT('missing'));return false;}
+  if(!document.getElementById('coEmail').value.includes('@')){alert(purchaseT('invalidEmail'));return false;}
 
   const cap=document.getElementById('coCap').value.trim();
   const address=document.getElementById('coAddress').value.trim();
-  if(!/^\d{5}$/.test(cap)){alert('Il CAP deve essere composto da 5 cifre.');return false;}
+  if(!/^\d{5}$/.test(cap)){alert(purchaseT('invalidCap'));return false;}
   if(!/[A-Za-zÀ-ÿ]/.test(address) || !/\d/.test(address)){
-    alert('Inserisci via e numero civico completi, ad esempio “Via Roma 12”.');
+    alert(purchaseT('invalidAddress'));
     return false;
   }
 
   const result=await checkLocalDelivery(true);
   if(!result || result.ok!==true || result.validFullAddress!==true){
-    alert(result?.error || 'Non riesco a verificare l’indirizzo. Controlla via, numero civico, CAP, Comune e Provincia.');
+    alert(purchaseT('addressVerify'));
     return false;
   }
 
   return true;
 }
 async function renderCheckoutSummary(){
-  const rows=shopV2Cart.map(x=>'<div class="summary-row"><span>'+x.name+' × '+x.qty+'</span><strong>'+euro(x.price*x.qty)+'</strong></div>').join('');
-  document.getElementById('checkoutSummary').innerHTML=rows+'<div class="summary-row"><span>Spedizione</span><strong>Verifica in corso…</strong></div><div class="summary-row total"><span>Totale</span><span>'+euro(cartTotal())+'</span></div>';
+  const rows=shopV2Cart.map(x=>'<div class="summary-row"><span>'+officialCatalogEsc(purchaseProductName(x.id,x.name))+' × '+x.qty+'</span><strong>'+euro(x.price*x.qty)+'</strong></div>').join('');
+  document.getElementById('checkoutSummary').innerHTML=rows+'<div class="summary-row"><span>'+purchaseT('shipping')+'</span><strong>'+purchaseT('checking')+'</strong></div><div class="summary-row total"><span>'+purchaseT('total')+'</span><span>'+euro(cartTotal())+'</span></div>';
   document.getElementById('summaryPoints').textContent=cartPoints();
   try{
     await calculateShipping();
   }catch(error){
-    alert(error?.message || 'Indirizzo non verificato. Torna ai dati e controlla l’indirizzo.');
+    alert(purchaseT('addressVerify'));
     showCheckoutStep(1);
     return;
   }
   const grand=cartTotal()+Number(shippingState.cost||0);
   const shippingText=shippingState.cost===0
-    ? '<strong>Gratuita</strong><br><small>'+shippingState.reason+'</small>'
-    : '<strong>'+euro(shippingState.cost)+'</strong><br><small>'+shippingState.reason+'</small>';
+    ? '<strong>'+purchaseT('free')+'</strong><br><small>'+officialCatalogEsc(shippingState.reason)+'</small>'
+    : '<strong>'+euro(shippingState.cost)+'</strong><br><small>'+officialCatalogEsc(shippingState.reason)+'</small>';
   document.getElementById('checkoutSummary').innerHTML=rows+
-    '<div class="summary-row"><span>Spedizione</span><span style="text-align:right">'+shippingText+'</span></div>'+
-    '<div class="summary-row total"><span>Totale</span><span>'+euro(grand)+'</span></div>';
+    '<div class="summary-row"><span>'+purchaseT('shipping')+'</span><span style="text-align:right">'+shippingText+'</span></div>'+
+    '<div class="summary-row total"><span>'+purchaseT('total')+'</span><span>'+euro(grand)+'</span></div>';
 }
+let lastSuccessfulOrder=null;
 async function completeOrderDraft(){
   const confirmBtn=document.getElementById('confirmOrder');
   const statusBox=document.getElementById('orderSubmitStatus');
-  if(!shopV2Cart.length){statusBox.textContent='Il cestino è vuoto.';return;}
+  if(!shopV2Cart.length){statusBox.textContent=purchaseT('emptyCart');return;}
 
   confirmBtn.disabled=true;
   const oldLabel=confirmBtn.textContent;
-  confirmBtn.textContent='Invio in corso…';
+  confirmBtn.textContent=purchaseT('sending');
   statusBox.textContent='';
 
   try{
@@ -919,7 +931,8 @@ async function completeOrderDraft(){
       notes:document.getElementById('coNotes').value.trim(),
       items:shopV2Cart.map(x=>({id:x.id,qty:x.qty})),
       shipping:Number(shippingState.cost||0),
-      shippingReason:shippingState.reason
+      shippingReason:shippingState.reason,
+      language:purchaseLanguage()
     };
 
     const controller=new AbortController();
@@ -936,14 +949,14 @@ async function completeOrderDraft(){
       clearTimeout(timeout);
     }
     const data=await response.json().catch(()=>null);
-    if(!response.ok || !data?.ok) throw new Error(data?.error||'Non è stato possibile inviare l’ordine.');
+    if(!response.ok || !data?.ok) throw new Error(purchaseT('sendError'));
 
     const savedOrder={
       ...order,
       id:data.orderId||orderId,
       sent:true,
       sentAt:new Date().toISOString(),
-      items:shopV2Cart,
+      items:shopV2Cart.map(x=>({...x})),
       goodsTotal:cartTotal(),
       shipping:Number(shippingState.cost||0),
       shippingReason:shippingState.reason,
@@ -953,17 +966,19 @@ async function completeOrderDraft(){
     let orders=[];try{orders=JSON.parse(localStorage.getItem(SHOP_V2_ORDERS_KEY)||'[]')||[];}catch(_){}
     orders.unshift(savedOrder);localStorage.setItem(SHOP_V2_ORDERS_KEY,JSON.stringify(orders.slice(0,20)));
 
-    document.getElementById('successOrder').textContent='Codice ordine '+savedOrder.id;
+    lastSuccessfulOrder=savedOrder;
+    document.getElementById('successOrder').textContent=purchaseT('orderCode')+' '+savedOrder.id;
     document.getElementById('successPoints').textContent=savedOrder.points;
     shopV2Cart=[];saveV2Cart();
+    applyPurchaseLanguage();
     showCheckoutStep(5);
   }catch(error){
     if(error?.name==='AbortError'){
-      statusBox.textContent='L’invio sta impiegando troppo tempo. L’ordine non è stato cancellato: riprova tra poco.';
+      statusBox.textContent=purchaseT('timeout');
     }else if(String(error?.message||'').toLowerCase().includes('failed to fetch')){
-      statusBox.textContent='Non riesco a collegarmi al servizio ordini in questo momento. Riprova tra poco.';
+      statusBox.textContent=purchaseT('network');
     }else{
-      statusBox.textContent=error?.message||'Non è stato possibile inviare l’ordine. Riprova.';
+      statusBox.textContent=error?.message||purchaseT('sendError');
     }
   }finally{
     confirmBtn.disabled=false;
@@ -1345,7 +1360,7 @@ document.querySelectorAll('.add-btn').forEach(btn=>btn.addEventListener('click',
 document.getElementById('cartFab').addEventListener('click',()=>document.getElementById('cartDrawer').classList.add('open'));
 document.getElementById('cartClose').addEventListener('click',()=>document.getElementById('cartDrawer').classList.remove('open'));
 document.getElementById('startCheckout').addEventListener('click',()=>{
-  if(!shopV2Cart.length){alert('Aggiungi almeno un prodotto prima di continuare.');return;}
+  if(!shopV2Cart.length){alert(purchaseT('addFirst'));return;}
   document.getElementById('cartDrawer').classList.remove('open');
   document.getElementById('checkoutOverlay').classList.add('open');
   document.getElementById('checkoutOverlay').setAttribute('aria-hidden','false');
@@ -1365,6 +1380,7 @@ document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('clic
 }));
 document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>showCheckoutStep(Number(btn.dataset.back))));
 document.getElementById('confirmOrder').addEventListener('click',completeOrderDraft);
+document.getElementById('downloadOrderPdf').addEventListener('click',()=>{if(lastSuccessfulOrder)downloadCustomerOrderPdf(lastSuccessfulOrder);});
 document.getElementById('finishCheckout').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');window.scrollTo({top:0,behavior:'smooth'});});
 const apeChatPanel=document.getElementById('apeChatPanel');
 const apeChatMessages=document.getElementById('apeChatMessages');
@@ -1988,6 +2004,7 @@ apeApplyLanguage();
   if(el)el.addEventListener('input',invalidateAddressValidation);
 });
 
+applyPurchaseLanguage();
 renderV2Cart();
 </script>
 
