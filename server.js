@@ -320,10 +320,10 @@ function parseOrderPayload(body){
     name:cleanOrderText(customer.name,120),
     email:cleanOrderText(customer.email,180).toLowerCase(),
     phone:cleanOrderText(customer.phone,80),
-    city:cleanOrderText(customer.city,120),
-    address:cleanOrderText(customer.address,180),
-    cap:cleanOrderText(customer.cap,12),
-    province:cleanOrderText(customer.province,80),
+    city:normalizeEuropeanText(cleanOrderText(customer.city,120)),
+    address:normalizeEuropeanText(cleanOrderText(customer.address,180)),
+    cap:normalizeEuropeanPostal(cleanOrderText(customer.cap,12)),
+    province:normalizeEuropeanText(cleanOrderText(customer.province,80)),
     country,
     countryName:ORDER_COUNTRIES[country].name
   };
@@ -332,7 +332,7 @@ function parseOrderPayload(body){
     throw new Error('Dati cliente incompleti.');
   }
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parsedCustomer.email)) throw new Error('Email cliente non valida.');
-  if(country==='IT' ? !/^\d{5}$/.test(parsedCustomer.cap) : !/^[A-Za-z0-9][A-Za-z0-9 -]{1,11}$/.test(parsedCustomer.cap)) throw new Error('Codice postale non valido.');
+  if(!validEuropeanPostal(parsedCustomer.cap,country)) throw new Error('Codice postale non valido.');
   const phoneObj=parsePhoneNumberFromString(parsedCustomer.phone,country);
   if(!phoneObj || !phoneObj.isValid()) throw new Error('Numero di telefono non valido per il Paese selezionato.');
   parsedCustomer.phone=phoneObj.number;
@@ -943,6 +943,28 @@ async function getComuniItaliaDataset() {
   return data;
 }
 
+function normalizeEuropeanPostal(value){
+  return String(value||'')
+    .normalize('NFKC')
+    .toUpperCase()
+    .replace(/[–—]/g,'-')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function validEuropeanPostal(value,country){
+  const v=normalizeEuropeanPostal(value);
+  if(country==='IT') return /^\d{5}$/.test(v);
+  // European postcodes vary widely: digits, letters, spaces and hyphens.
+  // Keep validation intentionally permissive to avoid rejecting valid addresses.
+  return /^[A-Z0-9][A-Z0-9 -]{1,11}$/.test(v) && /[A-Z0-9]/.test(v);
+}
+function normalizeEuropeanText(value){
+  return String(value||'')
+    .normalize('NFKC')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
 function normalizePlace(value) {
   return String(value || '')
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -954,11 +976,11 @@ function normalizePlace(value) {
 
 app.get('/api/local-delivery-check', async (req, res) => {
   try {
-    const address = String(req.query.address || '').trim();
-    const city = String(req.query.city || '').trim();
-    const cap = String(req.query.cap || '').trim();
+    const address = normalizeEuropeanText(req.query.address || '');
+    const city = normalizeEuropeanText(req.query.city || '');
+    const cap = normalizeEuropeanPostal(req.query.cap || '');
     const country = String(req.query.country || 'IT').trim().toUpperCase();
-    const provinceRaw = String(req.query.province || '').trim();
+    const provinceRaw = normalizeEuropeanText(req.query.province || '');
     const province = country==='IT' ? provinceRaw.toUpperCase() : provinceRaw;
 
     if(!ORDER_COUNTRIES[country]){
@@ -969,10 +991,10 @@ app.get('/api/local-delivery-check', async (req, res) => {
       if(!address || !city || !cap){
         return res.status(400).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Indirizzo, città e codice postale sono obbligatori.'});
       }
-      if(!/\p{L}/u.test(address) || address.trim().length<3){
-        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Inserisci un indirizzo di consegna valido.'});
+      if(!/\p{L}/u.test(address) || address.length<3 || !/\p{L}/u.test(city) || city.length<2){
+        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Inserisci un indirizzo e una città validi.'});
       }
-      if(!/^[A-Za-z0-9][A-Za-z0-9 -]{1,11}$/.test(cap)){
+      if(!validEuropeanPostal(cap,country)){
         return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Codice postale non valido.'});
       }
 
