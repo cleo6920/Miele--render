@@ -64,6 +64,24 @@ function findApeV2ProductsContext(value){
   return found;
 }
 
+function findPrimaryApeV2ProductContext(reply){
+  const raw=String(reply||'');
+  const firstBlock=raw.split(/\n\s*\n/)[0].slice(0,900);
+  const hay=apeProductNormalize(firstBlock);
+  let best=null;
+  for(const product of APE_V2_OFFICIAL_PRODUCTS){
+    const candidates=[product.name,...(APE_V2_PRODUCT_ALIASES[product.id]||[])];
+    for(const rawCandidate of candidates){
+      const candidate=apeProductNormalize(rawCandidate);
+      if(candidate.length<4)continue;
+      const pos=hay.indexOf(candidate);
+      if(pos<0)continue;
+      if(!best || pos<best.pos || (pos===best.pos && candidate.length>best.length)) best={product,pos,length:candidate.length};
+    }
+  }
+  return best?.product||null;
+}
+
 function getApeContextAction(message, reply, lang='it') {
   const normalize=(v)=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
   const messageText=normalize(message);
@@ -85,7 +103,7 @@ function getApeContextAction(message, reply, lang='it') {
 
   const productInMessage=findApeV2ProductContext(messageText);
   if(productInMessage){
-    const prefix={it:'Vai a',en:'Go to',de:'Zum Produkt',fr:'Voir',es:'Ir a'}[lang]||'Vai a';
+    const prefix={it:'Scopri',en:'Discover',de:'Entdecke',fr:'Découvrir',es:'Descubrir'}[lang]||'Scopri';
     return {href:'/shop#prodotto-'+productInMessage.id,label:prefix+' '+productInMessage.name};
   }
 
@@ -95,12 +113,20 @@ function getApeContextAction(message, reply, lang='it') {
   if(hasMsg('miele alla pesca','miele pesca','miel al melocoton','peach honey','pfirsichhonig')) return {href:'/shop#miele-pesca',label:L.pesca};
   if(hasMsg("miele all'arancia",'miele arancia','miel a la naranja','orange honey','orangenhonig')) return {href:'/shop#miele-arancia',label:L.arancia};
 
+  // Se la risposta individua un prodotto principale nelle prime righe,
+  // il pulsante porta esattamente a quella scheda anche se poi cita alternative.
+  const primaryReplyProduct=findPrimaryApeV2ProductContext(reply);
+  if(primaryReplyProduct){
+    const prefix={it:'Scopri',en:'Discover',de:'Entdecke',fr:'Découvrir',es:'Descubrir'}[lang]||'Scopri';
+    return {href:'/shop#prodotto-'+primaryReplyProduct.id,label:prefix+' '+primaryReplyProduct.name};
+  }
+
   // Se la risposta suggerisce UNA sola referenza, il pulsante è utile.
   // Se ne cita più di una, nessuna viene scelta arbitrariamente.
   const replyProducts=findApeV2ProductsContext(replyText);
   if(replyProducts.length===1){
     const product=replyProducts[0];
-    const prefix={it:'Vai a',en:'Go to',de:'Zum Produkt',fr:'Voir',es:'Ir a'}[lang]||'Vai a';
+    const prefix={it:'Scopri',en:'Discover',de:'Entdecke',fr:'Découvrir',es:'Descubrir'}[lang]||'Scopri';
     return {href:'/shop#prodotto-'+product.id,label:prefix+' '+product.name};
   }
 
@@ -111,7 +137,7 @@ function getApeContextAction(message, reply, lang='it') {
   if(hasMsg('bacheca','news','novedades','actualites','aktuelles')) return {href:'/bacheca',label:L.bacheca};
   if(hasMsg('linea veleni','bee venom line','bienengift-linie',"ligne venin d'abeille",'linea veneno de abeja')) return {href:'/shop#linea-veleni',label:L.veleni};
   if(hasMsg('alveoterapia integrata','integrated alveotherapy','integrierte alveotherapie','alveotherapie integree','alveoterapia integrada')) return {href:'/alveoterapia',label:L.alveoterapia};
-  if(hasMsg('miele','mieli','honey','honeys','honig','miel','miels')) return {href:'/shop#mieli',label:L.mieli};
+  if(replyProducts.length===0 && hasMsg('miele','mieli','honey','honeys','honig','miel','miels')) return {href:'/shop#mieli',label:L.mieli};
   return null;
 }
 
@@ -222,6 +248,10 @@ PRINCIPIO DI APPARTENENZA SEMANTICA
 - Dichiara una domanda fuori tema solo quando il significato complessivo è chiaramente esterno; non perché manca una parola chiave prevista.
 - Interpreta "offerta", "sconto" e "promozione" nel loro significato commerciale: NON significano "prodotti disponibili". Non dichiarare mai un prodotto in offerta se nel contesto certo non è indicato uno sconto o una promozione.
 - Se una domanda è generale e la risposta cita più prodotti, non scegliere arbitrariamente una singola referenza come se fosse la risposta principale.
+- Parole come "migliore", "più pregiato", "più buono", "più adatto" o simili NON hanno automaticamente un vincitore oggettivo. Chiarisci il criterio oppure, se proponi una scelta, dichiara esplicitamente il criterio usato.
+- Se la risposta individua chiaramente UN prodotto come scelta principale, nominalo nelle prime righe con il nome esatto del catalogo. Il collegamento contestuale deve portare a QUEL prodotto, non a una categoria generica.
+- Se non emerge un prodotto o una sezione realmente principale, è meglio non proporre alcun collegamento piuttosto che mostrarne uno generico o poco pertinente.
+- Nelle comparazioni tra api di ambienti diversi, per esempio montagna e pianura, non trasformare differenze ambientali in caratteristiche fisse delle api. Distingui clima, fioriture, genetica delle colonie e gestione apistica; usa formulazioni prudenti per ciò che varia localmente.
 
 COME INTERPRETARE LE DOMANDE
 - Se una domanda è ambigua ("cosa scelgo a mezzanotte?"), interpretala prima nel contesto Fabbrica delle Api / prodotti dell'alveare / esperienza.
