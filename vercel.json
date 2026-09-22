@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "rewrites": [
+    { "source": "/", "destination": "/home.html" },
+    { "source": "/shop", "destination": "/shop-v2.html" },
+    { "source": "/alveoterapia", "destination": "/alveoterapia.html" },
+    { "source": "/centro", "destination": "/centro.html" },
+    { "source": "/bacheca", "destination": "/bacheca.html" },
+    { "source": "/chi-siamo", "destination": "/chi-siamo.html" },
+    { "source": "/contatti", "destination": "/contatti.html" },
+    { "source": "/condizioni-vendita", "destination": "/condizioni-vendita.html" },
+    { "source": "/alveo-digitale", "destination": "/alveo-digitale.html" },
+
+    { "source": "/api/local-delivery-check", "destination": "https://miele-shop-experience-v2.onrender.com/api/local-delivery-check" },
+    { "source": "/api/shipping-estimate", "destination": "https://miele-shop-experience-v2.onrender.com/api/shipping-estimate" },
+    { "source": "/api/phone-normalize", "destination": "https://miele-shop-experience-v2.onrender.com/api/phone-normalize" },
+    { "source": "/api/order-notification", "destination": "https://miele-shop-experience-v2.onrender.com/api/order-notification" },
+    { "source": "/api/ape-pelu-chat", "destination": "https://miele-shop-experience-v2.onrender.com/api/ape-pelu-chat" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
+}
