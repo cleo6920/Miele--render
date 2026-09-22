@@ -60,7 +60,15 @@ function euroOrder(value){
   return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(value||0));
 }
 function orderMailConfigured(){
-  return Boolean(String(process.env.ORDER_EMAIL_USER||'').trim() && String(process.env.ORDER_EMAIL_APP_PASSWORD||'').trim());
+  return Boolean(
+    String(process.env.RESEND_API_KEY||'').trim() ||
+    (String(process.env.ORDER_EMAIL_USER||'').trim() && String(process.env.ORDER_EMAIL_APP_PASSWORD||'').trim())
+  );
+}
+function orderMailMode(){
+  if(String(process.env.RESEND_API_KEY||'').trim()) return 'resend';
+  if(String(process.env.ORDER_EMAIL_USER||'').trim() && String(process.env.ORDER_EMAIL_APP_PASSWORD||'').trim()) return 'smtp';
+  return 'none';
 }
 function orderTransporter(){
   if(!orderMailConfigured()) return null;
@@ -70,9 +78,16 @@ function orderTransporter(){
   if(host){
     const port=Number(process.env.ORDER_SMTP_PORT||587);
     const secure=String(process.env.ORDER_SMTP_SECURE||'').toLowerCase()==='true' || port===465;
-    return nodemailer.createTransport({host,port,secure,auth:{user,pass}});
+    return nodemailer.createTransport({
+      host,port,secure,auth:{user,pass},
+      connectionTimeout:8000,greetingTimeout:8000,socketTimeout:12000
+    });
   }
-  return nodemailer.createTransport({service:'gmail',auth:{user,pass}});
+  return nodemailer.createTransport({
+    service:'gmail',
+    auth:{user,pass},
+    connectionTimeout:8000,greetingTimeout:8000,socketTimeout:12000
+  });
 }
 function allowOrderMail(req){
   const key=String(req.ip||req.socket?.remoteAddress||'unknown');
@@ -216,7 +231,7 @@ function buildOrderMail(order){
 
 app.get('/api/order-email-status', (_req,res)=>{
   res.setHeader('Cache-Control','no-store');
-  return res.json({ok:true,configured:orderMailConfigured()});
+  return res.json({ok:true,configured:orderMailConfigured(),mode:orderMailMode()});
 });
 
 app.post('/api/order-notification', async (req,res)=>{
@@ -230,18 +245,53 @@ app.post('/api/order-notification', async (req,res)=>{
     const cached=recentOrderRefs.get(order.id);
     if(cached && Date.now()-cached.time<30*60*1000) return res.json({ok:true,orderId:order.id,duplicate:true});
 
-    const transporter=orderTransporter();
-    const user=String(process.env.ORDER_EMAIL_USER||'').trim();
     const to=String(process.env.ORDER_EMAIL_TO||'althea12830@gmail.com').trim();
     const mail=buildOrderMail(order);
-    await transporter.sendMail({
-      from:'"La Fabbrica delle Api" <'+user+'>',
-      to,
-      replyTo:order.customer.email,
-      subject:'Nuovo ordine '+order.id+' · '+order.customer.name+' · '+euroOrder(order.total),
-      text:mail.text,
-      html:mail.html
-    });
+    const subject='Nuovo ordine '+order.id+' · '+order.customer.name+' · '+euroOrder(order.total);
+
+    if(orderMailMode()==='resend'){
+      const key=String(process.env.RESEND_API_KEY||'').trim();
+      const from=String(process.env.ORDER_EMAIL_FROM||'La Fabbrica delle Api <onboarding@resend.dev>').trim();
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),15000);
+      let response;
+      try{
+        response=await fetch('https://api.resend.com/emails',{
+          method:'POST',
+          headers:{
+            'Authorization':'Bearer '+key,
+            'Content-Type':'application/json',
+            'Idempotency-Key':'order-'+order.id
+          },
+          body:JSON.stringify({
+            from,
+            to:[to],
+            reply_to:order.customer.email,
+            subject,
+            text:mail.text,
+            html:mail.html
+          }),
+          signal:controller.signal
+        });
+      }finally{
+        clearTimeout(timer);
+      }
+      const payload=await response.json().catch(()=>null);
+      if(!response.ok){
+        throw new Error('Resend: '+(payload?.message||payload?.error||('HTTP '+response.status)));
+      }
+    }else{
+      const transporter=orderTransporter();
+      const user=String(process.env.ORDER_EMAIL_USER||'').trim();
+      await transporter.sendMail({
+        from:'"La Fabbrica delle Api" <'+user+'>',
+        to,
+        replyTo:order.customer.email,
+        subject,
+        text:mail.text,
+        html:mail.html
+      });
+    }
     recentOrderRefs.set(order.id,{time:Date.now()});
     for(const [key,val] of recentOrderRefs){if(Date.now()-val.time>30*60*1000)recentOrderRefs.delete(key);}
     console.log('[Ordini] Notifica inviata:',order.id);
