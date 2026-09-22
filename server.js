@@ -22,6 +22,57 @@ app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
 app.post('/api/create-checkout-session', createCheckoutSession);
 
+const SITE_TRANSLATE_LANGS = new Set(['en','de','fr','es']);
+const siteTranslateCache = new Map();
+
+async function siteTranslateOne(text,target){
+  const clean=String(text||'').trim();
+  if(!clean || !SITE_TRANSLATE_LANGS.has(target)) return clean;
+  const key=target+'\n'+clean;
+  if(siteTranslateCache.has(key)) return siteTranslateCache.get(key);
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),8000);
+  try{
+    const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=it&tl='+encodeURIComponent(target)+'&dt=t&q='+encodeURIComponent(clean);
+    const response=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0'},signal:controller.signal});
+    if(!response.ok) throw new Error('translate '+response.status);
+    const data=await response.json();
+    const out=Array.isArray(data?.[0])?data[0].map(x=>Array.isArray(x)?(x[0]||''):'').join(''):clean;
+    const value=String(out||clean).trim()||clean;
+    siteTranslateCache.set(key,value);
+    if(siteTranslateCache.size>5000){
+      const first=siteTranslateCache.keys().next().value;
+      siteTranslateCache.delete(first);
+    }
+    return value;
+  }catch(_){
+    return clean;
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
+app.post('/api/site-translate', async (req,res)=>{
+  res.setHeader('Cache-Control','private, max-age=3600');
+  const target=String(req.body?.target||'').toLowerCase().slice(0,2);
+  const raw=Array.isArray(req.body?.texts)?req.body.texts:[];
+  if(!SITE_TRANSLATE_LANGS.has(target)) return res.status(400).json({ok:false,error:'Lingua non supportata.'});
+  if(!raw.length || raw.length>60) return res.status(400).json({ok:false,error:'Richiesta traduzione non valida.'});
+  const texts=raw.map(x=>String(x||'').replace(/\s+/g,' ').trim().slice(0,1200));
+  if(texts.reduce((n,x)=>n+x.length,0)>30000) return res.status(413).json({ok:false,error:'Testo troppo lungo.'});
+
+  const results=new Array(texts.length);
+  let cursor=0;
+  const workers=Array.from({length:6},async()=>{
+    while(cursor<texts.length){
+      const i=cursor++;
+      results[i]=await siteTranslateOne(texts[i],target);
+    }
+  });
+  await Promise.all(workers);
+  return res.json({ok:true,target,translations:results});
+});
+
 app.get('/api/ape-pelu-status', (req, res) => {
   const configured = Boolean(String(process.env.GROQ_API_KEY || '').trim());
   res.setHeader('Cache-Control','no-store');
@@ -1089,6 +1140,9 @@ const sendPage=(filename)=>(_req,res)=>{
   if(filename==='shop-v2.html') return res.sendFile(path.join(__dirname,filename));
   try{
     let html=fs.readFileSync(path.join(__dirname,filename),'utf8');
+    if(!/name=["']google["'][^>]*content=["']notranslate["']/i.test(html)){
+      html=html.includes('<head>')?html.replace('<head>','<head><meta name="google" content="notranslate">'):html;
+    }
     if(!html.includes('id="globalToolsBar"')){
       html=html.includes('</header>')?html.replace('</header>','</header>'+GLOBAL_TOOLS_MARKUP):GLOBAL_TOOLS_MARKUP+html;
     }
