@@ -129,6 +129,10 @@ img{display:block;max-width:100%}
 .checkout-screen h3{font-family:Georgia,serif;font-size:30px;margin:0 0 18px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:900;color:#49554f}.field input,.field select,.field textarea{width:100%;border:1px solid #d8cfbf;background:#fff;border-radius:14px;padding:12px 13px;font:inherit}.field textarea{min-height:90px;resize:vertical}
+.phone-split{display:grid;grid-template-columns:112px minmax(0,1fr);gap:8px}
+.phone-split input{width:100%}
+.phone-prefix{text-align:center;font-weight:900;letter-spacing:.02em}
+@media(max-width:560px){.phone-split{grid-template-columns:96px minmax(0,1fr)}}
 .delivery-options{display:grid;grid-template-columns:1fr 1fr;gap:14px}.delivery-option{border:1px solid #d8cfbf;border-radius:18px;padding:18px;cursor:pointer;background:#fff}.delivery-option input{margin-right:8px}.delivery-option strong{display:block;margin-bottom:5px}.delivery-option p{margin:0;color:#66726b;font-size:14px}
 .order-summary{display:grid;gap:10px}.summary-row{display:flex;justify-content:space-between;gap:20px;padding:10px 0;border-bottom:1px solid #eee5d7}.summary-row.total{font-size:20px;font-weight:900;border:0;padding-top:16px}.summary-api{background:#fff0ae;border-radius:18px;padding:16px;margin-top:18px}.summary-api strong{font-size:19px}
 .fake-card{background:#102f24;color:#fff;border-radius:22px;padding:22px;margin-top:14px}.fake-card label{display:block;font-weight:900;margin-bottom:7px}.fake-card .mock-line{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:12px;color:#e9f0eb;margin-top:8px}
@@ -635,7 +639,7 @@ img{display:block;max-width:100%}
           <div class="field"><label>Nome e cognome *</label><input id="coName" autocomplete="name"></div>
           <div class="field"><label>Email *</label><input id="coEmail" type="email" autocomplete="email"></div>
           <div class="field"><label>Paese di consegna *</label><select id="coCountry" autocomplete="country"><option value="">Seleziona Paese</option></select></div>
-          <div class="field"><label>Telefono *</label><input id="coPhone" autocomplete="tel"></div>
+          <div class="field"><label>Telefono *</label><div class="phone-split"><input id="coPhonePrefix" class="phone-prefix" inputmode="tel" autocomplete="tel-country-code" maxlength="6" aria-label="Prefisso internazionale"><input id="coPhone" class="phone-number" inputmode="tel" autocomplete="tel-national" aria-label="Numero di telefono"></div></div>
           <div class="field"><label>Comune / Città *</label><input id="coCity" autocomplete="address-level2"></div>
           <div class="field full"><label>Via e numero civico *</label><input id="coAddress" autocomplete="street-address"></div>
           <div class="field"><label>CAP / Codice postale *</label><input id="coCap" maxlength="12" autocomplete="postal-code"></div>
@@ -686,7 +690,7 @@ img{display:block;max-width:100%}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="/shop-purchase-i18n.js?v=20260922-4"></script>
+<script src="/shop-purchase-i18n.js?v=20260922-5"></script>
 <script>
 const SHOP_V2_CART_KEY='fda-shop-v2-cart';
 const SHOP_V2_ORDERS_KEY='fda-shop-order-drafts';
@@ -870,7 +874,7 @@ function showCheckoutStep(step){
   if(step===3)document.getElementById('summaryPoints').textContent=cartPoints();
 }
 async function validStepOne(){
-  const ids=['coName','coEmail','coPhone','coCountry','coCity','coAddress','coCap'];
+  const ids=['coName','coEmail','coPhonePrefix','coPhone','coCountry','coCity','coAddress','coCap'];
   const missing=ids.filter(id=>!document.getElementById(id).value.trim());
   if(missing.length){alert(purchaseT('missing'));return false;}
   if(!document.getElementById('coEmail').value.includes('@')){alert(purchaseT('invalidEmail'));return false;}
@@ -882,10 +886,16 @@ async function validStepOne(){
   const province=document.getElementById('coProvince').value.trim();
   if(country==='IT' && !/^[A-Za-z]{2}$/.test(province)){alert(purchaseT('invalidProvince'));return false;}
   try{
-    const phoneRes=await fetch('/api/phone-normalize?'+new URLSearchParams({country,phone:document.getElementById('coPhone').value.trim()}).toString(),{cache:'no-store'});
+    const phoneRes=await fetch('/api/phone-normalize?'+new URLSearchParams({
+      prefix:document.getElementById('coPhonePrefix').value.trim(),
+      phone:document.getElementById('coPhone').value.trim()
+    }).toString(),{cache:'no-store'});
     const phoneData=await phoneRes.json().catch(()=>null);
     if(!phoneRes.ok||!phoneData?.ok||!phoneData?.e164){alert(purchaseT('invalidPhone'));return false;}
-    document.getElementById('coPhone').value=phoneData.e164;
+    document.getElementById('coPhonePrefix').value=phoneData.callingCode;
+    document.getElementById('coPhonePrefix').dataset.autoDial=phoneData.callingCode;
+    document.getElementById('coPhone').value=phoneData.national;
+    document.getElementById('coPhone').dataset.e164=phoneData.e164;
   }catch(_){alert(purchaseT('invalidPhone'));return false;}
   if(!/[A-Za-zÀ-ÿ]/.test(address) || !/\d/.test(address)){
     alert(purchaseT('invalidAddress'));
@@ -941,7 +951,7 @@ async function completeOrderDraft(){
       customer:{
         name:document.getElementById('coName').value.trim(),
         email:document.getElementById('coEmail').value.trim(),
-        phone:document.getElementById('coPhone').value.trim(),
+        phone:document.getElementById('coPhone').dataset.e164||((document.getElementById('coPhonePrefix').value.trim())+(document.getElementById('coPhone').value.trim())),
         country:document.getElementById('coCountry').value,
         city:document.getElementById('coCity').value.trim(),
         address:document.getElementById('coAddress').value.trim(),
@@ -1403,6 +1413,7 @@ document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('clic
   if(next===3)await renderCheckoutSummary();
 }));
 document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>showCheckoutStep(Number(btn.dataset.back))));
+document.getElementById('coCountry').addEventListener('change',()=>{invalidateAddressValidation();purchaseApplyCountryFields(true);});
 document.getElementById('confirmOrder').addEventListener('click',completeOrderDraft);
 document.getElementById('downloadOrderPdf').addEventListener('click',()=>{if(lastSuccessfulOrder)downloadCustomerOrderPdf(lastSuccessfulOrder);});
 document.getElementById('finishCheckout').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');window.scrollTo({top:0,behavior:'smooth'});});
@@ -2023,9 +2034,13 @@ apeChatInput.addEventListener('keydown',e=>{if(e.key==='Enter')apeAsk(apeChatInp
 document.querySelectorAll('[data-ape-q]').forEach(btn=>btn.addEventListener('click',()=>apeAsk(btn.dataset.apeQ)));
 
 apeApplyLanguage();
-['coAddress','coCap','coCity','coProvince','coCountry'].forEach(id=>{
+['coAddress','coCap','coCity','coProvince','coCountry','coPhonePrefix','coPhone'].forEach(id=>{
   const el=document.getElementById(id);
-  if(el)el.addEventListener('input',()=>{invalidateAddressValidation();if(id==='coCountry')purchaseApplyCountryFields();});
+  if(el)el.addEventListener('input',()=>{
+    if(id==='coPhonePrefix'||id==='coPhone')document.getElementById('coPhone').dataset.e164='';
+    if(id==='coCountry'){invalidateAddressValidation();purchaseApplyCountryFields(true);}
+    else if(['coAddress','coCap','coCity','coProvince'].includes(id))invalidateAddressValidation();
+  });
 });
 
 applyPurchaseLanguage();
