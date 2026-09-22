@@ -6,7 +6,7 @@ const {
   redeemTestCoupon
 } = require('../test-purchase-store');
 
-const DEFAULT_SITE_URL = 'https://miele-backend-omega.vercel.app';
+const DEFAULT_SITE_URL = 'https://lafabbricadelleapi.it';
 
 function cleanText(value, maxLength = 200) {
   return String(value || '').trim().slice(0, maxLength);
