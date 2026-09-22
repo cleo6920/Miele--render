@@ -690,7 +690,7 @@ img{display:block;max-width:100%}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="/shop-purchase-i18n.js?v=20260922-5"></script>
+<script src="/shop-purchase-i18n.js?v=20260922-6"></script>
 <script>
 const SHOP_V2_CART_KEY='fda-shop-v2-cart';
 const SHOP_V2_ORDERS_KEY='fda-shop-order-drafts';
@@ -802,36 +802,48 @@ async function checkLocalDelivery(force=false){
 async function calculateShipping(){
   const method=document.querySelector('input[name="delivery"]:checked')?.value||'courier';
   if(method==='pickup'){
-    shippingState={cost:0,pending:false,label:purchaseT('free'),reason:purchaseT('pickupReason')};
+    shippingState={cost:0,pending:false,weightKg:0,label:purchaseT('free'),reason:purchaseT('pickupReason')};
     return shippingState;
   }
   const country=document.getElementById('coCountry').value||'IT';
   if(country==='IT' && cartTotal()>=200){
-    shippingState={cost:0,pending:false,label:purchaseT('free'),reason:purchaseT('order200Reason')};
+    const estimate=await fetch('/api/shipping-estimate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({country,items:shopV2Cart.map(x=>({id:x.id,qty:x.qty}))})}).then(r=>r.json()).catch(()=>null);
+    shippingState={cost:0,pending:false,weightKg:Number(estimate?.weightKg||0),label:purchaseT('free'),reason:purchaseT('order200Reason')};
     return shippingState;
   }
 
   const local=await checkLocalDelivery(false);
-  if(!local || local.ok!==true || local.validFullAddress!==true){
-    throw new Error(purchaseT('addressVerify'));
-  }
+  if(!local || local.ok!==true || local.validFullAddress!==true) throw new Error(purchaseT('addressVerify'));
 
-  if(local.international){
-    shippingState={cost:0,pending:true,label:purchaseT('shippingPending'),reason:purchaseT('internationalReason')};
+  const estimateRes=await fetch('/api/shipping-estimate',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({country,items:shopV2Cart.map(x=>({id:x.id,qty:x.qty}))})
+  });
+  const estimate=await estimateRes.json().catch(()=>null);
+  if(!estimateRes.ok||!estimate?.ok) throw new Error(purchaseT('shippingCalcError'));
+
+  if(country==='IT' && local.eligible){
+    shippingState={cost:0,pending:false,weightKg:Number(estimate.weightKg||0),label:purchaseT('free'),reason:purchaseT('localReason')(local.distanceKm)};
     return shippingState;
   }
 
-  if(local.eligible){
+  if(estimate.pending){
     shippingState={
-      cost:0,pending:false,
-      label:purchaseT('free'),
-      reason:purchaseT('localReason')(local.distanceKm)
+      cost:0,pending:true,weightKg:Number(estimate.weightKg||0),zone:estimate.zone||'',
+      label:purchaseT('shippingPending'),
+      reason:purchaseT('postePendingReason')(Number(estimate.weightKg||0))
     };
     return shippingState;
   }
 
-  const cost=cartUnits()>=3?10:8;
-  shippingState={cost,pending:false,label:euro(cost),reason:purchaseT('courierReason')};
+  shippingState={
+    cost:Number(estimate.cost||0),pending:false,weightKg:Number(estimate.weightKg||0),zone:estimate.zone||'',
+    label:euro(estimate.cost),
+    reason:country==='IT'
+      ? purchaseT('posteItalyReason')(Number(estimate.weightKg||0))
+      : purchaseT('posteIntlReason')(Number(estimate.weightKg||0),estimate.zone||'')
+  };
   return shippingState;
 }
 
@@ -963,6 +975,8 @@ async function completeOrderDraft(){
       items:shopV2Cart.map(x=>({id:x.id,qty:x.qty})),
       shipping:Number(shippingState.cost||0),
       shippingPending:Boolean(shippingState.pending),
+      shippingWeightKg:Number(shippingState.weightKg||0),
+      shippingZone:shippingState.zone||'',
       shippingReason:shippingState.reason,
       language:purchaseLanguage()
     };
@@ -992,6 +1006,8 @@ async function completeOrderDraft(){
       goodsTotal:cartTotal(),
       shipping:Number(shippingState.cost||0),
       shippingPending:Boolean(shippingState.pending),
+      shippingWeightKg:Number(shippingState.weightKg||0),
+      shippingZone:shippingState.zone||'',
       shippingReason:shippingState.reason,
       total:cartTotal()+Number(shippingState.cost||0),
       points:cartPoints()
