@@ -9,10 +9,56 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const IMAGE_VERSION = '20260827-13';
 const ORDER_COUNTRIES={
-  IT:{name:'Italia',nominatim:'it'},
-  ES:{name:'Spagna',nominatim:'es'},
-  FR:{name:'Francia',nominatim:'fr'},
-  DE:{name:'Germania',nominatim:'de'}
+  AL:{name:"Albania",nominatim:"al"},
+  AD:{name:"Andorra",nominatim:"ad"},
+  AM:{name:"Armenia",nominatim:"am"},
+  AT:{name:"Austria",nominatim:"at"},
+  AZ:{name:"Azerbaigian",nominatim:"az"},
+  BY:{name:"Bielorussia",nominatim:"by"},
+  BE:{name:"Belgio",nominatim:"be"},
+  BA:{name:"Bosnia ed Erzegovina",nominatim:"ba"},
+  BG:{name:"Bulgaria",nominatim:"bg"},
+  HR:{name:"Croazia",nominatim:"hr"},
+  CY:{name:"Cipro",nominatim:"cy"},
+  CZ:{name:"Cechia",nominatim:"cz"},
+  DK:{name:"Danimarca",nominatim:"dk"},
+  EE:{name:"Estonia",nominatim:"ee"},
+  FI:{name:"Finlandia",nominatim:"fi"},
+  FR:{name:"Francia",nominatim:"fr"},
+  GE:{name:"Georgia",nominatim:"ge"},
+  DE:{name:"Germania",nominatim:"de"},
+  GR:{name:"Grecia",nominatim:"gr"},
+  HU:{name:"Ungheria",nominatim:"hu"},
+  IS:{name:"Islanda",nominatim:"is"},
+  IE:{name:"Irlanda",nominatim:"ie"},
+  IT:{name:"Italia",nominatim:"it"},
+  XK:{name:"Kosovo",nominatim:"xk"},
+  LV:{name:"Lettonia",nominatim:"lv"},
+  LI:{name:"Liechtenstein",nominatim:"li"},
+  LT:{name:"Lituania",nominatim:"lt"},
+  LU:{name:"Lussemburgo",nominatim:"lu"},
+  MT:{name:"Malta",nominatim:"mt"},
+  MD:{name:"Moldova",nominatim:"md"},
+  MC:{name:"Monaco",nominatim:"mc"},
+  ME:{name:"Montenegro",nominatim:"me"},
+  NL:{name:"Paesi Bassi",nominatim:"nl"},
+  MK:{name:"Macedonia del Nord",nominatim:"mk"},
+  NO:{name:"Norvegia",nominatim:"no"},
+  PL:{name:"Polonia",nominatim:"pl"},
+  PT:{name:"Portogallo",nominatim:"pt"},
+  RO:{name:"Romania",nominatim:"ro"},
+  RU:{name:"Russia",nominatim:"ru"},
+  SM:{name:"San Marino",nominatim:"sm"},
+  RS:{name:"Serbia",nominatim:"rs"},
+  SK:{name:"Slovacchia",nominatim:"sk"},
+  SI:{name:"Slovenia",nominatim:"si"},
+  ES:{name:"Spagna",nominatim:"es"},
+  SE:{name:"Svezia",nominatim:"se"},
+  CH:{name:"Svizzera",nominatim:"ch"},
+  TR:{name:"Turchia",nominatim:"tr"},
+  UA:{name:"Ucraina",nominatim:"ua"},
+  GB:{name:"Regno Unito",nominatim:"gb"},
+  VA:{name:"Città del Vaticano",nominatim:"va"}
 };
 
 try {
@@ -217,7 +263,7 @@ function parseOrderPayload(body){
     throw new Error('Dati cliente incompleti.');
   }
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parsedCustomer.email)) throw new Error('Email cliente non valida.');
-  if(!/^\d{5}$/.test(parsedCustomer.cap)) throw new Error('Codice postale non valido.');
+  if(country==='IT' ? !/^\d{5}$/.test(parsedCustomer.cap) : !/^[A-Za-z0-9][A-Za-z0-9 -]{1,11}$/.test(parsedCustomer.cap)) throw new Error('Codice postale non valido.');
   const phoneObj=parsePhoneNumberFromString(parsedCustomer.phone,country);
   if(!phoneObj || !phoneObj.isValid()) throw new Error('Numero di telefono non valido per il Paese selezionato.');
   parsedCustomer.phone=phoneObj.number;
@@ -339,6 +385,15 @@ function buildOrderMail(order){
   ].join('\n');
   return {html,text};
 }
+
+app.get('/api/phone-normalize',(req,res)=>{
+  const country=String(req.query.country||'').trim().toUpperCase();
+  const raw=String(req.query.phone||'').trim();
+  if(!ORDER_COUNTRIES[country]) return res.status(400).json({ok:false,error:'Paese non supportato.'});
+  const phone=parsePhoneNumberFromString(raw,country);
+  if(!phone || !phone.isValid()) return res.status(422).json({ok:false,error:'Numero di telefono non valido per il Paese selezionato.'});
+  return res.json({ok:true,e164:phone.number,international:phone.formatInternational()});
+});
 
 app.get('/api/order-email-status', (_req,res)=>{
   res.setHeader('Cache-Control','no-store');
@@ -805,8 +860,8 @@ app.get('/api/local-delivery-check', async (req, res) => {
       if(!/[A-Za-zÀ-ÿ]/.test(address) || !/\d/.test(address)){
         return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Inserisci il nome della via e il numero civico.'});
       }
-      if(!/^\d{5}$/.test(cap)){
-        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Il codice postale deve essere composto da 5 cifre.'});
+      if(!/^[A-Za-z0-9][A-Za-z0-9 -]{1,11}$/.test(cap)){
+        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Codice postale non valido.'});
       }
       const cfg=ORDER_COUNTRIES[country];
       const query=[address,cap,city,province,cfg.name].filter(Boolean).join(', ');
@@ -824,8 +879,9 @@ app.get('/api/local-delivery-check', async (req, res) => {
         const display=normalizePlace(item.display_name||'');
         const cities=[a.city,a.town,a.village,a.municipality,a.county,a.state].filter(Boolean).map(normalizePlace);
         const cityOk=cities.some(v=>v===cityNorm||v.includes(cityNorm)||cityNorm.includes(v))||display.includes(cityNorm);
-        const postcode=String(a.postcode||'');
-        const capOk=!postcode||postcode===cap;
+        const normPost=v=>String(v||'').toUpperCase().replace(/[\s-]+/g,'');
+        const postcode=normPost(a.postcode||'');
+        const capOk=!postcode||postcode===normPost(cap);
         return cityOk&&capOk;
       });
       if(!match){
