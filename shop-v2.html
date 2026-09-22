@@ -690,7 +690,7 @@ img{display:block;max-width:100%}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="/shop-purchase-i18n.js?v=20260922-10"></script>
+<script src="/shop-purchase-i18n.js?v=20260922-11"></script>
 <script>
 const SHOP_V2_CART_KEY='fda-shop-v2-cart';
 const SHOP_V2_ORDERS_KEY='fda-shop-order-drafts';
@@ -1436,7 +1436,11 @@ document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('clic
   if(next===3)await renderCheckoutSummary();
 }));
 document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>showCheckoutStep(Number(btn.dataset.back))));
-document.getElementById('coCountry').addEventListener('change',()=>{invalidateAddressValidation();purchaseApplyCountryFields(true);});
+document.getElementById('coCountry').addEventListener('change',()=>{
+  invalidateAddressValidation();
+  shippingState={cost:null,pending:false,label:purchaseT('toCalculate'),reason:''};
+  purchaseApplyCountryFields(true);
+});
 document.getElementById('confirmOrder').addEventListener('click',completeOrderDraft);
 document.getElementById('downloadOrderPdf').addEventListener('click',()=>{if(lastSuccessfulOrder)downloadCustomerOrderPdf(lastSuccessfulOrder);});
 document.getElementById('finishCheckout').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');window.scrollTo({top:0,behavior:'smooth'});});
