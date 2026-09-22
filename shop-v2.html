@@ -634,11 +634,12 @@ img{display:block;max-width:100%}
         <div class="form-grid">
           <div class="field"><label>Nome e cognome *</label><input id="coName" autocomplete="name"></div>
           <div class="field"><label>Email *</label><input id="coEmail" type="email" autocomplete="email"></div>
+          <div class="field"><label>Paese di consegna *</label><select id="coCountry" autocomplete="country"><option value="">Seleziona Paese</option><option value="IT">Italia</option><option value="ES">España</option><option value="FR">France</option><option value="DE">Deutschland</option></select></div>
           <div class="field"><label>Telefono *</label><input id="coPhone" autocomplete="tel"></div>
           <div class="field"><label>Comune / Città *</label><input id="coCity" autocomplete="address-level2"></div>
           <div class="field full"><label>Via e numero civico *</label><input id="coAddress" autocomplete="street-address"></div>
-          <div class="field"><label>CAP *</label><input id="coCap" inputmode="numeric" maxlength="5"></div>
-          <div class="field"><label>Provincia *</label><input id="coProvince" maxlength="2" placeholder="es. MN"></div>
+          <div class="field"><label>CAP / Codice postale *</label><input id="coCap" inputmode="numeric" maxlength="12"></div>
+          <div class="field"><label>Provincia / Regione</label><input id="coProvince" maxlength="80" placeholder="es. MN / Madrid"></div>
         </div>
         <div class="checkout-actions"><button class="next-btn" type="button" data-next="2">Continua →</button></div>
       </div>
@@ -685,7 +686,7 @@ img{display:block;max-width:100%}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="/shop-purchase-i18n.js?v=20260922-2"></script>
+<script src="/shop-purchase-i18n.js?v=20260922-3"></script>
 <script>
 const SHOP_V2_CART_KEY='fda-shop-v2-cart';
 const SHOP_V2_ORDERS_KEY='fda-shop-order-drafts';
@@ -742,7 +743,7 @@ function euro(v){return purchaseCurrency(v);}
 function cartPoints(){return shopV2Cart.reduce((s,x)=>s+(Number(x.points||defaultPointsFor(x.id))*x.qty),0);}
 function cartTotal(){return shopV2Cart.reduce((s,x)=>s+(x.qty*x.price),0);}
 function cartUnits(){return shopV2Cart.reduce((s,x)=>s+x.qty,0);}
-let shippingState={cost:null,label:purchaseT('toCalculate'),reason:''};
+let shippingState={cost:null,pending:false,label:purchaseT('toCalculate'),reason:''};
 
 function kmBetween(lat1,lon1,lat2,lon2){
   const R=6371,toRad=v=>v*Math.PI/180;
@@ -758,14 +759,15 @@ function currentAddressSignature(){
     document.getElementById('coAddress').value.trim().toLowerCase(),
     document.getElementById('coCap').value.trim(),
     document.getElementById('coCity').value.trim().toLowerCase(),
-    document.getElementById('coProvince').value.trim().toUpperCase()
+    document.getElementById('coProvince').value.trim().toUpperCase(),
+    document.getElementById('coCountry').value
   ].join('|');
 }
 
 function invalidateAddressValidation(){
   lastAddressValidation=null;
   lastAddressSignature='';
-  shippingState={cost:null,label:purchaseT('toCalculate'),reason:''};
+  shippingState={cost:null,pending:false,label:purchaseT('toCalculate'),reason:''};
 }
 
 async function checkLocalDelivery(force=false){
@@ -773,6 +775,7 @@ async function checkLocalDelivery(force=false){
   const city=document.getElementById('coCity').value.trim();
   const cap=document.getElementById('coCap').value.trim();
   const province=document.getElementById('coProvince').value.trim();
+  const country=document.getElementById('coCountry').value.trim();
   const signature=currentAddressSignature();
 
   if(!force && lastAddressValidation && lastAddressSignature===signature){
@@ -780,7 +783,7 @@ async function checkLocalDelivery(force=false){
   }
 
   try{
-    const qs=new URLSearchParams({address,city,cap,province});
+    const qs=new URLSearchParams({address,city,cap,province,country});
     const res=await fetch('/api/local-delivery-check?'+qs.toString(),{cache:'no-store'});
     const data=await res.json().catch(()=>null);
     lastAddressValidation=data;
@@ -795,11 +798,12 @@ async function checkLocalDelivery(force=false){
 async function calculateShipping(){
   const method=document.querySelector('input[name="delivery"]:checked')?.value||'courier';
   if(method==='pickup'){
-    shippingState={cost:0,label:purchaseT('free'),reason:purchaseT('pickupReason')};
+    shippingState={cost:0,pending:false,label:purchaseT('free'),reason:purchaseT('pickupReason')};
     return shippingState;
   }
-  if(cartTotal()>=200){
-    shippingState={cost:0,label:purchaseT('free'),reason:purchaseT('order200Reason')};
+  const country=document.getElementById('coCountry').value||'IT';
+  if(country==='IT' && cartTotal()>=200){
+    shippingState={cost:0,pending:false,label:purchaseT('free'),reason:purchaseT('order200Reason')};
     return shippingState;
   }
 
@@ -808,9 +812,14 @@ async function calculateShipping(){
     throw new Error(purchaseT('addressVerify'));
   }
 
+  if(local.international){
+    shippingState={cost:0,pending:true,label:purchaseT('shippingPending'),reason:purchaseT('internationalReason')};
+    return shippingState;
+  }
+
   if(local.eligible){
     shippingState={
-      cost:0,
+      cost:0,pending:false,
       label:purchaseT('free'),
       reason:purchaseT('localReason')(local.distanceKm)
     };
@@ -818,7 +827,7 @@ async function calculateShipping(){
   }
 
   const cost=cartUnits()>=3?10:8;
-  shippingState={cost,label:euro(cost),reason:purchaseT('courierReason')};
+  shippingState={cost,pending:false,label:euro(cost),reason:purchaseT('courierReason')};
   return shippingState;
 }
 
@@ -861,7 +870,7 @@ function showCheckoutStep(step){
   if(step===3)document.getElementById('summaryPoints').textContent=cartPoints();
 }
 async function validStepOne(){
-  const ids=['coName','coEmail','coPhone','coCity','coAddress','coCap','coProvince'];
+  const ids=['coName','coEmail','coPhone','coCountry','coCity','coAddress','coCap'];
   const missing=ids.filter(id=>!document.getElementById(id).value.trim());
   if(missing.length){alert(purchaseT('missing'));return false;}
   if(!document.getElementById('coEmail').value.includes('@')){alert(purchaseT('invalidEmail'));return false;}
@@ -869,6 +878,12 @@ async function validStepOne(){
   const cap=document.getElementById('coCap').value.trim();
   const address=document.getElementById('coAddress').value.trim();
   if(!/^\d{5}$/.test(cap)){alert(purchaseT('invalidCap'));return false;}
+  const country=document.getElementById('coCountry').value;
+  const province=document.getElementById('coProvince').value.trim();
+  if(country==='IT' && !/^[A-Za-z]{2}$/.test(province)){alert(purchaseT('invalidProvince'));return false;}
+  const normalizedPhone=purchaseNormalizePhone(document.getElementById('coPhone').value,country);
+  if(!normalizedPhone){alert(purchaseT('invalidPhone'));return false;}
+  document.getElementById('coPhone').value=normalizedPhone;
   if(!/[A-Za-zÀ-ÿ]/.test(address) || !/\d/.test(address)){
     alert(purchaseT('invalidAddress'));
     return false;
@@ -894,12 +909,14 @@ async function renderCheckoutSummary(){
     return;
   }
   const grand=cartTotal()+Number(shippingState.cost||0);
-  const shippingText=shippingState.cost===0
-    ? '<strong>'+purchaseT('free')+'</strong><br><small>'+officialCatalogEsc(shippingState.reason)+'</small>'
-    : '<strong>'+euro(shippingState.cost)+'</strong><br><small>'+officialCatalogEsc(shippingState.reason)+'</small>';
+  const shippingText=shippingState.pending
+    ? '<strong>'+purchaseT('shippingPending')+'</strong><br><small>'+officialCatalogEsc(shippingState.reason)+'</small>'
+    : shippingState.cost===0
+      ? '<strong>'+purchaseT('free')+'</strong><br><small>'+officialCatalogEsc(shippingState.reason)+'</small>'
+      : '<strong>'+euro(shippingState.cost)+'</strong><br><small>'+officialCatalogEsc(shippingState.reason)+'</small>';
   document.getElementById('checkoutSummary').innerHTML=rows+
     '<div class="summary-row"><span>'+purchaseT('shipping')+'</span><span style="text-align:right">'+shippingText+'</span></div>'+
-    '<div class="summary-row total"><span>'+purchaseT('total')+'</span><span>'+euro(grand)+'</span></div>';
+    '<div class="summary-row total"><span>'+(shippingState.pending?purchaseT('goodsTotalPending'):purchaseT('total'))+'</span><span>'+euro(grand)+'</span></div>';
 }
 let lastSuccessfulOrder=null;
 async function completeOrderDraft(){
@@ -922,6 +939,7 @@ async function completeOrderDraft(){
         name:document.getElementById('coName').value.trim(),
         email:document.getElementById('coEmail').value.trim(),
         phone:document.getElementById('coPhone').value.trim(),
+        country:document.getElementById('coCountry').value,
         city:document.getElementById('coCity').value.trim(),
         address:document.getElementById('coAddress').value.trim(),
         cap:document.getElementById('coCap').value.trim(),
@@ -931,6 +949,7 @@ async function completeOrderDraft(){
       notes:document.getElementById('coNotes').value.trim(),
       items:shopV2Cart.map(x=>({id:x.id,qty:x.qty})),
       shipping:Number(shippingState.cost||0),
+      shippingPending:Boolean(shippingState.pending),
       shippingReason:shippingState.reason,
       language:purchaseLanguage()
     };
@@ -959,6 +978,7 @@ async function completeOrderDraft(){
       items:shopV2Cart.map(x=>({...x})),
       goodsTotal:cartTotal(),
       shipping:Number(shippingState.cost||0),
+      shippingPending:Boolean(shippingState.pending),
       shippingReason:shippingState.reason,
       total:cartTotal()+Number(shippingState.cost||0),
       points:cartPoints()
@@ -2000,12 +2020,13 @@ apeChatInput.addEventListener('keydown',e=>{if(e.key==='Enter')apeAsk(apeChatInp
 document.querySelectorAll('[data-ape-q]').forEach(btn=>btn.addEventListener('click',()=>apeAsk(btn.dataset.apeQ)));
 
 apeApplyLanguage();
-['coAddress','coCap','coCity','coProvince'].forEach(id=>{
+['coAddress','coCap','coCity','coProvince','coCountry'].forEach(id=>{
   const el=document.getElementById(id);
-  if(el)el.addEventListener('input',invalidateAddressValidation);
+  if(el)el.addEventListener('input',()=>{invalidateAddressValidation();if(id==='coCountry')purchaseApplyCountryFields();});
 });
 
 applyPurchaseLanguage();
+purchaseApplyCountryFields();
 renderV2Cart();
 </script>
 
