@@ -206,6 +206,11 @@ function applyCountryFields(forceDial=false){
   if(prov){
     prov.placeholder=x.provincePh;
     prov.required=code==='IT';
+    const label=prov.closest('.field')?.querySelector('label');
+    if(label){
+      const base=String(x.province||'').replace(/\s*\*\s*$/,'').trim();
+      label.textContent=base+(code==='IT'?' *':'');
+    }
   }
 }
 window.purchaseNormalizePhone=normalizePhone;
