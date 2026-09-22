@@ -742,5 +742,22 @@ const honeyAvailabilityHelper=`
             };
 `;
 html=html.replace('// === STOCK MODE TOGGLE ===',`${honeyAvailabilityHelper}\n            // === STOCK MODE TOGGLE ===`);html=html.replaceAll('staticInitialProducts.filter(p => allowedCategoriesForShop.includes(p.category))','applyHoneyAvailability(staticInitialProducts).filter(p => allowedCategoriesForShop.includes(p.category))');html=html.replace('const filtered = mergedProducts.filter(p => allowedCategoriesForShop.includes(p.category));','const filtered = applyHoneyAvailability(mergedProducts).filter(p => allowedCategoriesForShop.includes(p.category));');html=html.replace('className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2 text-3d-effect"','className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2"');const injected=`${cacheBustScript}\n${shopBridgeScript}`;html=html.includes('</head>')?html.replace('</head>',`${injected}\n</head>`):`${injected}\n${html}`;res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');res.setHeader('Pragma','no-cache');res.setHeader('Expires','0');return res.type('html').send(html);}catch(error){console.error('[Miele Artigianale] Errore caricamento shop:',error);return res.status(500).send('Errore caricamento pagina.');}};
-const sendPage=(filename)=>(_req,res)=>{res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');return res.sendFile(path.join(__dirname,filename));};
+const GLOBAL_TOOLS_MARKUP="<div class=\"site-tools-bar\" id=\"globalToolsBar\" aria-label=\"Strumenti del sito\"><div class=\"site-tools-inner\"><div class=\"site-tools-note\">Trova subito ciò che cerchi</div><button class=\"global-ape-launch\" id=\"apeChatLaunch\" type=\"button\" aria-label=\"Chiedi a Ape Pelù\"><span class=\"global-ape-icon\">🐝</span><span>Ape Pelù</span></button><div class=\"global-site-search\" id=\"globalSiteSearch\"><div class=\"global-site-search-box\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><input id=\"globalSiteSearchInput\" type=\"search\" placeholder=\"Cerca nel sito...\" autocomplete=\"off\"><button class=\"global-site-search-go\" id=\"globalSiteSearchGo\" type=\"button\" aria-label=\"Avvia la ricerca\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></button></div><div class=\"global-site-search-results\" id=\"globalSiteSearchResults\"></div></div></div></div>";
+const sendPage=(filename)=>(_req,res)=>{
+  res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');
+  if(filename==='shop-v2.html') return res.sendFile(path.join(__dirname,filename));
+  try{
+    let html=fs.readFileSync(path.join(__dirname,filename),'utf8');
+    if(!html.includes('id="globalToolsBar"')){
+      html=html.includes('</header>')?html.replace('</header>','</header>'+GLOBAL_TOOLS_MARKUP):GLOBAL_TOOLS_MARKUP+html;
+    }
+    if(!html.includes('/global-tools-v2.js')){
+      html=html.includes('</body>')?html.replace('</body>','<script src="/global-tools-v2.js?v=20260922-2"></script></body>'):html+'<script src="/global-tools-v2.js?v=20260922-2"></script>';
+    }
+    return res.type('html').send(html);
+  }catch(error){
+    console.error('[Miele Artigianale] Errore caricamento pagina:',filename,error);
+    return res.status(500).send('Errore caricamento pagina.');
+  }
+};
 app.get('/',sendPage('home.html'));app.get('/home',sendPage('home.html'));app.get('/centro',sendPage('centro.html'));app.get('/alveoterapia',sendPage('alveoterapia.html'));app.get('/bacheca',sendPage('bacheca.html'));app.get('/chi-siamo',sendPage('chi-siamo.html'));app.get('/contatti',sendPage('contatti.html'));app.get('/shop',sendPage('shop-v2.html'));app.get('/shop-v2',sendPage('shop-v2.html'));app.get('/shop.html',sendPage('shop-v2.html'));app.get('/index.html',sendPage('shop-v2.html'));app.get('/shop-legacy',(_req,res)=>res.status(410).type('text').send('Archivio shop legacy interno: accesso pubblico disattivato.'));app.use(express.static(__dirname));app.listen(PORT,'0.0.0.0',()=>console.log(`[Miele Artigianale] Server avviato sulla porta ${PORT}.`));
