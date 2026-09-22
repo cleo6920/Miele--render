@@ -964,6 +964,11 @@ async function completeOrderDraft(){
 
   try{
     if(shippingState.cost===null || shippingState.cost===undefined) await calculateShipping();
+
+    if(shippingState.pending){
+      throw new Error(purchaseT('shippingPending')+': '+shippingState.reason);
+    }
+
     const orderId='API-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+String(Date.now()).slice(-5);
     const order={
       id:orderId,
@@ -980,71 +985,64 @@ async function completeOrderDraft(){
       },
       delivery:document.querySelector('input[name="delivery"]:checked')?.value||'courier',
       notes:document.getElementById('coNotes').value.trim(),
-      items:shopV2Cart.map(x=>({id:x.id,qty:x.qty})),
+      items:shopV2Cart.map(x=>({id:x.id,qty:x.qty,name:x.name,price:x.price,size:x.size,points:x.points})),
+      goodsTotal:Number(cartTotal().toFixed(2)),
       shipping:Number(shippingState.cost||0),
-      shippingPending:Boolean(shippingState.pending),
+      shippingPending:false,
       shippingWeightKg:Number(shippingState.weightKg||0),
       shippingZone:shippingState.zone||'',
       shippingReason:shippingState.reason,
+      total:Number((cartTotal()+Number(shippingState.cost||0)).toFixed(2)),
+      points:Number(cartPoints()),
       language:purchaseLanguage()
     };
 
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),20000);
-    let response;
-    try{
-      response=await fetch('/api/order-notification',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(order),
-        signal:controller.signal
-      });
-    }finally{
-      clearTimeout(timeout);
-    }
-    const data=await response.json().catch(()=>null);
-    if(!response.ok || !data?.ok) throw new Error(purchaseT('sendError'));
+    localStorage.setItem('fda-production-pending-order',JSON.stringify(order));
 
-    const authoritative=data.order||{};
-    const savedOrder={
-      ...order,
-      ...authoritative,
-      customer:{...order.customer,...(authoritative.customer||{})},
-      id:data.orderId||authoritative.id||orderId,
-      sent:true,
-      sentAt:new Date().toISOString(),
-      items:Array.isArray(authoritative.items)&&authoritative.items.length
-        ? authoritative.items.map(x=>({...x}))
-        : shopV2Cart.map(x=>({...x})),
-      goodsTotal:Number(authoritative.goodsTotal??cartTotal()),
-      shipping:Number(authoritative.shipping??shippingState.cost??0),
-      shippingPending:Boolean(authoritative.shippingPending??shippingState.pending),
-      shippingWeightKg:Number(authoritative.shippingWeightKg??shippingState.weightKg??0),
-      shippingZone:authoritative.shippingZone??shippingState.zone??'',
-      shippingReason:authoritative.shippingReason??shippingState.reason??'',
-      delivery:authoritative.delivery||order.delivery,
-      total:Number(authoritative.total??(cartTotal()+Number(shippingState.cost||0))),
-      points:Number(authoritative.points??cartPoints()),
-      language:authoritative.language||order.language
+    const payload={
+      items:shopV2Cart.map(x=>({
+        name:purchaseProductName(x.id,x.name),
+        amount:Number(x.price),
+        quantity:Number(x.qty)
+      })),
+      xpayCart:shopV2Cart.map(x=>({
+        productId:x.id,
+        productName:x.name,
+        pricePerPack:Number(x.price),
+        quantity:Number(x.qty)
+      })),
+      shippingCostOverride:Number(shippingState.cost||0),
+      customer:{
+        name:order.customer.name,
+        email:order.customer.email,
+        phone:order.customer.phone,
+        address:order.customer.address,
+        postal_code:order.customer.cap,
+        city:order.customer.city,
+        state:order.customer.province
+      },
+      email:order.customer.email,
+      notes:'ORDER:'+order.id+(order.notes?' | '+order.notes:'')
     };
-    let orders=[];try{orders=JSON.parse(localStorage.getItem(SHOP_V2_ORDERS_KEY)||'[]')||[];}catch(_){}
-    orders.unshift(savedOrder);localStorage.setItem(SHOP_V2_ORDERS_KEY,JSON.stringify(orders.slice(0,20)));
 
-    lastSuccessfulOrder=savedOrder;
-    document.getElementById('successOrder').textContent=purchaseT('orderCode')+' '+savedOrder.id;
-    document.getElementById('successPoints').textContent=savedOrder.points;
-    shopV2Cart=[];saveV2Cart();
-    applyPurchaseLanguage();
-    showCheckoutStep(5);
-  }catch(error){
-    if(error?.name==='AbortError'){
-      statusBox.textContent=purchaseT('timeout');
-    }else if(String(error?.message||'').toLowerCase().includes('failed to fetch')){
-      statusBox.textContent=purchaseT('network');
-    }else{
-      statusBox.textContent=error?.message||purchaseT('sendError');
+    const response=await fetch('/api/create-checkout-session',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data=await response.json().catch(()=>null);
+
+    if(!response.ok || !data?.url){
+      throw new Error(data?.error||purchaseT('sendError'));
     }
-  }finally{
+
+    if(data.testMode===true){
+      throw new Error('Configurazione pagamento non valida: il sito ufficiale non può usare la modalità TEST.');
+    }
+
+    window.location.href=data.url;
+  }catch(error){
+    statusBox.textContent=error?.message||purchaseT('sendError');
     confirmBtn.disabled=false;
     confirmBtn.textContent=oldLabel;
   }
