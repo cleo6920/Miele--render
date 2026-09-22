@@ -1117,6 +1117,24 @@ function apeAddContextLink(action){
   apeChatMessages.scrollTop=apeChatMessages.scrollHeight;
 }
 
+function findPrimaryOfficialProductContext(reply){
+  const raw=String(reply||'');
+  const firstBlock=raw.split(/\n\s*\n/)[0].slice(0,900);
+  const hay=officialProductContextNormalize(firstBlock);
+  let best=null;
+  for(const product of SHOP_OFFICIAL_PRODUCTS){
+    const candidates=[product.name,...(SHOP_OFFICIAL_PRODUCT_ALIASES[product.id]||[])];
+    for(const rawCandidate of candidates){
+      const candidate=officialProductContextNormalize(rawCandidate);
+      if(candidate.length<4)continue;
+      const pos=hay.indexOf(candidate);
+      if(pos<0)continue;
+      if(!best || pos<best.pos || (pos===best.pos && candidate.length>best.length)) best={product,pos,length:candidate.length};
+    }
+  }
+  return best?.product||null;
+}
+
 function apeContextActionFromText(message,reply){
   const l=apeCurrentLanguage();
   const normalize=(v)=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
@@ -1136,7 +1154,7 @@ function apeContextActionFromText(message,reply){
 
   const exactMessage=findOfficialProductContext(messageText);
   if(exactMessage){
-    const prefix={it:'Vai a',en:'Go to',de:'Zum Produkt',fr:'Voir',es:'Ir a'}[l]||'Vai a';
+    const prefix={it:'Scopri',en:'Discover',de:'Entdecke',fr:'Découvrir',es:'Descubrir'}[l]||'Scopri';
     return {href:'/shop#prodotto-'+exactMessage.id,label:prefix+' '+exactMessage.name};
   }
 
@@ -1146,10 +1164,16 @@ function apeContextActionFromText(message,reply){
   if(hasMsg('miele alla pesca','miele di pesca','miel al melocoton','peach honey','pfirsichhonig'))return {href:'/shop#miele-pesca',label:L.pesca};
   if(hasMsg("miele all'arancia",'miele di arancia','miel a la naranja','orange honey','orangenhonig'))return {href:'/shop#miele-arancia',label:L.arancia};
 
+  const primaryReplyProduct=findPrimaryOfficialProductContext(reply);
+  if(primaryReplyProduct){
+    const prefix={it:'Scopri',en:'Discover',de:'Entdecke',fr:'Découvrir',es:'Descubrir'}[l]||'Scopri';
+    return {href:'/shop#prodotto-'+primaryReplyProduct.id,label:prefix+' '+primaryReplyProduct.name};
+  }
+
   const replyProducts=findOfficialProductsContext(replyText);
   if(replyProducts.length===1){
     const exact=replyProducts[0];
-    const prefix={it:'Vai a',en:'Go to',de:'Zum Produkt',fr:'Voir',es:'Ir a'}[l]||'Vai a';
+    const prefix={it:'Scopri',en:'Discover',de:'Entdecke',fr:'Découvrir',es:'Descubrir'}[l]||'Scopri';
     return {href:'/shop#prodotto-'+exact.id,label:prefix+' '+exact.name};
   }
 
@@ -1160,7 +1184,7 @@ function apeContextActionFromText(message,reply){
   if(hasMsg('bacheca','news','novedades','actualites','aktuelles'))return {href:'/bacheca',label:L.bacheca};
   if(hasMsg('linea veleni','bee venom line','bienengift-linie',"ligne venin d'abeille",'linea veneno de abeja'))return {href:'/shop#linea-veleni',label:L.veleni};
   if(hasMsg('alveoterapia integrata','integrated alveotherapy','integrierte alveotherapie','alveotherapie integree','alveoterapia integrada'))return {href:'/alveoterapia',label:L.alveoterapia};
-  if(hasMsg('miele','mieli','honey','honeys','honig','miel','miels'))return {href:'/shop#mieli',label:L.mieli};
+  if(replyProducts.length===0 && hasMsg('miele','mieli','honey','honeys','honig','miel','miels'))return {href:'/shop#mieli',label:L.mieli};
   return null;
 }
 function apeNormalize(text){
@@ -1644,7 +1668,7 @@ async function apeAsk(text){
     if(res.ok && data?.ok && data?.reply){
       apeChatHistory.push({role:'assistant',content:data.reply});
       apeAddMessage(apeRenderAi(data.reply),'bot');
-      const contextualAction=data.suppressAction?null:(apeContextActionFromText(value,data.reply)||data.action);
+      const contextualAction=data.suppressAction?null:(data.action||apeContextActionFromText(value,data.reply));
       if(contextualAction)apeAddContextLink(contextualAction);
       return;
     }
