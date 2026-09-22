@@ -1107,6 +1107,7 @@ function openProductDetail(id){
   productDetailOverlay.classList.add('open');
   productDetailOverlay.setAttribute('aria-hidden','false');
   document.body.style.overflow='hidden';
+  if(window.fdaTranslateNow) window.fdaTranslateNow(productDetailOverlay);
   setTimeout(()=>productDetailClose.focus(),40);
 }
 
@@ -2008,6 +2009,6 @@ applyPurchaseLanguage();
 renderV2Cart();
 </script>
 
-<script src="/render-language-de-test.js?v=20260922-4"></script>
+<script src="/render-language-de-test.js?v=20260922-5"></script>
 </body>
 </html>
