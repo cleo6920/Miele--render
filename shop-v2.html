@@ -690,7 +690,7 @@ img{display:block;max-width:100%}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="/shop-purchase-i18n.js?v=20260922-7"></script>
+<script src="/shop-purchase-i18n.js?v=20260922-8"></script>
 <script>
 const SHOP_V2_CART_KEY='fda-shop-v2-cart';
 const SHOP_V2_ORDERS_KEY='fda-shop-order-drafts';
@@ -909,7 +909,7 @@ async function validStepOne(){
     document.getElementById('coPhone').value=phoneData.national;
     document.getElementById('coPhone').dataset.e164=phoneData.e164;
   }catch(_){alert(purchaseT('invalidPhone'));return false;}
-  if(!/[A-Za-zÀ-ÿ]/.test(address) || !/\d/.test(address)){
+  if(!/\p{L}/u.test(address) || address.trim().length<3){
     alert(purchaseT('invalidAddress'));
     return false;
   }
