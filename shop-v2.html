@@ -634,11 +634,11 @@ img{display:block;max-width:100%}
         <div class="form-grid">
           <div class="field"><label>Nome e cognome *</label><input id="coName" autocomplete="name"></div>
           <div class="field"><label>Email *</label><input id="coEmail" type="email" autocomplete="email"></div>
-          <div class="field"><label>Paese di consegna *</label><select id="coCountry" autocomplete="country"><option value="">Seleziona Paese</option><option value="IT">Italia</option><option value="ES">España</option><option value="FR">France</option><option value="DE">Deutschland</option></select></div>
+          <div class="field"><label>Paese di consegna *</label><select id="coCountry" autocomplete="country"><option value="">Seleziona Paese</option></select></div>
           <div class="field"><label>Telefono *</label><input id="coPhone" autocomplete="tel"></div>
           <div class="field"><label>Comune / Città *</label><input id="coCity" autocomplete="address-level2"></div>
           <div class="field full"><label>Via e numero civico *</label><input id="coAddress" autocomplete="street-address"></div>
-          <div class="field"><label>CAP / Codice postale *</label><input id="coCap" inputmode="numeric" maxlength="12"></div>
+          <div class="field"><label>CAP / Codice postale *</label><input id="coCap" maxlength="12" autocomplete="postal-code"></div>
           <div class="field"><label>Provincia / Regione</label><input id="coProvince" maxlength="80" placeholder="es. MN / Madrid"></div>
         </div>
         <div class="checkout-actions"><button class="next-btn" type="button" data-next="2">Continua →</button></div>
@@ -686,7 +686,7 @@ img{display:block;max-width:100%}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="/shop-purchase-i18n.js?v=20260922-3"></script>
+<script src="/shop-purchase-i18n.js?v=20260922-4"></script>
 <script>
 const SHOP_V2_CART_KEY='fda-shop-v2-cart';
 const SHOP_V2_ORDERS_KEY='fda-shop-order-drafts';
@@ -877,13 +877,16 @@ async function validStepOne(){
 
   const cap=document.getElementById('coCap').value.trim();
   const address=document.getElementById('coAddress').value.trim();
-  if(!/^\d{5}$/.test(cap)){alert(purchaseT('invalidCap'));return false;}
   const country=document.getElementById('coCountry').value;
+  if(country==='IT' ? !/^\d{5}$/.test(cap) : !/^[A-Za-z0-9][A-Za-z0-9 -]{1,11}$/.test(cap)){alert(purchaseT('invalidCap'));return false;}
   const province=document.getElementById('coProvince').value.trim();
   if(country==='IT' && !/^[A-Za-z]{2}$/.test(province)){alert(purchaseT('invalidProvince'));return false;}
-  const normalizedPhone=purchaseNormalizePhone(document.getElementById('coPhone').value,country);
-  if(!normalizedPhone){alert(purchaseT('invalidPhone'));return false;}
-  document.getElementById('coPhone').value=normalizedPhone;
+  try{
+    const phoneRes=await fetch('/api/phone-normalize?'+new URLSearchParams({country,phone:document.getElementById('coPhone').value.trim()}).toString(),{cache:'no-store'});
+    const phoneData=await phoneRes.json().catch(()=>null);
+    if(!phoneRes.ok||!phoneData?.ok||!phoneData?.e164){alert(purchaseT('invalidPhone'));return false;}
+    document.getElementById('coPhone').value=phoneData.e164;
+  }catch(_){alert(purchaseT('invalidPhone'));return false;}
   if(!/[A-Za-zÀ-ÿ]/.test(address) || !/\d/.test(address)){
     alert(purchaseT('invalidAddress'));
     return false;
