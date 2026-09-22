@@ -969,62 +969,54 @@ app.get('/api/local-delivery-check', async (req, res) => {
       if(!address || !city || !cap){
         return res.status(400).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Indirizzo, città e codice postale sono obbligatori.'});
       }
-      if(!/[A-Za-zÀ-ÿ]/.test(address) || !/\d/.test(address)){
-        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Inserisci il nome della via e il numero civico.'});
+      if(!/\p{L}/u.test(address) || address.trim().length<3){
+        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Inserisci un indirizzo di consegna valido.'});
       }
       if(!/^[A-Za-z0-9][A-Za-z0-9 -]{1,11}$/.test(cap)){
         return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Codice postale non valido.'});
       }
-      const cfg=ORDER_COUNTRIES[country];
-      const headers={'Accept':'application/json','User-Agent':'LaFabbricaDelleApi/1.0 international-address-validator'};
-      const structured=new URLSearchParams({
-        format:'json',
-        addressdetails:'1',
-        limit:'8',
-        countrycodes:cfg.nominatim,
-        street:address,
-        city,
-        postalcode:cap
-      });
-      let geoResponse=await fetch('https://nominatim.openstreetmap.org/search?'+structured.toString(),{headers});
-      if(!geoResponse.ok){
-        return res.status(502).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Servizio di verifica indirizzo temporaneamente non disponibile.'});
-      }
-      let results=await geoResponse.json();
 
-      if(!Array.isArray(results) || !results.length){
-        const query=[address,cap,city,province].filter(Boolean).join(', ');
-        const fallbackQs=new URLSearchParams({
-          format:'json',
-          addressdetails:'1',
-          limit:'8',
-          countrycodes:cfg.nominatim,
-          q:query
+      // Per gli ordini esteri il geocodificatore è solo una verifica aggiuntiva:
+      // non deve impedire un ordine valido se il provider non trova l'indirizzo.
+      let geocoded=false, lat=null, lon=null;
+      try{
+        const cfg=ORDER_COUNTRIES[country];
+        const headers={'Accept':'application/json','User-Agent':'LaFabbricaDelleApi/1.0 international-address-validator'};
+        const structured=new URLSearchParams({
+          format:'json',addressdetails:'1',limit:'8',countrycodes:cfg.nominatim,
+          street:address,city,postalcode:cap
         });
-        geoResponse=await fetch('https://nominatim.openstreetmap.org/search?'+fallbackQs.toString(),{headers});
-        if(geoResponse.ok) results=await geoResponse.json();
-      }
-
-      const cityNorm=normalizePlace(city);
-      const match=(Array.isArray(results)?results:[]).find(item=>{
-        const a=item.address||{};
-        const display=normalizePlace(item.display_name||'');
-        const cities=[a.city,a.town,a.village,a.municipality,a.county,a.state].filter(Boolean).map(normalizePlace);
-        const cityOk=cities.some(v=>v===cityNorm||v.includes(cityNorm)||cityNorm.includes(v))||display.includes(cityNorm);
+        let geoResponse=await fetch('https://nominatim.openstreetmap.org/search?'+structured.toString(),{headers});
+        let results=geoResponse.ok?await geoResponse.json():[];
+        if(!Array.isArray(results)||!results.length){
+          const fallbackQs=new URLSearchParams({
+            format:'json',addressdetails:'1',limit:'8',countrycodes:cfg.nominatim,
+            q:[address,cap,city,province].filter(Boolean).join(', ')
+          });
+          geoResponse=await fetch('https://nominatim.openstreetmap.org/search?'+fallbackQs.toString(),{headers});
+          if(geoResponse.ok) results=await geoResponse.json();
+        }
+        const cityNorm=normalizePlace(city);
         const normPost=v=>String(v||'').toUpperCase().replace(/[\s-]+/g,'');
-        const postcode=normPost(a.postcode||'');
-        const capOk=!postcode||postcode===normPost(cap);
-        return cityOk&&capOk;
-      });
-      if(!match){
-        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Non riesco a verificare questo indirizzo internazionale. Controlla via, numero, codice postale, città e Paese.'});
-      }
+        const match=(Array.isArray(results)?results:[]).find(item=>{
+          const a=item.address||{};
+          const display=normalizePlace(item.display_name||'');
+          const cities=[a.city,a.town,a.village,a.municipality,a.county,a.state].filter(Boolean).map(normalizePlace);
+          const cityOk=cities.some(v=>v===cityNorm||v.includes(cityNorm)||cityNorm.includes(v))||display.includes(cityNorm);
+          const postcode=normPost(a.postcode||'');
+          const capOk=!postcode||postcode===normPost(cap);
+          return cityOk&&capOk;
+        });
+        if(match){
+          geocoded=true; lat=Number(match.lat); lon=Number(match.lon);
+        }
+      }catch(_){}
+
       return res.json({
         ok:true,eligible:false,international:true,validAddressPair:true,validFullAddress:true,
-        country,countryName:cfg.name,lat:Number(match.lat),lon:Number(match.lon)
+        country,countryName:ORDER_COUNTRIES[country].name,geocoded,lat,lon
       });
     }
-
     if (!address || !city || !cap || !province) {
       return res.status(400).json({
         ok:false,
