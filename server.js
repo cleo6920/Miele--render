@@ -58,7 +58,14 @@ const ORDER_COUNTRIES={
   TR:{name:"Turchia",nominatim:"tr"},
   UA:{name:"Ucraina",nominatim:"ua"},
   GB:{name:"Regno Unito",nominatim:"gb"},
-  VA:{name:"Città del Vaticano",nominatim:"va"}
+  VA:{name:"Città del Vaticano",nominatim:"va"},
+  AX:{name:"Isole Åland",nominatim:"ax"},
+  FO:{name:"Isole Faroe",nominatim:"fo"},
+  GI:{name:"Gibilterra",nominatim:"gi"},
+  GG:{name:"Guernsey",nominatim:"gg"},
+  IM:{name:"Isola di Man",nominatim:"im"},
+  JE:{name:"Jersey",nominatim:"je"},
+  SJ:{name:"Svalbard e Jan Mayen",nominatim:"sj"}
 };
 
 /*
@@ -965,6 +972,44 @@ function normalizeEuropeanText(value){
     .trim();
 }
 
+function validateEuropeanAddressShape({address,city,cap,country}){
+  const cc=String(country||'').trim().toUpperCase();
+  const a=normalizeEuropeanText(address);
+  const c=normalizeEuropeanText(city);
+  const p=normalizeEuropeanPostal(cap);
+  if(!ORDER_COUNTRIES[cc]) return {ok:false,reason:'country'};
+  if(!a || !c || !p) return {ok:false,reason:'missing'};
+  if(!/\p{L}/u.test(a) || a.length<3) return {ok:false,reason:'address'};
+  if(!/\p{L}/u.test(c) || c.length<2) return {ok:false,reason:'city'};
+  if(!validEuropeanPostal(p,cc)) return {ok:false,reason:'postal'};
+  return {ok:true,address:a,city:c,cap:p,country:cc};
+}
+
+function runEuropeanCheckoutSelfTest(){
+  const samples=[
+    {country:'ES',address:'Calle de Alcalá 120',city:'madrid',cap:'28009'},
+    {country:'NL',address:'Damrak 1',city:'AMSTERDAM',cap:'1012 js'},
+    {country:'GB',address:'Downing Street 10',city:'London',cap:'sw1a 2aa'},
+    {country:'IE',address:"O'Connell Street 1",city:'Dublin',cap:'D01 F5P2'},
+    {country:'PL',address:'Nowy Świat 1',city:'warszawa',cap:'00-001'},
+    {country:'AL',address:'Rruga e Durrësit 1',city:'Tiranë',cap:'1001'},
+    {country:'LI',address:'Städtle 1',city:'Vaduz',cap:'9490'},
+    {country:'PT',address:'Rua Augusta 1',city:'Lisboa',cap:'1100-053'},
+    {country:'SE',address:'Drottninggatan 1',city:'Stockholm',cap:'111 51'},
+    {country:'MD',address:'Strada Ștefan cel Mare 1',city:'Chișinău',cap:'MD-2001'},
+    {country:'AD',address:'Avinguda Meritxell 1',city:'Andorra la Vella',cap:'AD500'},
+    {country:'GR',address:'Ermou 1',city:'Αθήνα',cap:'105 63'},
+    {country:'CZ',address:'Václavské náměstí 1',city:'Praha',cap:'110 00'},
+    {country:'FI',address:'Mannerheimintie 1',city:'Helsinki',cap:'00100'},
+    {country:'CH',address:'Bahnhofstrasse 1',city:'Zürich',cap:'8001'},
+    {country:'AX',address:'Torggatan 1',city:'Mariehamn',cap:'22100'},
+    {country:'GI',address:'Main Street 1',city:'Gibraltar',cap:'GX11 1AA'}
+  ];
+  const failed=samples.filter(x=>!validateEuropeanAddressShape(x).ok);
+  if(failed.length) console.error('[Checkout Europe] Self-test FALLITO:',failed);
+  else console.log('[Checkout Europe] Self-test OK:',samples.length+'/'+samples.length,'formati indirizzo europei');
+}
+
 function normalizePlace(value) {
   return String(value || '')
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -988,14 +1033,10 @@ app.get('/api/local-delivery-check', async (req, res) => {
     }
 
     if(country!=='IT'){
-      if(!address || !city || !cap){
-        return res.status(400).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Indirizzo, città e codice postale sono obbligatori.'});
-      }
-      if(!/\p{L}/u.test(address) || address.length<3 || !/\p{L}/u.test(city) || city.length<2){
-        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Inserisci un indirizzo e una città validi.'});
-      }
-      if(!validEuropeanPostal(cap,country)){
-        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Codice postale non valido.'});
+      const shape=validateEuropeanAddressShape({address,city,cap,country});
+      if(!shape.ok){
+        const error=shape.reason==='postal'?'Codice postale non valido.':shape.reason==='country'?'Paese non supportato.':'Inserisci un indirizzo e una città validi.';
+        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error});
       }
 
       // Per gli ordini esteri il geocodificatore è solo una verifica aggiuntiva:
@@ -1422,4 +1463,4 @@ const sendPage=(filename)=>(_req,res)=>{
     return res.status(500).send('Errore caricamento pagina.');
   }
 };
-app.get('/',sendPage('home.html'));app.get('/home',sendPage('home.html'));app.get('/centro',sendPage('centro.html'));app.get('/alveoterapia',sendPage('alveoterapia.html'));app.get('/bacheca',sendPage('bacheca.html'));app.get('/chi-siamo',sendPage('chi-siamo.html'));app.get('/contatti',sendPage('contatti.html'));app.get('/shop',sendPage('shop-v2.html'));app.get('/shop-v2',sendPage('shop-v2.html'));app.get('/shop.html',sendPage('shop-v2.html'));app.get('/index.html',sendPage('shop-v2.html'));app.get('/shop-legacy',(_req,res)=>res.status(410).type('text').send('Archivio shop legacy interno: accesso pubblico disattivato.'));app.use(express.static(__dirname));app.listen(PORT,'0.0.0.0',()=>console.log(`[Miele Artigianale] Server avviato sulla porta ${PORT}.`));
+app.get('/',sendPage('home.html'));app.get('/home',sendPage('home.html'));app.get('/centro',sendPage('centro.html'));app.get('/alveoterapia',sendPage('alveoterapia.html'));app.get('/bacheca',sendPage('bacheca.html'));app.get('/chi-siamo',sendPage('chi-siamo.html'));app.get('/contatti',sendPage('contatti.html'));app.get('/shop',sendPage('shop-v2.html'));app.get('/shop-v2',sendPage('shop-v2.html'));app.get('/shop.html',sendPage('shop-v2.html'));app.get('/index.html',sendPage('shop-v2.html'));app.get('/shop-legacy',(_req,res)=>res.status(410).type('text').send('Archivio shop legacy interno: accesso pubblico disattivato.'));app.use(express.static(__dirname));runEuropeanCheckoutSelfTest();app.listen(PORT,'0.0.0.0',()=>console.log(`[Miele Artigianale] Server avviato sulla porta ${PORT}.`));
