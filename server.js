@@ -976,15 +976,35 @@ app.get('/api/local-delivery-check', async (req, res) => {
         return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Codice postale non valido.'});
       }
       const cfg=ORDER_COUNTRIES[country];
-      const query=[address,cap,city,province,cfg.name].filter(Boolean).join(', ');
-      const qs=new URLSearchParams({format:'json',addressdetails:'1',limit:'8',countrycodes:cfg.nominatim,q:query});
-      const geoResponse=await fetch('https://nominatim.openstreetmap.org/search?'+qs.toString(),{
-        headers:{'Accept':'application/json','User-Agent':'LaFabbricaDelleApi/1.0 international-address-validator'}
+      const headers={'Accept':'application/json','User-Agent':'LaFabbricaDelleApi/1.0 international-address-validator'};
+      const structured=new URLSearchParams({
+        format:'json',
+        addressdetails:'1',
+        limit:'8',
+        countrycodes:cfg.nominatim,
+        street:address,
+        city,
+        postalcode:cap
       });
+      let geoResponse=await fetch('https://nominatim.openstreetmap.org/search?'+structured.toString(),{headers});
       if(!geoResponse.ok){
         return res.status(502).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Servizio di verifica indirizzo temporaneamente non disponibile.'});
       }
-      const results=await geoResponse.json();
+      let results=await geoResponse.json();
+
+      if(!Array.isArray(results) || !results.length){
+        const query=[address,cap,city,province].filter(Boolean).join(', ');
+        const fallbackQs=new URLSearchParams({
+          format:'json',
+          addressdetails:'1',
+          limit:'8',
+          countrycodes:cfg.nominatim,
+          q:query
+        });
+        geoResponse=await fetch('https://nominatim.openstreetmap.org/search?'+fallbackQs.toString(),{headers});
+        if(geoResponse.ok) results=await geoResponse.json();
+      }
+
       const cityNorm=normalizePlace(city);
       const match=(Array.isArray(results)?results:[]).find(item=>{
         const a=item.address||{};
