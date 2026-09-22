@@ -2,11 +2,18 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const nodemailer = require('nodemailer');
+const { parsePhoneNumberFromString } = require('libphonenumber-js');
 const createCheckoutSession = require('./api/create-checkout-session');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const IMAGE_VERSION = '20260827-13';
+const ORDER_COUNTRIES={
+  IT:{name:'Italia',nominatim:'it'},
+  ES:{name:'Spagna',nominatim:'es'},
+  FR:{name:'Francia',nominatim:'fr'},
+  DE:{name:'Germania',nominatim:'de'}
+};
 
 try {
   const encodedImagePath = path.join(__dirname, 'images', 'centro-porticato-home-fixed.txt');
@@ -192,20 +199,28 @@ function allowOrderMail(req){
 }
 function parseOrderPayload(body){
   const customer=body?.customer||{};
+  const country=cleanOrderText(customer.country,2).toUpperCase();
+  if(!ORDER_COUNTRIES[country]) throw new Error('Paese di consegna non supportato.');
   const parsedCustomer={
     name:cleanOrderText(customer.name,120),
     email:cleanOrderText(customer.email,180).toLowerCase(),
     phone:cleanOrderText(customer.phone,80),
     city:cleanOrderText(customer.city,120),
     address:cleanOrderText(customer.address,180),
-    cap:cleanOrderText(customer.cap,10),
-    province:cleanOrderText(customer.province,10).toUpperCase()
+    cap:cleanOrderText(customer.cap,12),
+    province:cleanOrderText(customer.province,80),
+    country,
+    countryName:ORDER_COUNTRIES[country].name
   };
-  if(!parsedCustomer.name || !parsedCustomer.phone || !parsedCustomer.city || !parsedCustomer.address || !parsedCustomer.cap || !parsedCustomer.province){
+  if(country==='IT') parsedCustomer.province=parsedCustomer.province.toUpperCase();
+  if(!parsedCustomer.name || !parsedCustomer.phone || !parsedCustomer.city || !parsedCustomer.address || !parsedCustomer.cap || (country==='IT'&&!parsedCustomer.province)){
     throw new Error('Dati cliente incompleti.');
   }
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parsedCustomer.email)) throw new Error('Email cliente non valida.');
-  if(!/^\d{5}$/.test(parsedCustomer.cap)) throw new Error('CAP non valido.');
+  if(!/^\d{5}$/.test(parsedCustomer.cap)) throw new Error('Codice postale non valido.');
+  const phoneObj=parsePhoneNumberFromString(parsedCustomer.phone,country);
+  if(!phoneObj || !phoneObj.isValid()) throw new Error('Numero di telefono non valido per il Paese selezionato.');
+  parsedCustomer.phone=phoneObj.number;
 
   const rawItems=Array.isArray(body?.items)?body.items:[];
   if(!rawItems.length || rawItems.length>40) throw new Error('Prodotti ordine non validi.');
@@ -229,9 +244,11 @@ function parseOrderPayload(body){
   const goodsTotal=items.reduce((sum,item)=>sum+item.subtotal,0);
   const points=items.reduce((sum,item)=>sum+(item.points*item.qty),0);
   const delivery=body?.delivery==='pickup'?'pickup':'courier';
+  const shippingPending=body?.shippingPending===true;
   let shipping=Number(body?.shipping);
   if(!Number.isFinite(shipping) || shipping<0 || shipping>50) shipping=0;
   shipping=Math.round(shipping*100)/100;
+  if(shippingPending) shipping=0;
   const shippingReason=cleanOrderText(body?.shippingReason,220);
   const notes=cleanOrderText(body?.notes,1200);
   const clientReference=/^API-\d{8}-\d{5,8}$/.test(String(body?.id||''))?String(body.id):'API-'+Date.now();
@@ -244,6 +261,7 @@ function parseOrderPayload(body){
     items,
     goodsTotal,
     shipping,
+    shippingPending,
     shippingReason,
     total:goodsTotal+shipping,
     points
@@ -273,7 +291,7 @@ function buildOrderMail(order){
           <strong>${escapeOrderHtml(order.customer.name)}</strong><br>
           Email: <a href="mailto:${escapeOrderHtml(order.customer.email)}">${escapeOrderHtml(order.customer.email)}</a><br>
           Telefono: ${escapeOrderHtml(order.customer.phone)}<br>
-          Indirizzo: ${escapeOrderHtml(order.customer.address)}, ${escapeOrderHtml(order.customer.cap)} ${escapeOrderHtml(order.customer.city)} (${escapeOrderHtml(order.customer.province)})
+          Indirizzo: ${escapeOrderHtml(order.customer.address)}, ${escapeOrderHtml(order.customer.cap)} ${escapeOrderHtml(order.customer.city)}${order.customer.province?' ('+escapeOrderHtml(order.customer.province)+')':''}, ${escapeOrderHtml(order.customer.countryName)}
         </p>
 
         <h2 style="font-size:18px;margin:0 0 12px">Prodotti</h2>
@@ -290,8 +308,8 @@ function buildOrderMail(order){
 
         <div style="margin-top:20px;font-size:15px;line-height:1.8;text-align:right">
           Prodotti: <strong>${euroOrder(order.goodsTotal)}</strong><br>
-          Spedizione: <strong>${euroOrder(order.shipping)}</strong><br>
-          <span style="font-size:20px">Totale: <strong>${euroOrder(order.total)}</strong></span><br>
+          Spedizione: <strong>${order.shippingPending?'DA CONFERMARE':euroOrder(order.shipping)}</strong><br>
+          <span style="font-size:20px">${order.shippingPending?'Totale prodotti':'Totale'}: <strong>${euroOrder(order.total)}</strong></span><br>
           <span style="color:#7a5a0a">🐝 Punti Ape: <strong>${order.points}</strong></span>
         </div>
       </div>
@@ -306,7 +324,7 @@ function buildOrderMail(order){
     order.customer.name,
     order.customer.email,
     order.customer.phone,
-    order.customer.address+', '+order.customer.cap+' '+order.customer.city+' ('+order.customer.province+')',
+    order.customer.address+', '+order.customer.cap+' '+order.customer.city+(order.customer.province?' ('+order.customer.province+')':'')+', '+order.customer.countryName,
     '',
     'PRODOTTI',
     ...order.items.map(i=>'- '+i.name+' | '+i.size+' | q.tà '+i.qty+' | '+euroOrder(i.subtotal)),
@@ -315,8 +333,8 @@ function buildOrderMail(order){
     'Dettaglio spedizione: '+(order.shippingReason||'—'),
     'Note: '+(order.notes||'Nessuna nota'),
     'Prodotti: '+euroOrder(order.goodsTotal),
-    'Spedizione: '+euroOrder(order.shipping),
-    'Totale: '+euroOrder(order.total),
+    'Spedizione: '+(order.shippingPending?'DA CONFERMARE':euroOrder(order.shipping)),
+    (order.shippingPending?'Totale prodotti: ':'Totale: ')+euroOrder(order.total),
     'Punti Ape: '+order.points
   ].join('\n');
   return {html,text};
@@ -772,7 +790,52 @@ app.get('/api/local-delivery-check', async (req, res) => {
     const address = String(req.query.address || '').trim();
     const city = String(req.query.city || '').trim();
     const cap = String(req.query.cap || '').trim();
-    const province = String(req.query.province || '').trim().toUpperCase();
+    const country = String(req.query.country || 'IT').trim().toUpperCase();
+    const provinceRaw = String(req.query.province || '').trim();
+    const province = country==='IT' ? provinceRaw.toUpperCase() : provinceRaw;
+
+    if(!ORDER_COUNTRIES[country]){
+      return res.status(422).json({ok:false,eligible:false,validFullAddress:false,error:'Paese di consegna non supportato.'});
+    }
+
+    if(country!=='IT'){
+      if(!address || !city || !cap){
+        return res.status(400).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Indirizzo, città e codice postale sono obbligatori.'});
+      }
+      if(!/[A-Za-zÀ-ÿ]/.test(address) || !/\d/.test(address)){
+        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Inserisci il nome della via e il numero civico.'});
+      }
+      if(!/^\d{5}$/.test(cap)){
+        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Il codice postale deve essere composto da 5 cifre.'});
+      }
+      const cfg=ORDER_COUNTRIES[country];
+      const query=[address,cap,city,province,cfg.name].filter(Boolean).join(', ');
+      const qs=new URLSearchParams({format:'json',addressdetails:'1',limit:'8',countrycodes:cfg.nominatim,q:query});
+      const geoResponse=await fetch('https://nominatim.openstreetmap.org/search?'+qs.toString(),{
+        headers:{'Accept':'application/json','User-Agent':'LaFabbricaDelleApi/1.0 international-address-validator'}
+      });
+      if(!geoResponse.ok){
+        return res.status(502).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Servizio di verifica indirizzo temporaneamente non disponibile.'});
+      }
+      const results=await geoResponse.json();
+      const cityNorm=normalizePlace(city);
+      const match=(Array.isArray(results)?results:[]).find(item=>{
+        const a=item.address||{};
+        const display=normalizePlace(item.display_name||'');
+        const cities=[a.city,a.town,a.village,a.municipality,a.county,a.state].filter(Boolean).map(normalizePlace);
+        const cityOk=cities.some(v=>v===cityNorm||v.includes(cityNorm)||cityNorm.includes(v))||display.includes(cityNorm);
+        const postcode=String(a.postcode||'');
+        const capOk=!postcode||postcode===cap;
+        return cityOk&&capOk;
+      });
+      if(!match){
+        return res.status(422).json({ok:false,eligible:false,international:true,validFullAddress:false,error:'Non riesco a verificare questo indirizzo internazionale. Controlla via, numero, codice postale, città e Paese.'});
+      }
+      return res.json({
+        ok:true,eligible:false,international:true,validAddressPair:true,validFullAddress:true,
+        country,countryName:cfg.name,lat:Number(match.lat),lon:Number(match.lon)
+      });
+    }
 
     if (!address || !city || !cap || !province) {
       return res.status(400).json({
