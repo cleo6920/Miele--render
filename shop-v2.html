@@ -18,7 +18,7 @@ img{display:block;max-width:100%}
 .wrap{width:min(1200px,calc(100% - 40px));margin:auto}
 .serif{font-family:Georgia,'Times New Roman',serif}
 .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:#a36c11}
-.top{position:sticky;top:0;z-index:50;background:rgba(7,27,21,.94);backdrop-filter:blur(12px);color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+.top{display:none}
 .nav{width:min(1280px,calc(100% - 28px));margin:auto;display:flex;align-items:center;gap:22px;padding:11px 0}
 .brand{display:flex;align-items:center;gap:10px;font-weight:900;white-space:nowrap}
 .brand-mark{width:38px;height:38px;border-radius:14px;background:var(--gold);display:grid;place-items:center;color:var(--deep)}
@@ -154,12 +154,12 @@ img{display:block;max-width:100%}
 .footer{background:#071b15;color:#dce5df;padding:52px 0}
 .footer-grid{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:30px}
 .footer h3{color:#f1c55f;margin-top:0}.footer a{display:block;margin:7px 0}
-.project-bar{position:sticky;top:61px;z-index:45;background:#10392c;color:#fff;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08)}
+.project-bar{position:sticky;top:68px;z-index:45;background:#10392c;color:#fff;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08)}
 .project-bar .wrap{display:flex;align-items:center;gap:10px;overflow:visible;padding:8px 0;position:relative}
 .project-links{display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1}
 .project-links::-webkit-scrollbar{display:none}
 .project-links a{white-space:nowrap;font-size:12px;font-weight:850;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10)}
-.project-links a:last-child{background:var(--gold);color:#152119;border-color:transparent}
+.project-links a:first-child{background:var(--gold);color:#152119;border-color:transparent}
 .site-search{position:relative;flex:0 0 clamp(220px,24vw,310px);z-index:72}
 .site-search-box{height:38px;display:flex;align-items:center;gap:8px;border-radius:999px;background:#fff;color:#173126;border:1px solid rgba(255,255,255,.55);box-shadow:0 4px 14px rgba(0,0,0,.12);padding:0 7px 0 13px}
 .site-search-box svg{width:17px;height:17px;flex:0 0 17px;color:#31594b}
@@ -177,6 +177,7 @@ img{display:block;max-width:100%}
 .site-search-empty{padding:13px 12px;color:#66736c;font-size:12px;line-height:1.4}
 .site-search-hint{padding:6px 11px 4px;color:#8a7760;font-size:10px;border-top:1px solid #eadfcd;margin-top:4px}
 @media(max-width:760px){
+ .project-bar{position:relative;top:auto}
  .project-bar .wrap{flex-wrap:wrap;gap:7px;padding:7px 0 9px}
  .project-links{flex:1 1 100%;order:1}
  .site-search{flex:1 1 100%;order:2}
@@ -263,11 +264,36 @@ img{display:block;max-width:100%}
  .feature-copy{padding:52px 24px}.story-flow-grid{gap:8px}.footer-grid{grid-template-columns:1fr}
 }
 </style>
+<link rel="stylesheet" href="/global-nav-v2.css?v=20260922-1">
 </head>
 <body>
-<header class="top">
-  <nav class="nav">
-    <a class="brand" href="/"><span class="brand-mark">✦</span><span>LA FABBRICA DELLE API</span></a>
+<header class="site-header">
+  <nav class="nav" aria-label="Navigazione principale">
+    <a class="brand" href="/" aria-label="La Fabbrica delle Api · Home"><span class="brand-mark">✦</span><span>LA FABBRICA DELLE API</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/alveoterapia">Alveoterapia</a>
+      <a href="/#luoghi">I luoghi</a>
+      <a href="/chi-siamo">Chi siamo</a>
+      <a href="/bacheca">Bacheca</a>
+      <a href="/shop#linea-veleni">Linea Veleni</a>
+      <a class="shop" href="/shop" aria-current="page">Prodotti & Shop</a>
+      <a class="talk" href="/contatti">Parliamone</a>
+    </div>
+  </nav>
+</header>
+<div class="project-bar" aria-label="Navigazione della Bottega">
+  <div class="wrap">
+    <div class="project-links">
+      <a href="#scegli">Bottega</a>
+      <a href="#mieli">Mieli</a>
+      <a href="#alveare">Alveare</a>
+      <a href="#propoli">Propoli</a>
+      <a href="#cosmesi">Cosmesi</a>
+      <a href="#linea-veleni">Linea Veleni</a>
+      <a href="#tesori-francesco">Tesori</a>
+      <a href="#punti-ape">🐝 Punti Ape</a>
+    </div>
     <button class="ape-chat-launch" id="apeChatLaunch" type="button" aria-label="Chiedi a Ape Pelù"><svg viewBox="0 0 64 64" aria-hidden="true">
 <ellipse cx="32" cy="35" rx="16" ry="19" fill="#f6bd2f"/>
 <path d="M19 29h26M18 38h28M23 47h18" stroke="#2d2412" stroke-width="5" stroke-linecap="round"/>
@@ -276,29 +302,7 @@ img{display:block;max-width:100%}
 <circle cx="26" cy="18" r="2.4" fill="#1b211d"/><circle cx="38" cy="18" r="2.4" fill="#1b211d"/>
 <path d="M27 23q5 5 10 0" fill="none" stroke="#1b211d" stroke-width="2.4" stroke-linecap="round"/>
 <path d="M24 10q-4-6-8-4M40 10q4-6 8-4" fill="none" stroke="#1b211d" stroke-width="2.4" stroke-linecap="round"/>
-</svg><span>Chiedi a Ape Pelù</span></button>
-    <div class="links">
-      <a href="#oggi">Oggi</a>
-      <a href="#storie">Storie</a>
-      <a href="#scegli">Scegli prodotti</a>
-      <a href="#punti-ape">🐝 Punti Ape</a>
-      <a href="/bacheca">Bacheca</a>
-      <a href="/contatti" class="pill">Parliamone</a>
-      <a href="#scegli" class="shop-jump">Acquista ↓</a>
-    </div>
-  </nav>
-</header>
-<div class="project-bar" aria-label="Percorso La Fabbrica delle Api">
-  <div class="wrap">
-    <div class="project-links">
-      <a href="/">Alveoterapia Integrata</a>
-      <a href="/alveoterapia">Oasi del Busatello</a>
-      <a href="/centro">Galena delle Api</a>
-      <a href="/#veleni">Linea Veleni</a>
-      <a href="/bacheca">Bacheca</a>
-      <a href="#punti-ape">🐝 Punti Ape</a>
-      <a href="#scegli">Bottega · scegli e acquista</a>
-    </div>
+</svg><span>Ape Pelù</span></button>
     <div class="site-search" id="siteSearch">
       <div class="site-search-box">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -316,12 +320,12 @@ img{display:block;max-width:100%}
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="wrap hero-inner">
-    <div class="hero-kicker">NON UN NEGOZIO. UN MONDO DA VIVERE.</div>
-    <h1>Prima <em>scopri.</em><br>Poi scegli cosa portare con te.</h1>
-    <p>Api, luoghi, stagioni, storie e prodotti diventano un'unica esperienza. Qui non entri per sfogliare un catalogo: entri per capire cosa c'è dietro.</p>
+    <div class="hero-kicker">LA BOTTEGA DELLA FABBRICA DELLE API</div>
+    <h1>Scegli cosa <em>portare con te.</em></h1>
+    <p>Qui trovi i prodotti della Fabbrica delle Api senza perdere il legame con l’alveare, i luoghi e le stagioni che li accompagnano.</p>
     <div class="hero-actions">
-      <a class="btn btn-gold" href="#oggi">Entra nella Fabbrica delle Api</a>
-      <a class="btn btn-glass" href="#scegli">Voglio scegliere un prodotto →</a>
+      <a class="btn btn-gold" href="#scegli">Scopri i prodotti</a>
+      <a class="btn btn-glass" href="#mieli">Vai ai Mieli del Busatello →</a>
     </div>
   </div>
 </section>
