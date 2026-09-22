@@ -160,7 +160,14 @@ const CHECKOUT_COUNTRIES={
   TR:{dial:"+90"},
   UA:{dial:"+380"},
   GB:{dial:"+44"},
-  VA:{dial:"+39"}
+  VA:{dial:"+39"},
+  AX:{dial:"+358"},
+  FO:{dial:"+298"},
+  GI:{dial:"+350"},
+  GG:{dial:"+44"},
+  IM:{dial:"+44"},
+  JE:{dial:"+44"},
+  SJ:{dial:"+47"}
 };
 function countryCode(){return document.getElementById('coCountry')?.value||'';}
 function countryName(code,l=language()){
