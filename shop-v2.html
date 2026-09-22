@@ -705,7 +705,7 @@ async function validStepOne(){
   const ids=['coName','coEmail','coPhone','coCity','coAddress','coCap','coProvince'];
   const missing=ids.filter(id=>!document.getElementById(id).value.trim());
   if(missing.length){alert('Completa i campi obbligatori prima di continuare.');return false;}
-  if(!document.getElementById('coEmail').value.includes('@')){alert('Inserisci un indirizzo email valido per la simulazione.');return false;}
+  if(!document.getElementById('coEmail').value.includes('@')){alert('Inserisci un indirizzo email valido.');return false;}
 
   const cap=document.getElementById('coCap').value.trim();
   const address=document.getElementById('coAddress').value.trim();
