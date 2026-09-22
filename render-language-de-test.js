@@ -207,7 +207,7 @@ async function translateTextNode(node){
   if(lang==='it'||!node||node.nodeType!==3)return;
   const p=node.parentElement;
   if(!p||/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|OPTION)$/i.test(p.tagName))return;
-  if(p.closest && p.closest('#apeChatPanel'))return;
+  if(p.closest && p.closest('#apeChatPanel,#checkoutOverlay,#cartDrawer'))return;
   const raw=node.nodeValue||'', x=cleanText(raw);
   if(!shouldTranslate(x))return;
   if(!originals.has(node))originals.set(node,raw);
@@ -220,7 +220,7 @@ async function translateTextNode(node){
 
 async function translateElementAttrs(el){
   if(lang==='it'||!el||el.nodeType!==1)return;
-  if(el.closest && el.closest('#apeChatPanel'))return;
+  if(el.closest && el.closest('#apeChatPanel,#checkoutOverlay,#cartDrawer'))return;
   let map=attrOriginals.get(el);
   if(!map){map={};attrOriginals.set(el,map);}
   for(const a of ATTRS){
