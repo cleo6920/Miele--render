@@ -203,8 +203,11 @@ img{display:block;max-width:100%}
 .buy-row .btn{margin:0}
 .feature-copy.dark .buy-step{border-color:rgba(255,255,255,.14)}
 .feature-copy.dark .buy-step .why{color:#f7d98b}
-.ape-chat-launch{position:relative;z-index:86;border:1px solid rgba(255,255,255,.18);background:#f0b52f;color:#173126;border-radius:999px;padding:6px 11px 6px 7px;display:flex;align-items:center;gap:7px;font-weight:950;box-shadow:none;cursor:pointer;white-space:nowrap}
-.ape-chat-launch svg{width:30px;height:30px;flex:0 0 30px}
+.ape-chat-launch{position:relative;z-index:86;flex:0 0 350px;min-height:46px;border:1px solid rgba(255,255,255,.22);background:#f0b52f;color:#173126;border-radius:999px;padding:5px 16px 5px 8px;display:flex;align-items:center;justify-content:flex-start;gap:10px;box-shadow:0 5px 16px rgba(0,0,0,.10);cursor:pointer;white-space:nowrap}
+.ape-chat-launch svg{width:34px;height:34px;flex:0 0 34px}
+.ape-chat-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;line-height:1.08}
+.ape-chat-copy strong{font:950 13px/1.05 Arial,Helvetica,sans-serif}
+.ape-chat-copy small{font:750 10.5px/1.1 Arial,Helvetica,sans-serif;color:#355646}
 .ape-chat-panel{position:fixed;left:min(330px,32vw);top:72px;z-index:140;width:min(390px,calc(100vw - 30px));height:min(620px,calc(100vh - 92px));background:#fffaf1;border:1px solid #decfAF;border-radius:28px;box-shadow:0 28px 80px rgba(0,0,0,.28);display:none;overflow:hidden}
 .ape-chat-panel.open{display:flex;flex-direction:column}
 .ape-chat-head{background:#0e3529;color:#fff;padding:15px 16px;display:flex;align-items:center;gap:11px}
@@ -246,7 +249,7 @@ img{display:block;max-width:100%}
 .ape-chat-input input{flex:1;border:1px solid #d9cfbf;border-radius:999px;padding:11px 13px;font:inherit;min-width:0}
 .ape-chat-input button{border:0;background:#e0aa2d;color:#18251f;border-radius:999px;padding:0 16px;font-weight:950;cursor:pointer}
 .ape-note{padding:0 14px 10px;background:#fff;font-size:11px;color:#79827c}
-@media(max-width:760px){.ape-chat-launch span{display:none}.ape-chat-launch{padding:5px}.ape-chat-launch svg{width:31px;height:31px}.ape-chat-panel{left:8px;right:8px;top:66px;bottom:8px;width:auto;height:auto}}
+@media(max-width:760px){.ape-chat-launch{flex:1 1 100%;width:100%;padding:5px 14px 5px 8px}.ape-chat-launch svg{width:34px;height:34px;flex-basis:34px}.ape-chat-copy{display:flex}.ape-chat-copy small{white-space:normal}.ape-chat-panel{left:8px;right:8px;top:66px;bottom:8px;width:auto;height:auto}}
 @media(max-width:950px){.quick-grid{grid-template-columns:1fr 1fr}.guide-card{grid-template-columns:1fr}.guide-actions{justify-content:flex-start}}
 @media(max-width:620px){.project-bar{top:60px}.quick-head{display:block}.quick-head p{margin-top:14px}.quick-grid{grid-template-columns:1fr}}
 
@@ -294,7 +297,7 @@ img{display:block;max-width:100%}
       <a href="#tesori-francesco">Tesori</a>
       <a href="#punti-ape">🐝 Punti Ape</a>
     </div>
-    <button class="ape-chat-launch" id="apeChatLaunch" type="button" aria-label="Chiedi a Ape Pelù"><svg viewBox="0 0 64 64" aria-hidden="true">
+    <button class="ape-chat-launch" id="apeChatLaunch" type="button" aria-label="Chiedi a Ape Pelù: scopri, chiedi e lasciati guidare nel mondo delle api"><svg viewBox="0 0 64 64" aria-hidden="true">
 <ellipse cx="32" cy="35" rx="16" ry="19" fill="#f6bd2f"/>
 <path d="M19 29h26M18 38h28M23 47h18" stroke="#2d2412" stroke-width="5" stroke-linecap="round"/>
 <ellipse cx="18" cy="24" rx="11" ry="8" fill="#e9f7f4" opacity=".9" transform="rotate(-28 18 24)"/>
@@ -302,7 +305,7 @@ img{display:block;max-width:100%}
 <circle cx="26" cy="18" r="2.4" fill="#1b211d"/><circle cx="38" cy="18" r="2.4" fill="#1b211d"/>
 <path d="M27 23q5 5 10 0" fill="none" stroke="#1b211d" stroke-width="2.4" stroke-linecap="round"/>
 <path d="M24 10q-4-6-8-4M40 10q4-6 8-4" fill="none" stroke="#1b211d" stroke-width="2.4" stroke-linecap="round"/>
-</svg><span>Ape Pelù</span></button>
+</svg><span class="ape-chat-copy"><strong>Chiedi a Ape Pelù</strong><small>Scopri, chiedi, lasciati guidare nel mondo delle api.</small></span></button>
     <div class="site-search" id="siteSearch">
       <div class="site-search-box">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
