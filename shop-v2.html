@@ -237,6 +237,8 @@ img{display:block;max-width:100%}
 .catalog-card-body small{font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:.62}
 .catalog-card-body h3{font-family:Georgia,serif;font-size:24px;line-height:1.08;margin:0}
 .catalog-card-body p{margin:0;line-height:1.5;opacity:.82}
+.catalog-points{width:max-content;max-width:100%;padding:6px 9px;border-radius:999px;background:#fff3c9;color:#6d5008;font:900 11px/1 Arial,Helvetica,sans-serif}
+.venom-world .catalog-points{background:#3b3524;color:#f4c75d;border:1px solid #5a4d2d}
 .catalog-buy-row{margin-top:auto;display:flex;gap:10px;align-items:center;justify-content:space-between}
 .catalog-price strong{display:block;font-size:24px}.catalog-price span{display:block;font-size:11px;opacity:.62}
 .catalog-card .add-btn{border:0;border-radius:999px;background:#dda92e;color:#17241e;padding:11px 15px;font-weight:950;cursor:pointer}
@@ -674,9 +676,50 @@ const SHOP_V2_CART_KEY='fda-shop-v2-cart';
 const SHOP_V2_ORDERS_KEY='fda-shop-order-drafts';
 let shopV2Cart=[];
 try{shopV2Cart=JSON.parse(localStorage.getItem(SHOP_V2_CART_KEY)||'[]')||[];}catch(_){shopV2Cart=[];}
-const BUSATELLO_IDS=new Set(['millefiori','melone','fragola','pesca','arancia']);
-function defaultPointsFor(id){return BUSATELLO_IDS.has(id)?2:0;}
-shopV2Cart=shopV2Cart.map(x=>({...x,points:Number(x.points||defaultPointsFor(x.id))}));
+const SHOP_PRODUCT_POINTS={
+  "millefiori": 2,
+  "melone": 2,
+  "fragola": 2,
+  "pesca": 2,
+  "arancia": 2,
+  "propolterapy-professional": 15,
+  "capsule-pb": 5,
+  "capsule-propolit": 5,
+  "castagno": 2,
+  "acacia-zenzero-apinfiore": 3,
+  "miele-eucalipto-apinfiore": 2,
+  "balsammiel": 4,
+  "acacia": 1,
+  "favo-integrale-bio": 4,
+  "polline-italiano": 4,
+  "pappa-reale-italiana-bio": 2,
+  "orsetti-gommosi": 1,
+  "bee-energy-bio": 4,
+  "propol-active-bio": 4,
+  "propoli-30-spray-integratore": 3,
+  "propoli-30-alcolica-integratore": 2,
+  "propoli-analcolica-integratore": 2,
+  "cosmesi-crema-mani": 3,
+  "cosmesi-burrocacao-propoli-aloe": 2,
+  "cosmesi-burrocacao-miele-pappa-reale": 2,
+  "cosmesi-shampoo-multivitaminico": 3,
+  "cosmesi-saponetta-frutti-bosco": 1,
+  "cosmesi-saponetta-lavanda": 1,
+  "cosmesi-saponetta-aloe-vera": 1,
+  "cosmesi-candela-alveare-cera-api": 2,
+  "cosmesi-travel-kit-benessere": 5,
+  "unguento-apis": 10,
+  "apis1-crema-viso-veleno-api": 9,
+  "apis2-siero-viso-veleno-api": 9,
+  "apis4-crema-corpo-veleno-api-manuka": 9,
+  "apis5-gommage-veleno-api-manuka": 9,
+  "bagnodoccia-veleno-oro": 6,
+  "tesori-limoncello": 2,
+  "tesori-liquore-caffe": 2,
+  "tesori-castagne-rum": 2
+};
+function defaultPointsFor(id){return Number(SHOP_PRODUCT_POINTS[id]||0);}
+shopV2Cart=shopV2Cart.map(x=>({...x,points:defaultPointsFor(x.id)}));
 localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));
 
 function saveV2Cart(){localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));renderV2Cart();}
@@ -965,7 +1008,7 @@ function renderOfficialCatalog(){
   document.querySelectorAll('[data-official-section]').forEach(box=>{
     const section=box.dataset.officialSection;
     const items=SHOP_OFFICIAL_PRODUCTS.filter(p=>p.section===section);
-    box.innerHTML=items.map(p=>'<article class="catalog-card product-openable" id="prodotto-'+officialCatalogEsc(p.id)+'" data-product-id="'+officialCatalogEsc(p.id)+'" tabindex="0" role="button" aria-label="Apri la scheda completa di '+officialCatalogEsc(p.name)+'"><div class="catalog-card-media"><img src="'+officialCatalogEsc(p.image)+'" alt="'+officialCatalogEsc(p.name)+'" loading="lazy"></div><div class="catalog-card-body"><small>'+officialCatalogEsc(officialCatalogCategory(p.section))+'</small><h3>'+officialCatalogEsc(p.name)+'</h3><p>'+officialCatalogEsc(p.desc)+'</p><button class="product-detail-link" type="button" data-open-product="'+officialCatalogEsc(p.id)+'">Apri la scheda completa →</button><div class="catalog-buy-row"><div class="catalog-price"><strong>'+euro(p.price)+'</strong><span>'+officialCatalogEsc(p.size)+'</span></div><button class="add-btn official-add" data-id="'+officialCatalogEsc(p.id)+'" data-name="'+officialCatalogEsc(p.name)+'" data-price="'+p.price+'" data-size="'+officialCatalogEsc(p.size)+'" data-points="0">Aggiungi</button></div></div></article>').join('');
+    box.innerHTML=items.map(p=>'<article class="catalog-card product-openable" id="prodotto-'+officialCatalogEsc(p.id)+'" data-product-id="'+officialCatalogEsc(p.id)+'" tabindex="0" role="button" aria-label="Apri la scheda completa di '+officialCatalogEsc(p.name)+'"><div class="catalog-card-media"><img src="'+officialCatalogEsc(p.image)+'" alt="'+officialCatalogEsc(p.name)+'" loading="lazy"></div><div class="catalog-card-body"><small>'+officialCatalogEsc(officialCatalogCategory(p.section))+'</small><h3>'+officialCatalogEsc(p.name)+'</h3><p>'+officialCatalogEsc(p.desc)+'</p><div class="catalog-points">🐝 +'+defaultPointsFor(p.id)+' Punti Ape</div><button class="product-detail-link" type="button" data-open-product="'+officialCatalogEsc(p.id)+'">Apri la scheda completa →</button><div class="catalog-buy-row"><div class="catalog-price"><strong>'+euro(p.price)+'</strong><span>'+officialCatalogEsc(p.size)+'</span></div><button class="add-btn official-add" data-id="'+officialCatalogEsc(p.id)+'" data-name="'+officialCatalogEsc(p.name)+'" data-price="'+p.price+'" data-size="'+officialCatalogEsc(p.size)+'" data-points="'+defaultPointsFor(p.id)+'">Aggiungi</button></div></div></article>').join('');
   });
 }
 renderOfficialCatalog();
@@ -983,7 +1026,7 @@ function getShopProductDetail(id){
   if(dynamic){
     return {
       id:dynamic.id,name:dynamic.name,image:dynamic.image,size:dynamic.size,
-      price:Number(dynamic.price),points:0,category:officialCatalogCategory(dynamic.section),
+      price:Number(dynamic.price),points:defaultPointsFor(dynamic.id),category:officialCatalogCategory(dynamic.section),
       detail:SHOP_PRODUCT_DETAIL_DESCRIPTIONS[dynamic.id]||dynamic.desc
     };
   }
