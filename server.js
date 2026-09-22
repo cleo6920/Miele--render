@@ -365,10 +365,11 @@ function parseOrderPayload(body){
 
   const goodsTotal=items.reduce((sum,item)=>sum+item.subtotal,0);
   const points=items.reduce((sum,item)=>sum+(item.points*item.qty),0);
-  const delivery=body?.delivery==='pickup'?'pickup':'courier';
+  const requestedDelivery=body?.delivery==='pickup'?'pickup':'courier';
+  const delivery=(country==='IT' && requestedDelivery==='pickup')?'pickup':'courier';
   const clientShipping=Number(body?.shipping);
   const clientReason=cleanOrderText(body?.shippingReason,220);
-  const explicitFreeItaly=country==='IT' && delivery==='courier' && clientShipping===0 && (clientReason.toLowerCase().includes('gratuit')||clientReason.toLowerCase().includes('ritiro'));
+  const explicitFreeItaly=country==='IT' && delivery==='courier' && clientShipping===0 && clientReason.toLowerCase().includes('gratuit');
   const poste=delivery==='pickup'?{pending:false,cost:0,weightKg:estimateParcelWeight(items).kg}:{...calcPosteShipping(country,items)};
   const shippingPending=delivery==='pickup'?false:Boolean(poste.pending);
   let shipping=delivery==='pickup'?0:Number(poste.cost||0);
@@ -376,8 +377,20 @@ function parseOrderPayload(body){
   shipping=Math.round(shipping*100)/100;
   const shippingWeightKg=Number(poste.weightKg||0);
   const shippingZone=poste.zone||'';
-  const shippingReason=clientReason;
+  let shippingReason='';
+  if(delivery==='pickup'){
+    shippingReason='Ritiro / accordo diretto';
+  }else if(explicitFreeItaly){
+    shippingReason=clientReason||'Consegna locale gratuita';
+  }else if(shippingPending){
+    shippingReason='Poste Italiane · peso stimato '+shippingWeightKg.toFixed(2)+' kg · tariffa da confermare';
+  }else if(country==='IT'){
+    shippingReason='Poste Delivery Web · peso stimato '+shippingWeightKg.toFixed(2)+' kg';
+  }else{
+    shippingReason='Poste Delivery International Standard · peso stimato '+shippingWeightKg.toFixed(2)+' kg'+(shippingZone?' · Zona '+shippingZone:'');
+  }
   const notes=cleanOrderText(body?.notes,1200);
+  const language=['it','en','de','fr','es'].includes(String(body?.language||'').toLowerCase())?String(body.language).toLowerCase():'it';
   const clientReference=/^API-\d{8}-\d{5,8}$/.test(String(body?.id||''))?String(body.id):'API-'+Date.now();
   return {
     id:clientReference,
@@ -392,9 +405,13 @@ function parseOrderPayload(body){
     shippingWeightKg,
     shippingZone,
     shippingReason,
+    language,
     total:goodsTotal+shipping,
     points
   };
+}
+function orderLanguageLabel(code){
+  return ({it:'Italiano',en:'English',de:'Deutsch',fr:'Français',es:'Español'})[code]||code||'Italiano';
 }
 function buildOrderMail(order){
   const deliveryLabel=order.delivery==='pickup'?'Ritiro / accordo diretto':'Corriere';
@@ -420,6 +437,8 @@ function buildOrderMail(order){
           <strong>${escapeOrderHtml(order.customer.name)}</strong><br>
           Email: <a href="mailto:${escapeOrderHtml(order.customer.email)}">${escapeOrderHtml(order.customer.email)}</a><br>
           Telefono: ${escapeOrderHtml(order.customer.phone)}<br>
+          Paese: <strong>${escapeOrderHtml(order.customer.countryName)}</strong><br>
+          Lingua cliente: <strong>${escapeOrderHtml(orderLanguageLabel(order.language))}</strong><br>
           Indirizzo: ${escapeOrderHtml(order.customer.address)}, ${escapeOrderHtml(order.customer.cap)} ${escapeOrderHtml(order.customer.city)}${order.customer.province?' ('+escapeOrderHtml(order.customer.province)+')':''}, ${escapeOrderHtml(order.customer.countryName)}
         </p>
 
@@ -432,6 +451,8 @@ function buildOrderMail(order){
         <div style="margin-top:20px;padding:16px;background:#faf6ee;border-radius:14px;line-height:1.65">
           <div><strong>Consegna:</strong> ${escapeOrderHtml(deliveryLabel)}</div>
           <div><strong>Dettaglio spedizione:</strong> ${escapeOrderHtml(order.shippingReason||'—')}</div>
+          ${order.shippingWeightKg?'<div><strong>Peso spedizione stimato:</strong> '+escapeOrderHtml(Number(order.shippingWeightKg).toFixed(2))+' kg</div>':''}
+          ${order.shippingZone?'<div><strong>Zona Poste:</strong> '+escapeOrderHtml(order.shippingZone)+'</div>':''}
           <div><strong>Note cliente:</strong> ${escapeOrderHtml(order.notes||'Nessuna nota')}</div>
         </div>
 
@@ -453,6 +474,8 @@ function buildOrderMail(order){
     order.customer.name,
     order.customer.email,
     order.customer.phone,
+    'Paese: '+order.customer.countryName,
+    'Lingua cliente: '+orderLanguageLabel(order.language),
     order.customer.address+', '+order.customer.cap+' '+order.customer.city+(order.customer.province?' ('+order.customer.province+')':'')+', '+order.customer.countryName,
     '',
     'PRODOTTI',
@@ -460,6 +483,8 @@ function buildOrderMail(order){
     '',
     'Consegna: '+deliveryLabel,
     'Dettaglio spedizione: '+(order.shippingReason||'—'),
+    ...(order.shippingWeightKg?['Peso spedizione stimato: '+Number(order.shippingWeightKg).toFixed(2)+' kg']:[]),
+    ...(order.shippingZone?['Zona Poste: '+order.shippingZone]:[]),
     'Note: '+(order.notes||'Nessuna nota'),
     'Prodotti: '+euroOrder(order.goodsTotal),
     'Spedizione: '+(order.shippingPending?'DA CONFERMARE':euroOrder(order.shipping)),
