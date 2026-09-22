@@ -222,7 +222,7 @@ function applyCountryFields(forceDial=false){
       label.textContent=base+(code==='IT'?' *':'');
     }
   }
-}
+
   const deliveryOptions=document.querySelectorAll('.delivery-option');
   const courierInput=document.querySelector('input[name="delivery"][value="courier"]');
   const pickupInput=document.querySelector('input[name="delivery"][value="pickup"]');
@@ -231,6 +231,7 @@ function applyCountryFields(forceDial=false){
     courierInput.checked=true;
     pickupInput.checked=false;
   }
+}
 window.purchaseNormalizePhone=normalizePhone;
 window.purchaseCountryName=countryName;
 window.purchaseApplyCountryFields=applyCountryFields;
@@ -391,4 +392,5 @@ window.purchaseProductName=productName;
 window.purchaseProductSize=productSize;
 window.applyPurchaseLanguage=apply;
 window.downloadCustomerOrderPdf=downloadPdf;
+window.purchaseModuleReady=true;
 })();
