@@ -7,6 +7,7 @@ const LOCALE={it:'it-IT',en:'en-GB',de:'de-DE',fr:'fr-FR',es:'es-ES'};
 
 const T={
 it:{
+ country:'Paese di consegna *',selectCountry:'Seleziona Paese',province:'Provincia / Regione',provincePh:'es. MN / Madrid',invalidProvince:'Per l’Italia inserisci la sigla della provincia di 2 lettere.',invalidPhone:'Inserisci un numero di telefono valido per il Paese selezionato.',shippingPending:'Da confermare',internationalReason:'Spedizione internazionale: costo da confermare prima dell’evasione.',goodsTotalPending:'Totale prodotti · spedizione da confermare',
  cartTitle:'Il tuo cestino',cartEmpty:'Il cestino è ancora vuoto. Scegli ciò che ti incuriosisce e aggiungilo qui.',quantity:'quantità',points:'Punti Ape',remove:'rimuovi',orderPoints:'Punti Ape di questo ordine',totalProducts:'Totale prodotti',continueOrder:"Continua con l'ordine →",goal:'100 Punti Ape = cesto omaggio con 5 prodotti a scelta.',cartFab:'Il tuo cestino',addFirst:'Aggiungi almeno un prodotto prima di continuare.',
  checkoutEyebrow:'Il tuo ordine',checkoutTitle:'Concludi il tuo ordine',checkoutIntro:"Un percorso semplice, dall'indirizzo alla conferma finale.",steps:['1 · Dati','2 · Consegna','3 · Riepilogo','4 · Conferma'],
  step1Title:'Dove possiamo associare questo ordine?',name:'Nome e cognome *',email:'Email *',phone:'Telefono *',city:'Comune / Città *',address:'Via e numero civico *',cap:'CAP *',province:'Provincia *',provincePh:'es. MN',continue:'Continua →',
@@ -16,9 +17,10 @@ it:{
  successTitle:'Ordine inviato',orderCode:'Codice ordine',successIntro:'Abbiamo ricevuto il tuo ordine. Ti contatteremo utilizzando i recapiti che hai indicato.',earned:'Hai guadagnato',successGoal:'Continua ad accumularli: a 100 punti puoi comporre un cesto omaggio con 5 prodotti a scelta.',downloadPdf:'Scarica il riepilogo PDF',backSite:'Torna alla Fabbrica delle Api',
  missing:'Completa i campi obbligatori prima di continuare.',invalidEmail:'Inserisci un indirizzo email valido.',invalidCap:'Il CAP deve essere composto da 5 cifre.',invalidAddress:'Inserisci via e numero civico completi, ad esempio “Via Roma 12”.',addressVerify:"Non riesco a verificare l’indirizzo. Controlla via, numero civico, CAP, Comune e Provincia.",emptyCart:'Il cestino è vuoto.',sendError:"Non è stato possibile inviare l’ordine. Riprova.",timeout:"L’invio sta impiegando troppo tempo. L’ordine non è stato cancellato: riprova tra poco.",network:"Non riesco a collegarmi al servizio ordini in questo momento. Riprova tra poco.",
  toCalculate:'Da calcolare',pickupReason:'Ritiro / accordo diretto',order200Reason:'Ordine da €200 o più',localReason:d=>'Consegna locale gratuita · '+d+' km da Castel d’Ario',courierReason:'Corriere · consegna indicativa 5–6 giorni',
- pdfTitle:"Riepilogo dell'ordine",pdfCustomer:'Dati acquirente',pdfProducts:'Prodotti',pdfProduct:'Prodotto',pdfQty:'Q.tà',pdfUnit:'Prezzo',pdfSubtotal:'Subtotale',pdfDelivery:'Consegna',pdfNotes:'Note',pdfNoNotes:'Nessuna nota',pdfGoods:'Prodotti',pdfShipping:'Spedizione',pdfTotal:'Totale',pdfPoints:'Punti Ape',pdfDate:'Data ordine',pdfNonFiscal:'Riepilogo ordine - documento non fiscale',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'Non riesco a creare il PDF in questo momento. Riprova.',pdfFile:'ordine'
+ pdfCountry:'Paese',pdfShippingPending:'Da confermare', pdfTitle:"Riepilogo dell'ordine",pdfCustomer:'Dati acquirente',pdfProducts:'Prodotti',pdfProduct:'Prodotto',pdfQty:'Q.tà',pdfUnit:'Prezzo',pdfSubtotal:'Subtotale',pdfDelivery:'Consegna',pdfNotes:'Note',pdfNoNotes:'Nessuna nota',pdfGoods:'Prodotti',pdfShipping:'Spedizione',pdfTotal:'Totale',pdfPoints:'Punti Ape',pdfDate:'Data ordine',pdfNonFiscal:'Riepilogo ordine - documento non fiscale',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'Non riesco a creare il PDF in questo momento. Riprova.',pdfFile:'ordine'
 },
 en:{
+ country:'Delivery country *',selectCountry:'Select country',province:'Province / Region',provincePh:'e.g. MN / Madrid',invalidProvince:'For Italy, enter the 2-letter province code.',invalidPhone:'Enter a valid phone number for the selected country.',shippingPending:'To be confirmed',internationalReason:'International shipping: cost will be confirmed before fulfilment.',goodsTotalPending:'Products total · shipping to be confirmed',
  cartTitle:'Your cart',cartEmpty:'Your cart is still empty. Choose what interests you and add it here.',quantity:'quantity',points:'Bee Points',remove:'remove',orderPoints:'Bee Points for this order',totalProducts:'Products total',continueOrder:'Continue with order →',goal:'100 Bee Points = complimentary basket with 5 products of your choice.',cartFab:'Your cart',addFirst:'Add at least one product before continuing.',
  checkoutEyebrow:'Your order',checkoutTitle:'Complete your order',checkoutIntro:'A simple journey from your address to final confirmation.',steps:['1 · Details','2 · Delivery','3 · Summary','4 · Confirmation'],
  step1Title:'Who should we associate this order with?',name:'Full name *',email:'Email *',phone:'Phone *',city:'Town / City *',address:'Street and number *',cap:'Postal code *',province:'Province *',provincePh:'e.g. MN',continue:'Continue →',
@@ -28,9 +30,10 @@ en:{
  successTitle:'Order sent',orderCode:'Order code',successIntro:'We have received your order. We will contact you using the details you provided.',earned:'You earned',successGoal:'Keep collecting them: at 100 points you can create a complimentary basket with 5 products of your choice.',downloadPdf:'Download order PDF',backSite:'Back to La Fabbrica delle Api',
  missing:'Complete all required fields before continuing.',invalidEmail:'Enter a valid email address.',invalidCap:'The postal code must contain 5 digits.',invalidAddress:'Enter the full street and house number, for example “Via Roma 12”.',addressVerify:'I cannot verify the address. Check street, number, postal code, city and province.',emptyCart:'Your cart is empty.',sendError:'The order could not be sent. Please try again.',timeout:'Sending is taking too long. Your order has not been deleted: please try again shortly.',network:'I cannot connect to the order service right now. Please try again shortly.',
  toCalculate:'To be calculated',pickupReason:'Pickup / direct arrangement',order200Reason:'Order of €200 or more',localReason:d=>'Free local delivery · '+d+' km from Castel d’Ario',courierReason:'Courier · estimated delivery 5–6 days',
- pdfTitle:'Order summary',pdfCustomer:'Customer details',pdfProducts:'Products',pdfProduct:'Product',pdfQty:'Qty',pdfUnit:'Price',pdfSubtotal:'Subtotal',pdfDelivery:'Delivery',pdfNotes:'Notes',pdfNoNotes:'No notes',pdfGoods:'Products',pdfShipping:'Shipping',pdfTotal:'Total',pdfPoints:'Bee Points',pdfDate:'Order date',pdfNonFiscal:'Order summary - non-fiscal document',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'I cannot create the PDF right now. Please try again.',pdfFile:'order'
+ pdfCountry:'Country',pdfShippingPending:'To be confirmed', pdfTitle:'Order summary',pdfCustomer:'Customer details',pdfProducts:'Products',pdfProduct:'Product',pdfQty:'Qty',pdfUnit:'Price',pdfSubtotal:'Subtotal',pdfDelivery:'Delivery',pdfNotes:'Notes',pdfNoNotes:'No notes',pdfGoods:'Products',pdfShipping:'Shipping',pdfTotal:'Total',pdfPoints:'Bee Points',pdfDate:'Order date',pdfNonFiscal:'Order summary - non-fiscal document',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'I cannot create the PDF right now. Please try again.',pdfFile:'order'
 },
 de:{
+ country:'Lieferland *',selectCountry:'Land auswählen',province:'Provinz / Region',provincePh:'z. B. MN / Madrid',invalidProvince:'Für Italien bitte das zweistellige Provinzkürzel eingeben.',invalidPhone:'Gib eine gültige Telefonnummer für das gewählte Land ein.',shippingPending:'Zu bestätigen',internationalReason:'Internationaler Versand: Die Kosten werden vor der Bearbeitung bestätigt.',goodsTotalPending:'Produktsumme · Versand wird bestätigt',
  cartTitle:'Dein Warenkorb',cartEmpty:'Dein Warenkorb ist noch leer. Wähle etwas aus und füge es hier hinzu.',quantity:'Menge',points:'Bienenpunkte',remove:'entfernen',orderPoints:'Bienenpunkte dieser Bestellung',totalProducts:'Produktsumme',continueOrder:'Bestellung fortsetzen →',goal:'100 Bienenpunkte = Geschenkkorb mit 5 Produkten nach Wahl.',cartFab:'Dein Warenkorb',addFirst:'Füge mindestens ein Produkt hinzu, bevor du fortfährst.',
  checkoutEyebrow:'Deine Bestellung',checkoutTitle:'Bestellung abschließen',checkoutIntro:'Ein einfacher Weg von der Adresse bis zur endgültigen Bestätigung.',steps:['1 · Daten','2 · Lieferung','3 · Übersicht','4 · Bestätigung'],
  step1Title:'Wem dürfen wir diese Bestellung zuordnen?',name:'Vor- und Nachname *',email:'E-Mail *',phone:'Telefon *',city:'Ort / Stadt *',address:'Straße und Hausnummer *',cap:'PLZ *',province:'Provinz *',provincePh:'z. B. MN',continue:'Weiter →',
@@ -40,9 +43,10 @@ de:{
  successTitle:'Bestellung gesendet',orderCode:'Bestellcode',successIntro:'Wir haben deine Bestellung erhalten. Wir kontaktieren dich über die angegebenen Kontaktdaten.',earned:'Du hast erhalten',successGoal:'Sammle weiter: Bei 100 Punkten kannst du einen Geschenkkorb mit 5 Produkten nach Wahl zusammenstellen.',downloadPdf:'Bestellübersicht als PDF',backSite:'Zurück zu La Fabbrica delle Api',
  missing:'Fülle alle Pflichtfelder aus, bevor du fortfährst.',invalidEmail:'Gib eine gültige E-Mail-Adresse ein.',invalidCap:'Die PLZ muss aus 5 Ziffern bestehen.',invalidAddress:'Gib Straße und Hausnummer vollständig ein, zum Beispiel „Via Roma 12“.',addressVerify:'Die Adresse kann nicht geprüft werden. Kontrolliere Straße, Hausnummer, PLZ, Ort und Provinz.',emptyCart:'Dein Warenkorb ist leer.',sendError:'Die Bestellung konnte nicht gesendet werden. Bitte versuche es erneut.',timeout:'Das Senden dauert zu lange. Deine Bestellung wurde nicht gelöscht: Bitte versuche es gleich noch einmal.',network:'Der Bestellservice ist momentan nicht erreichbar. Bitte versuche es gleich noch einmal.',
  toCalculate:'Wird berechnet',pickupReason:'Abholung / direkte Vereinbarung',order200Reason:'Bestellung ab €200',localReason:d=>'Kostenlose lokale Lieferung · '+d+' km von Castel d’Ario',courierReason:'Kurier · voraussichtliche Lieferung 5–6 Tage',
- pdfTitle:'Bestellübersicht',pdfCustomer:'Kundendaten',pdfProducts:'Produkte',pdfProduct:'Produkt',pdfQty:'Menge',pdfUnit:'Preis',pdfSubtotal:'Zwischensumme',pdfDelivery:'Lieferung',pdfNotes:'Hinweise',pdfNoNotes:'Keine Hinweise',pdfGoods:'Produkte',pdfShipping:'Versand',pdfTotal:'Gesamt',pdfPoints:'Bienenpunkte',pdfDate:'Bestelldatum',pdfNonFiscal:'Bestellübersicht - kein Steuerbeleg',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'Das PDF kann momentan nicht erstellt werden. Bitte versuche es erneut.',pdfFile:'bestellung'
+ pdfCountry:'Land',pdfShippingPending:'Zu bestätigen', pdfTitle:'Bestellübersicht',pdfCustomer:'Kundendaten',pdfProducts:'Produkte',pdfProduct:'Produkt',pdfQty:'Menge',pdfUnit:'Preis',pdfSubtotal:'Zwischensumme',pdfDelivery:'Lieferung',pdfNotes:'Hinweise',pdfNoNotes:'Keine Hinweise',pdfGoods:'Produkte',pdfShipping:'Versand',pdfTotal:'Gesamt',pdfPoints:'Bienenpunkte',pdfDate:'Bestelldatum',pdfNonFiscal:'Bestellübersicht - kein Steuerbeleg',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'Das PDF kann momentan nicht erstellt werden. Bitte versuche es erneut.',pdfFile:'bestellung'
 },
 fr:{
+ country:'Pays de livraison *',selectCountry:'Sélectionnez le pays',province:'Province / Région',provincePh:'ex. MN / Madrid',invalidProvince:"Pour l’Italie, saisissez le code de province à 2 lettres.",invalidPhone:'Saisissez un numéro de téléphone valide pour le pays sélectionné.',shippingPending:'À confirmer',internationalReason:'Livraison internationale : le coût sera confirmé avant traitement.',goodsTotalPending:'Total produits · livraison à confirmer',
  cartTitle:'Votre panier',cartEmpty:'Votre panier est encore vide. Choisissez ce qui vous intéresse et ajoutez-le ici.',quantity:'quantité',points:'Points Abeille',remove:'supprimer',orderPoints:'Points Abeille de cette commande',totalProducts:'Total des produits',continueOrder:'Continuer la commande →',goal:'100 Points Abeille = panier cadeau avec 5 produits au choix.',cartFab:'Votre panier',addFirst:'Ajoutez au moins un produit avant de continuer.',
  checkoutEyebrow:'Votre commande',checkoutTitle:'Finaliser votre commande',checkoutIntro:"Un parcours simple, de l'adresse à la confirmation finale.",steps:['1 · Coordonnées','2 · Livraison','3 · Récapitulatif','4 · Confirmation'],
  step1Title:'À qui devons-nous associer cette commande ?',name:'Nom et prénom *',email:'E-mail *',phone:'Téléphone *',city:'Commune / Ville *',address:'Rue et numéro *',cap:'Code postal *',province:'Province *',provincePh:'ex. MN',continue:'Continuer →',
@@ -52,9 +56,10 @@ fr:{
  successTitle:'Commande envoyée',orderCode:'Code commande',successIntro:'Nous avons reçu votre commande. Nous vous contacterons avec les coordonnées indiquées.',earned:'Vous avez gagné',successGoal:'Continuez à les cumuler : à 100 points, vous pouvez composer un panier cadeau avec 5 produits au choix.',downloadPdf:'Télécharger le récapitulatif PDF',backSite:'Retour à La Fabbrica delle Api',
  missing:'Complétez tous les champs obligatoires avant de continuer.',invalidEmail:'Saisissez une adresse e-mail valide.',invalidCap:'Le code postal doit comporter 5 chiffres.',invalidAddress:'Saisissez la rue et le numéro complet, par exemple « Via Roma 12 ». ',addressVerify:"Impossible de vérifier l’adresse. Contrôlez la rue, le numéro, le code postal, la ville et la province.",emptyCart:'Votre panier est vide.',sendError:"La commande n’a pas pu être envoyée. Réessayez.",timeout:"L’envoi prend trop de temps. Votre commande n’a pas été supprimée : réessayez dans un instant.",network:"Impossible de joindre le service de commande pour le moment. Réessayez dans un instant.",
  toCalculate:'À calculer',pickupReason:'Retrait / accord direct',order200Reason:'Commande de 200 € ou plus',localReason:d=>'Livraison locale gratuite · '+d+' km de Castel d’Ario',courierReason:'Transporteur · livraison estimée 5–6 jours',
- pdfTitle:'Récapitulatif de commande',pdfCustomer:'Coordonnées client',pdfProducts:'Produits',pdfProduct:'Produit',pdfQty:'Qté',pdfUnit:'Prix',pdfSubtotal:'Sous-total',pdfDelivery:'Livraison',pdfNotes:'Notes',pdfNoNotes:'Aucune note',pdfGoods:'Produits',pdfShipping:'Livraison',pdfTotal:'Total',pdfPoints:'Points Abeille',pdfDate:'Date de commande',pdfNonFiscal:'Récapitulatif de commande - document non fiscal',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'Impossible de créer le PDF pour le moment. Réessayez.',pdfFile:'commande'
+ pdfCountry:'Pays',pdfShippingPending:'À confirmer', pdfTitle:'Récapitulatif de commande',pdfCustomer:'Coordonnées client',pdfProducts:'Produits',pdfProduct:'Produit',pdfQty:'Qté',pdfUnit:'Prix',pdfSubtotal:'Sous-total',pdfDelivery:'Livraison',pdfNotes:'Notes',pdfNoNotes:'Aucune note',pdfGoods:'Produits',pdfShipping:'Livraison',pdfTotal:'Total',pdfPoints:'Points Abeille',pdfDate:'Date de commande',pdfNonFiscal:'Récapitulatif de commande - document non fiscal',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'Impossible de créer le PDF pour le moment. Réessayez.',pdfFile:'commande'
 },
 es:{
+ country:'País de entrega *',selectCountry:'Selecciona el país',province:'Provincia / Región',provincePh:'ej. MN / Madrid',invalidProvince:'Para Italia, introduce la sigla de provincia de 2 letras.',invalidPhone:'Introduce un número de teléfono válido para el país seleccionado.',shippingPending:'Por confirmar',internationalReason:'Envío internacional: el coste se confirmará antes de tramitar el pedido.',goodsTotalPending:'Total productos · envío por confirmar',
  cartTitle:'Tu carrito',cartEmpty:'Tu carrito todavía está vacío. Elige lo que te interese y añádelo aquí.',quantity:'cantidad',points:'Puntos Abeja',remove:'eliminar',orderPoints:'Puntos Abeja de este pedido',totalProducts:'Total productos',continueOrder:'Continuar con el pedido →',goal:'100 Puntos Abeja = cesta regalo con 5 productos a elegir.',cartFab:'Tu carrito',addFirst:'Añade al menos un producto antes de continuar.',
  checkoutEyebrow:'Tu pedido',checkoutTitle:'Completa tu pedido',checkoutIntro:'Un recorrido sencillo desde la dirección hasta la confirmación final.',steps:['1 · Datos','2 · Entrega','3 · Resumen','4 · Confirmación'],
  step1Title:'¿A quién debemos asociar este pedido?',name:'Nombre y apellidos *',email:'Email *',phone:'Teléfono *',city:'Municipio / Ciudad *',address:'Calle y número *',cap:'Código postal *',province:'Provincia *',provincePh:'ej. MN',continue:'Continuar →',
@@ -64,7 +69,7 @@ es:{
  successTitle:'Pedido enviado',orderCode:'Código de pedido',successIntro:'Hemos recibido tu pedido. Nos pondremos en contacto contigo utilizando los datos indicados.',earned:'Has ganado',successGoal:'Sigue acumulándolos: con 100 puntos puedes crear una cesta regalo con 5 productos a elegir.',downloadPdf:'Descargar resumen PDF',backSite:'Volver a La Fabbrica delle Api',
  missing:'Completa todos los campos obligatorios antes de continuar.',invalidEmail:'Introduce un correo electrónico válido.',invalidCap:'El código postal debe tener 5 dígitos.',invalidAddress:'Introduce la calle y el número completos, por ejemplo «Via Roma 12».',addressVerify:'No puedo verificar la dirección. Comprueba calle, número, código postal, ciudad y provincia.',emptyCart:'Tu carrito está vacío.',sendError:'No se ha podido enviar el pedido. Inténtalo de nuevo.',timeout:'El envío está tardando demasiado. Tu pedido no se ha eliminado: vuelve a intentarlo en unos instantes.',network:'No puedo conectar con el servicio de pedidos en este momento. Inténtalo de nuevo en unos instantes.',
  toCalculate:'Por calcular',pickupReason:'Recogida / acuerdo directo',order200Reason:'Pedido de 200 € o más',localReason:d=>'Entrega local gratuita · '+d+' km de Castel d’Ario',courierReason:'Mensajería · entrega estimada 5–6 días',
- pdfTitle:'Resumen del pedido',pdfCustomer:'Datos del cliente',pdfProducts:'Productos',pdfProduct:'Producto',pdfQty:'Cant.',pdfUnit:'Precio',pdfSubtotal:'Subtotal',pdfDelivery:'Entrega',pdfNotes:'Notas',pdfNoNotes:'Sin notas',pdfGoods:'Productos',pdfShipping:'Envío',pdfTotal:'Total',pdfPoints:'Puntos Abeja',pdfDate:'Fecha del pedido',pdfNonFiscal:'Resumen del pedido - documento no fiscal',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'No puedo crear el PDF en este momento. Inténtalo de nuevo.',pdfFile:'pedido'
+ pdfCountry:'País',pdfShippingPending:'Por confirmar', pdfTitle:'Resumen del pedido',pdfCustomer:'Datos del cliente',pdfProducts:'Productos',pdfProduct:'Producto',pdfQty:'Cant.',pdfUnit:'Precio',pdfSubtotal:'Subtotal',pdfDelivery:'Entrega',pdfNotes:'Notas',pdfNoNotes:'Sin notas',pdfGoods:'Productos',pdfShipping:'Envío',pdfTotal:'Total',pdfPoints:'Puntos Abeja',pdfDate:'Fecha del pedido',pdfNonFiscal:'Resumen del pedido - documento no fiscal',pdfContact:'La Fabbrica delle Api - althea12830@gmail.com',pdfDownloadError:'No puedo crear el PDF en este momento. Inténtalo de nuevo.',pdfFile:'pedido'
 }
 };
 
@@ -102,6 +107,47 @@ function productSize(id,fallback){
   return cachedTranslation(fallback,l);
 }
 
+const CHECKOUT_COUNTRIES={
+  IT:{dial:'+39',names:{it:'Italia',en:'Italy',de:'Italien',fr:'Italie',es:'Italia'}},
+  ES:{dial:'+34',names:{it:'Spagna',en:'Spain',de:'Spanien',fr:'Espagne',es:'España'}},
+  FR:{dial:'+33',names:{it:'Francia',en:'France',de:'Frankreich',fr:'France',es:'Francia'}},
+  DE:{dial:'+49',names:{it:'Germania',en:'Germany',de:'Deutschland',fr:'Allemagne',es:'Alemania'}}
+};
+function countryCode(){return document.getElementById('coCountry')?.value||'';}
+function countryName(code,l=language()){return CHECKOUT_COUNTRIES[code]?.names?.[l]||CHECKOUT_COUNTRIES[code]?.names?.it||code;}
+function normalizePhone(value,country){
+  let raw=String(value||'').trim();
+  if(!raw||!CHECKOUT_COUNTRIES[country])return '';
+  raw=raw.replace(/[()\s.-]/g,'');
+  if(raw.startsWith('00'))raw='+'+raw.slice(2);
+  if(!raw.startsWith('+'))raw=CHECKOUT_COUNTRIES[country].dial+raw.replace(/^0+/,'');
+  const digits=raw.replace(/\D/g,'');
+  if(digits.length<8||digits.length>15)return '';
+  return '+'+digits;
+}
+function applyCountryFields(){
+  const x=T[language()]||T.it;
+  const select=document.getElementById('coCountry');
+  if(select){
+    const selected=select.value;
+    const blank=select.querySelector('option[value=""]');if(blank)blank.textContent=x.selectCountry;
+    Object.keys(CHECKOUT_COUNTRIES).forEach(code=>{const opt=select.querySelector('option[value="'+code+'"]');if(opt)opt.textContent=countryName(code);});
+    select.value=selected;
+  }
+  fieldLabel('coCountry',x.country);
+  const phone=document.getElementById('coPhone');
+  const code=countryCode();
+  if(phone)phone.placeholder=code&&CHECKOUT_COUNTRIES[code]?CHECKOUT_COUNTRIES[code].dial+' …':'';
+  const prov=document.getElementById('coProvince');
+  if(prov){
+    prov.placeholder=x.provincePh;
+    prov.required=code==='IT';
+  }
+}
+window.purchaseNormalizePhone=normalizePhone;
+window.purchaseCountryName=countryName;
+window.purchaseApplyCountryFields=applyCountryFields;
+
 function apply(){
   const x=T[language()]||T.it;
   setText('#cartDrawer .cart-head h2',x.cartTitle);
@@ -117,8 +163,8 @@ function apply(){
   x.steps.forEach((v,i)=>setText('.checkout-step[data-step-pill="'+(i+1)+'"]',v));
 
   setText('.checkout-screen[data-step="1"] h3',x.step1Title);
-  fieldLabel('coName',x.name);fieldLabel('coEmail',x.email);fieldLabel('coPhone',x.phone);fieldLabel('coCity',x.city);fieldLabel('coAddress',x.address);fieldLabel('coCap',x.cap);fieldLabel('coProvince',x.province);
-  const prov=document.getElementById('coProvince');if(prov)prov.placeholder=x.provincePh;
+  fieldLabel('coName',x.name);fieldLabel('coEmail',x.email);fieldLabel('coCountry',x.country);fieldLabel('coPhone',x.phone);fieldLabel('coCity',x.city);fieldLabel('coAddress',x.address);fieldLabel('coCap',x.cap);fieldLabel('coProvince',x.province);
+  applyCountryFields();
   setText('.checkout-screen[data-step="1"] [data-next="2"]',x.continue);
 
   setText('.checkout-screen[data-step="2"] h3',x.step2Title);
@@ -208,7 +254,8 @@ async function downloadPdf(order){
     line(x.name.replace(' *',''),order.customer?.name);
     line(x.email.replace(' *',''),order.customer?.email);
     line(x.phone.replace(' *',''),order.customer?.phone);
-    line(x.address.replace(' *',''),(order.customer?.address||'')+', '+(order.customer?.cap||'')+' '+(order.customer?.city||'')+' ('+(order.customer?.province||'')+')');
+    line(x.pdfCountry,purchaseCountryName(order.customer?.country||'',l));
+    line(x.address.replace(' *',''),(order.customer?.address||'')+', '+(order.customer?.cap||'')+' '+(order.customer?.city||'')+(order.customer?.province?' ('+order.customer.province+')':''));
 
     section(x.pdfProducts);
     need(10);
@@ -235,9 +282,9 @@ async function downloadPdf(order){
 
     section(x.pdfTitle);
     line(x.pdfGoods,new Intl.NumberFormat(LOCALE[l]||LOCALE.it,{style:'currency',currency:'EUR'}).format(Number(order.goodsTotal||0)));
-    line(x.pdfShipping,new Intl.NumberFormat(LOCALE[l]||LOCALE.it,{style:'currency',currency:'EUR'}).format(Number(order.shipping||0)));
+    line(x.pdfShipping,order.shippingPending?x.pdfShippingPending:new Intl.NumberFormat(LOCALE[l]||LOCALE.it,{style:'currency',currency:'EUR'}).format(Number(order.shipping||0)));
     doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(20,48,37);need(10);
-    doc.text(pdfSafe(x.pdfTotal)+':',M,y);doc.text(new Intl.NumberFormat(LOCALE[l]||LOCALE.it,{style:'currency',currency:'EUR'}).format(Number(order.total||0)),R,y,{align:'right'});y+=9;
+    doc.text(pdfSafe(order.shippingPending?x.goodsTotalPending:x.pdfTotal)+':',M,y);doc.text(new Intl.NumberFormat(LOCALE[l]||LOCALE.it,{style:'currency',currency:'EUR'}).format(Number(order.total||0)),R,y,{align:'right'});y+=9;
     doc.setFillColor(255,243,201);doc.roundedRect(M,y-2,W-2*M,13,3,3,'F');
     doc.setTextColor(93,72,18);doc.setFontSize(11);doc.text(pdfSafe(x.pdfPoints)+': '+String(order.points||0),M+4,y+6);y+=18;
 
