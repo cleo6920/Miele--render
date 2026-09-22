@@ -141,11 +141,11 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
     const promotionIntent=/(^|\s)(offerta|offerte|promozione|promozioni|sconto|sconti)(\s|$)|\b(on sale|discounts?|promotions?|deals?|angebot|angebote|rabatt|rabatte|promo|promos|remise|remises|oferta|ofertas|descuento|descuentos)\b/i.test(message);
     if(promotionIntent){
       const promoReply={
-        it:'Nel catalogo V2 che ho a disposizione **non risultano al momento offerte, sconti o promozioni configurati**. I prezzi che vedi sono i prezzi correnti del catalogo.\n\nSe vuoi, posso invece dirti **qual è il prodotto che costa meno**, mostrarti i prodotti sotto una certa cifra oppure confrontare i prezzi di due prodotti.',
-        en:'In the V2 catalog available to me, **there are currently no configured sales, discounts or promotions**. The prices shown are the current catalog prices.\n\nIf you want, I can tell you **which product costs the least**, show products under a certain price, or compare two products.',
-        de:'Im V2-Katalog, der mir vorliegt, sind **derzeit keine Angebote, Rabatte oder Aktionen hinterlegt**. Die angezeigten Preise sind die aktuellen Katalogpreise.\n\nIch kann dir aber sagen, **welches Produkt am günstigsten ist**, Produkte unter einem bestimmten Preis zeigen oder zwei Preise vergleichen.',
-        fr:'Dans le catalogue V2 dont je dispose, **aucune offre, remise ou promotion n’est actuellement configurée**. Les prix affichés sont les prix actuels du catalogue.\n\nJe peux toutefois vous dire **quel produit coûte le moins cher**, afficher les produits sous un certain prix ou comparer deux produits.',
-        es:'En el catálogo V2 que tengo disponible **no hay actualmente ofertas, descuentos ni promociones configurados**. Los precios mostrados son los precios actuales del catálogo.\n\nSi quieres, puedo decirte **qué producto cuesta menos**, mostrar productos por debajo de un precio o comparar dos productos.'
+        it:'Al momento **non risultano offerte, sconti o promozioni attive**. I prezzi che vedi sono i prezzi correnti del catalogo.\n\nSe vuoi, posso invece dirti **qual è il prodotto che costa meno**, mostrarti i prodotti sotto una certa cifra oppure confrontare i prezzi di due prodotti.',
+        en:'At the moment, **there are no active sales, discounts or promotions**. The prices shown are the current catalog prices.\n\nIf you want, I can tell you **which product costs the least**, show products under a certain price, or compare two products.',
+        de:'Derzeit sind **keine Angebote, Rabatte oder Aktionen aktiv**. Die angezeigten Preise sind die aktuellen Katalogpreise.\n\nIch kann dir aber sagen, **welches Produkt am günstigsten ist**, Produkte unter einem bestimmten Preis zeigen oder zwei Preise vergleichen.',
+        fr:'Actuellement, **aucune offre, remise ou promotion n’est active**. Les prix affichés sont les prix actuels du catalogue.\n\nJe peux toutefois vous dire **quel produit coûte le moins cher**, afficher les produits sous un certain prix ou comparer deux produits.',
+        es:'Actualmente **no hay ofertas, descuentos ni promociones activas**. Los precios mostrados son los precios actuales del catálogo.\n\nSi quieres, puedo decirte **qué producto cuesta menos**, mostrar productos por debajo de un precio o comparar dos productos.'
       };
       return res.json({ok:true,reply:promoReply[requestedLanguage],action:null,suppressAction:true});
     }
@@ -201,13 +201,13 @@ CONTESTO DEL PROGETTO
 - "Linea Veleni" è una linea specialistica cosmetica e da massaggio legata al veleno d'api.
 - Non mostrare mai la parola visibile "Veleni" da sola: usa "Linea Veleni", "Linea Veleni d'Api" o formulazioni contestualizzate.
 - Punti Ape: i prodotti possono assegnare punti; 100 Punti Ape = cesto omaggio con 5 prodotti a scelta.
-- Nella V2 attuale i Mieli del Busatello da 250 g visibili sono: Miele Millefiori, Miele al Melone, Miele alla Fragola, Miele alla Pesca, Miele all'Arancia, ciascuno a €4,90 e 2 Punti Ape.
+- Nel catalogo attuale i Mieli del Busatello da 250 g sono: Miele Millefiori, Miele al Melone, Miele alla Fragola, Miele alla Pesca, Miele all'Arancia, ciascuno a €4,90 e 2 Punti Ape.
 - Usa SEMPRE questi nomi ufficiali esatti in italiano: "Miele Millefiori", "Miele al Melone", "Miele alla Fragola", "Miele alla Pesca", "Miele all'Arancia". Non trasformarli in "Miele di Melone", "Miele di Fragola", "Miele di Pesca" o "Miele di Arancia".
 - Non inventare prezzi, disponibilità, formati o condizioni commerciali non presenti in queste informazioni.
-- CATALOGO V2 ATTUALE VINCOLANTE: oltre ai 5 Mieli del Busatello sopra indicati, le sole referenze presenti sono:\n${APE_V2_OFFICIAL_PRODUCTS.map(p=>'- '+p.name+' | '+p.size+' | €'+Number(p.price).toFixed(2).replace('.',',')+' | '+p.desc).join('\n')}
-- Quando parli di una di queste referenze, usa almeno una volta il nome ufficiale esatto riportato nel catalogo: serve anche a collegare correttamente il pulsante diretto al prodotto.
-- Quando l'utente chiede informazioni su una referenza dello shop, attieniti a nome, formato, prezzo e descrizione riportati in questo catalogo. Non dedurre benefici ulteriori dal nome del prodotto o dagli ingredienti.
-- Non proporre come prodotto dello shop nessuna vecchia referenza legacy che non compare in questo elenco o nei 5 Mieli del Busatello.
+- CATALOGO ATTUALE VINCOLANTE: oltre ai 5 Mieli del Busatello sopra indicati, i soli prodotti presenti sono:\n${APE_V2_OFFICIAL_PRODUCTS.map(p=>'- '+p.name+' | '+p.size+' | €'+Number(p.price).toFixed(2).replace('.',',')+' | '+p.desc).join('\n')}
+- Quando parli di uno di questi prodotti, usa almeno una volta il nome esatto riportato nel catalogo: serve anche a collegare correttamente il pulsante diretto al prodotto.
+- Quando l'utente chiede informazioni su un prodotto dello shop, attieniti a nome, formato, prezzo e descrizione riportati in questo catalogo. Non dedurre benefici ulteriori dal nome del prodotto o dagli ingredienti.
+- Non proporre prodotti che non compaiono in questo elenco o nei 5 Mieli del Busatello.
 
 PRINCIPIO DI APPARTENENZA SEMANTICA
 - Decidi se una domanda appartiene al tuo mondo considerando il SIGNIFICATO DELL'INTERA FRASE, il contesto della conversazione e il contesto del sito. Non classificare mai una domanda in base a una singola parola isolata.
@@ -218,7 +218,7 @@ PRINCIPIO DI APPARTENENZA SEMANTICA
 - Esempio: "chi è il Presidente della Repubblica?" è fuori tema perché il soggetto della domanda appartiene chiaramente a un altro ambito.
 - Se la frase può essere interpretata in modo sensato dentro il tuo mondo e non contiene un soggetto esplicitamente esterno, preferisci l'interpretazione interna.
 - Usa anche la conversazione immediatamente precedente: pronomi, confronti e formule come "quello", "il più economico", "e questo?", "quale dei due?" ereditano il contesto già stabilito.
-- Il tuo mondo comprende: api, alveari, arnie, apicoltura, impollinazione, biodiversità, prodotti dell'alveare, catalogo e prezzi della V2, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.
+- Il tuo mondo comprende: api, alveari, arnie, apicoltura, impollinazione, biodiversità, prodotti dell'alveare, catalogo e prezzi della Fabbrica delle Api, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.
 - Dichiara una domanda fuori tema solo quando il significato complessivo è chiaramente esterno; non perché manca una parola chiave prevista.
 - Interpreta "offerta", "sconto" e "promozione" nel loro significato commerciale: NON significano "prodotti disponibili". Non dichiarare mai un prodotto in offerta se nel contesto certo non è indicato uno sconto o una promozione.
 - Se una domanda è generale e la risposta cita più prodotti, non scegliere arbitrariamente una singola referenza come se fosse la risposta principale.
