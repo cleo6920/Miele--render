@@ -728,6 +728,89 @@ app.get('/api/order-email-status', (_req,res)=>{
   return res.json({ok:true,configured:orderMailConfigured(),mode:orderMailMode()});
 });
 
+app.post('/api/free-edition-notification', async (req,res)=>{
+  if(!allowOrderMail(req)) return res.status(429).json({ok:false,error:'Troppe richieste. Riprova tra qualche minuto.'});
+  try{
+    const body=req.body||{};
+    const editionId=cleanOrderText(body.editionId,100);
+    if(editionId!=='api-oggi-01') return res.status(400).json({ok:false,error:'Edizione non riconosciuta.'});
+    const language=['it','en','de','fr','es'].includes(String(body.language||'').toLowerCase())?String(body.language).toLowerCase():'it';
+    const customer=body.customer||{};
+    const contact={
+      name:cleanOrderText(customer.name,120),
+      email:cleanOrderText(customer.email,180).toLowerCase(),
+      phone:cleanOrderText(customer.phone,80)
+    };
+    if(contact.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)){
+      return res.status(422).json({ok:false,error:'Email non valida.'});
+    }
+    if(!contact.name && !contact.email && !contact.phone){
+      return res.json({ok:true,skipped:true});
+    }
+    if(!orderMailConfigured()){
+      console.warn('[Edizioni Aperte] Notifica contatto non configurata.');
+      return res.status(503).json({ok:false,error:'Servizio email non configurato.'});
+    }
+    const to=String(process.env.ORDER_EMAIL_TO||'althea12830@gmail.com').trim();
+    const orderId=cleanOrderText(body.orderId,180)||('FREE-'+Date.now());
+    const subject='Download gratuito · Il mondo delle api oggi · Numero 01';
+    const text=[
+      'LA FABBRICA DELLE API - EDIZIONI APERTE',
+      '',
+      'Download: Il mondo delle api oggi · Numero 01',
+      'Codice: '+orderId,
+      'Lingua: '+orderLanguageLabel(language),
+      '',
+      'CONTATTI LASCIATI VOLONTARIAMENTE',
+      'Nome: '+(contact.name||'—'),
+      'Email: '+(contact.email||'—'),
+      'Telefono: '+(contact.phone||'—'),
+      '',
+      'Il download resta gratuito anche senza lasciare dati.'
+    ].join('\n');
+    const html=`<div style="font-family:Arial,Helvetica,sans-serif;background:#f6f1e7;padding:28px;color:#17251f">
+      <div style="max-width:680px;margin:auto;background:#fff;border-radius:20px;overflow:hidden;border:1px solid #ded5c5">
+        <div style="background:#10392c;color:#fff;padding:24px 28px">
+          <div style="font-size:12px;font-weight:800;letter-spacing:.12em;color:#f0bd4d">ALVEO DIGITALE · EDIZIONI APERTE</div>
+          <h1 style="margin:8px 0 0;font-size:25px">Nuovo download gratuito</h1>
+        </div>
+        <div style="padding:26px 28px;line-height:1.7">
+          <p><strong>Il mondo delle api oggi · Numero 01</strong><br>Lingua: ${escapeOrderHtml(orderLanguageLabel(language))}</p>
+          <h2 style="font-size:17px">Contatti lasciati volontariamente</h2>
+          <p>Nome: <strong>${escapeOrderHtml(contact.name||'—')}</strong><br>
+          Email: ${contact.email?'<a href="mailto:'+escapeOrderHtml(contact.email)+'">'+escapeOrderHtml(contact.email)+'</a>':'—'}<br>
+          Telefono: ${escapeOrderHtml(contact.phone||'—')}</p>
+          <p style="font-size:12px;color:#6f7973">Il contenuto è scaricabile gratuitamente anche senza lasciare dati.</p>
+        </div>
+      </div>
+    </div>`;
+    if(orderMailMode()==='resend'){
+      const key=String(process.env.RESEND_API_KEY||'').trim();
+      const from=String(process.env.ORDER_EMAIL_FROM||'La Fabbrica delle Api <onboarding@resend.dev>').trim();
+      const payload={from,to:[to],subject,text,html};
+      if(contact.email) payload.reply_to=contact.email;
+      const response=await fetch('https://api.resend.com/emails',{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json','Idempotency-Key':'free-edition-'+orderId},
+        body:JSON.stringify(payload)
+      });
+      const data=await response.json().catch(()=>null);
+      if(!response.ok) throw new Error('Resend: '+(data?.message||data?.error||('HTTP '+response.status)));
+    }else{
+      const transporter=orderTransporter();
+      const user=String(process.env.ORDER_EMAIL_USER||'').trim();
+      const mail={from:'"La Fabbrica delle Api" <'+user+'>',to,subject,text,html};
+      if(contact.email) mail.replyTo=contact.email;
+      await transporter.sendMail(mail);
+    }
+    console.log('[Edizioni Aperte] Contatto download inviato:',orderId);
+    return res.json({ok:true,orderId});
+  }catch(error){
+    console.error('[Edizioni Aperte] Errore notifica:',error?.message||error);
+    return res.status(500).json({ok:false,error:'Notifica non inviata.'});
+  }
+});
+
 app.post('/api/order-notification', async (req,res)=>{
   if(!allowOrderMail(req)) return res.status(429).json({ok:false,error:'Troppe richieste. Riprova tra qualche minuto.'});
   if(!orderMailConfigured()){
