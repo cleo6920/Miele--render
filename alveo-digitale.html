@@ -15,6 +15,8 @@
     .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:#fff;border:1px solid #eadfca;border-radius:18px;padding:18px;box-shadow:0 8px 22px rgba(0,0,0,.07);display:flex;flex-direction:column;min-height:315px}.icon{font-size:44px}.tag{display:inline-flex;width:max-content;margin:12px 0 7px;border-radius:999px;background:#eef7f2;color:var(--green);padding:6px 9px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}.card h3{font-size:22px;line-height:1.12;margin:0 0 8px}.card p{margin:0;color:var(--muted);line-height:1.45;font-weight:600}.price{margin-top:auto;padding-top:18px;font-size:25px;font-weight:950;color:#9a6710}.demo{margin-top:10px;border:0;border-radius:11px;background:var(--gold);color:#1f260f;padding:11px 14px;font-size:14px;font-weight:950;cursor:pointer}.demo:hover{background:#f1c965}
     .preview{margin-top:18px;background:#fff;border:2px solid #e9c568;border-radius:18px;padding:18px;display:none}.preview.open{display:block}.preview h3{margin:0 0 8px}.preview p{margin:5px 0;color:#4d5a53;line-height:1.45}.close{margin-top:10px;background:#173d32;color:#fff;border:0;border-radius:9px;padding:9px 12px;font-weight:800;cursor:pointer}
     .footnote{margin-top:26px;background:#edf7f2;border-radius:16px;padding:17px;color:#26453a;font-weight:700;line-height:1.45}
+    .buybox{margin-top:18px;background:#fff;border:2px solid #e9c568;border-radius:18px;padding:20px;display:none;box-shadow:0 10px 28px rgba(0,0,0,.08)}.buybox.open{display:block}.buybox h3{margin:0 0 8px;font-size:24px}.buybox p{color:var(--muted);font-weight:700;line-height:1.45}.buygrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.buygrid label{font-size:13px;font-weight:900}.buygrid input{display:block;width:100%;margin-top:5px;border:1px solid #cfc7b8;border-radius:10px;padding:12px;font-size:16px}.buylang{margin:14px 0;padding:11px 13px;border-radius:12px;background:#edf7f2;font-weight:800}.buyactions{display:flex;gap:10px;flex-wrap:wrap}.paynow{flex:1;border:0;border-radius:11px;background:#0b6b50;color:#fff;padding:13px 16px;font-size:16px;font-weight:950;cursor:pointer}.paynow:disabled{opacity:.55}.cancelbuy{border:1px solid #c8bea8;border-radius:11px;background:#fff;padding:12px 14px;font-weight:850;cursor:pointer}.buyerror{display:none;margin-top:10px;color:#b91c1c;font-weight:800}
+    @media(max-width:600px){.buygrid{grid-template-columns:1fr}}
     @media(max-width:800px){.cards,.simple{grid-template-columns:1fr}.hero{padding:23px 18px}.topin{align-items:flex-start;flex-direction:column}.back{display:inline-flex}.card{min-height:0}}
   </style>
 </head>
@@ -22,28 +24,29 @@
   <div class="top"><div class="topin"><div class="brand">🐝 LA FABBRICA DELLE API</div><a class="back" href="/shop">← Torna allo Shop</a></div></div>
   <main class="wrap">
     <section class="hero">
-      <div class="kicker">Nuova linea in prova su Render</div>
+      <div class="kicker">ALVEO DIGITALE · EDIZIONE PREMIUM</div>
       <h1>ALVEO DIGITALE</h1>
       <p class="lead">Ricette, video e idee regalo da usare subito.</p>
-      <p class="sub">La regola è semplice: scegli quello che ti interessa, guarda cosa riceverai e, quando la vendita sarà attiva, lo ottieni subito dopo il pagamento. Nessuna spedizione.</p>
+      <p class="sub">La regola è semplice: scegli il contenuto, completa il pagamento sicuro con Nexi e aprilo subito nella lingua scelta. Nessuna spedizione.</p>
       <div class="simple">
         <div class="step"><b>1. Scegli</b>Un contenuto chiaro e semplice.</div>
         <div class="step"><b>2. Acquista</b>Come un normale prodotto dello shop.</div>
         <div class="step"><b>3. Apri subito</b>Niente pacchi e niente attese.</div>
       </div>
-      <div class="notice">Questa è una prima prova grafica su Render. I pulsanti di acquisto non sono ancora attivi.</div>
+      <div class="notice">10 Colazioni dell’Alveare è disponibile in italiano, inglese, tedesco, francese e spagnolo. Dopo il pagamento ricevi subito il PDF Premium nella lingua scelta.</div>
     </section>
 
-    <div class="section-title"><h2>Tre esempi per iniziare</h2><p>Pochi prodotti, facili da capire al primo sguardo.</p></div>
+    <div class="section-title"><h2>Alveo Digitale</h2><p>Il primo contenuto Premium è già disponibile. Gli altri progetti restano in preparazione.</p></div>
 
     <section class="cards">
       <article class="card">
         <div class="icon">📖🍯</div>
         <span class="tag">Ricette & Guide</span>
         <h3>10 Colazioni dell’Alveare</h3>
-        <p>Dieci idee semplici con il miele, spiegate passo passo e collegate ai mieli dello shop.</p>
-        <div class="price">€ 2,90</div>
+        <p>37 pagine illustrate: 10 ricette complete, 20 idee lampo, planner, lista della spesa, quiz, degustazione e passaporto dei sapori.</p>
+        <div class="price">€ 5,90</div>
         <button class="demo" onclick="showPreview('colazioni')">Guarda esempio</button>
+        <button class="demo" style="background:#0b6b50;color:#fff" onclick="openDigitalCheckout()">Acquista PDF Premium · € 5,90</button>
       </article>
 
       <article class="card">
@@ -51,7 +54,7 @@
         <span class="tag">Video narrato</span>
         <h3>Un Momento nell’Alveare</h3>
         <p>Un breve video narrato, indicativamente 20–30 secondi, per raccontare una piccola storia dell’alveare.</p>
-        <div class="price">€ 2,90</div>
+        <div class="price" style="font-size:18px;color:#5f6b64">In preparazione</div>
         <button class="demo" onclick="showPreview('video')">Guarda esempio</button>
       </article>
 
@@ -60,7 +63,7 @@
         <span class="tag">Regalo digitale</span>
         <h3>Regala l’Alveare</h3>
         <p>Una dedica digitale semplice da inviare, con una piccola esperienza video collegata al regalo.</p>
-        <div class="price">€ 2,90</div>
+        <div class="price" style="font-size:18px;color:#5f6b64">In preparazione</div>
         <button class="demo" onclick="showPreview('regalo')">Guarda esempio</button>
       </article>
     </section>
@@ -71,7 +74,21 @@
       <button class="close" onclick="closePreview()">Chiudi anteprima</button>
     </section>
 
-    <div class="footnote"><strong>Obiettivo della prova:</strong> verificare se questa struttura si capisce immediatamente. Prima approviamo la pagina e il modo di presentare i prodotti; solo dopo colleghiamo acquisto, pagamento e consegna digitale.</div>
+    <section id="digitalCheckout" class="buybox" aria-live="polite">
+      <h3>Acquista 10 Colazioni dell’Alveare</h3>
+      <p>Inserisci nome ed email, poi continua al pagamento sicuro Nexi. Il PDF non prevede spedizione.</p>
+      <div class="buygrid">
+        <label>Nome e cognome<input id="digitalName" autocomplete="name" placeholder="Nome e cognome"></label>
+        <label>Email<input id="digitalEmail" type="email" autocomplete="email" placeholder="nome@email.it"></label>
+      </div>
+      <div id="digitalLanguage" class="buylang">Lingua PDF: Italiano</div>
+      <div class="buyactions">
+        <button id="digitalPay" class="paynow" type="button" onclick="startDigitalPayment()">Vai al pagamento Nexi · € 5,90</button>
+        <button class="cancelbuy" type="button" onclick="closeDigitalCheckout()">Annulla</button>
+      </div>
+      <div id="digitalError" class="buyerror"></div>
+    </section>
+    <div class="footnote"><strong>Consegna digitale:</strong> dopo il pagamento Nexi il PDF Premium viene proposto immediatamente nella lingua selezionata sul sito. Nessun costo di spedizione.</div>
   </main>
   <script>
     const previews={
@@ -80,6 +97,43 @@
       regalo:{title:'Anteprima — Regala l’Alveare',text:'Esempio: scegli una dedica, abbinala a una breve cartolina video e inviala alla persona che vuoi. Nella versione definitiva il passaggio dovrà essere molto semplice: scegli, scrivi il nome, acquista, invia.'}
     };
     function showPreview(key){const data=previews[key];if(!data)return;document.getElementById('preview-title').textContent=data.title;document.getElementById('preview-text').textContent=data.text;const box=document.getElementById('preview');box.classList.add('open');box.scrollIntoView({behavior:'smooth',block:'center'});}function closePreview(){document.getElementById('preview').classList.remove('open');}
+    const DIGITAL_LANG_NAMES={it:'Italiano',en:'English',de:'Deutsch',fr:'Français',es:'Español'};
+    function currentDigitalLanguage(){try{const v=String(localStorage.getItem('fda-site-language')||'it').toLowerCase();return Object.prototype.hasOwnProperty.call(DIGITAL_LANG_NAMES,v)?v:'it';}catch(_){return 'it';}}
+    function updateDigitalLanguage(){const lang=currentDigitalLanguage();const el=document.getElementById('digitalLanguage');if(el)el.textContent='Lingua PDF: '+DIGITAL_LANG_NAMES[lang];}
+    function openDigitalCheckout(){updateDigitalLanguage();const box=document.getElementById('digitalCheckout');box.classList.add('open');box.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>document.getElementById('digitalName')?.focus(),250);}
+    function closeDigitalCheckout(){document.getElementById('digitalCheckout').classList.remove('open');}
+    async function startDigitalPayment(){
+      const name=document.getElementById('digitalName').value.trim();
+      const email=document.getElementById('digitalEmail').value.trim();
+      const error=document.getElementById('digitalError');
+      const button=document.getElementById('digitalPay');
+      error.style.display='none';error.textContent='';
+      if(name.length<2||!email.includes('@')){error.textContent='Inserisci nome e un indirizzo email valido.';error.style.display='block';return;}
+      const lang=currentDigitalLanguage();
+      button.disabled=true;button.textContent='Apertura pagamento Nexi...';
+      try{
+        const productName="10 Colazioni dell’Alveare - PDF digitale";
+        const response=await fetch('/api/create-checkout-session',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            items:[{name:productName,amount:5.90,quantity:1}],
+            xpayCart:[{productId:'alveo-digitale-10-colazioni',productName,name:productName,language:lang}],
+            shippingCostOverride:0,
+            notes:'ALVEO_DIGITALE:10_COLAZIONI',
+            customer:{name,email}
+          })
+        });
+        const data=await response.json().catch(()=>null);
+        if(!response.ok||!data?.url)throw new Error(data?.error||'Pagamento non disponibile.');
+        if(data.xpay!==true)throw new Error('Il pagamento Nexi non è disponibile in questo momento.');
+        location.href=data.url;
+      }catch(err){
+        error.textContent=err?.message||'Non riesco ad avviare il pagamento. Riprova.';
+        error.style.display='block';button.disabled=false;button.textContent='Vai al pagamento Nexi · € 5,90';
+      }
+    }
+    updateDigitalLanguage();
   </script>
 </body>
 </html>
