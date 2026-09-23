@@ -20,7 +20,7 @@ jobs:
       - name: Test official site in Spanish
         shell: bash
         run: |
-          cat > /tmp/test.mjs <<'EOF'
+          cat > test.mjs <<'EOF'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
           const page=await browser.newPage();
@@ -54,4 +54,4 @@ jobs:
           console.log(JSON.stringify({homeLang,firstSrc,firstCounter,lastSrc,lastCounter}));
           await browser.close();
           EOF
-          node /tmp/test.mjs
+          node test.mjs
