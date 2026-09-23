@@ -1,0 +1,26 @@
+name: Import Apinfiore image candidates
+on:
+  workflow_dispatch:
+  push:
+    branches: [alveo-premium-work]
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p scratch/apinfiore-candidates
+          curl -fL 'https://www.apinfiore.com/wp-content/uploads/2023/03/Polline-Italiano_125g_web-2.jpg' -o scratch/apinfiore-candidates/polline-125-packshot.jpg
+          curl -fL 'https://www.apinfiore.com/wp-content/uploads/2023/03/Pappa-Reale_web-21.jpg' -o scratch/apinfiore-candidates/pappa-main.jpg
+          curl -fL 'https://www.apinfiore.com/wp-content/uploads/2024/08/Pappa-Reale-3_web-6-ok.jpg' -o scratch/apinfiore-candidates/pappa-alt.jpg
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scratch/apinfiore-candidates
+          git commit -m 'Work: add Apinfiore candidates for visual check'
+          git pull --rebase origin alveo-premium-work
+          git push origin HEAD:alveo-premium-work
