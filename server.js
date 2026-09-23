@@ -271,8 +271,7 @@ app.get('/api/magazine-translate-pages', async (req,res)=>{
     const src=require('./translations/10-colazioni-it-source.json');
     const selected=(src.pages||[]).slice(start-1,start-1+count);
     if(!selected.length) return res.status(404).json({ok:false,error:'Pagine non trovate.'});
-    const translations=[];
-    for(const t of selected) translations.push(await magazineTranslateOne(String(t||''),target));
+    const translations=await Promise.all(selected.map(t=>magazineTranslateOne(String(t||''),target)));
     return res.json({ok:true,target,start,count:translations.length,total:Number(src.pageCount||src.pages?.length||0),translations});
   }catch(error){
     console.error('[Magazine Translate Pages]',error);
