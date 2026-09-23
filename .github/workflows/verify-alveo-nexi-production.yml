@@ -1,0 +1,45 @@
+name: Verify Alveo Nexi production flow
+on:
+  workflow_dispatch:
+  push:
+    branches: [alveo-premium-work]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: shop-experience-v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Syntax checks
+        run: |
+          node --check xpay-gateway.js
+          node --check xpay-server-prestart.js
+          node --check server.js
+      - name: Verify live page and Nexi checkout creation
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://miele-shop-experience-v2.onrender.com'
+          for i in {1..36}; do
+            curl -fsSL "$base/alveo-digitale" -o /tmp/alveo.html || true
+            if grep -q 'Vai al pagamento Nexi' /tmp/alveo.html && grep -q 'ALVEO_DIGITALE:10_COLAZIONI' /tmp/alveo.html; then break; fi
+            sleep 10
+          done
+          grep -q 'Vai al pagamento Nexi' /tmp/alveo.html
+          grep -q 'ALVEO_DIGITALE:10_COLAZIONI' /tmp/alveo.html
+          curl -fsSL "$base/success.html" -o /tmp/success.html
+          grep -q 'alveoDigitalDelivery' /tmp/success.html
+          status=$(curl -fsSL "$base/api/xpay/status")
+          echo "$status"
+          echo "$status" | grep -q '"provider":"Nexi XPay"'
+          echo "$status" | grep -q '"liveEnabled":true'
+          payload='{"items":[{"name":"10 Colazioni dell’Alveare - PDF digitale","amount":5.90,"quantity":1}],"xpayCart":[{"productId":"alveo-digitale-10-colazioni","productName":"10 Colazioni dell’Alveare - PDF digitale","name":"10 Colazioni dell’Alveare - PDF digitale","language":"de"}],"shippingCostOverride":0,"notes":"ALVEO_DIGITALE:10_COLAZIONI","customer":{"name":"Test Verifica Alveo","email":"test-alveo@example.com"}}'
+          out=$(curl -fsSL -X POST "$base/api/create-checkout-session" -H 'Content-Type: application/json' --data "$payload")
+          echo "$out"
+          echo "$out" | grep -q '"xpay":true'
+          echo "$out" | grep -q '/api/xpay/redirect'
