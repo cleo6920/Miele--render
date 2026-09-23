@@ -1,0 +1,47 @@
+name: Inspect Apinfiore galleries
+on:
+  workflow_dispatch:
+  push:
+    branches: [alveo-premium-work]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse galleries and variations
+        shell: bash
+        run: |
+          python - <<'PY'
+          import urllib.request,re,html,json
+          urls={
+           'polline':'https://www.apinfiore.com/prodotto/polline-italiano-delle-api/',
+           'pappa':'https://www.apinfiore.com/prodotto/pappa-reale-fresca/'
+          }
+          for key,url in urls.items():
+            req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
+            src=urllib.request.urlopen(req,timeout=30).read().decode('utf-8','replace')
+            print('\n###',key)
+            # gallery figure block
+            m=re.search(r'<div class="woocommerce-product-gallery[^>]*>(.*?)</div>\s*</div>',src,re.S|re.I)
+            block=m.group(1) if m else src
+            imgs=[]
+            for mm in re.finditer(r'<img[^>]+>',block,re.I):
+              tag=mm.group(0)
+              srcs=re.findall(r'(?:data-large_image|data-src|src)=["\']([^"\']+)["\']',tag,re.I)
+              alt=re.findall(r'alt=["\']([^"\']*)["\']',tag,re.I)
+              if srcs:
+                item=(html.unescape(srcs[0]),html.unescape(alt[0] if alt else ''))
+                if item not in imgs: imgs.append(item)
+            print('GALLERY')
+            for i,(u,a) in enumerate(imgs[:20],1): print(i,a,u)
+            vm=re.search(r'data-product_variations=["\']([^"\']+)["\']',src,re.I)
+            if vm:
+              raw=html.unescape(vm.group(1))
+              try:
+                data=json.loads(raw)
+                print('VARIATIONS')
+                for v in data:
+                  print(v.get('attributes'), v.get('image',{}).get('full_src'), v.get('image',{}).get('gallery_thumbnail_src'))
+              except Exception as e: print('VAR ERR',e)
+          PY
