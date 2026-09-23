@@ -1,0 +1,36 @@
+name: Verify live Alveo Premium PDFs
+on:
+  workflow_dispatch:
+  push:
+    branches: [alveo-premium-work]
+permissions:
+  contents: read
+jobs:
+  verify-live:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify Render serves approved PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://miele-shop-experience-v2.onrender.com'
+          expected_it='63cc809325c2153eaf499a7f0900e9dd98c05e13db321b4c7483146253f7f906'
+          for i in {1..24}; do
+            code=$(curl -L -sS -o /tmp/it.pdf -w '%{http_code}' "$base/downloads/10-colazioni-it.pdf" || true)
+            got=$(sha256sum /tmp/it.pdf 2>/dev/null | awk '{print $1}' || true)
+            if [ "$code" = "200" ] && [ "$got" = "$expected_it" ]; then
+              break
+            fi
+            sleep 10
+          done
+          test "$(sha256sum /tmp/it.pdf | awk '{print $1}')" = "$expected_it"
+          declare -A hashes
+          hashes[en]='4dfd20d0fd9d4a80a8959cb131d6708694dbda19103fabaf4361d1d213613e9c'
+          hashes[de]='72a96dd3c284146e66c104ff46fbeec50cb44c558a585e09052e50c91272919a'
+          hashes[fr]='1c8cfacc35f2ab2b8a1ad617bacbe0f83851414de0c84a412572d7de63440914'
+          hashes[es]='3767f4a0ce084907c59fd24f81d3677ec2953bf3d87262c1182141e800c34d0c'
+          for lang in en de fr es; do
+            curl -fL -sS "$base/downloads/10-colazioni-$lang.pdf" -o "/tmp/$lang.pdf"
+            test "$(sha256sum "/tmp/$lang.pdf" | awk '{print $1}')" = "${hashes[$lang]}"
+          done
+          file /tmp/it.pdf /tmp/en.pdf /tmp/de.pdf /tmp/fr.pdf /tmp/es.pdf
