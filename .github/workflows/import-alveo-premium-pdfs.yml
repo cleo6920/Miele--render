@@ -1,0 +1,39 @@
+name: Import approved Alveo Premium PDFs
+on:
+  push:
+    branches: [alveo-premium-work]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-pdfs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: alveo-premium-work
+      - name: Download approved PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p downloads/alveo-premium
+          curl -fL --retry 3 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-8af0-81fd-b427-94328d0b4d93/raw?se=2026-09-23T10%3A12%3A56Z&sp=r&sv=2026-02-06&sr=b&scid=00887c7d-9c8b-5c06-bec8-80841f88e754&skoid=d294dba5-36f7-432b-aab8-935656489847&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-23T06%3A35%3A50Z&ske=2026-09-24T06%3A35%3A50Z&sks=b&skv=2026-02-06&sig=55UbRYiw3v9xisLF8Gj7ZkcCNhdKknG3thLjf6EyBPg%3D' -o downloads/alveo-premium/10-colazioni-it.pdf
+          curl -fL --retry 3 'https://sdmntprnortheu.oaiusercontent.com/files/00000000-79a8-81f4-a6e9-5ba604ed2526/raw?se=2026-09-23T10%3A13%3A00Z&sp=r&sv=2026-02-06&sr=b&scid=c23b4d5f-a9af-5967-9dd9-7f5f5d44302f&skoid=d294dba5-36f7-432b-aab8-935656489847&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-23T06%3A12%3A43Z&ske=2026-09-24T06%3A12%3A43Z&sks=b&skv=2026-02-06&sig=FEVtnBQwwhH%2Bwn8wLD1RHdsQ5A4itNjQoQSCqhe33gc%3D' -o downloads/alveo-premium/10-colazioni-en.pdf
+          curl -fL --retry 3 'https://sdmntprnortheu.oaiusercontent.com/files/00000000-bb04-81f4-ab82-1c02a9c84bf6/raw?se=2026-09-23T10%3A13%3A05Z&sp=r&sv=2026-02-06&sr=b&scid=fed552c6-2acc-5053-83c0-e5113f5ca041&skoid=d294dba5-36f7-432b-aab8-935656489847&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-23T04%3A35%3A45Z&ske=2026-09-24T04%3A35%3A45Z&sks=b&skv=2026-02-06&sig=i7m2QiyTqVWMn1kNrmy7nC3yicbjxUL8M3XX9FzjOEw%3D' -o downloads/alveo-premium/10-colazioni-de.pdf
+          curl -fL --retry 3 'https://sdmntprnorthcentralus.oaiusercontent.com/files/00000000-4a2c-822f-b8dc-e74a23af552d/raw?se=2026-09-23T10%3A13%3A15Z&sp=r&sv=2026-02-06&sr=b&scid=9c055371-7386-59c5-ab73-29446d85e1bd&skoid=d294dba5-36f7-432b-aab8-935656489847&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-22T23%3A00%3A02Z&ske=2026-09-23T23%3A00%3A02Z&sks=b&skv=2026-02-06&sig=p77e/JREPtfhad4/K1ximgRvnOGGm5zZbCM3HyhJa9Y%3D' -o downloads/alveo-premium/10-colazioni-fr.pdf
+          curl -fL --retry 3 'https://sdmntprpolandcentral.oaiusercontent.com/files/00000000-d41c-820a-a23a-bb09f26cca74/raw?se=2026-09-23T10%3A13%3A22Z&sp=r&sv=2026-02-06&sr=b&scid=a197fbe7-3f92-56fe-a57f-af15e8f411ba&skoid=d294dba5-36f7-432b-aab8-935656489847&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-23T06%3A35%3A35Z&ske=2026-09-24T06%3A35%3A35Z&sks=b&skv=2026-02-06&sig=fkXTmsCwCwYjXPCUZKS/kGjY6i%2BiI3FpvO1VqgL8mQg%3D' -o downloads/alveo-premium/10-colazioni-es.pdf
+          echo '63cc809325c2153eaf499a7f0900e9dd98c05e13db321b4c7483146253f7f906  downloads/alveo-premium/10-colazioni-it.pdf' | sha256sum -c -
+          echo '4dfd20d0fd9d4a80a8959cb131d6708694dbda19103fabaf4361d1d213613e9c  downloads/alveo-premium/10-colazioni-en.pdf' | sha256sum -c -
+          echo '72a96dd3c284146e66c104ff46fbeec50cb44c558a585e09052e50c91272919a  downloads/alveo-premium/10-colazioni-de.pdf' | sha256sum -c -
+          echo '1c8cfacc35f2ab2b8a1ad617bacbe0f83851414de0c84a412572d7de63440914  downloads/alveo-premium/10-colazioni-fr.pdf' | sha256sum -c -
+          echo '3767f4a0ce084907c59fd24f81d3677ec2953bf3d87262c1182141e800c34d0c  downloads/alveo-premium/10-colazioni-es.pdf' | sha256sum -c -
+      - name: Commit PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Alveo PDF Import'
+          git config user.email 'actions@users.noreply.github.com'
+          git add downloads/alveo-premium/*.pdf
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Add approved Alveo Premium PDFs'
+          git push origin HEAD:alveo-premium-work
