@@ -1,0 +1,51 @@
+name: Verify official Alveo checkout
+on:
+  workflow_dispatch:
+  push:
+    branches: [alveo-premium-work]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check official product, checkout and PDF endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://www.lafabbricadelleapi.it'
+
+          curl -fsSL "$base/alveo-digitale" -o /tmp/alveo.html
+          grep -q '10 Colazioni dell.Alveare' /tmp/alveo.html
+          grep -q '€ 5,90' /tmp/alveo.html
+          grep -q 'IT · EN · DE · FR · ES' /tmp/alveo.html
+
+          curl -fsSL "$base/shop" -o /tmp/shop.html
+          grep -q 'alveo-digitale-10-colazioni' /tmp/shop.html
+
+          curl -fsSL "$base/success.html" -o /tmp/success.html
+          grep -q 'id="digitalDownload"' /tmp/success.html
+          grep -q '/api/xpay/success-status' /tmp/success.html
+          grep -q "/downloads/10-colazioni-" /tmp/success.html
+
+          status=$(curl -fsSL "$base/api/xpay/status")
+          echo "$status"
+          echo "$status" | grep -q '"configured":true'
+          echo "$status" | grep -q '"liveEnabled":true'
+
+          payload='{"items":[{"name":"10 Colazioni dell’Alveare - PDF digitale","amount":5.90,"quantity":1}],"xpayCart":[{"productId":"alveo-digitale-10-colazioni","productName":"10 Colazioni dell’Alveare - Edizione Premium","pricePerPack":5.90,"quantity":1}],"shippingCostOverride":0,"customer":{"name":"Verifica Alveo","email":"verifica-alveo@example.com","phone":"+393331234567","address":"Via Test 1","postal_code":"00100","city":"Roma","state":"RM"},"email":"verifica-alveo@example.com","language":"de","notes":"ORDER:VERIFY-ALVEO"}'
+          out=$(curl -fsSL -X POST "$base/api/create-checkout-session" -H 'Content-Type: application/json' --data "$payload")
+          echo "$out"
+          echo "$out" | grep -q '"xpay":true'
+          echo "$out" | grep -q 'https://www.lafabbricadelleapi.it/api/xpay/redirect'
+
+          declare -A hashes
+          hashes[it]='63cc809325c2153eaf499a7f0900e9dd98c05e13db321b4c7483146253f7f906'
+          hashes[en]='4dfd20d0fd9d4a80a8959cb131d6708694dbda19103fabaf4361d1d213613e9c'
+          hashes[de]='72a96dd3c284146e66c104ff46fbeec50cb44c558a585e09052e50c91272919a'
+          hashes[fr]='1c8cfacc35f2ab2b8a1ad617bacbe0f83851414de0c84a412572d7de63440914'
+          hashes[es]='3767f4a0ce084907c59fd24f81d3677ec2953bf3d87262c1182141e800c34d0c'
+          for lang in it en de fr es; do
+            curl -fsSL "$base/downloads/10-colazioni-$lang.pdf" -o "/tmp/$lang.pdf"
+            test "$(sha256sum "/tmp/$lang.pdf" | awk '{print $1}')" = "${hashes[$lang]}"
+          done
