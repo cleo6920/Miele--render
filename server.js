@@ -201,6 +201,58 @@ app.post('/api/site-translate', async (req,res)=>{
   await Promise.all(workers);
   return res.json({ok:true,target,translations:results});
 });
+
+async function magazineTranslateOne(text,target){
+  const apiKey=String(process.env.GROQ_API_KEY||'').trim();
+  if(!apiKey) throw new Error('GROQ_API_KEY assente');
+  const language={en:'English',de:'German',fr:'French',es:'Spanish'}[target];
+  const prompt=[
+    'Translate the following Italian magazine page into '+language+'.',
+    'Return ONLY the translated page text, no notes and no markdown fences.',
+    'Preserve the original line-break structure as closely as possible.',
+    'Preserve all numbers, quantities, temperatures, page numbers and list numbering.',
+    'Keep brand names ALTHEA 12830, La Fabbrica delle Api and La Galena delle Api unchanged.',
+    'Translate natural editorial headings and recipe text fluently, not literally.',
+    'Honey variety names may be translated naturally when appropriate, but keep product identity clear.',
+    'Do not add health claims or information not present in the source.',
+    '',
+    String(text||'')
+  ].join('\n');
+  const aiResponse=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',
+    headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:String(process.env.GROQ_MODEL||'openai/gpt-oss-20b'),
+      messages:[{role:'user',content:prompt}],
+      max_tokens:2600,
+      temperature:0.1
+    })
+  });
+  const data=await aiResponse.json().catch(()=>null);
+  if(!aiResponse.ok) throw new Error('Groq translate '+aiResponse.status+' '+String(data?.error?.message||''));
+  const out=String(data?.choices?.[0]?.message?.content||'').trim();
+  if(!out) throw new Error('Traduzione Groq vuota');
+  return out;
+}
+
+app.get('/api/magazine-translate-get', async (req,res)=>{
+  res.setHeader('Cache-Control','no-store');
+  const target=String(req.query?.target||'').toLowerCase().slice(0,2);
+  if(!SITE_TRANSLATE_LANGS.has(target)) return res.status(400).json({ok:false,error:'Lingua non supportata.'});
+  let texts=[];
+  try{ texts=JSON.parse(String(req.query?.q||'')); }
+  catch(_){ return res.status(400).json({ok:false,error:'Testo non valido.'}); }
+  if(!Array.isArray(texts)||!texts.length||texts.length>5) return res.status(400).json({ok:false,error:'Richiesta non valida.'});
+  if(texts.reduce((n,x)=>n+String(x||'').length,0)>9000) return res.status(413).json({ok:false,error:'Testo troppo lungo.'});
+  try{
+    const translations=[];
+    for(const t of texts) translations.push(await magazineTranslateOne(String(t||''),target));
+    return res.json({ok:true,target,translations});
+  }catch(error){
+    console.error('[Magazine Translate]',error);
+    return res.status(502).json({ok:false,error:'Traduzione non disponibile.'});
+  }
+});
 app.get('/api/site-translate-get', async (req,res)=>{
   res.setHeader('Cache-Control','no-store');
   const target=String(req.query?.target||'').toLowerCase().slice(0,2);
