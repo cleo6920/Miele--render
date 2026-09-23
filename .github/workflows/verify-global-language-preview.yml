@@ -26,12 +26,12 @@ jobs:
           const page=await browser.newPage();
           await page.addInitScript(()=>localStorage.setItem('fda-site-language','es'));
 
-          await page.goto('https://www.lafabbricadelleapi.it/?v=global-e2e-10',{waitUntil:'networkidle'});
+          await page.goto('https://www.lafabbricadelleapi.it/?v=global-e2e-10',{waitUntil:'domcontentloaded',timeout:60000});
           await page.waitForSelector('#fda-language-select',{timeout:20000});
           const homeLang=await page.$eval('#fda-language-select',e=>e.value);
           if(homeLang!=='es') throw new Error('Home language selector is '+homeLang);
 
-          await page.goto('https://www.lafabbricadelleapi.it/shop?v=preview-e2e-10',{waitUntil:'networkidle'});
+          await page.goto('https://www.lafabbricadelleapi.it/shop?v=preview-e2e-10',{waitUntil:'domcontentloaded',timeout:60000});
           await page.waitForSelector('#fda-language-select',{timeout:20000});
           await page.waitForFunction(()=>Array.from(document.querySelectorAll('button')).some(b=>/Añadir|Agregar/.test(b.textContent||'')),null,{timeout:30000});
 
