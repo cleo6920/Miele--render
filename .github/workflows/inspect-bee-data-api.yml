@@ -1,0 +1,20 @@
+name: Inspect Bee Data API
+on:
+  push:
+    branches: [alveo-premium-work]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe historical Neon Data API
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://ep-quiet-night-b241wmyg.apirest.c-6.eu-central-1.aws.neon.tech/neondb/rest/v1/rpc/bee_wallet_api'
+          body='{"p_action":"get_purchase","p_payload":{"orderId":"FREE-API-OGGI-01-7D0327FA3018FCC9DCAA"}}'
+          code=$(curl -sS -o /tmp/out -w '%{http_code}' -X POST "$url" -H 'Content-Type: application/json' -H 'Accept: application/json' --data "$body" || true)
+          echo "HTTP $code"
+          cat /tmp/out || true
