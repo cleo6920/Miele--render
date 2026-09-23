@@ -1,0 +1,28 @@
+name: Verify general translator live
+on:
+  push:
+    branches: [alveo-premium-work]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Render and test Spanish translation
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://www.lafabbricadelleapi.it'
+          payload='{"target":"es","texts":["Qui trovi i prodotti della Fabbrica delle Api senza perdere il legame con l alveare, i luoghi e le stagioni che li accompagnano.","Apri la scheda completa","Aggiungi"]}'
+          ok=0
+          for i in {1..36}; do
+            out=$(curl -sS -X POST "$base/api/site-translate" -H 'Content-Type: application/json' --data "$payload" || true)
+            echo "$out"
+            if echo "$out" | grep -q '"ok":true' && ! echo "$out" | grep -q '"Apri la scheda completa"' && ! echo "$out" | grep -q '"Aggiungi"'; then
+              ok=1
+              break
+            fi
+            sleep 10
+          done
+          test "$ok" = "1"
