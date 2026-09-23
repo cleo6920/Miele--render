@@ -1,0 +1,22 @@
+name: Check official XPay status
+on:
+  workflow_dispatch:
+  push:
+    branches: [alveo-premium-work]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check official and Render endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          for base in 'https://lafabbricadelleapi.it' 'https://www.lafabbricadelleapi.it' 'https://miele-shop-experience-v2.onrender.com'; do
+            echo "=== $base ==="
+            curl -L -sS -D /tmp/h "$base/api/xpay/status" -o /tmp/b || true
+            head -n 20 /tmp/h || true
+            cat /tmp/b || true
+            echo
+          done
