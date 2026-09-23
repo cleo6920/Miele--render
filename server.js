@@ -208,7 +208,8 @@ app.get('/api/site-translate-get', async (req,res)=>{
   let texts=[];
   try{
     const raw=String(req.query?.q||'');
-    texts=JSON.parse(Buffer.from(raw,'base64url').toString('utf8'));
+    try{ texts=JSON.parse(raw); }
+    catch(_){ texts=JSON.parse(Buffer.from(raw,'base64url').toString('utf8')); }
   }catch(_){
     return res.status(400).json({ok:false,error:'Testo non valido.'});
   }
