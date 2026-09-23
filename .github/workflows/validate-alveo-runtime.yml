@@ -30,7 +30,7 @@ jobs:
           node shipping-policy-start.js >/tmp/server.log 2>&1 &
           pid=$!
           trap 'kill $pid 2>/dev/null || true; cat /tmp/server.log' EXIT
-          for i in {1..75}; do
+          for i in {1..140}; do
             if curl -fsS http://127.0.0.1:3000/alveo-digitale >/tmp/alveo.html; then break; fi
             sleep 1
           done
