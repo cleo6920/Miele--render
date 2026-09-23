@@ -59,7 +59,8 @@ app.get('/api/xpay/cancel', xpayGateway.cancelHandler);`);
         productName: cleanText((cartMeta[index] && (cartMeta[index].productName || cartMeta[index].name)) || item.name, 180),
         name: item.name,
         amount: item.amount,
-        quantity: item.quantity
+        quantity: item.quantity,
+        language: cleanText(cartMeta[index] && cartMeta[index].language, 2).toLowerCase()
       }));
       const payment = xpayGateway.createPaymentRedirectUrl({
         amountCents: totalCents,
