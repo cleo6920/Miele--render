@@ -245,8 +245,7 @@ app.get('/api/magazine-translate-get', async (req,res)=>{
   if(!Array.isArray(texts)||!texts.length||texts.length>5) return res.status(400).json({ok:false,error:'Richiesta non valida.'});
   if(texts.reduce((n,x)=>n+String(x||'').length,0)>9000) return res.status(413).json({ok:false,error:'Testo troppo lungo.'});
   try{
-    const translations=[];
-    for(const t of texts) translations.push(await magazineTranslateOne(String(t||''),target));
+    const translations=await Promise.all(texts.map(t=>magazineTranslateOne(String(t||''),target)));
     return res.json({ok:true,target,translations});
   }catch(error){
     console.error('[Magazine Translate]',error);
