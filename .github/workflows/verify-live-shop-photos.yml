@@ -1,0 +1,55 @@
+name: Verify live shop photos and Ape Pelu
+on:
+  workflow_dispatch:
+  push:
+    branches: [alveo-premium-work]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 --no-save
+          npx playwright install chromium
+      - name: Check official mobile shop
+        shell: bash
+        run: |
+          cat > test-shop.mjs <<'EOF'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const page=await browser.newPage({viewport:{width:560,height:1200}});
+          await page.goto('https://www.lafabbricadelleapi.it/shop?v=official-photos-mobile',{waitUntil:'domcontentloaded',timeout:60000});
+          await page.waitForSelector('#apeChatLaunch',{timeout:20000});
+          const ape=await page.$eval('#apeChatLaunch',e=>{
+            const s=getComputedStyle(e), r=e.getBoundingClientRect();
+            return {display:s.display,position:s.position,left:r.left,bottom:innerHeight-r.bottom,width:r.width,height:r.height};
+          });
+          if(ape.display==='none') throw new Error('Ape Pelu hidden');
+          if(ape.position!=='fixed') throw new Error('Ape Pelu not fixed on mobile: '+JSON.stringify(ape));
+          const expected={
+            'polline-italiano':'polline-italiano-125g.jpg',
+            'pappa-reale-italiana-bio':'pappa-reale-10g.jpg',
+            'propoli-30-spray-integratore':'propoli-30-spray-20ml.jpg',
+            'cosmesi-travel-kit-benessere':'kit-viaggio-4x50ml.jpg',
+            'bagnodoccia-veleno-oro':'apis7-bagnodoccia-250ml.jpg'
+          };
+          for(const [id,file] of Object.entries(expected)){
+            const card=page.locator('[data-product-id="'+id+'"]').first();
+            await card.scrollIntoViewIfNeeded();
+            const img=card.locator('img').first();
+            await img.waitFor({state:'visible',timeout:10000});
+            const info=await img.evaluate(e=>({src:e.getAttribute('src'),complete:e.complete,naturalWidth:e.naturalWidth,naturalHeight:e.naturalHeight}));
+            if(!info.src.includes(file)) throw new Error(id+' wrong src '+info.src);
+            if(!info.complete||info.naturalWidth<10) throw new Error(id+' image not loaded '+JSON.stringify(info));
+            console.log(id,info);
+          }
+          console.log('APE',ape);
+          await browser.close();
+          EOF
+          node test-shop.mjs
