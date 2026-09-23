@@ -1,0 +1,22 @@
+name: Verify Edizioni Aperte free flow
+on:
+  push:
+    branches: [alveo-premium-work]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test free download API without contacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          payload='{"editionId":"api-oggi-01","language":"es","claimId":"qa-edizioni-aperte-final-20260923","customer":{"name":"","email":"","phone":""}}'
+          out=$(curl -sS -X POST 'https://www.lafabbricadelleapi.it/api/free-edition-download' -H 'Content-Type: application/json' --data "$payload")
+          echo "$out"
+          echo "$out" | grep -q '"ok":true'
+          echo "$out" | grep -q '"language":"es"'
+          echo "$out" | grep -q '/downloads/il-mondo-delle-api-oggi-01-es.pdf'
+          echo "$out" | grep -q '"points":1'
