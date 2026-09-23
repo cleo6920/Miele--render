@@ -138,6 +138,23 @@ function decodePurchase(token, secret) {
   return payload;
 }
 
+function isAlveoDigitalPurchase(fields) {
+  try {
+    const { secret } = config();
+    if (!secret) return false;
+    const payload = decodePurchase(fields && fields[PURCHASE_PARAM], secret);
+    const items = Array.isArray(payload && payload.i) ? payload.i : [];
+    return items.length === 1 && items.some((item) => {
+      const id = clean(item && item.i, 180);
+      const name = clean(item && item.n, 180);
+      return id === 'alveo-digitale-10-colazioni' ||
+        /10 Colazioni dell[’']Alveare\s*-\s*PDF digitale/i.test(name);
+    });
+  } catch (_) {
+    return false;
+  }
+}
+
 function makeTransactionId() {
   const time = Date.now().toString(36).toUpperCase();
   const random = crypto.randomBytes(5).toString('hex').toUpperCase();
@@ -303,6 +320,7 @@ async function returnHandler(req, res) {
   const valid = verifyResult(fields);
   const codTrans = clean(fields.codTrans, 30);
   const esito = clean(fields.esito, 20).toUpperCase();
+  const digitalSuffix = isAlveoDigitalPurchase(fields) ? '&digital=alveo' : '';
 
   if (!valid) {
     console.error(`[XPay] MAC di ritorno non valido per ${codTrans || 'transazione sconosciuta'}.`);
@@ -313,10 +331,10 @@ async function returnHandler(req, res) {
     try {
       await persistPaidPurchase(fields);
       console.log(`[XPay] Pagamento confermato e Saldo Api registrato: ${codTrans}.`);
-      return res.redirect(302, `${base}/success.html?xpay=ok&codTrans=${encodeURIComponent(codTrans)}`);
+      return res.redirect(302, `${base}/success.html?xpay=ok&codTrans=${encodeURIComponent(codTrans)}${digitalSuffix}`);
     } catch (error) {
       console.error(`[XPay] Pagamento ${codTrans} riuscito ma Saldo Api non registrato al ritorno:`, error && error.message ? error.message : error);
-      return res.redirect(302, `${base}/success.html?xpay=ok&wallet=pending&codTrans=${encodeURIComponent(codTrans)}`);
+      return res.redirect(302, `${base}/success.html?xpay=ok&wallet=pending&codTrans=${encodeURIComponent(codTrans)}${digitalSuffix}`);
     }
   }
 
