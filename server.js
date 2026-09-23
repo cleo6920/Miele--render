@@ -245,6 +245,22 @@ async function magazineTranslateOne(text,target){
 }
 
 
+
+app.get('/api/magazine-translate-all', async (req,res)=>{
+  res.setHeader('Cache-Control','no-store');
+  const target=String(req.query?.target||'').toLowerCase().slice(0,2);
+  if(!['en','de','fr','es'].includes(target)) return res.status(400).json({ok:false,error:'Lingua non supportata.'});
+  try{
+    const src=require('./translations/10-colazioni-it-source.json');
+    const pages=Array.isArray(src.pages)?src.pages:[];
+    const translations=await Promise.all(pages.map(t=>magazineTranslateOne(String(t||''),target)));
+    return res.json({ok:true,target,total:translations.length,translations});
+  }catch(error){
+    console.error('[Magazine Translate All]',error);
+    return res.status(502).json({ok:false,error:'Traduzione completa non disponibile.'});
+  }
+});
+
 app.get('/api/magazine-translate-pages', async (req,res)=>{
   res.setHeader('Cache-Control','no-store');
   const target=String(req.query?.target||'').toLowerCase().slice(0,2);
