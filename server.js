@@ -244,6 +244,26 @@ async function magazineTranslateOne(text,target){
   throw lastError||new Error('Traduzione non disponibile');
 }
 
+
+app.get('/api/magazine-translate-pages', async (req,res)=>{
+  res.setHeader('Cache-Control','no-store');
+  const target=String(req.query?.target||'').toLowerCase().slice(0,2);
+  const start=Math.max(1,Math.floor(Number(req.query?.start||1)));
+  const count=Math.max(1,Math.min(5,Math.floor(Number(req.query?.count||1))));
+  if(!['en','de','fr','es'].includes(target)) return res.status(400).json({ok:false,error:'Lingua non supportata.'});
+  try{
+    const src=require('./translations/10-colazioni-it-source.json');
+    const selected=(src.pages||[]).slice(start-1,start-1+count);
+    if(!selected.length) return res.status(404).json({ok:false,error:'Pagine non trovate.'});
+    const translations=[];
+    for(const t of selected) translations.push(await magazineTranslateOne(String(t||''),target));
+    return res.json({ok:true,target,start,count:translations.length,total:Number(src.pageCount||src.pages?.length||0),translations});
+  }catch(error){
+    console.error('[Magazine Translate Pages]',error);
+    return res.status(502).json({ok:false,error:'Traduzione non disponibile.'});
+  }
+});
+
 app.get('/api/magazine-translate-get', async (req,res)=>{
   res.setHeader('Cache-Control','no-store');
   const target=String(req.query?.target||'').toLowerCase().slice(0,2);
