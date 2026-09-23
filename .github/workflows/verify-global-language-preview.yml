@@ -1,0 +1,57 @@
+name: Verify global language and 5-page preview
+on:
+  push:
+    branches: [alveo-premium-work]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 --no-save
+          npx playwright install chromium
+      - name: Test official site in Spanish
+        shell: bash
+        run: |
+          cat > /tmp/test.mjs <<'EOF'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const page=await browser.newPage();
+          await page.addInitScript(()=>localStorage.setItem('fda-site-language','es'));
+
+          await page.goto('https://www.lafabbricadelleapi.it/?v=global-e2e-10',{waitUntil:'networkidle'});
+          await page.waitForSelector('#fda-language-select',{timeout:20000});
+          const homeLang=await page.$eval('#fda-language-select',e=>e.value);
+          if(homeLang!=='es') throw new Error('Home language selector is '+homeLang);
+
+          await page.goto('https://www.lafabbricadelleapi.it/shop?v=preview-e2e-10',{waitUntil:'networkidle'});
+          await page.waitForSelector('#fda-language-select',{timeout:20000});
+          await page.waitForFunction(()=>Array.from(document.querySelectorAll('button')).some(b=>/Añadir|Agregar/.test(b.textContent||'')),null,{timeout:30000});
+
+          const previewBtn=page.locator('[data-alveo-shop-preview]').first();
+          await previewBtn.scrollIntoViewIfNeeded();
+          await previewBtn.click();
+          await page.waitForSelector('#alveoShopPreviewOverlay.open',{timeout:10000});
+
+          const firstSrc=await page.$eval('#alveoShopPreviewPages .alveo-shop-preview-page.active img',e=>e.getAttribute('src'));
+          const firstCounter=await page.$eval('#alveoShopPreviewCounter',e=>e.textContent.trim());
+          if(!firstSrc.includes('alveo-preview-es-copertina.webp')) throw new Error('Wrong first preview '+firstSrc);
+          if(firstCounter!=='1 / 5') throw new Error('Wrong first counter '+firstCounter);
+
+          for(let i=0;i<4;i++) await page.click('#alveoShopPreviewNext');
+          const lastSrc=await page.$eval('#alveoShopPreviewPages .alveo-shop-preview-page.active img',e=>e.getAttribute('src'));
+          const lastCounter=await page.$eval('#alveoShopPreviewCounter',e=>e.textContent.trim());
+          if(!lastSrc.includes('alveo-preview-es-colazione1-varianti.webp')) throw new Error('Wrong last preview '+lastSrc);
+          if(lastCounter!=='5 / 5') throw new Error('Wrong last counter '+lastCounter);
+
+          console.log(JSON.stringify({homeLang,firstSrc,firstCounter,lastSrc,lastCounter}));
+          await browser.close();
+          EOF
+          node /tmp/test.mjs
