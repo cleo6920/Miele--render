@@ -84,7 +84,8 @@ function compactPurchase(purchase, codTrans, importo) {
     i: clean(item && item.productId, 180),
     n: clean((item && (item.productName || item.name)), 180),
     a: Number(item && item.amount),
-    q: Number(item && item.quantity)
+    q: Number(item && item.quantity),
+    l: clean(item && item.language, 2).toLowerCase()
   }));
   const customer = (purchase && purchase.customer) || {};
   return {
@@ -152,6 +153,22 @@ function isAlveoDigitalPurchase(fields) {
     });
   } catch (_) {
     return false;
+  }
+}
+
+function alveoDigitalPurchaseLanguage(fields) {
+  try {
+    const { secret } = config();
+    if (!secret) return '';
+    const payload = decodePurchase(fields && fields[PURCHASE_PARAM], secret);
+    const item = (Array.isArray(payload && payload.i) ? payload.i : []).find((entry) => {
+      const id = clean(entry && entry.i, 180);
+      return id === 'alveo-digitale-10-colazioni';
+    });
+    const lang = clean(item && item.l, 2).toLowerCase();
+    return ['it','en','de','fr','es'].includes(lang) ? lang : '';
+  } catch (_) {
+    return '';
   }
 }
 
@@ -275,7 +292,8 @@ async function persistPaidPurchase(fields) {
     productName: clean(item && item.n, 180),
     name: clean(item && item.n, 180),
     amount: Number(item && item.a),
-    quantity: Number(item && item.q)
+    quantity: Number(item && item.q),
+    language: clean(item && item.l, 2).toLowerCase()
   }));
   if (!items.length) throw new Error('Ordine XPay senza prodotti.');
   const pointLines = items.map(pointsForItem);
@@ -320,7 +338,9 @@ async function returnHandler(req, res) {
   const valid = verifyResult(fields);
   const codTrans = clean(fields.codTrans, 30);
   const esito = clean(fields.esito, 20).toUpperCase();
-  const digitalSuffix = isAlveoDigitalPurchase(fields) ? '&digital=alveo' : '';
+  const isDigital = isAlveoDigitalPurchase(fields);
+  const digitalLang = isDigital ? alveoDigitalPurchaseLanguage(fields) : '';
+  const digitalSuffix = isDigital ? '&digital=alveo' + (digitalLang ? '&lang=' + encodeURIComponent(digitalLang) : '') : '';
 
   if (!valid) {
     console.error(`[XPay] MAC di ritorno non valido per ${codTrans || 'transazione sconosciuta'}.`);
