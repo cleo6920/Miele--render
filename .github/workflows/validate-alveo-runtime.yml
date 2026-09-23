@@ -1,0 +1,45 @@
+name: Validate Alveo runtime chain
+on:
+  workflow_dispatch:
+  push:
+    branches: [alveo-premium-work]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: shop-experience-v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install --no-audit --no-fund
+      - name: Start full production prestart chain
+        shell: bash
+        env:
+          PORT: '3000'
+          APP_URL: 'http://127.0.0.1:3000'
+          XPAY_LIVE_ENABLED: 'true'
+          XPAY_ALIAS: 'TESTALIAS'
+          XPAY_MAC_KEY: 'test-secret-key-not-real'
+          STRIPE_SECRET_KEY: 'stub_not_real'
+        run: |
+          set -euo pipefail
+          node shipping-policy-start.js >/tmp/server.log 2>&1 &
+          pid=$!
+          trap 'kill $pid 2>/dev/null || true; cat /tmp/server.log' EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:3000/alveo-digitale >/tmp/alveo.html; then break; fi
+            sleep 1
+          done
+          grep -q 'Vai al pagamento Nexi' /tmp/alveo.html
+          grep -q 'alveoDigitalDelivery' <(curl -fsS http://127.0.0.1:3000/success.html)
+          test "$(curl -sS -o /tmp/it.pdf -w '%{http_code}' http://127.0.0.1:3000/downloads/10-colazioni-it.pdf)" = '200'
+          test "$(sha256sum /tmp/it.pdf | awk '{print $1}')" = '63cc809325c2153eaf499a7f0900e9dd98c05e13db321b4c7483146253f7f906'
+          payload='{"items":[{"name":"10 Colazioni dell’Alveare - PDF digitale","amount":5.90,"quantity":1}],"xpayCart":[{"productId":"alveo-digitale-10-colazioni","productName":"10 Colazioni dell’Alveare - PDF digitale","name":"10 Colazioni dell’Alveare - PDF digitale","language":"de"}],"shippingCostOverride":0,"notes":"ALVEO_DIGITALE:10_COLAZIONI","customer":{"name":"Runtime Test","email":"runtime@example.com"}}'
+          out=$(curl -fsS -X POST http://127.0.0.1:3000/api/create-checkout-session -H 'Content-Type: application/json' --data "$payload")
+          echo "$out"
+          echo "$out" | grep -q '"xpay":true'
+          echo "$out" | grep -q '/api/xpay/redirect'
