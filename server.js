@@ -1739,19 +1739,26 @@ async function buildAlveoMagazinePdf(lang){
   return Buffer.from(await pdf.save({useObjectStreams:true}));
 }
 
-app.get('/downloads/10-colazioni-:lang.pdf',async(req,res)=>{
+const ALVEO_PREMIUM_PDF_FILES={
+  it:'10-colazioni-it.pdf',
+  en:'10-colazioni-en.pdf',
+  de:'10-colazioni-de.pdf',
+  fr:'10-colazioni-fr.pdf',
+  es:'10-colazioni-es.pdf'
+};
+app.get('/downloads/10-colazioni-:lang.pdf',(req,res)=>{
   const lang=String(req.params.lang||'it').toLowerCase();
-  if(!ALVEO_PDF_LANGS[lang]) return res.status(404).send('Lingua non disponibile.');
-  try{
-    const buffer=await buildAlveoMagazinePdf(lang);
-    res.setHeader('Content-Type','application/pdf');
-    res.setHeader('Content-Disposition','inline; filename="10-Colazioni-dell-Alveare-'+lang.toUpperCase()+'-Premium.pdf"');
-    res.setHeader('Cache-Control','public, max-age=3600');
-    return res.end(buffer);
-  }catch(error){
-    console.error('[Alveo PDF]',error);
-    return res.status(500).send('PDF temporaneamente non disponibile.');
+  const filename=ALVEO_PREMIUM_PDF_FILES[lang];
+  if(!filename || !ALVEO_PDF_LANGS[lang]) return res.status(404).send('Lingua non disponibile.');
+  const filePath=path.join(__dirname,'downloads','alveo-premium',filename);
+  if(!fs.existsSync(filePath)){
+    console.error('[Alveo PDF] File Premium mancante:',filePath);
+    return res.status(503).send('PDF temporaneamente non disponibile.');
   }
+  res.setHeader('Content-Type','application/pdf');
+  res.setHeader('Content-Disposition','inline; filename="10-Colazioni-dell-Alveare-'+lang.toUpperCase()+'-Premium.pdf"');
+  res.setHeader('Cache-Control','public, max-age=3600');
+  return res.sendFile(filePath);
 });
 const GLOBAL_TOOLS_MARKUP="<div class=\"site-tools-bar\" id=\"globalToolsBar\" aria-label=\"Strumenti del sito\"><div class=\"site-tools-inner\"><div class=\"site-tools-note\">Trova subito ciò che cerchi</div><button class=\"global-ape-launch\" id=\"apeChatLaunch\" type=\"button\" aria-label=\"Chiedi a Ape Pelù: scopri, chiedi e lasciati guidare nel mondo delle api\"><span class=\"global-ape-icon\">🐝</span><span class=\"global-ape-copy\"><strong>Chiedi a Ape Pelù</strong><small>Scopri, chiedi, lasciati guidare nel mondo delle api.</small></span></button><div class=\"global-site-search\" id=\"globalSiteSearch\"><div class=\"global-site-search-box\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><input id=\"globalSiteSearchInput\" type=\"search\" placeholder=\"Cerca nel sito...\" autocomplete=\"off\"><button class=\"global-site-search-go\" id=\"globalSiteSearchGo\" type=\"button\" aria-label=\"Avvia la ricerca\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></button></div><div class=\"global-site-search-results\" id=\"globalSiteSearchResults\"></div></div></div></div>";
 const sendPage=(filename)=>(_req,res)=>{
