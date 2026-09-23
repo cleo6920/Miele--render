@@ -1,0 +1,42 @@
+name: Inspect official Apinfiore product images
+on:
+  workflow_dispatch:
+  push:
+    branches: [alveo-premium-work]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch official Apinfiore pages and extract images
+        shell: bash
+        run: |
+          python - <<'PY'
+          import re, html, urllib.request
+          products={
+            'polline':'https://www.apinfiore.com/prodotto/polline-italiano-delle-api/',
+            'pappa':'https://www.apinfiore.com/prodotto/pappa-reale-fresca/',
+            'propoli-spray':'https://www.apinfiore.com/prodotto/estratto-propoli-30-alcolica-spray-reclinabile/',
+            'kit':'https://www.apinfiore.com/prodotto/kit-da-viaggio-apinfiore-4-essenziali-in-pochette-da-viaggio/',
+            'apis7':'https://www.apinfiore.com/prodotto/bagnodoccia-veleno-doro-idratante-vellutante/'
+          }
+          headers={'User-Agent':'Mozilla/5.0'}
+          for key,url in products.items():
+            req=urllib.request.Request(url,headers=headers)
+            with urllib.request.urlopen(req,timeout=30) as r:
+              text=r.read().decode('utf-8','replace')
+            print('\n###',key,url)
+            og=re.findall(r'<meta[^>]+(?:property|name)=["\']og:image["\'][^>]+content=["\']([^"\']+)',text,re.I)
+            if not og:
+              og=re.findall(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\']og:image["\']',text,re.I)
+            print('OG', [html.unescape(x) for x in og[:3]])
+            # WooCommerce gallery images
+            imgs=re.findall(r'https://(?:www\.)?apinfiore\.com/(?:app|wp-content)/uploads/[^"\' <>]+',text,re.I)
+            seen=[]
+            for x in imgs:
+              x=html.unescape(x).replace('\\/','/')
+              x=re.sub(r'-(\d+)x(\d+)(?=\.[A-Za-z]{3,4}(?:\?|$))','',x)
+              if x not in seen: seen.append(x)
+            for x in seen[:25]: print('IMG',x)
+          PY
