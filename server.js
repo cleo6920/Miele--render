@@ -1613,7 +1613,7 @@ const ALVEO_PDF_LANGS={
 };
 
 function alveoPdfSafeText(value){
-  return String(value||'')
+  return String(value||'').normalize('NFKC')
     .replace(/[“”]/g,'"').replace(/[‘’]/g,"'")
     .replace(/[‐‑‒–—―]/g,'-').replace(/…/g,'...')
     .replace(/[★☆]/g,'*').replace(/→/g,'>')
