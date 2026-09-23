@@ -31,27 +31,29 @@ jobs:
           const homeLang=await page.$eval('#fda-language-select',e=>e.value);
           if(homeLang!=='es') throw new Error('Home language selector is '+homeLang);
 
-          await page.goto('https://www.lafabbricadelleapi.it/shop?v=preview-e2e-10',{waitUntil:'domcontentloaded',timeout:60000});
+          await page.goto('https://www.lafabbricadelleapi.it/alveo-digitale?v=preview-e2e-10',{waitUntil:'domcontentloaded',timeout:60000});
           await page.waitForSelector('#fda-language-select',{timeout:20000});
-          await page.waitForFunction(()=>Array.from(document.querySelectorAll('button')).some(b=>/Añadir|Agregar/.test(b.textContent||'')),null,{timeout:30000});
+          await page.waitForFunction(()=>document.querySelector('.hero h1')?.textContent?.includes('La experiencia de la colmena continúa también fuera del Centro.'),null,{timeout:10000});
+          const brand=await page.$eval('.brand',e=>e.textContent.trim());
+          if(brand!=='LA FABBRICA DELLE API · ALVEO DIGITALE') throw new Error('Brand translated incorrectly: '+brand);
 
-          const previewBtn=page.locator('[data-alveo-shop-preview]').first();
+          const previewBtn=page.locator('#openAlveoPreview');
           await previewBtn.scrollIntoViewIfNeeded();
           await previewBtn.click();
-          await page.waitForSelector('#alveoShopPreviewOverlay.open',{timeout:10000});
+          await page.waitForSelector('#alveo-preview-overlay.open',{timeout:10000});
 
-          const firstSrc=await page.$eval('#alveoShopPreviewPages .alveo-shop-preview-page.active img',e=>e.getAttribute('src'));
-          const firstCounter=await page.$eval('#alveoShopPreviewCounter',e=>e.textContent.trim());
+          const firstSrc=await page.$eval('#alveo-preview-pages .alveo-preview-page.active img',e=>e.getAttribute('src'));
+          const firstCounter=await page.$eval('#alveo-preview-counter',e=>e.textContent.trim());
           if(!firstSrc.includes('alveo-preview-es-copertina.webp')) throw new Error('Wrong first preview '+firstSrc);
           if(firstCounter!=='1 / 5') throw new Error('Wrong first counter '+firstCounter);
 
-          for(let i=0;i<4;i++) await page.click('#alveoShopPreviewNext');
-          const lastSrc=await page.$eval('#alveoShopPreviewPages .alveo-shop-preview-page.active img',e=>e.getAttribute('src'));
-          const lastCounter=await page.$eval('#alveoShopPreviewCounter',e=>e.textContent.trim());
+          for(let i=0;i<4;i++) await page.click('#alveo-preview-next');
+          const lastSrc=await page.$eval('#alveo-preview-pages .alveo-preview-page.active img',e=>e.getAttribute('src'));
+          const lastCounter=await page.$eval('#alveo-preview-counter',e=>e.textContent.trim());
           if(!lastSrc.includes('alveo-preview-es-colazione1-varianti.webp')) throw new Error('Wrong last preview '+lastSrc);
           if(lastCounter!=='5 / 5') throw new Error('Wrong last counter '+lastCounter);
 
-          console.log(JSON.stringify({homeLang,firstSrc,firstCounter,lastSrc,lastCounter}));
+          console.log(JSON.stringify({homeLang,brand,firstSrc,firstCounter,lastSrc,lastCounter}));
           await browser.close();
           EOF
           node test.mjs
