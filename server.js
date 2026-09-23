@@ -218,21 +218,30 @@ async function magazineTranslateOne(text,target){
     '',
     String(text||'')
   ].join('\n');
-  const aiResponse=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-    method:'POST',
-    headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'openai/gpt-oss-20b',
-      messages:[{role:'user',content:prompt}],
-      max_tokens:2200,
-      temperature:0.1
-    })
-  });
-  const data=await aiResponse.json().catch(()=>null);
-  if(!aiResponse.ok) throw new Error('Groq translate '+aiResponse.status+' '+String(data?.error?.message||''));
-  const out=String(data?.choices?.[0]?.message?.content||'').trim();
-  if(!out) throw new Error('Traduzione Groq vuota');
-  return out;
+  let lastError=null;
+  for(let attempt=0;attempt<4;attempt++){
+    const aiResponse=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'openai/gpt-oss-20b',
+        messages:[{role:'user',content:prompt}],
+        max_tokens:2200,
+        temperature:0.1
+      })
+    });
+    const data=await aiResponse.json().catch(()=>null);
+    if(aiResponse.ok){
+      const out=String(data?.choices?.[0]?.message?.content||'').trim();
+      if(out) return out;
+      lastError=new Error('Traduzione Groq vuota');
+    }else{
+      lastError=new Error('Groq translate '+aiResponse.status+' '+String(data?.error?.message||''));
+      if(aiResponse.status!==429) break;
+    }
+    if(attempt<3) await new Promise(resolve=>setTimeout(resolve,16000));
+  }
+  throw lastError||new Error('Traduzione non disponibile');
 }
 
 app.get('/api/magazine-translate-get', async (req,res)=>{
@@ -245,7 +254,8 @@ app.get('/api/magazine-translate-get', async (req,res)=>{
   if(!Array.isArray(texts)||!texts.length||texts.length>5) return res.status(400).json({ok:false,error:'Richiesta non valida.'});
   if(texts.reduce((n,x)=>n+String(x||'').length,0)>9000) return res.status(413).json({ok:false,error:'Testo troppo lungo.'});
   try{
-    const translations=await Promise.all(texts.map(t=>magazineTranslateOne(String(t||''),target)));
+    const translations=[];
+    for(const t of texts) translations.push(await magazineTranslateOne(String(t||''),target));
     return res.json({ok:true,target,translations});
   }catch(error){
     console.error('[Magazine Translate]',error);
