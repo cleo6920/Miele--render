@@ -222,9 +222,9 @@ async function magazineTranslateOne(text,target){
     method:'POST',
     headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
     body:JSON.stringify({
-      model:String(process.env.GROQ_MODEL||'openai/gpt-oss-20b'),
+      model:'openai/gpt-oss-20b',
       messages:[{role:'user',content:prompt}],
-      max_tokens:2600,
+      max_tokens:2200,
       temperature:0.1
     })
   });
