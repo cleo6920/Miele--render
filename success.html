@@ -17,9 +17,35 @@
         </svg>
         <h1 class="text-4xl font-bold text-lime-700 mb-4">Grazie per il tuo ordine!</h1>
         <p class="text-lg text-stone-700 mb-6">Il tuo pagamento è stato completato con successo. Riceverai una conferma via email a breve.</p>
-        <a href="index.html" class="inline-block bg-lime-600 hover:bg-lime-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition-all duration-200 button-press-effect">
+        <div id="alveoDigitalDelivery" class="hidden mb-6 rounded-2xl border-2 border-amber-300 bg-amber-50 p-5 text-left">
+          <div class="text-xs font-bold uppercase tracking-widest text-amber-700">Alveo Digitale</div>
+          <h2 class="mt-1 text-2xl font-bold text-stone-900">Il tuo PDF è pronto</h2>
+          <p class="mt-2 text-stone-700">Apri o scarica <strong>10 Colazioni dell’Alveare – Edizione Premium</strong> nella lingua scelta sul sito.</p>
+          <a id="alveoDigitalDownload" href="/downloads/10-colazioni-it.pdf" class="mt-4 inline-block w-full rounded-xl bg-emerald-700 px-5 py-3 text-center font-bold text-white hover:bg-emerald-800">Apri il PDF Premium</a>
+          <p id="alveoDigitalLanguage" class="mt-2 text-center text-sm font-semibold text-stone-500"></p>
+        </div>
+        <a href="/shop" class="inline-block bg-lime-600 hover:bg-lime-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition-all duration-200 button-press-effect">
             Torna al Negozio
         </a>
     </div>
+  <script data-alveo-delivery="true">
+  (function(){
+    const params=new URLSearchParams(location.search);
+    if(params.get('xpay')!=='ok'||params.get('digital')!=='alveo')return;
+    const supported=['it','en','de','fr','es'];
+    let lang='it';
+    try{
+      const saved=String(localStorage.getItem('fda-site-language')||'').toLowerCase();
+      if(supported.includes(saved))lang=saved;
+    }catch(_){}
+    const names={it:'Italiano',en:'English',de:'Deutsch',fr:'Français',es:'Español'};
+    const box=document.getElementById('alveoDigitalDelivery');
+    const link=document.getElementById('alveoDigitalDownload');
+    const note=document.getElementById('alveoDigitalLanguage');
+    if(link)link.href='/downloads/10-colazioni-'+lang+'.pdf';
+    if(note)note.textContent='Lingua: '+names[lang];
+    if(box)box.classList.remove('hidden');
+  })();
+  </script>
 </body>
 </html>
