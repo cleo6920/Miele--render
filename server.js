@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const nodemailer = require('nodemailer');
+const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
 const { parsePhoneNumberFromString } = require('libphonenumber-js');
 const createCheckoutSession = require('./api/create-checkout-session');
 
@@ -1603,6 +1604,155 @@ const honeyAvailabilityHelper=`
             };
 `;
 html=html.replace('// === STOCK MODE TOGGLE ===',`${honeyAvailabilityHelper}\n            // === STOCK MODE TOGGLE ===`);html=html.replaceAll('staticInitialProducts.filter(p => allowedCategoriesForShop.includes(p.category))','applyHoneyAvailability(staticInitialProducts).filter(p => allowedCategoriesForShop.includes(p.category))');html=html.replace('const filtered = mergedProducts.filter(p => allowedCategoriesForShop.includes(p.category));','const filtered = applyHoneyAvailability(mergedProducts).filter(p => allowedCategoriesForShop.includes(p.category));');html=html.replace('className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2 text-3d-effect"','className="text-6xl sm:text-7xl lg:text-8xl font-black text-amber-900 flex flex-col items-end gap-2"');const injected=`${cacheBustScript}\n${shopBridgeScript}`;html=html.includes('</head>')?html.replace('</head>',`${injected}\n</head>`):`${injected}\n${html}`;res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');res.setHeader('Pragma','no-cache');res.setHeader('Expires','0');return res.type('html').send(html);}catch(error){console.error('[Miele Artigianale] Errore caricamento shop:',error);return res.status(500).send('Errore caricamento pagina.');}};
+const ALVEO_PDF_LANGS={
+  it:{file:'translations/10-colazioni-it-source.json',label:'Italiano',title:"10 COLAZIONI DELL'ALVEARE",subtitle:'DIECI MATTINE. DIECI PICCOLI MOMENTI DI BONTÀ.'},
+  en:{file:'translations/10-colazioni-en.json',label:'English',title:'10 BREAKFASTS FROM THE HIVE',subtitle:'TEN MORNINGS. TEN SMALL MOMENTS OF GOODNESS.'},
+  de:{file:'translations/10-colazioni-de.json',label:'Deutsch',title:'10 FRÜHSTÜCKE AUS DEM BIENENSTOCK',subtitle:'ZEHN MORGEN. ZEHN KLEINE GENUSSMOMENTE.'},
+  fr:{file:'translations/10-colazioni-fr.json',label:'Français',title:'10 PETITS-DÉJEUNERS DE LA RUCHE',subtitle:'DIX MATINS. DIX PETITS MOMENTS DE GOURMANDISE.'},
+  es:{file:'translations/10-colazioni-es.json',label:'Español',title:'10 DESAYUNOS DE LA COLMENA',subtitle:'DIEZ MAÑANAS. DIEZ PEQUEÑOS MOMENTOS DE SABOR.'}
+};
+
+function alveoPdfSafeText(value){
+  return String(value||'')
+    .replace(/[“”]/g,'"').replace(/[‘’]/g,"'")
+    .replace(/[–—]/g,'-').replace(/…/g,'...')
+    .replace(/[★☆]/g,'*').replace(/→/g,'>')
+    .replace(/•/g,'-').replace(/\u00a0/g,' ');
+}
+function alveoPdfWrap(text,font,size,maxWidth){
+  const words=alveoPdfSafeText(text).split(/\s+/).filter(Boolean);
+  const lines=[]; let line='';
+  for(const word of words){
+    const trial=line?line+' '+word:word;
+    if(font.widthOfTextAtSize(trial,size)<=maxWidth){line=trial;}
+    else{
+      if(line) lines.push(line);
+      if(font.widthOfTextAtSize(word,size)<=maxWidth){line=word;}
+      else{
+        let part='';
+        for(const ch of word){
+          const t=part+ch;
+          if(font.widthOfTextAtSize(t,size)<=maxWidth) part=t;
+          else{ if(part) lines.push(part); part=ch; }
+        }
+        line=part;
+      }
+    }
+  }
+  if(line) lines.push(line);
+  return lines;
+}
+function alveoPdfIsHeading(line){
+  const t=String(line||'').trim();
+  if(!t || t.length>72) return false;
+  const letters=t.replace(/[^A-Za-zÀ-ÿÄÖÜäöüßÑñÇç]/g,'');
+  if(!letters) return false;
+  return t===t.toUpperCase() || /^(BREAKFAST|FRÜHSTÜCK|PETIT|DESAYUNO|COLAZIONE|RECETTE|REZEPT|RICETTA|RECIPE|IDEAS?|IDEE|ORGAN|DISCOVER|ENTDECK|DÉCOUV|DESCUBR|QUIZ|PLANNER|PLANIFIC|MIEL|HONIG|HONEY|MIELE)/i.test(t);
+}
+async function buildAlveoMagazinePdf(lang){
+  const cfg=ALVEO_PDF_LANGS[lang]||ALVEO_PDF_LANGS.it;
+  const source=JSON.parse(fs.readFileSync(path.join(__dirname,cfg.file),'utf8'));
+  const pagesText=Array.isArray(source.pages)?source.pages:[];
+  if(!pagesText.length) throw new Error('Contenuto magazine non disponibile: '+lang);
+  const pdf=await PDFDocument.create();
+  const regular=await pdf.embedFont(StandardFonts.Helvetica);
+  const bold=await pdf.embedFont(StandardFonts.HelveticaBold);
+  const serif=await pdf.embedFont(StandardFonts.TimesRomanBold);
+  const W=595.28,H=841.89;
+  const cream=rgb(0.985,0.963,0.91), green=rgb(0.055,0.22,0.165), green2=rgb(0.08,0.30,0.22);
+  const gold=rgb(0.86,0.62,0.16), ink=rgb(0.09,0.14,0.11), muted=rgb(0.35,0.41,0.37), pale=rgb(0.96,0.91,0.76);
+  for(let pi=0;pi<pagesText.length;pi++){
+    const page=pdf.addPage([W,H]);
+    page.drawRectangle({x:0,y:0,width:W,height:H,color:cream});
+    const pageNo=pi+1;
+    if(pi===0){
+      page.drawRectangle({x:0,y:0,width:W,height:H,color:green});
+      page.drawRectangle({x:0,y:H-225,width:W,height:225,color:green2});
+      page.drawCircle({x:500,y:735,size:66,color:gold,opacity:0.92});
+      page.drawCircle({x:465,y:690,size:22,color:pale,opacity:0.88});
+      page.drawText('LA FABBRICA DELLE API',{x:42,y:780,size:10,font:bold,color:pale});
+      const titleLines=alveoPdfWrap(cfg.title,serif,31,480);
+      let y=650;
+      for(const line of titleLines){page.drawText(line,{x:42,y,size:31,font:serif,color:rgb(1,1,1)});y-=36;}
+      page.drawText(cfg.subtitle,{x:42,y:y-8,size:10,font:bold,color:gold});
+      const intro=pagesText[0].split(/\n/).map(x=>x.trim()).filter(Boolean).filter(x=>!x.includes('LA FABBRICA')&&!/\b10\b/.test(x.slice(0,20))).slice(0,8);
+      y-=78;
+      for(const raw of intro){
+        const lines=alveoPdfWrap(raw,regular,10.5,465);
+        for(const line of lines){page.drawText(line,{x:42,y,size:10.5,font:regular,color:rgb(0.91,0.95,0.93)});y-=15;}
+        y-=3;
+      }
+      page.drawLine({start:{x:42,y:96},end:{x:553,y:96},thickness:1,color:rgb(0.3,0.48,0.4)});
+      page.drawText('ALVEO DIGITALE - PREMIUM EDITION',{x:42,y:72,size:8.5,font:bold,color:gold});
+      page.drawText(String(pageNo),{x:540,y:72,size:8,font:regular,color:pale});
+      continue;
+    }
+    if(pi===2 || pi===23 || pi===26 || pi===31){
+      page.drawRectangle({x:0,y:0,width:W,height:H,color:green});
+      page.drawRectangle({x:30,y:35,width:535,height:771,borderColor:gold,borderWidth:1.2});
+      const rawLines=pagesText[pi].split(/\n/).map(x=>x.trim()).filter(Boolean);
+      page.drawText('LA FABBRICA DELLE API',{x:42,y:782,size:9,font:bold,color:pale});
+      let y=660;
+      const main=rawLines.filter(x=>!x.includes('LA FABBRICA')&&!/^\d+$/.test(x)).slice(0,10);
+      for(let i=0;i<main.length;i++){
+        const isHead=i<3||alveoPdfIsHeading(main[i]);
+        const font=isHead?serif:regular,size=isHead?28:13,color=isHead?rgb(1,1,1):pale;
+        for(const line of alveoPdfWrap(main[i],font,size,485)){page.drawText(line,{x:42,y,size,font,color});y-=size*1.25;}
+        y-=8;
+      }
+      page.drawText(String(pageNo),{x:535,y:42,size:8,font:regular,color:pale});
+      continue;
+    }
+    page.drawRectangle({x:0,y:H-44,width:W,height:44,color:green});
+    page.drawText('LA FABBRICA DELLE API',{x:30,y:H-28,size:8.5,font:bold,color:rgb(1,1,1)});
+    page.drawText(cfg.label.toUpperCase(),{x:500,y:H-28,size:7.5,font:bold,color:gold});
+    page.drawLine({start:{x:30,y:H-60},end:{x:565,y:H-60},thickness:1,color:gold});
+    let lines=pagesText[pi].split(/\n/).map(x=>x.trim()).filter(Boolean);
+    lines=lines.filter((x,i)=>!(i===0 && /LA FABBRICA/i.test(x)));
+    const dense=lines.join(' ').length>1500;
+    const bodySize=dense?8.0:9.2;
+    const colGap=22,margin=34,colWidth=(W-margin*2-colGap)/2;
+    const useColumns=lines.join(' ').length>900;
+    let col=0,x=margin,y=H-82;
+    const switchColumn=()=>{if(useColumns&&col===0){col=1;x=margin+colWidth+colGap;y=H-82;return true;}return false;};
+    for(const raw of lines){
+      const heading=alveoPdfIsHeading(raw),numeric=/^\d{1,2}$/.test(raw);
+      let font=heading?bold:regular,size=heading?11.2:bodySize,color=heading?green:ink;
+      if(numeric){font=serif;size=21;color=gold;}
+      const width=useColumns?colWidth:(W-margin*2);
+      if(heading&&y<H-100)y-=4;
+      for(const line of alveoPdfWrap(raw,font,size,width)){
+        if(y<46&&switchColumn()){}
+        if(y<46)break;
+        page.drawText(line,{x,y,size,font,color});
+        y-=size*1.32;
+      }
+      y-=heading?5:3;
+    }
+    page.drawLine({start:{x:30,y:31},end:{x:565,y:31},thickness:0.6,color:rgb(0.83,0.78,0.66)});
+    page.drawText('Alveo Digitale - La Fabbrica delle Api',{x:30,y:17,size:6.8,font:regular,color:muted});
+    page.drawText(String(pageNo),{x:548,y:17,size:6.8,font:regular,color:muted});
+  }
+  pdf.setTitle(cfg.title);
+  pdf.setAuthor('La Fabbrica delle Api - ALTHEA 12830');
+  pdf.setSubject('Alveo Digitale - Edizione Premium');
+  return Buffer.from(await pdf.save({useObjectStreams:true}));
+}
+
+app.get('/downloads/10-colazioni-:lang.pdf',async(req,res)=>{
+  const lang=String(req.params.lang||'it').toLowerCase();
+  if(!ALVEO_PDF_LANGS[lang]) return res.status(404).send('Lingua non disponibile.');
+  try{
+    const buffer=await buildAlveoMagazinePdf(lang);
+    res.setHeader('Content-Type','application/pdf');
+    res.setHeader('Content-Disposition','inline; filename="10-Colazioni-dell-Alveare-'+lang.toUpperCase()+'-Premium.pdf"');
+    res.setHeader('Cache-Control','public, max-age=3600');
+    return res.end(buffer);
+  }catch(error){
+    console.error('[Alveo PDF]',error);
+    return res.status(500).send('PDF temporaneamente non disponibile.');
+  }
+});
 const GLOBAL_TOOLS_MARKUP="<div class=\"site-tools-bar\" id=\"globalToolsBar\" aria-label=\"Strumenti del sito\"><div class=\"site-tools-inner\"><div class=\"site-tools-note\">Trova subito ciò che cerchi</div><button class=\"global-ape-launch\" id=\"apeChatLaunch\" type=\"button\" aria-label=\"Chiedi a Ape Pelù: scopri, chiedi e lasciati guidare nel mondo delle api\"><span class=\"global-ape-icon\">🐝</span><span class=\"global-ape-copy\"><strong>Chiedi a Ape Pelù</strong><small>Scopri, chiedi, lasciati guidare nel mondo delle api.</small></span></button><div class=\"global-site-search\" id=\"globalSiteSearch\"><div class=\"global-site-search-box\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><input id=\"globalSiteSearchInput\" type=\"search\" placeholder=\"Cerca nel sito...\" autocomplete=\"off\"><button class=\"global-site-search-go\" id=\"globalSiteSearchGo\" type=\"button\" aria-label=\"Avvia la ricerca\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></button></div><div class=\"global-site-search-results\" id=\"globalSiteSearchResults\"></div></div></div></div>";
 const sendPage=(filename)=>(_req,res)=>{
   res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');
