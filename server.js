@@ -182,6 +182,54 @@ async function siteTranslateOne(text,target){
   }
 }
 
+async function siteTranslateBatchAI(texts,target){
+  const apiKey=String(process.env.GROQ_API_KEY||'').trim();
+  if(!apiKey||!Array.isArray(texts)||!texts.length) return {};
+  const language={en:'English',de:'German',fr:'French',es:'Spanish'}[target];
+  if(!language) return {};
+  const payload=texts.map((text,index)=>({index,text:String(text||'')}));
+  const prompt=[
+    'Translate each Italian website UI string into '+language+'.',
+    'Return ONLY valid JSON: an array of objects with exactly {"index":number,"translation":string}.',
+    'Keep brand names unchanged: LA FABBRICA DELLE API, ALTHEA 12830, La Galena delle Api, Oasi del Busatello, Alveo Digitale, Ape Pelù.',
+    'Keep product codes, numbers, prices, units and URLs unchanged.',
+    'Translate all ordinary headings, descriptions, buttons and labels naturally and completely.',
+    'Do not add explanations.',
+    JSON.stringify(payload)
+  ].join('\n');
+  try{
+    const aiResponse=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:String(process.env.GROQ_MODEL||'openai/gpt-oss-20b'),
+        messages:[{role:'user',content:prompt}],
+        max_tokens:2200,
+        reasoning_effort:'low',
+        reasoning_format:'hidden',
+        temperature:0.05
+      })
+    });
+    const data=await aiResponse.json().catch(()=>null);
+    if(!aiResponse.ok) throw new Error('Groq '+aiResponse.status+' '+String(data?.error?.message||''));
+    let raw=String(data?.choices?.[0]?.message?.content||'').trim();
+    raw=raw.replace(/^\`\`\`(?:json)?\s*/i,'').replace(/\s*\`\`\`$/,'');
+    const parsed=JSON.parse(raw);
+    const out={};
+    if(Array.isArray(parsed)){
+      for(const item of parsed){
+        const i=Number(item?.index);
+        const tr=String(item?.translation||'').trim();
+        if(Number.isInteger(i)&&i>=0&&i<texts.length&&tr) out[i]=tr;
+      }
+    }
+    return out;
+  }catch(error){
+    console.error('[Site Translate Groq]',error);
+    return {};
+  }
+}
+
 app.post('/api/site-translate', async (req,res)=>{
   res.setHeader('Cache-Control','private, max-age=3600');
   const target=String(req.body?.target||'').toLowerCase().slice(0,2);
@@ -200,6 +248,22 @@ app.post('/api/site-translate', async (req,res)=>{
     }
   });
   await Promise.all(workers);
+
+  const unresolvedIndexes=[];
+  for(let i=0;i<texts.length;i++){
+    if(!results[i] || String(results[i]).trim()===String(texts[i]).trim()) unresolvedIndexes.push(i);
+  }
+  if(unresolvedIndexes.length){
+    const unresolvedTexts=unresolvedIndexes.map(i=>texts[i]);
+    const ai=await siteTranslateBatchAI(unresolvedTexts,target);
+    unresolvedIndexes.forEach((originalIndex,localIndex)=>{
+      const candidate=String(ai[localIndex]||'').trim();
+      if(candidate && candidate!==texts[originalIndex]){
+        results[originalIndex]=candidate;
+        siteTranslateCache.set(target+'\n'+texts[originalIndex],candidate);
+      }
+    });
+  }
   return res.json({ok:true,target,translations:results});
 });
 
