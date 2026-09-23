@@ -1615,9 +1615,9 @@ const ALVEO_PDF_LANGS={
 function alveoPdfSafeText(value){
   return String(value||'')
     .replace(/[“”]/g,'"').replace(/[‘’]/g,"'")
-    .replace(/[–—]/g,'-').replace(/…/g,'...')
+    .replace(/[‐‑‒–—―]/g,'-').replace(/…/g,'...')
     .replace(/[★☆]/g,'*').replace(/→/g,'>')
-    .replace(/•/g,'-').replace(/\u00a0/g,' ');
+    .replace(/•/g,'-').replace(/[\u00a0\u202f\u2007]/g,' ').replace(/[\u200b\u2060\ufeff]/g,'');
 }
 function alveoPdfWrap(text,font,size,maxWidth){
   const words=alveoPdfSafeText(text).split(/\s+/).filter(Boolean);
