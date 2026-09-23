@@ -207,11 +207,12 @@ async function magazineTranslateOne(text,target){
   if(!apiKey) throw new Error('GROQ_API_KEY assente');
   const language={en:'English',de:'German',fr:'French',es:'Spanish'}[target];
   const prompt=[
-    'Translate the following Italian magazine page into '+language+'.',
+    'Translate the following Italian magazine page completely into '+language+'.',
+    'Translate EVERY Italian heading, label, recipe title, footer phrase and body sentence. Do not leave Italian words untranslated unless they are one of the protected brand or proper names listed below.',
     'Return ONLY the translated page text, no notes and no markdown fences.',
     'Preserve the original line-break structure as closely as possible.',
     'Preserve all numbers, quantities, temperatures, page numbers and list numbering.',
-    'Keep brand names ALTHEA 12830, La Fabbrica delle Api and La Galena delle Api unchanged.',
+    'Keep ONLY these protected names unchanged: ALTHEA 12830, La Fabbrica delle Api, La Galena delle Api, Oasi del Busatello. Product title "10 Colazioni dell’Alveare" must be translated naturally into the target language.',
     'Translate natural editorial headings and recipe text fluently, not literally.',
     'Honey variety names may be translated naturally when appropriate, but keep product identity clear.',
     'Do not add health claims or information not present in the source.',
