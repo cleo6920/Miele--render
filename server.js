@@ -224,9 +224,11 @@ async function magazineTranslateOne(text,target){
       method:'POST',
       headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'qwen/qwen3.8-27b',
+        model:'openai/gpt-oss-20b',
         messages:[{role:'user',content:prompt}],
-        max_tokens:2200,
+        max_tokens:650,
+        reasoning_effort:'low',
+        reasoning_format:'hidden',
         temperature:0.1
       })
     });
