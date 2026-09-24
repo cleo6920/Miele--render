@@ -74,7 +74,7 @@ try {
     if(!btn)return false;
     var card=btn.closest('article');
     if(card){
-      var price=Array.from(card.querySelectorAll('div')).find(function(el){return String(el.textContent||'').trim()==='€5,90' || String(el.textContent||'').trim()==='€3,90' || String(el.textContent||'').trim()==='€2,90';});
+      var price=Array.from(card.querySelectorAll('div')).find(function(el){return String(el.textContent||'').trim()==='€5,90';});
       if(price)price.textContent='€5,90';
       var title=card.querySelector('h3');
       if(title)title.textContent='10 Colazioni dell’Alveare';
