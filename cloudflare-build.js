@@ -85,7 +85,7 @@ async function main() {
 
   const port = 39731;
   const origin = 'http://127.0.0.1:' + port;
-  const server = spawn(process.execPath, ['server.js'], {
+  const server = spawn(process.execPath, ['shipping-policy-start.js'], {
     cwd: root,
     env: { ...process.env, PORT: String(port) },
     stdio: 'inherit'
@@ -118,10 +118,16 @@ async function main() {
         if (!html.includes('globalToolsBar') || !html.includes('global-tools-v2.js')) {
           throw new Error('[Cloudflare V2] Home senza strumenti globali/Ape Pelù.');
         }
+        if (!html.includes('Alveo Digitale')) {
+          throw new Error('[Cloudflare V2] Home senza sezione Alveo Digitale.');
+        }
       }
       if (pathname === '/shop') {
         if (!html.includes('Ape Pelù') || !html.includes('shop-purchase-i18n.js')) {
           throw new Error('[Cloudflare V2] Shop V2 non riconosciuto o Ape Pelù assente.');
+        }
+        if (!html.includes('10 Colazioni') || !html.includes('Alveo Digitale')) {
+          throw new Error('[Cloudflare V2] Shop V2 senza prodotti Alveo Digitale/10 Colazioni.');
         }
       }
 
@@ -136,7 +142,7 @@ async function main() {
     fs.mkdirSync(shopDir, { recursive: true });
     fs.writeFileSync(path.join(shopDir, 'index.html'), shopHtml, 'utf8');
 
-    console.log('[Cloudflare V2] Build PASS: home V2, shop V2, Ape Pelù e asset statici pronti.');
+    console.log('[Cloudflare V2] Build PASS: home V2, shop V2, Ape Pelù, Alveo Digitale e 10 Colazioni pronti.');
   } finally {
     if (server.exitCode === null) server.kill('SIGTERM');
   }
