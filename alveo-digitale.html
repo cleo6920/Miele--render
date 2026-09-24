@@ -1,139 +1,339 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Alveo Digitale - La Fabbrica delle Api</title>
-  <style>
-    :root{--green:#07372b;--green2:#0b4b3a;--gold:#e9b949;--gold2:#f7d77c;--cream:#fffaf0;--ink:#17211c;--muted:#5f6b64}
-    *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#fffdf7,#f6f1e7);color:var(--ink)}
-    a{text-decoration:none}.top{background:var(--green);color:#fff;padding:12px 18px}.topin{max-width:1120px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-weight:900;letter-spacing:.03em}.back{color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:9px 14px;font-weight:800;font-size:14px}
-    .wrap{max-width:1120px;margin:auto;padding:22px 16px 50px}.hero{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border-radius:22px;padding:30px;box-shadow:0 14px 34px rgba(0,0,0,.14)}
-    .kicker{font-size:13px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2)}h1{margin:8px 0 8px;font-family:Georgia,'Times New Roman',serif;font-size:clamp(38px,7vw,68px);line-height:.95} .lead{font-size:clamp(18px,2.5vw,24px);font-weight:800;max-width:760px;margin:0}.sub{margin:12px 0 0;max-width:780px;color:#edf7f1;font-size:16px;line-height:1.5}
-    .simple{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.step{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:14px}.step b{display:block;color:var(--gold2);margin-bottom:4px}.notice{margin:18px 0 0;background:#fff4ce;color:#5f4300;border:1px solid #efd27b;border-radius:13px;padding:12px 14px;font-size:14px;font-weight:800}
-    .section-title{margin:28px 0 12px}.section-title h2{font-family:Georgia,'Times New Roman',serif;font-size:30px;margin:0 0 6px}.section-title p{margin:0;color:var(--muted);font-weight:700}
-    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:#fff;border:1px solid #eadfca;border-radius:18px;padding:18px;box-shadow:0 8px 22px rgba(0,0,0,.07);display:flex;flex-direction:column;min-height:315px}.icon{font-size:44px}.tag{display:inline-flex;width:max-content;margin:12px 0 7px;border-radius:999px;background:#eef7f2;color:var(--green);padding:6px 9px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}.card h3{font-size:22px;line-height:1.12;margin:0 0 8px}.card p{margin:0;color:var(--muted);line-height:1.45;font-weight:600}.price{margin-top:auto;padding-top:18px;font-size:25px;font-weight:950;color:#9a6710}.demo{margin-top:10px;border:0;border-radius:11px;background:var(--gold);color:#1f260f;padding:11px 14px;font-size:14px;font-weight:950;cursor:pointer}.demo:hover{background:#f1c965}
-    .preview{margin-top:18px;background:#fff;border:2px solid #e9c568;border-radius:18px;padding:18px;display:none}.preview.open{display:block}.preview h3{margin:0 0 8px}.preview p{margin:5px 0;color:#4d5a53;line-height:1.45}.close{margin-top:10px;background:#173d32;color:#fff;border:0;border-radius:9px;padding:9px 12px;font-weight:800;cursor:pointer}
-    .footnote{margin-top:26px;background:#edf7f2;border-radius:16px;padding:17px;color:#26453a;font-weight:700;line-height:1.45}
-    .buybox{margin-top:18px;background:#fff;border:2px solid #e9c568;border-radius:18px;padding:20px;display:none;box-shadow:0 10px 28px rgba(0,0,0,.08)}.buybox.open{display:block}.buybox h3{margin:0 0 8px;font-size:24px}.buybox p{color:var(--muted);font-weight:700;line-height:1.45}.buygrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.buygrid label{font-size:13px;font-weight:900}.buygrid input{display:block;width:100%;margin-top:5px;border:1px solid #cfc7b8;border-radius:10px;padding:12px;font-size:16px}.buylang{margin:14px 0;padding:11px 13px;border-radius:12px;background:#edf7f2;font-weight:800}.buyactions{display:flex;gap:10px;flex-wrap:wrap}.paynow{flex:1;border:0;border-radius:11px;background:#0b6b50;color:#fff;padding:13px 16px;font-size:16px;font-weight:950;cursor:pointer}.paynow:disabled{opacity:.55}.cancelbuy{border:1px solid #c8bea8;border-radius:11px;background:#fff;padding:12px 14px;font-weight:850;cursor:pointer}.buyerror{display:none;margin-top:10px;color:#b91c1c;font-weight:800}
-    @media(max-width:600px){.buygrid{grid-template-columns:1fr}}
-    @media(max-width:800px){.cards,.simple{grid-template-columns:1fr}.hero{padding:23px 18px}.topin{align-items:flex-start;flex-direction:column}.back{display:inline-flex}.card{min-height:0}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alveo Digitale · La Fabbrica delle Api</title>
+<meta name="description" content="Alveo Digitale: contenuti della Fabbrica delle Api da leggere, vivere e portare con te.">
+<style>
+:root{--green:#10392c;--green2:#174c3b;--gold:#e6b33c;--cream:#fff9ee;--ink:#17241e;--muted:#65726b}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f8f3e9;color:var(--ink)}
+a{text-decoration:none}.top{background:var(--green);color:#fff}.topin{max-width:1180px;margin:auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:950}.top a{color:#fff;border:1px solid rgba(255,255,255,.3);padding:9px 14px;border-radius:999px;font-weight:800}
+.wrap{max-width:1180px;margin:auto;padding:26px 18px 60px}.hero{border-radius:30px;overflow:hidden;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;display:grid;grid-template-columns:1.1fr .9fr;box-shadow:0 18px 45px rgba(0,0,0,.14)}
+.hero-copy{padding:46px}.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:950;color:#f3ca69}.hero h1{font:700 clamp(44px,7vw,78px)/.94 Georgia,serif;margin:10px 0}.hero p{font-size:19px;line-height:1.55;color:#e6f0eb;max-width:680px}.hero img{width:100%;height:100%;min-height:430px;object-fit:cover}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.btn{display:inline-flex;padding:13px 18px;border-radius:999px;font-weight:950}.gold{background:var(--gold);color:#1c2c23}.glass{border:1px solid rgba(255,255,255,.4);color:#fff}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0}.step,.product{background:#fff;border:1px solid #e2d8c6;border-radius:22px;padding:22px;box-shadow:0 9px 24px rgba(30,32,28,.05)}.step b{display:block;color:#94630d;margin-bottom:7px}
+.section-head{margin:52px 0 18px}.section-head h2{font:700 clamp(34px,5vw,54px)/1 Georgia,serif;margin:6px 0}.section-head p{color:var(--muted);font-size:17px}
+.product{display:grid;grid-template-columns:320px 1fr;gap:26px;align-items:center}.product img{width:100%;height:280px;object-fit:contain;background:#f5ecdc;border-radius:18px}.tag{font-weight:950;color:#9a6811;text-transform:uppercase;letter-spacing:.09em;font-size:12px}.product h3{font:700 34px/1.06 Georgia,serif;margin:9px 0}.product p{color:var(--muted);font-size:17px;line-height:1.55}.meta{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.meta span{background:#fff1c8;border-radius:999px;padding:8px 11px;font-weight:900;color:#674b08}.price{font-size:32px;font-weight:950;margin:14px 0}.note{margin-top:40px;padding:22px;border-radius:20px;background:#e9f1ed;color:#244137;line-height:1.5}
+.preview-btn{border:2px solid #c48a16;background:#fff9e8;color:#674b08;cursor:pointer}
+#alveo-preview-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;padding:8px}
+#alveo-preview-overlay.open{display:flex}
+#alveo-preview-modal{width:min(1050px,98vw);height:min(94vh,980px);background:#111;color:#fff;border:2px solid #d99a12;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 26px 80px rgba(0,0,0,.58)}
+#alveo-preview-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;background:#0b2f24;border-bottom:1px solid rgba(217,154,18,.45)}
+#alveo-preview-head strong{font-size:18px}
+#alveo-preview-close{border:1px solid rgba(255,255,255,.35);border-radius:10px;background:#fff;color:#18231d;padding:8px 12px;font-weight:900;cursor:pointer}
+#alveo-preview-intro{padding:10px 15px 6px;color:#f8e5ad;font-size:14px;font-weight:800}
+#alveo-preview-pages{flex:1;min-height:0;overflow:auto;padding:8px 12px;background:#171717}
+.alveo-preview-page{display:none;width:min(900px,100%);margin:0 auto;padding:8px;background:#f6f0e5;border-radius:14px;text-align:center;color:#1d251f}
+.alveo-preview-page.active{display:block}
+.alveo-preview-page img{display:block;width:100%;height:auto;border-radius:8px;box-shadow:0 4px 18px rgba(0,0,0,.18)}
+.alveo-preview-page span{display:block;margin-top:7px;font-size:13px;font-weight:900}
+#alveo-preview-nav{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 14px;background:#111}
+#alveo-preview-nav button{border:1px solid #d99a12;border-radius:10px;background:#f0ad22;color:#151515;padding:10px 16px;font-weight:950;cursor:pointer;min-width:120px}
+#alveo-preview-nav button:disabled{opacity:.35;cursor:default}
+#alveo-preview-counter{min-width:64px;text-align:center;color:#f8e5ad;font-weight:900}
+#alveo-preview-note{padding:3px 14px 10px;text-align:center;color:#ddd;font-size:12px;font-weight:700;background:#111}
+#api-direct-preview-overlay,#api-direct-download-overlay{position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;padding:8px}
+#api-direct-preview-overlay.open,#api-direct-download-overlay.open{display:flex}
+#api-direct-preview-modal{width:min(1050px,98vw);height:min(94vh,980px);background:#111;color:#fff;border:2px solid #d99a12;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 26px 80px rgba(0,0,0,.58)}
+#api-direct-preview-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;background:#0b2f24}
+#api-direct-preview-close,#api-direct-download-close{border:0;border-radius:10px;background:#fff;color:#18231d;padding:8px 12px;font-weight:900;cursor:pointer}
+#api-direct-preview-pages{flex:1;min-height:0;overflow:auto;padding:8px 12px;background:#171717}
+.api-direct-preview-page{display:none;width:min(900px,100%);margin:0 auto;padding:8px;background:#f6f0e5;border-radius:14px;text-align:center;color:#1d251f}
+.api-direct-preview-page.active{display:block}.api-direct-preview-page img{display:block;width:100%;height:auto;border-radius:8px}.api-direct-preview-page span{display:block;margin-top:7px;font-size:13px;font-weight:900}
+#api-direct-preview-nav{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 14px;background:#111}
+#api-direct-preview-nav button{border:1px solid #d99a12;border-radius:10px;background:#f0ad22;color:#151515;padding:10px 16px;font-weight:950;cursor:pointer;min-width:120px}
+#api-direct-preview-nav button:disabled{opacity:.35;cursor:default}
+#api-direct-preview-counter{min-width:64px;text-align:center;color:#f8e5ad;font-weight:900}
+#api-direct-preview-note{padding:6px 14px 10px;text-align:center;color:#ddd;font-size:12px;font-weight:700;background:#111}
+#api-direct-download-modal{width:min(620px,96vw);max-height:92vh;overflow:auto;background:#fffaf1;color:#17241e;border-radius:26px;padding:28px;position:relative;box-shadow:0 26px 80px rgba(0,0,0,.45)}
+#api-direct-download-close{position:absolute;right:16px;top:16px;background:#eee5d7}
+#api-direct-download-modal h2{font:700 38px/1 Georgia,serif;margin:8px 42px 12px 0}
+.api-direct-download-info{background:#edf3ef;border-radius:16px;padding:14px 16px;line-height:1.5;margin:14px 0}
+.api-direct-language-box{margin:18px 0;padding:16px;border:1px solid #dfcfad;border-radius:18px;background:#fff4d8}
+.api-direct-language-box h3{margin:0 0 6px;font-size:18px}
+.api-direct-language-box p{margin:0 0 12px;color:#5f6a64;line-height:1.45;font-size:14px}
+.api-direct-language-chips{display:flex;gap:8px;flex-wrap:wrap}
+.api-direct-language-chip{border:1px solid #cbb98f;background:#fff;color:#17241e;border-radius:999px;padding:9px 12px;font-weight:900;cursor:pointer}
+.api-direct-language-chip.active{background:#10392c;color:#fff;border-color:#10392c}
+.api-direct-language-note{margin-top:10px;font-size:12px;color:#6e776f;font-weight:700}
+.api-direct-download-form{display:grid;gap:12px;margin:18px 0}
+.api-direct-download-form:before{content:"Come vuoi ritrovare i tuoi Punti Ape?";font-weight:950;font-size:15px;color:#17241e}
+.api-direct-download-form:after{content:"Basta email oppure telefono. Se li lasci vuoti riceverai un codice personale.";order:-1;font-size:12px;color:#6f7a73}
+.api-direct-download-form label{font-weight:900;font-size:13px}.api-direct-download-form label span{font-weight:700;color:#77817b}.api-direct-download-form input{width:100%;margin-top:6px;border:1px solid #d7cebf;border-radius:12px;padding:12px;font:inherit;background:#fff;color:#17241e}
+.api-wallet-guide{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.api-wallet-option{border-radius:16px;padding:14px;line-height:1.4}.api-wallet-option.easy{background:#e9f5ee;border:1px solid #bfdcca}.api-wallet-option.code{background:#fff0bd;border:1px solid #e4c35d}.api-wallet-option strong{display:block;margin-bottom:4px}.api-wallet-result{margin-top:12px;padding:14px;border-radius:16px;background:#edf5f0;border:1px solid #c6ddce}.api-wallet-result a{display:inline-block;margin-top:9px;margin-right:7px;padding:9px 12px;border-radius:999px;text-decoration:none;font-weight:900;background:#10392c;color:#fff}.api-wallet-result a.alt{background:#fff;color:#654c08;border:1px solid #d2b661}
+.field-error{border-color:#b42318!important;background:#fff5f4!important;box-shadow:0 0 0 2px rgba(180,35,24,.08)!important}
+#api-direct-download-status{min-height:22px;color:#7a3c16;font-weight:850;margin:8px 0}
+@media(max-width:620px){.api-wallet-guide{grid-template-columns:1fr}}
+#api-direct-download-start{width:100%;border:0;border-radius:999px;background:#dda92e;color:#17241e;padding:14px 18px;font-weight:950;font-size:15px;cursor:pointer}
+@media(max-width:800px){.hero,.product{grid-template-columns:1fr}.hero-copy{padding:30px}.hero img{min-height:260px}.steps{grid-template-columns:1fr}.product{padding:16px}.product img{height:240px}}
+</style>
 </head>
 <body>
-  <div class="top"><div class="topin"><div class="brand">🐝 LA FABBRICA DELLE API</div><a class="back" href="/shop">← Torna allo Shop</a></div></div>
-  <main class="wrap">
-    <section class="hero">
-      <div class="kicker">ALVEO DIGITALE · EDIZIONE PREMIUM</div>
-      <h1>ALVEO DIGITALE</h1>
-      <p class="lead">Ricette, video e idee regalo da usare subito.</p>
-      <p class="sub">La regola è semplice: scegli il contenuto, completa il pagamento sicuro con Nexi e aprilo subito nella lingua scelta. Nessuna spedizione.</p>
-      <div class="simple">
-        <div class="step"><b>1. Scegli</b>Un contenuto chiaro e semplice.</div>
-        <div class="step"><b>2. Acquista</b>Come un normale prodotto dello shop.</div>
-        <div class="step"><b>3. Apri subito</b>Niente pacchi e niente attese.</div>
+<header class="top"><div class="topin"><div class="brand">LA FABBRICA DELLE API · ALVEO DIGITALE</div><div><a href="/">Home</a> <a href="/shop">Bottega</a></div></div></header>
+<main class="wrap">
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">Alveo Digitale</div>
+    <h1>L’alveare continua anche fuori dal Centro.</h1>
+    <p>Ricette, idee e contenuti digitali legati al mondo della Fabbrica delle Api. Nessun pacco da aspettare: scegli il contenuto e portalo con te.</p>
+    <div class="actions"><a class="btn gold" href="#contenuti">Scopri i contenuti →</a><a class="btn glass" href="/shop#alveo-digitale-prodotti">Vai direttamente allo shop</a></div>
+  </div>
+  <img src="/images/alveo-digitale-card-render.webp" alt="Alveo Digitale">
+</section>
+
+<div class="steps">
+  <div class="step"><b>01 · Scegli</b>Trova il contenuto che vuoi portare con te.</div>
+  <div class="step"><b>02 · Acquista</b>Lo aggiungi al carrello come un normale prodotto.</div>
+  <div class="step"><b>03 · Nessuna spedizione</b>Il contenuto è digitale: non vengono applicati costi di spedizione.</div>
+</div>
+
+<section id="contenuti">
+  <div class="section-head"><div class="eyebrow">Nuovo · Gratis</div><h2>Edizioni Aperte</h2><p>Contenuti gratuiti per entrare nel mondo delle api, del territorio e dell’Alveoterapia Integrata.</p></div>
+  <article class="product" style="margin-bottom:28px">
+    <img src="/images/il-mondo-api-oggi-01-cover.jpg" alt="Il mondo delle api oggi Numero 01">
+    <div>
+      <div class="tag">Il mondo delle api oggi · Numero 01 · Edizione Aperta</div>
+      <h3>Il mondo delle api oggi · Numero 01</h3>
+      <p>Una nuova uscita gratuita di Alveo Digitale: 30 pagine dedicate alle api, al territorio, all’Oasi del Busatello e alla Galena delle Api. Puoi consultare 5 pagine reali di anteprima e scaricare gratuitamente il PDF completo nella lingua scelta sul sito.</p>
+      <div class="meta"><span>GRATIS</span><span>🐝 +1 Punto Ape al download</span><span>30 pagine</span><span>IT · EN · DE · FR · ES</span></div>
+      <div class="price">€ 0,00</div>
+      <div class="actions"><button type="button" class="btn preview-btn" id="openApiOggiDirectPreview">👁 Guarda 5 pagine</button><button type="button" class="btn gold" id="openApiOggiDirectDownload" style="border:0;cursor:pointer">Scarica gratis →</button></div>
+    </div>
+  </article>
+
+  <div class="section-head"><div class="eyebrow">Edizione Premium</div><h2>10 Colazioni dell’Alveare</h2><p>La prima uscita Premium di Alveo Digitale.</p></div>
+  <article class="product">
+    <img src="/images/alveo-digitale-card-render.webp" alt="10 Colazioni dell'Alveare Edizione Premium">
+    <div>
+      <div class="tag">Ricette & idee · Edizione Premium</div>
+      <h3>10 Colazioni dell’Alveare – Edizione Premium</h3>
+      <p>Un magazine digitale illustrato da consultare e riutilizzare: 10 ricette complete, 20 idee lampo, planner, lista della spesa, quiz e una piccola esperienza di degustazione dei mieli. È disponibile in italiano, inglese, tedesco, francese e spagnolo; dopo il pagamento viene proposta la versione corrispondente alla lingua scelta sul sito.</p>
+      <div class="meta"><span>🐝 2 Punti Ape</span><span>Digitale</span><span>Spedizione €0</span><span>IT · EN · DE · FR · ES</span></div>
+      <div class="price">€ 5,90</div>
+      <div class="actions"><button type="button" class="btn preview-btn" id="openAlveoPreview">👁 Sfoglia anteprima</button><a class="btn gold" href="/shop#prodotto-alveo-digitale-10-colazioni">Apri la scheda e acquista →</a></div>
+    </div>
+  </article>
+</section>
+
+<div class="note"><strong>Alveo Digitale è una categoria viva.</strong> Oggi comprende sia le <strong>Edizioni Aperte gratuite</strong> sia le edizioni <strong>Premium</strong>. Nuovi contenuti potranno essere aggiunti nel tempo senza trasformare la Bottega in una semplice raccolta di file.</div>
+</main>
+
+
+<div id="api-direct-preview-overlay" aria-hidden="true">
+  <div id="api-direct-preview-modal" role="dialog" aria-modal="true" aria-label="Anteprima Il mondo delle api oggi Numero 01">
+    <div id="api-direct-preview-head"><strong>Il mondo delle api oggi · Numero 01 · Anteprima</strong><button id="api-direct-preview-close" type="button">Chiudi ✕</button></div>
+    <div style="padding:10px 15px 6px;color:#f8e5ad;font-size:14px;font-weight:800">Cinque pagine reali dell’Edizione Aperta gratuita.</div>
+    <div id="api-direct-preview-pages">
+      <div class="api-direct-preview-page active"><img src="/images/api-oggi-01-preview-it-copertina.webp?v=2" alt="Copertina"><span>Copertina</span></div>
+      <div class="api-direct-preview-page"><img src="/images/api-oggi-01-preview-it-premessa.webp?v=2" alt="Premessa"><span>Premessa</span></div>
+      <div class="api-direct-preview-page"><img src="/images/api-oggi-01-preview-it-api-da-vicino.webp?v=2" alt="Api da vicino"><span>Guardiamola da vicino</span></div>
+      <div class="api-direct-preview-page"><img src="/images/api-oggi-01-preview-it-territorio.webp?v=2" alt="Territorio"><span>Api e territorio</span></div>
+      <div class="api-direct-preview-page"><img src="/images/api-oggi-01-preview-it-galena.webp?v=2" alt="Galena delle Api"><span>La Galena delle Api</span></div>
+    </div>
+    <div id="api-direct-preview-nav"><button type="button" id="api-direct-preview-prev">← Indietro</button><div id="api-direct-preview-counter">1 / 5</div><button type="button" id="api-direct-preview-next">Avanti →</button></div>
+    <div id="api-direct-preview-note">Edizione Aperta · PDF completo da 30 pagine · download gratuito.</div>
+  </div>
+</div>
+
+<div id="api-direct-download-overlay" aria-hidden="true">
+  <div id="api-direct-download-modal" role="dialog" aria-modal="true" aria-label="Download gratuito Il mondo delle api oggi Numero 01">
+    <button id="api-direct-download-close" type="button" aria-label="Chiudi">×</button>
+    <div class="eyebrow">ALVEO DIGITALE · EDIZIONI APERTE</div>
+    <h2>Scarica gratuitamente</h2>
+    <p><strong>Il mondo delle api oggi · Numero 01</strong> è gratuito. Non serve alcun pagamento.</p>
+    <div class="api-direct-download-info"><strong>Il download resta gratuito.</strong> Per ritrovare in futuro il Punto Ape hai due possibilità semplici.</div>
+    <div class="api-direct-language-box">
+      <h3>Scegli la lingua del PDF</h3>
+      <p>Se non scegli nulla, useremo automaticamente la lingua attuale del sito.</p>
+      <div class="api-direct-language-chips" id="apiDirectLanguageChips" role="radiogroup" aria-label="Lingua del PDF">
+        <button type="button" class="api-direct-language-chip active" data-lang="">Automatico</button>
+        <button type="button" class="api-direct-language-chip" data-lang="it">🇮🇹 Italiano</button>
+        <button type="button" class="api-direct-language-chip" data-lang="en">🇬🇧 English</button>
+        <button type="button" class="api-direct-language-chip" data-lang="de">🇩🇪 Deutsch</button>
+        <button type="button" class="api-direct-language-chip" data-lang="fr">🇫🇷 Français</button>
+        <button type="button" class="api-direct-language-chip" data-lang="es">🇪🇸 Español</button>
       </div>
-      <div class="notice">10 Colazioni dell’Alveare è disponibile in italiano, inglese, tedesco, francese e spagnolo. Dopo il pagamento ricevi subito il PDF Premium nella lingua scelta.</div>
-    </section>
+      <div class="api-direct-language-note" id="apiDirectLanguageNote">La scelta riguarda solo il PDF e non cambia la lingua del sito.</div>
+      <input type="hidden" id="apiDirectLanguage" value="">
+    </div>
+    <div class="api-wallet-guide">
+      <div class="api-wallet-option easy"><strong>📧📱 Più semplice</strong>Lascia <b>email oppure telefono</b>: potrai controllare il saldo usando quel contatto.</div>
+      <div class="api-wallet-option code"><strong>🔐 Senza contatti</strong>Lascia email e telefono vuoti: dopo il download riceverai un <b>Codice Punti Ape personale</b> e un PDF promemoria.</div>
+    </div>
+    <div class="api-direct-download-form">
+      <label>Nome e cognome <span>facoltativo</span><input id="apiDirectName" autocomplete="name"></label>
+      <label>Email <span>facoltativa</span><input id="apiDirectEmail" type="email" autocomplete="email"></label>
+      <label>Telefono <span>facoltativo</span><input id="apiDirectPhone" inputmode="tel" autocomplete="tel"></label>
+    </div>
+    <div style="background:#fff0ae;border-radius:16px;padding:13px 15px;font-weight:900">🐝 +1 Punto Ape solo quando avvii davvero il download.</div>
+    <div id="api-direct-download-status"></div>
+    <button id="api-direct-download-start" type="button">Scarica gratis e ottieni 1 Punto Ape →</button>
+    <small style="display:block;text-align:center;margin-top:9px;color:#758079">Nessun costo. Nessun dato obbligatorio.</small>
+  </div>
+</div>
 
-    <div class="section-title"><h2>Alveo Digitale</h2><p>Il primo contenuto Premium è già disponibile. Gli altri progetti restano in preparazione.</p></div>
+<div id="alveo-preview-overlay" aria-hidden="true">
+  <div id="alveo-preview-modal" role="dialog" aria-modal="true" aria-label="Anteprima 10 Colazioni dell’Alveare">
+    <div id="alveo-preview-head"><strong>10 Colazioni dell’Alveare · Anteprima</strong><button id="alveo-preview-close" type="button">Chiudi ✕</button></div>
+    <div id="alveo-preview-intro">Sfoglia cinque pagine reali: copertina, indice, introduzione e la Colazione 1 completa.</div>
+    <div id="alveo-preview-pages">
+      <div class="alveo-preview-page active"><img src="/images/alveo-preview-it-copertina.webp?v=preview5-1" alt="Copertina"><span>Copertina</span></div>
+      <div class="alveo-preview-page"><img src="/images/alveo-preview-it-indice.webp?v=preview5-1" alt="Indice"><span>Indice</span></div>
+      <div class="alveo-preview-page"><img src="/images/alveo-preview-it-introduzione.webp?v=preview5-1" alt="Introduzione"><span>Introduzione</span></div>
+      <div class="alveo-preview-page"><img src="/images/alveo-preview-it-colazione1-ricetta.webp?v=preview5-1" alt="Colazione 1 ricetta"><span>Colazione 1 · Ricetta</span></div>
+      <div class="alveo-preview-page"><img src="/images/alveo-preview-it-colazione1-varianti.webp?v=preview5-1" alt="Colazione 1 varianti e idee"><span>Colazione 1 · Varianti e idee</span></div>
+    </div>
+    <div id="alveo-preview-nav"><button type="button" id="alveo-preview-prev">← Indietro</button><div id="alveo-preview-counter">1 / 5</div><button type="button" id="alveo-preview-next">Avanti →</button></div>
+    <div id="alveo-preview-note">Anteprima parziale · 5 pagine reali. Il PDF completo da 37 pagine è disponibile dopo l’acquisto.</div>
+  </div>
+</div>
+<script>
+(function(){
+  let pageIndex=0;
+  const overlay=document.getElementById('alveo-preview-overlay');
+  const pages=()=>Array.from(document.querySelectorAll('.alveo-preview-page'));
+  function showPage(index){
+    const all=pages();
+    pageIndex=Math.max(0,Math.min(index,all.length-1));
+    all.forEach((p,i)=>p.classList.toggle('active',i===pageIndex));
+    document.getElementById('alveo-preview-counter').textContent=(pageIndex+1)+' / '+all.length;
+    document.getElementById('alveo-preview-prev').disabled=pageIndex===0;
+    document.getElementById('alveo-preview-next').disabled=pageIndex===all.length-1;
+    document.getElementById('alveo-preview-pages').scrollTop=0;
+  }
+  function previewLanguage(){try{const v=String(localStorage.getItem('fda-site-language')||'it').toLowerCase();return ['it','en','de','fr','es'].includes(v)?v:'it';}catch(_){return 'it';}}
+  function applyPreviewLanguage(){
+    const l=previewLanguage();
+    const imgs=document.querySelectorAll('#alveo-preview-pages img');
+    const names=['copertina','indice','introduzione','colazione1-ricetta','colazione1-varianti'];
+    imgs.forEach((img,i)=>{if(names[i])img.src='/images/alveo-preview-'+l+'-'+names[i]+'.webp?v=preview5-1';});
+  }
+  function open(){applyPreviewLanguage();pageIndex=0;showPage(0);overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');}
+  function close(){overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');}
+  document.getElementById('openAlveoPreview').addEventListener('click',open);
+  document.getElementById('alveo-preview-close').addEventListener('click',close);
+  document.getElementById('alveo-preview-prev').addEventListener('click',()=>showPage(pageIndex-1));
+  document.getElementById('alveo-preview-next').addEventListener('click',()=>showPage(pageIndex+1));
+  overlay.addEventListener('click',(e)=>{if(e.target===overlay)close();});
+  document.addEventListener('keydown',(e)=>{if(!overlay.classList.contains('open'))return;if(e.key==='Escape')close();if(e.key==='ArrowLeft')showPage(pageIndex-1);if(e.key==='ArrowRight')showPage(pageIndex+1);});
+  showPage(0);
+})();
+</script>
 
-    <section class="cards">
-      <article class="card">
-        <div class="icon">📖🍯</div>
-        <span class="tag">Ricette & Guide</span>
-        <h3>10 Colazioni dell’Alveare</h3>
-        <p>37 pagine illustrate: 10 ricette complete, 20 idee lampo, planner, lista della spesa, quiz, degustazione e passaporto dei sapori.</p>
-        <div class="price">€ 5,90</div>
-        <button class="demo" onclick="showPreview('colazioni')">Guarda esempio</button>
-        <button class="demo" style="background:#0b6b50;color:#fff" onclick="openDigitalCheckout()">Acquista PDF Premium · € 5,90</button>
-      </article>
 
-      <article class="card">
-        <div class="icon">🎬🐝</div>
-        <span class="tag">Video narrato</span>
-        <h3>Un Momento nell’Alveare</h3>
-        <p>Un breve video narrato, indicativamente 20–30 secondi, per raccontare una piccola storia dell’alveare.</p>
-        <div class="price" style="font-size:18px;color:#5f6b64">In preparazione</div>
-        <button class="demo" onclick="showPreview('video')">Guarda esempio</button>
-      </article>
-
-      <article class="card">
-        <div class="icon">🎁📱</div>
-        <span class="tag">Regalo digitale</span>
-        <h3>Regala l’Alveare</h3>
-        <p>Una dedica digitale semplice da inviare, con una piccola esperienza video collegata al regalo.</p>
-        <div class="price" style="font-size:18px;color:#5f6b64">In preparazione</div>
-        <button class="demo" onclick="showPreview('regalo')">Guarda esempio</button>
-      </article>
-    </section>
-
-    <section id="preview" class="preview" aria-live="polite">
-      <h3 id="preview-title"></h3>
-      <p id="preview-text"></p>
-      <button class="close" onclick="closePreview()">Chiudi anteprima</button>
-    </section>
-
-    <section id="digitalCheckout" class="buybox" aria-live="polite">
-      <h3>Acquista 10 Colazioni dell’Alveare</h3>
-      <p>Inserisci nome ed email, poi continua al pagamento sicuro Nexi. Il PDF non prevede spedizione.</p>
-      <div class="buygrid">
-        <label>Nome e cognome<input id="digitalName" autocomplete="name" placeholder="Nome e cognome"></label>
-        <label>Email<input id="digitalEmail" type="email" autocomplete="email" placeholder="nome@email.it"></label>
-      </div>
-      <div id="digitalLanguage" class="buylang">Lingua PDF: Italiano</div>
-      <div class="buyactions">
-        <button id="digitalPay" class="paynow" type="button" onclick="startDigitalPayment()">Vai al pagamento Nexi · € 5,90</button>
-        <button class="cancelbuy" type="button" onclick="closeDigitalCheckout()">Annulla</button>
-      </div>
-      <div id="digitalError" class="buyerror"></div>
-    </section>
-    <div class="footnote"><strong>Consegna digitale:</strong> dopo il pagamento Nexi il PDF Premium viene proposto immediatamente nella lingua selezionata sul sito. Nessun costo di spedizione.</div>
-  </main>
-  <script>
-    const previews={
-      colazioni:{title:'Anteprima — 10 Colazioni dell’Alveare',text:'Esempio: yogurt, frutta e miele. Una scheda molto breve con ingredienti, preparazione e il miele consigliato. L’obiettivo è arrivare alla ricetta senza leggere pagine di spiegazioni.'},
-      video:{title:'Anteprima — Un Momento nell’Alveare',text:'Esempio: 20–30 secondi con immagini di fiori, api e favo, accompagnate da una breve voce narrante. Il formato definitivo potrà essere più corto o più lungo in base al contenuto.'},
-      regalo:{title:'Anteprima — Regala l’Alveare',text:'Esempio: scegli una dedica, abbinala a una breve cartolina video e inviala alla persona che vuoi. Nella versione definitiva il passaggio dovrà essere molto semplice: scegli, scrivi il nome, acquista, invia.'}
-    };
-    function showPreview(key){const data=previews[key];if(!data)return;document.getElementById('preview-title').textContent=data.title;document.getElementById('preview-text').textContent=data.text;const box=document.getElementById('preview');box.classList.add('open');box.scrollIntoView({behavior:'smooth',block:'center'});}function closePreview(){document.getElementById('preview').classList.remove('open');}
-    const DIGITAL_LANG_NAMES={it:'Italiano',en:'English',de:'Deutsch',fr:'Français',es:'Español'};
-    function currentDigitalLanguage(){try{const v=String(localStorage.getItem('fda-site-language')||'it').toLowerCase();return Object.prototype.hasOwnProperty.call(DIGITAL_LANG_NAMES,v)?v:'it';}catch(_){return 'it';}}
-    function updateDigitalLanguage(){const lang=currentDigitalLanguage();const el=document.getElementById('digitalLanguage');if(el)el.textContent='Lingua PDF: '+DIGITAL_LANG_NAMES[lang];}
-    function openDigitalCheckout(){updateDigitalLanguage();const box=document.getElementById('digitalCheckout');box.classList.add('open');box.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>document.getElementById('digitalName')?.focus(),250);}
-    function closeDigitalCheckout(){document.getElementById('digitalCheckout').classList.remove('open');}
-    async function startDigitalPayment(){
-      const name=document.getElementById('digitalName').value.trim();
-      const email=document.getElementById('digitalEmail').value.trim();
-      const error=document.getElementById('digitalError');
-      const button=document.getElementById('digitalPay');
-      error.style.display='none';error.textContent='';
-      if(name.length<2||!email.includes('@')){error.textContent='Inserisci nome e un indirizzo email valido.';error.style.display='block';return;}
-      const lang=currentDigitalLanguage();
-      button.disabled=true;button.textContent='Apertura pagamento Nexi...';
-      try{
-        const productName="10 Colazioni dell’Alveare - PDF digitale";
-        const response=await fetch('/api/create-checkout-session',{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({
-            items:[{name:productName,amount:5.90,quantity:1}],
-            xpayCart:[{productId:'alveo-digitale-10-colazioni',productName,name:productName,language:lang}],
-            shippingCostOverride:0,
-            notes:'ALVEO_DIGITALE:10_COLAZIONI',
-            customer:{name,email}
-          })
-        });
-        const data=await response.json().catch(()=>null);
-        if(!response.ok||!data?.url)throw new Error(data?.error||'Pagamento non disponibile.');
-        if(data.xpay!==true)throw new Error('Il pagamento Nexi non è disponibile in questo momento.');
-        location.href=data.url;
-      }catch(err){
-        error.textContent=err?.message||'Non riesco ad avviare il pagamento. Riprova.';
-        error.style.display='block';button.disabled=false;button.textContent='Vai al pagamento Nexi · € 5,90';
+<script>
+(function(){
+  const supported=['it','en','de','fr','es'];
+  function lang(){try{const v=String(localStorage.getItem('fda-site-language')||'it').toLowerCase();return supported.includes(v)?v:'it';}catch(_){return 'it';}}
+  let idx=0;
+  const preview=document.getElementById('api-direct-preview-overlay');
+  const download=document.getElementById('api-direct-download-overlay');
+  const pages=()=>Array.from(document.querySelectorAll('.api-direct-preview-page'));
+  function show(i){
+    const all=pages(); idx=Math.max(0,Math.min(i,all.length-1));
+    all.forEach((p,n)=>p.classList.toggle('active',n===idx));
+    document.getElementById('api-direct-preview-counter').textContent=(idx+1)+' / '+all.length;
+    document.getElementById('api-direct-preview-prev').disabled=idx===0;
+    document.getElementById('api-direct-preview-next').disabled=idx===all.length-1;
+    document.getElementById('api-direct-preview-pages').scrollTop=0;
+  }
+  function applyLang(){
+    const l=lang(),names=['copertina','premessa','api-da-vicino','territorio','galena'];
+    document.querySelectorAll('#api-direct-preview-pages img').forEach((img,i)=>{if(names[i])img.src='/images/api-oggi-01-preview-'+l+'-'+names[i]+'.webp?v=2';});
+  }
+  function openPreview(){applyLang();show(0);preview.classList.add('open');preview.setAttribute('aria-hidden','false');}
+  function closePreview(){preview.classList.remove('open');preview.setAttribute('aria-hidden','true');}
+  function openDownload(){
+      document.getElementById('api-direct-download-status').textContent='';
+      const select=document.getElementById('apiDirectLanguage');
+      if(select){
+        select.value='';
+        document.querySelectorAll('.api-direct-language-chip').forEach(b=>b.classList.toggle('active',b.dataset.lang===''));
+        const siteName=({it:'Italiano',en:'English',de:'Deutsch',fr:'Français',es:'Español'}[lang()]||'Italiano');
+        const auto=document.querySelector('.api-direct-language-chip[data-lang=""]');
+        if(auto)auto.textContent='Automatico · '+siteName;
       }
+      download.classList.add('open');
+      download.setAttribute('aria-hidden','false');
     }
-    updateDigitalLanguage();
-  </script>
+  function closeDownload(){download.classList.remove('open');download.setAttribute('aria-hidden','true');}
+  function claimId(){
+    const key='fda-free-edition-claim-api-oggi-01';
+    try{let id=localStorage.getItem(key);if(!id){id=(window.crypto&&crypto.randomUUID?crypto.randomUUID():'free-'+Date.now()+'-'+Math.random().toString(36).slice(2));localStorage.setItem(key,id);}return id;}
+    catch(_){return 'free-'+Date.now()+'-'+Math.random().toString(36).slice(2);}
+  }
+  function clearDirectContactErrors(){
+    ['apiDirectName','apiDirectEmail','apiDirectPhone'].forEach(id=>document.getElementById(id)?.classList.remove('field-error'));
+  }
+  function markDirectContactError(id,message,status){
+    clearDirectContactErrors();
+    const el=document.getElementById(id); if(el){el.classList.add('field-error');el.focus();}
+    status.textContent=message;
+  }
+  async function startDownload(){
+    const btn=document.getElementById('api-direct-download-start');
+    const status=document.getElementById('api-direct-download-status');
+    const name=document.getElementById('apiDirectName').value.trim();
+    const email=document.getElementById('apiDirectEmail').value.trim();
+    const phone=document.getElementById('apiDirectPhone').value.trim();
+    const selectedLanguage=String(document.getElementById('apiDirectLanguage')?.value||'').toLowerCase();
+    const downloadLanguage=supported.includes(selectedLanguage)?selectedLanguage:lang();
+    clearDirectContactErrors();
+    if(name && (name.length<2 || !/[A-Za-zÀ-ÿ]/.test(name) || /^\d+$/.test(name))){markDirectContactError('apiDirectName','Controlla nome e cognome oppure lascia il campo vuoto.',status);return;}
+    if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){markDirectContactError('apiDirectEmail','Controlla l’indirizzo email oppure lascialo vuoto.',status);return;}
+    if(phone){
+      btn.disabled=true;const temp=btn.textContent;btn.textContent='Verifica telefono…';
+      try{
+        const test=await fetch('/api/free-edition-download',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({editionId:'api-oggi-01',language:downloadLanguage,claimId:'validation-only-'+Date.now(),validationOnly:true,customer:{name,email,phone}})});
+        const td=await test.json().catch(()=>null);
+        if(test.status===422 && td?.field==='phone'){markDirectContactError('apiDirectPhone',td.error||'Numero di telefono non valido.',status);btn.disabled=false;btn.textContent=temp;return;}
+        if(test.status===422 && td?.field==='name'){markDirectContactError('apiDirectName',td.error||'Nome non valido.',status);btn.disabled=false;btn.textContent=temp;return;}
+        if(test.status===422 && td?.field==='email'){markDirectContactError('apiDirectEmail',td.error||'Email non valida.',status);btn.disabled=false;btn.textContent=temp;return;}
+      }catch(_){}
+      btn.disabled=false;btn.textContent=temp;
+    }
+    btn.disabled=true;const old=btn.textContent;btn.textContent='Preparazione download…';status.textContent='';
+    try{
+      const response=await fetch('/api/free-edition-download',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({editionId:'api-oggi-01',language:downloadLanguage,claimId:claimId(),customer:{name,email,phone}})});
+      const data=await response.json().catch(()=>null);
+      if(!response.ok||!data?.downloadUrl)throw new Error(data?.error||'Download non disponibile.');
+      const a=document.createElement('a');a.href=data.downloadUrl+'?download='+Date.now();a.download=data.fileName||'Il_mondo_delle_api_oggi_Numero_01.pdf';document.body.appendChild(a);a.click();a.remove();
+      const base=data.pointsAwarded?'Download avviato · +1 Punto Ape accreditato.':'Download avviato · +1 Punto Ape registrato per la sincronizzazione.';
+      if(data.walletCode){
+        status.innerHTML='<div class="api-wallet-result"><strong>'+base+'</strong><br><br>🔐 Il tuo Codice Punti Ape è:<br><strong style="font-size:20px">'+data.walletCode+'</strong><br>Conservalo: ti servirà per controllare il saldo senza email o telefono.<br><a href="'+data.walletCardUrl+'">Scarica promemoria PDF</a><a class="alt" href="/punti-ape">Controlla il saldo</a></div>';
+      }else{
+        status.innerHTML='<div class="api-wallet-result"><strong>'+base+'</strong><br>Potrai ritrovare il saldo con l’email o il telefono che hai indicato.<br><a href="/punti-ape">Vedi il mio Saldo Punti Ape</a></div>';
+      }
+      btn.textContent='Scarica di nuovo';
+    }catch(err){status.textContent=err?.message||'Non è stato possibile avviare il download.';btn.textContent=old;}
+    btn.disabled=false;
+  }
+  document.querySelectorAll('.api-direct-language-chip').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('.api-direct-language-chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const hidden=document.getElementById('apiDirectLanguage');
+    if(hidden)hidden.value=btn.dataset.lang||'';
+  }));
+  document.getElementById('openApiOggiDirectPreview').addEventListener('click',openPreview);
+  document.getElementById('openApiOggiDirectDownload').addEventListener('click',openDownload);
+  document.getElementById('api-direct-preview-close').addEventListener('click',closePreview);
+  document.getElementById('api-direct-preview-prev').addEventListener('click',()=>show(idx-1));
+  document.getElementById('api-direct-preview-next').addEventListener('click',()=>show(idx+1));
+  preview.addEventListener('click',e=>{if(e.target===preview)closePreview();});
+  document.getElementById('api-direct-download-close').addEventListener('click',closeDownload);
+  download.addEventListener('click',e=>{if(e.target===download)closeDownload();});
+  document.getElementById('api-direct-download-start').addEventListener('click',startDownload);
+  try{
+    const directAction=new URLSearchParams(window.location.search).get('open');
+    if(directAction==='preview')setTimeout(openPreview,120);
+    if(directAction==='download')setTimeout(openDownload,120);
+  }catch(_){}
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(preview.classList.contains('open'))closePreview();if(download.classList.contains('open'))closeDownload();}});
+  show(0);
+})();
+</script>
+
+<script src="/render-language-de-test.js?v=20260923-10"></script>
 </body>
 </html>

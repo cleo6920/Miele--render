@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Il mio Saldo Punti Ape · La Fabbrica delle Api</title>
+<meta name="description" content="Controlla il tuo Saldo Punti Ape con email, telefono o Codice Punti Ape.">
+<style>
+:root{--g:#10392c;--g2:#174c3b;--gold:#e3aa2d;--cream:#fff9ee;--ink:#17241e;--muted:#66746d;--line:#e1d5c1}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f7f1e6;color:var(--ink)}
+.top{background:var(--g);color:#fff}.topin{max-width:1040px;margin:auto;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}.top a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.3);padding:9px 14px;border-radius:999px;font-weight:850}
+.wrap{max-width:1040px;margin:auto;padding:30px 18px 64px}.hero{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;border-radius:30px;padding:38px;box-shadow:0 18px 45px rgba(0,0,0,.12)}
+.eyebrow{font-size:12px;letter-spacing:.13em;text-transform:uppercase;font-weight:950;color:#f3ca69}.hero h1{font:700 clamp(42px,7vw,68px)/.96 Georgia,serif;margin:10px 0}.hero p{font-size:18px;line-height:1.55;max-width:760px;color:#e5f0eb}
+.guide{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 8px 24px rgba(30,32,28,.05)}.card .icon{font-size:30px}.card h3{margin:8px 0 5px}.card p{margin:0;color:var(--muted);line-height:1.45}
+.lookup{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:26px;padding:26px;box-shadow:0 12px 32px rgba(0,0,0,.06)}.lookup h2{font:700 34px/1 Georgia,serif;margin:0 0 8px}.lookup>p{color:var(--muted);margin:0 0 18px}
+.tabs{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px}.tab{border:1px solid #c8b891;background:#fff7e5;border-radius:999px;padding:10px 14px;font-weight:900;cursor:pointer}.tab.active{background:var(--g);color:#fff;border-color:var(--g)}
+.method{display:none}.method.active{display:block}.method label{display:block;font-weight:900;margin-bottom:7px}.method input{width:100%;border:1px solid #d7ccba;border-radius:14px;padding:14px;font:inherit;font-size:16px;background:#fff}.hint{font-size:13px;color:var(--muted);margin-top:7px;line-height:1.4}
+.check{margin-top:16px;width:100%;border:0;border-radius:999px;background:var(--gold);color:#17241e;padding:14px 18px;font-weight:950;font-size:16px;cursor:pointer}
+#status{min-height:24px;margin:12px 0;font-weight:800;color:#7a3c16}.result{display:none;margin-top:18px;background:#edf5f0;border:1px solid #c8dfd0;border-radius:22px;padding:20px}.result.show{display:block}.balance{font:700 52px/1 Georgia,serif;color:var(--g)}.progress{height:16px;background:#dbe7df;border-radius:999px;overflow:hidden;margin:15px 0}.bar{height:100%;width:0;background:linear-gradient(90deg,#d49b21,#f0c85a);transition:width .35s}.goal{font-weight:900;color:#496158}
+.testbox{display:none;margin-top:18px;padding:16px;border-radius:18px;background:#fff3c9;border:1px solid #e1c45a;color:#5e480d}.testbox.show{display:block}.testnote{font-size:13px;margin-top:8px;line-height:1.4}
+.cesto-flow{display:none;margin-top:18px;padding:18px;border-radius:20px;background:#fff;border:1px solid #d9cfbb}.cesto-flow.show{display:block}.cesto-flow h3{font:700 28px/1 Georgia,serif;margin:0 0 8px}.cesto-flow p{color:#5f6a64;line-height:1.45}.gift-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}.gift{border:1px solid #cbb98f;background:#fffaf0;border-radius:14px;padding:11px;text-align:left;font-weight:850;cursor:pointer}.gift.sel{background:#10392c;color:#fff;border-color:#10392c}.gift-count{font-weight:950;margin:10px 0}.ship-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ship-grid input,.cesto-flow textarea{width:100%;border:1px solid #d7ccba;border-radius:12px;padding:12px;font:inherit}.cesto-flow textarea{min-height:80px;margin-top:10px}.cesto-summary{margin-top:14px;background:#edf5f0;border:1px solid #c6ddce;border-radius:16px;padding:14px;line-height:1.55}.claim-cesto{width:100%;margin-top:14px;border:0;border-radius:999px;background:#10392c;color:#fff;padding:14px;font-weight:950;font-size:16px;cursor:pointer}.claim-cesto:disabled{opacity:.45;cursor:not-allowed}.field-error{border-color:#b42318!important;background:#fff5f4!important}.validation-error{margin-top:10px;padding:11px 13px;border-radius:12px;background:#fff1f0;border:1px solid #efb0aa;color:#8a1c13;font-weight:850}.receipt-btn{display:inline-block;margin-top:16px;padding:12px 16px;border-radius:999px;background:#10392c;color:#fff;text-decoration:none;font-weight:950}.cesto-confirm{display:none;margin-top:18px;padding:18px;border-radius:18px;background:#e9f5ee;border:2px solid #95c5a7}.cesto-confirm.show{display:block}.cesto-confirm strong{color:#10392c}
+@media(max-width:680px){.gift-grid,.ship-grid{grid-template-columns:1fr}}
+.privacy{margin-top:22px;padding:16px;border-radius:18px;background:#fff3c9;color:#624d0f;line-height:1.45}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.actions a{text-decoration:none;border-radius:999px;padding:11px 15px;font-weight:900}.primary{background:var(--g);color:#fff}.secondary{border:1px solid #bea66e;color:#60480c;background:#fff}
+@media(max-width:760px){.guide{grid-template-columns:1fr}.hero{padding:28px}.lookup{padding:20px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="topin"><strong>LA FABBRICA DELLE API · PUNTI APE</strong><div><a href="/">Home</a> <a href="/shop">Bottega</a></div></div></header>
+<main class="wrap">
+<section class="hero">
+<div class="eyebrow">Il tuo Saldo Api</div>
+<h1>Quanti Punti Ape hai?</h1>
+<p>Puoi ritrovare il tuo saldo in tre modi. Usa quello che hai lasciato quando hai acquistato o scaricato un contenuto.</p>
+</section>
+
+<section class="guide">
+<div class="card"><div class="icon">📧</div><h3>Email</h3><p>Se hai lasciato la tua email, è il modo più semplice per ritrovare i punti.</p></div>
+<div class="card"><div class="icon">📱</div><h3>Telefono</h3><p>Puoi usare il numero di telefono indicato nei tuoi acquisti o download.</p></div>
+<div class="card"><div class="icon">🔐</div><h3>Codice Punti Ape</h3><p>Se non hai lasciato contatti, usa il codice personale che hai ricevuto con il download.</p></div>
+</section>
+
+<section class="lookup">
+<h2>Controlla il saldo</h2>
+<p>Scegli come vuoi identificarti. Serve solo uno dei tre dati.</p>
+<div class="tabs">
+<button type="button" class="tab active" data-kind="email">📧 Email</button>
+<button type="button" class="tab" data-kind="phone">📱 Telefono</button>
+<button type="button" class="tab" data-kind="code">🔐 Codice personale</button>
+</div>
+<div class="method active" data-method="email"><label for="email">La tua email</label><input id="email" type="email" autocomplete="email" placeholder="esempio@email.it"><div class="hint">Usa la stessa email lasciata sul sito.</div></div>
+<div class="method" data-method="phone"><label for="phone">Il tuo telefono</label><input id="phone" inputmode="tel" autocomplete="tel" placeholder="+39 ..."><div class="hint">Puoi scriverlo anche con spazi o prefisso internazionale.</div></div>
+<div class="method" data-method="code"><label for="code">Codice Punti Ape</label><input id="code" autocomplete="off" placeholder="APE-XXXX-XXXX-XX" style="text-transform:uppercase"><div class="hint">Lo trovi nel promemoria ricevuto se hai scelto di non lasciare contatti.</div></div>
+<button class="check" id="check" type="button">🐝 Vedi il mio saldo</button>
+<div id="status"></div>
+<div class="result" id="result">
+<div>Il tuo Saldo Punti Ape</div>
+<div class="balance"><span id="balance">0</span> 🐝</div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="goal" id="goal"></div>
+<div class="testbox" id="testbox">
+  <strong id="testtitle">Modalità TEST</strong>
+  <div id="testmessage" class="testnote"></div>
+</div>
+<div class="cesto-flow" id="cestoFlow">
+  <h3>🎁 Componi il tuo Cesto dell’Alveare</h3>
+  <div style="background:#10392c;color:#fff;border-radius:16px;padding:14px 16px;margin:10px 0 14px;font-weight:950;font-size:17px;text-align:center">🎁 HAI SBLOCCATO IL CESTO OMAGGIO</div>
+  <p>Scegli qui sotto esattamente <strong>5 prodotti diversi</strong>. Poi inserisci i dati completi per la spedizione gratuita e conferma l’ordine a <strong>€0,00</strong>.</p>
+  <div class="gift-count" id="giftCount">0 / 5 prodotti scelti</div>
+  <div class="gift-grid" id="giftGrid"></div>
+  <h3 style="margin-top:22px">📦 Dati per la spedizione</h3>
+  <div class="ship-grid">
+    <input id="shipName" placeholder="Nome e cognome *">
+    <input id="shipEmail" type="email" placeholder="Email *">
+    <input id="shipPhone" type="tel" placeholder="Telefono *">
+    <input id="shipAddress" placeholder="Via e numero civico *">
+    <input id="shipPostal" placeholder="CAP *">
+    <input id="shipCity" placeholder="Comune / Città *">
+    <input id="shipState" placeholder="Provincia (es. MN) *">
+    <input id="shipCountry" value="Italia" placeholder="Paese">
+  </div>
+  <textarea id="shipNotes" placeholder="Note per la consegna (facoltative)"></textarea>
+  <div class="cesto-summary">
+    <strong>Cesto dell’Alveare</strong><br>
+    5 prodotti a scelta · Pagamento con 100 Punti Ape<br>
+    Spedizione gratuita · <strong>Totale da pagare €0,00</strong>
+  </div>
+  <button id="testclaim" class="claim-cesto" type="button" disabled>✅ Conferma ordine Cesto — €0,00</button>
+  <div id="claimStatus" class="testnote"></div>
+  <div id="validationError" class="validation-error" style="display:none"></div>
+</div>
+<div class="cesto-confirm" id="cestoConfirm"></div>
+<div class="actions"><a class="primary" href="/shop">Continua nella Bottega →</a><a class="secondary" href="/alveo-digitale">Scopri Alveo Digitale</a></div>
+</div>
+<div class="privacy"><strong>Come funziona?</strong> Il sistema usa il dato inserito solo per trovare il tuo Saldo Punti Ape. Se hai scelto di non lasciare email o telefono, puoi usare il tuo Codice Punti Ape personale.</div>
+</section>
+</main>
+<script>
+let kind='email';
+let activeTestCode='';
+const selectedGifts=new Set();
+const TEST_GIFTS=[
+['favo-integrale-bio','Favo Integrale Bio'],
+['polline-italiano','Polline Italiano'],
+['orsetti-gommosi','Orsetti Gommosi BIO'],
+['pappa-reale-italiana-bio','Pappa Reale Italiana fresca Bio'],
+['bee-energy-bio','Bee Energy – Tonico BIO'],
+['propol-active-bio','Propol Active – Compresse BIO'],
+['propoli-30-spray-integratore','Propoli 30% Spray'],
+['propoli-30-alcolica-integratore','Propoli 30% alcolica contagocce'],
+['propoli-analcolica-integratore','Propoli analcolica'],
+['cosmesi-crema-mani','Crema Mani Aloe, Cera d’Api e Propoli'],
+['cosmesi-burrocacao-propoli-aloe','Burro Cacao Propoli + Aloe'],
+['cosmesi-burrocacao-miele-pappa-reale','Burro Cacao Miele + Pappa Reale'],
+['cosmesi-shampoo-multivitaminico','Shampoo Propoli e Aloe'],
+['cosmesi-saponetta-frutti-bosco','Saponetta Frutti di Bosco'],
+['cosmesi-saponetta-lavanda','Saponetta Lavanda'],
+['cosmesi-saponetta-aloe-vera','Saponetta Aloe Vera'],
+['cosmesi-candela-alveare-cera-api','Candela Alveare in cera d’api'],
+['tesori-limoncello','Limoncello'],
+['tesori-liquore-caffe','Liquore al Caffè'],
+['tesori-castagne-rum','Castagne al Rum']
+];
+const CESTO_UI={
+  it:{
+    gifts:Object.fromEntries(TEST_GIFTS),
+    title:'🎁 Componi il tuo Cesto dell’Alveare',
+    unlocked:'🎁 HAI SBLOCCATO IL CESTO OMAGGIO',
+    intro:'Scegli qui sotto esattamente 5 prodotti diversi. Poi inserisci i dati completi per la spedizione gratuita e conferma l’ordine a €0,00.',
+    count:n=>n+' / 5 prodotti scelti',
+    shippingTitle:'📦 Dati per la spedizione',
+    summaryTitle:'Cesto dell’Alveare',
+    summary:'5 prodotti a scelta · Pagamento con 100 Punti Ape',
+    free:'Spedizione gratuita · Totale da pagare €0,00',
+    confirm:'✅ Conferma ordine Cesto — €0,00',
+    verifying:'Verifica dati di spedizione…',
+    creating:'Creazione ordine Cesto…',
+    ready:'Tutto pronto: puoi confermare il Cesto.',
+    missing:n=>'Scegli ancora '+n+' '+(n===1?'prodotto':'prodotti')+'.',
+    acquired:'✅ Grazie, il tuo Cesto è stato acquisito!',
+    eta:'Il tuo Cesto dell’Alveare verrà preparato e spedito gratuitamente entro 5–7 giorni lavorativi. Non devi effettuare alcun pagamento.',
+    orderNo:'Numero ordine',mail:'Email di notifica',mailOk:'inviata correttamente',chosen:'5 prodotti scelti',shipTo:'Spedizione a',total:'Totale da pagare: €0,00',receipt:'📄 Scarica ricevuta PDF'
+  },
+  en:{
+    gifts:{
+      'favo-integrale-bio':'Organic Whole Honeycomb','polline-italiano':'Italian Bee Pollen','orsetti-gommosi':'Organic Gummy Bears','pappa-reale-italiana-bio':'Fresh Organic Italian Royal Jelly','bee-energy-bio':'Bee Energy – Organic Tonic','propol-active-bio':'Propol Active – Organic Tablets','propoli-30-spray-integratore':'Propolis 30% Spray','propoli-30-alcolica-integratore':'Propolis 30% Alcohol Drops','propoli-analcolica-integratore':'Alcohol-Free Propolis','cosmesi-crema-mani':'Hand Cream with Aloe, Beeswax and Propolis','cosmesi-burrocacao-propoli-aloe':'Lip Balm with Propolis + Aloe','cosmesi-burrocacao-miele-pappa-reale':'Lip Balm with Honey + Royal Jelly','cosmesi-shampoo-multivitaminico':'Propolis and Aloe Shampoo','cosmesi-saponetta-frutti-bosco':'Wild Berries Soap','cosmesi-saponetta-lavanda':'Lavender Soap','cosmesi-saponetta-aloe-vera':'Aloe Vera Soap','cosmesi-candela-alveare-cera-api':'Beehive Candle in Beeswax','tesori-limoncello':'Limoncello','tesori-liquore-caffe':'Coffee Liqueur','tesori-castagne-rum':'Chestnuts in Rum'
+    },
+    title:'🎁 Build your Hive Gift Basket',unlocked:'🎁 YOU UNLOCKED YOUR FREE GIFT BASKET',intro:'Choose exactly 5 different products below. Then enter your full shipping details and confirm the order at €0.00.',count:n=>n+' / 5 products selected',shippingTitle:'📦 Shipping details',summaryTitle:'Hive Gift Basket',summary:'5 products of your choice · Payment with 100 Bee Points',free:'Free shipping · Amount due €0.00',confirm:'✅ Confirm Gift Basket order — €0.00',verifying:'Checking shipping details…',creating:'Creating Gift Basket order…',ready:'Everything is ready: you can confirm your basket.',missing:n=>'Choose '+n+' more '+(n===1?'product':'products')+'.',acquired:'✅ Thank you, your Gift Basket has been received!',eta:'Your Hive Gift Basket will be prepared and shipped free of charge within 5–7 business days. No payment is required.',orderNo:'Order number',mail:'Notification email',mailOk:'sent successfully',chosen:'5 selected products',shipTo:'Ship to',total:'Amount due: €0.00',receipt:'📄 Download PDF receipt'
+  },
+  de:{
+    gifts:{
+      'favo-integrale-bio':'Bio-Honigwabe','polline-italiano':'Italienischer Blütenpollen','orsetti-gommosi':'Bio-Gummibärchen','pappa-reale-italiana-bio':'Frisches italienisches Bio-Gelée Royale','bee-energy-bio':'Bee Energy – Bio-Tonikum','propol-active-bio':'Propol Active – Bio-Tabletten','propoli-30-spray-integratore':'Propolis 30% Spray','propoli-30-alcolica-integratore':'Propolis 30% alkoholische Tropfen','propoli-analcolica-integratore':'Alkoholfreie Propolis','cosmesi-crema-mani':'Handcreme mit Aloe, Bienenwachs und Propolis','cosmesi-burrocacao-propoli-aloe':'Lippenbalsam Propolis + Aloe','cosmesi-burrocacao-miele-pappa-reale':'Lippenbalsam Honig + Gelée Royale','cosmesi-shampoo-multivitaminico':'Shampoo mit Propolis und Aloe','cosmesi-saponetta-frutti-bosco':'Waldbeeren-Seife','cosmesi-saponetta-lavanda':'Lavendelseife','cosmesi-saponetta-aloe-vera':'Aloe-Vera-Seife','cosmesi-candela-alveare-cera-api':'Bienenstockkerze aus Bienenwachs','tesori-limoncello':'Limoncello','tesori-liquore-caffe':'Kaffeelikör','tesori-castagne-rum':'Kastanien in Rum'
+    },
+    title:'🎁 Stelle deinen Bienenstock-Geschenkkorb zusammen',unlocked:'🎁 DU HAST DEN GRATIS-GESCHENKKORB FREIGESCHALTET',intro:'Wähle unten genau 5 verschiedene Produkte. Gib danach deine vollständigen Versanddaten ein und bestätige die Bestellung für €0,00.',count:n=>n+' / 5 Produkte ausgewählt',shippingTitle:'📦 Versanddaten',summaryTitle:'Bienenstock-Geschenkkorb',summary:'5 Produkte nach Wahl · Zahlung mit 100 Bienenpunkten',free:'Kostenloser Versand · Zu zahlen €0,00',confirm:'✅ Geschenkkorb bestellen — €0,00',verifying:'Versanddaten werden geprüft…',creating:'Geschenkkorb-Bestellung wird erstellt…',ready:'Alles bereit: Du kannst den Korb bestätigen.',missing:n=>'Wähle noch '+n+' '+(n===1?'Produkt':'Produkte')+'.',acquired:'✅ Danke, dein Geschenkkorb wurde angenommen!',eta:'Dein Bienenstock-Geschenkkorb wird vorbereitet und innerhalb von 5–7 Werktagen kostenlos versendet. Es ist keine Zahlung erforderlich.',orderNo:'Bestellnummer',mail:'Benachrichtigungs-E-Mail',mailOk:'erfolgreich gesendet',chosen:'5 ausgewählte Produkte',shipTo:'Versand an',total:'Zu zahlen: €0,00',receipt:'📄 PDF-Beleg herunterladen'
+  },
+  fr:{
+    gifts:{
+      'favo-integrale-bio':'Rayon de miel entier BIO','polline-italiano':'Pollen italien','orsetti-gommosi':'Oursons gélifiés BIO','pappa-reale-italiana-bio':'Gelée royale italienne fraîche BIO','bee-energy-bio':'Bee Energy – Tonique BIO','propol-active-bio':'Propol Active – Comprimés BIO','propoli-30-spray-integratore':'Propolis 30% Spray','propoli-30-alcolica-integratore':'Propolis 30% alcoolique en gouttes','propoli-analcolica-integratore':'Propolis sans alcool','cosmesi-crema-mani':'Crème mains Aloe, Cire d’abeille et Propolis','cosmesi-burrocacao-propoli-aloe':'Baume à lèvres Propolis + Aloe','cosmesi-burrocacao-miele-pappa-reale':'Baume à lèvres Miel + Gelée royale','cosmesi-shampoo-multivitaminico':'Shampooing Propolis et Aloe','cosmesi-saponetta-frutti-bosco':'Savon Fruits des bois','cosmesi-saponetta-lavanda':'Savon Lavande','cosmesi-saponetta-aloe-vera':'Savon Aloe Vera','cosmesi-candela-alveare-cera-api':'Bougie ruche en cire d’abeille','tesori-limoncello':'Limoncello','tesori-liquore-caffe':'Liqueur au café','tesori-castagne-rum':'Châtaignes au rhum'
+    },
+    title:'🎁 Composez votre Panier de la Ruche',unlocked:'🎁 VOUS AVEZ DÉBLOQUÉ LE PANIER CADEAU',intro:'Choisissez exactement 5 produits différents ci-dessous. Saisissez ensuite vos coordonnées complètes de livraison et confirmez la commande à 0,00 €.',count:n=>n+' / 5 produits sélectionnés',shippingTitle:'📦 Coordonnées de livraison',summaryTitle:'Panier de la Ruche',summary:'5 produits au choix · Paiement avec 100 Points Abeille',free:'Livraison gratuite · Total à payer 0,00 €',confirm:'✅ Confirmer la commande du panier — 0,00 €',verifying:'Vérification des données de livraison…',creating:'Création de la commande du panier…',ready:'Tout est prêt : vous pouvez confirmer votre panier.',missing:n=>'Choisissez encore '+n+' '+(n===1?'produit':'produits')+'.',acquired:'✅ Merci, votre panier a bien été enregistré !',eta:'Votre Panier de la Ruche sera préparé et expédié gratuitement sous 5 à 7 jours ouvrables. Aucun paiement n’est requis.',orderNo:'Numéro de commande',mail:'E-mail de notification',mailOk:'envoyé correctement',chosen:'5 produits sélectionnés',shipTo:'Livraison à',total:'Total à payer : 0,00 €',receipt:'📄 Télécharger le reçu PDF'
+  },
+  es:{
+    gifts:{
+      'favo-integrale-bio':'Panal integral BIO','polline-italiano':'Polen italiano','orsetti-gommosi':'Ositos de goma BIO','pappa-reale-italiana-bio':'Jalea real italiana fresca BIO','bee-energy-bio':'Bee Energy – Tónico BIO','propol-active-bio':'Propol Active – Comprimidos BIO','propoli-30-spray-integratore':'Própolis 30% Spray','propoli-30-alcolica-integratore':'Própolis 30% alcohólico en gotas','propoli-analcolica-integratore':'Própolis sin alcohol','cosmesi-crema-mani':'Crema de manos con Aloe, Cera de abeja y Própolis','cosmesi-burrocacao-propoli-aloe':'Bálsamo labial Própolis + Aloe','cosmesi-burrocacao-miele-pappa-reale':'Bálsamo labial Miel + Jalea real','cosmesi-shampoo-multivitaminico':'Champú Própolis y Aloe','cosmesi-saponetta-frutti-bosco':'Jabón Frutos del bosque','cosmesi-saponetta-lavanda':'Jabón Lavanda','cosmesi-saponetta-aloe-vera':'Jabón Aloe Vera','cosmesi-candela-alveare-cera-api':'Vela colmena de cera de abeja','tesori-limoncello':'Limoncello','tesori-liquore-caffe':'Licor de café','tesori-castagne-rum':'Castañas al ron'
+    },
+    title:'🎁 Compón tu Cesta de la Colmena',unlocked:'🎁 HAS DESBLOQUEADO LA CESTA REGALO',intro:'Elige exactamente 5 productos diferentes. Después introduce los datos completos de envío y confirma el pedido por 0,00 €.',count:n=>n+' / 5 productos seleccionados',shippingTitle:'📦 Datos de envío',summaryTitle:'Cesta de la Colmena',summary:'5 productos a elegir · Pago con 100 Puntos Abeja',free:'Envío gratuito · Total a pagar 0,00 €',confirm:'✅ Confirmar pedido de la cesta — 0,00 €',verifying:'Verificando los datos de envío…',creating:'Creando el pedido de la cesta…',ready:'Todo listo: puedes confirmar la cesta.',missing:n=>'Elige '+n+' '+(n===1?'producto más':'productos más')+'.',acquired:'✅ ¡Gracias, tu cesta ha sido registrada!',eta:'Tu Cesta de la Colmena se preparará y se enviará gratuitamente en un plazo de 5 a 7 días laborables. No tienes que realizar ningún pago.',orderNo:'Número de pedido',mail:'Email de notificación',mailOk:'enviado correctamente',chosen:'5 productos seleccionados',shipTo:'Enviar a',total:'Total a pagar: 0,00 €',receipt:'📄 Descargar recibo PDF'
+  }
+};
+function cestoLanguage(){
+  try{const l=String(localStorage.getItem('fda-site-language')||'it').toLowerCase();return CESTO_UI[l]?l:'it';}catch(_){return 'it';}
+}
+function cestoUi(){return CESTO_UI[cestoLanguage()]||CESTO_UI.it;}
+function applyCestoStaticLanguage(){
+  const t=cestoUi();
+  const flow=document.getElementById('cestoFlow'); if(!flow)return;
+  const h=flow.querySelector('h3'); if(h)h.textContent=t.title;
+  const unlock=flow.querySelector('div[style*="background:#10392c"]'); if(unlock)unlock.textContent=t.unlocked;
+  const intro=unlock?.nextElementSibling; if(intro)intro.textContent=t.intro;
+  const hs=flow.querySelectorAll('h3'); if(hs[1])hs[1].textContent=t.shippingTitle;
+  const sum=flow.querySelector('.cesto-summary'); if(sum)sum.innerHTML='<strong>'+t.summaryTitle+'</strong><br>'+t.summary+'<br>'+t.free;
+  const btn=document.getElementById('testclaim'); if(btn)btn.textContent=t.confirm;
+}
+
+function renderGiftGrid(){
+  const grid=document.getElementById('giftGrid');
+  if(!grid)return;
+  const t=cestoUi();grid.innerHTML=TEST_GIFTS.map(([id,name])=>'<button type="button" class="gift'+(selectedGifts.has(id)?' sel':'')+'" data-id="'+id+'">'+(t.gifts[id]||name)+'</button>').join('');
+  grid.querySelectorAll('.gift').forEach(btn=>btn.addEventListener('click',()=>{
+    const id=btn.dataset.id;
+    if(selectedGifts.has(id)) selectedGifts.delete(id);
+    else if(selectedGifts.size<5) selectedGifts.add(id);
+    renderGiftGrid();updateClaimState();
+  }));
+  document.getElementById('giftCount').textContent=cestoUi().count(selectedGifts.size);
+}
+function shippingPayload(){
+  return {
+    name:document.getElementById('shipName').value.trim(),
+    email:document.getElementById('shipEmail').value.trim(),
+    phone:document.getElementById('shipPhone').value.trim(),
+    address:document.getElementById('shipAddress').value.trim(),
+    postalCode:document.getElementById('shipPostal').value.trim(),
+    city:document.getElementById('shipCity').value.trim(),
+    state:document.getElementById('shipState').value.trim(),
+    country:document.getElementById('shipCountry').value.trim()||'Italia',
+    notes:document.getElementById('shipNotes').value.trim()
+  };
+}
+function shippingComplete(){
+  const s=shippingPayload();
+  return !!(s.name&&s.email&&s.phone&&s.address&&s.postalCode&&s.city&&s.state);
+}
+function updateClaimState(){
+  const btn=document.getElementById('testclaim');
+  if(!btn)return;
+  btn.disabled=!(activeTestCode&&selectedGifts.size===5&&shippingComplete());
+  const st=document.getElementById('claimStatus');
+  const tx=cestoUi();
+  if(selectedGifts.size!==5)st.textContent=tx.missing(5-selectedGifts.size);
+  else if(!shippingComplete())st.textContent=cestoLanguage()==='es'?'Completa todos los datos de envío marcados con *.'
+    :cestoLanguage()==='en'?'Complete all shipping fields marked with *.'
+    :cestoLanguage()==='de'?'Fülle alle mit * markierten Versandfelder aus.'
+    :cestoLanguage()==='fr'?'Complétez tous les champs de livraison marqués d’un *.'
+    :'Completa tutti i dati di spedizione contrassegnati con *.';
+  else st.textContent=tx.ready;
+}
+document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
+  kind=btn.dataset.kind;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));
+  document.querySelectorAll('.method').forEach(x=>x.classList.toggle('active',x.dataset.method===kind));
+  document.getElementById('status').textContent='';
+  document.getElementById('result').classList.remove('show');
+}));
+async function checkBalance(){
+  const status=document.getElementById('status'),button=document.getElementById('check');
+  const value=document.getElementById(kind).value.trim();
+  if(!value){status.textContent='Inserisci il dato scelto per controllare il saldo.';return;}
+  button.disabled=true;const old=button.textContent;button.textContent='Controllo in corso…';status.textContent='';
+  document.getElementById('result').classList.remove('show');
+  try{
+    const body={};body[kind]=value;
+    const r=await fetch('/api/bee-balance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await r.json().catch(()=>null);
+    if(!r.ok||!data?.ok)throw new Error(data?.error||'Saldo non disponibile.');
+    const b=Math.max(0,Number(data.balance||0));
+    document.getElementById('balance').textContent=b;
+    document.getElementById('bar').style.width=Math.min(100,b)+'%';
+    document.getElementById('goal').textContent=b>=100?'Hai raggiunto almeno 100 punti: puoi richiedere il cesto omaggio.':'Ti mancano '+Math.max(0,100-b)+' punti per arrivare al cesto omaggio da 100 punti.';
+    const tb=document.getElementById('testbox');
+    const flow=document.getElementById('cestoFlow');
+    if(data.testMode){
+      activeTestCode=String(value||'').toUpperCase();
+      tb.classList.add('show');
+      document.getElementById('testtitle').textContent=data.testKind==='always'?'Modalità TEST permanente':'Modalità TEST una tantum';
+      document.getElementById('testmessage').textContent=data.message||'';
+      if(b>=100){
+        flow.classList.add('show');
+        applyCestoStaticLanguage();
+        selectedGifts.clear();
+        renderGiftGrid();
+        updateClaimState();
+        setTimeout(()=>flow.scrollIntoView({behavior:'smooth',block:'start'}),120);
+      }else{
+        flow.classList.remove('show');
+      }
+    }else{
+      activeTestCode='';
+      tb.classList.remove('show');
+      flow.classList.remove('show');
+    }
+    document.getElementById('result').classList.add('show');
+  }catch(e){status.textContent=e?.message||'Non è stato possibile controllare il saldo.';}
+  button.disabled=false;button.textContent=old;
+}
+function clearFieldErrors(){
+  ['shipName','shipEmail','shipPhone','shipAddress','shipPostal','shipCity','shipState','shipCountry'].forEach(id=>document.getElementById(id)?.classList.remove('field-error'));
+  const box=document.getElementById('validationError');if(box){box.style.display='none';box.textContent='';}
+}
+function showValidationError(message,fieldId){
+  const box=document.getElementById('validationError');
+  if(box){box.textContent='⛔ '+message;box.style.display='block';box.scrollIntoView({behavior:'smooth',block:'center'});}
+  if(fieldId){const el=document.getElementById(fieldId);el?.classList.add('field-error');el?.focus();}
+}
+async function validateCestoShippingClient(){
+  clearFieldErrors();
+  const s=shippingPayload();
+  const required=[
+    ['name','shipName','Inserisci nome e cognome.'],
+    ['email','shipEmail','Inserisci l’email.'],
+    ['phone','shipPhone','Inserisci il telefono.'],
+    ['address','shipAddress','Inserisci via e numero civico.'],
+    ['postalCode','shipPostal','Inserisci il CAP.'],
+    ['city','shipCity','Inserisci il Comune.'],
+    ['state','shipState','Inserisci la Provincia.']
+  ];
+  for(const [key,id,msg] of required){if(!s[key]){showValidationError(msg,id);return null;}}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.email)){showValidationError('L’email non è valida. Controllala e riprova.','shipEmail');return null;}
+  if(!/^\d{5}$/.test(s.postalCode)){showValidationError('Il CAP deve essere composto da 5 cifre.','shipPostal');return null;}
+  if(!/^[A-Za-z]{2}$/.test(s.state)){showValidationError('La Provincia deve essere indicata con 2 lettere, ad esempio VR o MN.','shipState');return null;}
+
+  let raw=s.phone.replace(/[\s().-]/g,'');
+  let prefix='+39', national=raw;
+  if(raw.startsWith('0039'))national=raw.slice(4);
+  else if(raw.startsWith('+39'))national=raw.slice(3);
+  else if(raw.startsWith('+')){showValidationError('Per ora inserisci un numero italiano con prefisso +39 oppure senza prefisso.','shipPhone');return null;}
+  const phoneRes=await fetch('/api/phone-normalize?'+new URLSearchParams({prefix,phone:national}).toString(),{cache:'no-store'});
+  const phoneData=await phoneRes.json().catch(()=>null);
+  if(!phoneRes.ok||!phoneData?.ok||!phoneData?.e164){
+    showValidationError(phoneData?.error||'Il numero di telefono non risulta valido.','shipPhone');return null;
+  }
+  document.getElementById('shipPhone').value=phoneData.e164;
+  s.phone=phoneData.e164;
+
+  const addrRes=await fetch('/api/local-delivery-check?'+new URLSearchParams({
+    address:s.address,city:s.city,cap:s.postalCode,province:s.state,country:'IT'
+  }).toString(),{cache:'no-store'});
+  const addrData=await addrRes.json().catch(()=>null);
+  if(!addrRes.ok||!addrData?.ok||addrData?.validFullAddress!==true){
+    const msg=addrData?.error||'Indirizzo non verificato. Controlla via, numero civico, Comune, CAP e Provincia.';
+    let field='shipAddress';
+    if(/CAP/i.test(msg))field='shipPostal';
+    else if(/Comune/i.test(msg))field='shipCity';
+    else if(/Provincia/i.test(msg))field='shipState';
+    showValidationError(msg,field);return null;
+  }
+  return s;
+}
+
+async function claimTestReward(){
+  if(!activeTestCode)return;
+  const btn=document.getElementById('testclaim');
+  const msg=document.getElementById('claimStatus');
+  if(selectedGifts.size!==5||!shippingComplete()){updateClaimState();return;}
+  const tx=cestoUi();const old=btn.textContent;btn.disabled=true;btn.textContent=tx.verifying;msg.textContent='';
+  try{
+    const verifiedShipping=await validateCestoShippingClient();
+    if(!verifiedShipping){btn.disabled=false;btn.textContent=old;return;}
+    btn.textContent=tx.creating;
+    const r=await fetch('/api/bee-balance',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        code:activeTestCode,
+        language:cestoLanguage(),
+        action:'claim_test_reward',
+        giftProducts:[...selectedGifts],
+        shipping:verifiedShipping
+      })
+    });
+    const data=await r.json().catch(()=>null);
+    if(!r.ok||!data?.ok)throw new Error(data?.error||'Ordine Cesto non disponibile.');
+    const b=Math.max(0,Number(data.balance||0));
+    document.getElementById('balance').textContent=b;
+    document.getElementById('bar').style.width=Math.min(100,b)+'%';
+    document.getElementById('goal').textContent=b>=100?'Hai raggiunto almeno 100 punti: puoi richiedere il cesto omaggio.':'Ti mancano '+Math.max(0,100-b)+' punti per arrivare al cesto omaggio da 100 punti.';
+    document.getElementById('testmessage').textContent=data.message||'Ordine Cesto creato.';
+    const order=data.cestoOrder||{};
+    const names=(order.giftObjects||[]).map(x=>x.name).join('<br>• ');
+    const confirm=document.getElementById('cestoConfirm');
+    confirm.innerHTML=
+      '<div style="font-size:24px;font-weight:950;color:#10392c;margin-bottom:10px">'+tx.acquired+'</div>'+
+      '<div style="font-size:17px;line-height:1.5;margin-bottom:14px">'+tx.eta+'</div>'+
+      tx.orderNo+': <strong>'+String(order.orderNumber||'')+'</strong><br>'+
+      tx.mail+': <strong>'+(data.emailSent?tx.mailOk:'—')+'</strong><br><br>'+
+      '<strong>'+tx.chosen+'</strong><br>• '+names+'<br><br>'+
+      '<strong>'+tx.shipTo+'</strong><br>'+
+      String(order.shipping?.name||'')+'<br>'+
+      String(order.shipping?.address||'')+'<br>'+
+      String(order.shipping?.postalCode||'')+' '+String(order.shipping?.city||'')+' ('+String(order.shipping?.state||'')+')<br>'+
+      String(order.shipping?.email||'')+' · '+String(order.shipping?.phone||'')+'<br><br>'+
+      '<strong>'+tx.total+'</strong><br>'+
+      (data.receiptUrl?'<a class="receipt-btn" href="'+data.receiptUrl+'">'+tx.receipt+'</a>':'');
+    confirm.classList.add('show');
+    if(data.testKind==='once')document.getElementById('cestoFlow').classList.remove('show');
+    else{selectedGifts.clear();renderGiftGrid();updateClaimState();}
+  }catch(e){msg.textContent=e?.message||'Non è stato possibile completare il Cesto.';}
+  btn.disabled=false;btn.textContent=old;
+}
+document.getElementById('check').addEventListener('click',checkBalance);
+document.getElementById('testclaim').addEventListener('click',claimTestReward);
+['shipName','shipEmail','shipPhone','shipAddress','shipPostal','shipCity','shipState','shipCountry','shipNotes'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateClaimState));
+renderGiftGrid();
+['email','phone','code'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')checkBalance();}));
+</script>
+<script src="/render-language-de-test.js?v=20260924-punti"></script></body>
+</html>
