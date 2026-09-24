@@ -74,7 +74,7 @@ async function finalize(){
 
       if(vd.digital===true){
         const dlLang=['it','en','de','fr','es'].includes(vd.language)?vd.language:'it';
-        digitalDownload.href='/downloads/10-colazioni-'+dlLang+'.pdf';
+        digitalDownload.href='/downloads/alveo-premium/10-colazioni-'+dlLang+'.pdf';
         digitalDownload.textContent=(L[dlLang]||T).download||T.download;
         digitalDownload.hidden=false;
       }
