@@ -43,11 +43,13 @@ section[id]{scroll-margin-top:92px}
 .section-title h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(42px,5.2vw,66px);line-height:1.02;margin:0;letter-spacing:-.025em}
 .section-title p{font-size:18px;margin:0;color:#4d574f}
 .seasons{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.season{min-height:500px;border-radius:28px;padding:36px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;position:relative;background:#5a5852}
-.season-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;transition:transform .45s ease;display:block}
-.season:hover .season-bg{transform:scale(1.03)}
-.season::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.72));pointer-events:none}
-.season>*:not(.season-bg){position:relative;z-index:2}
+.season{min-height:500px;border-radius:28px;padding:36px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;position:relative}
+.season::before{content:"";position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .45s ease}
+.season:hover::before{transform:scale(1.03)}
+.season::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.72))}
+.season.summer::before{background-image:url('/images/alveari-busatello.jpg?v=home-narrative1')}
+.season.winter::before{background-image:url('/images/terapia.png?v=home-narrative1')}
+.season>*{position:relative;z-index:2}
 .pill{display:inline-block;width:max-content;padding:8px 12px;border-radius:999px;background:#fff;color:#18241d;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
 .season h3{font-family:Georgia,'Times New Roman',serif;font-size:clamp(38px,4vw,58px);line-height:1.02;margin:18px 0 12px;color:#fff}
 .season p{max-width:560px;color:#fff;margin:0;font-size:17px}
@@ -204,8 +206,8 @@ section[id]{scroll-margin-top:92px}
       <p>Quando la natura è viva, l’incontro avviene all’aperto. Quando arrivano i mesi più freddi, il percorso continua negli spazi dedicati della Galena delle Api.</p>
     </div>
     <div class="seasons">
-      <article class="season summer"><img class="season-bg" src="/images/alveari-busatello.jpg?v=home-seasons2" alt="" aria-hidden="true"><span class="pill">Primavera · Estate</span><h3>Dentro il paesaggio dell’alveare</h3><p>All’Oasi del Busatello l’esperienza si svolge nella natura, vicino alle arnie vere e alla vita delle api.</p><a class="story-link" href="/alveoterapia">Scopri l’esperienza all’aperto →</a></article>
-      <article class="season winter"><img class="season-bg" src="/images/terapia.png?v=home-seasons2" alt="" aria-hidden="true"><span class="pill">Autunno · Inverno</span><h3>Il calore dell’alveare, al coperto</h3><p>Alla Galena delle Api di Castel d’Ario, diffusori dedicati accompagnano un’esperienza ispirata all’ambiente dell’alveare.</p><a class="story-link" href="/centro">Entra nella Galena delle Api →</a></article>
+      <article class="season summer"><span class="pill">Primavera · Estate</span><h3>Dentro il paesaggio dell’alveare</h3><p>All’Oasi del Busatello l’esperienza si svolge nella natura, vicino alle arnie vere e alla vita delle api.</p><a class="story-link" href="/alveoterapia">Scopri l’esperienza all’aperto →</a></article>
+      <article class="season winter"><span class="pill">Autunno · Inverno</span><h3>Il calore dell’alveare, al coperto</h3><p>Alla Galena delle Api di Castel d’Ario, diffusori dedicati accompagnano un’esperienza ispirata all’ambiente dell’alveare.</p><a class="story-link" href="/centro">Entra nella Galena delle Api →</a></article>
     </div>
   </div>
 </section>
