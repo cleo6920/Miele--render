@@ -1,0 +1,1 @@
+Cloudflare V2 safe deployment trigger — 2026-09-24
