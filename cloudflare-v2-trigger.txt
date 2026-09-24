@@ -1,1 +1,1 @@
-Cloudflare V2 safe deployment trigger — 2026-09-24
+Retry build after Cloudflare initialization timeout - 2026-09-24 20:24 Europe/Rome
