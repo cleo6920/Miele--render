@@ -103,7 +103,6 @@ async function main() {
       ['/chi-siamo', 'chi-siamo.html'],
       ['/contatti', 'contatti.html'],
       ['/alveo-digitale', 'alveo-digitale.html'],
-      ['/punti-ape', 'punti-ape.html'],
       ['/shop', 'shop-v2.html'],
       ['/success.html', 'success.html'],
       ['/cancel.html', 'cancel.html'],
@@ -136,15 +135,19 @@ async function main() {
         if (missing.length) throw new Error('[Cloudflare V2] Alveo Digitale incompleto: ' + missing.join(', '));
       }
 
-      if (pathname === '/punti-ape') {
-        if (!html.includes('Saldo') || !html.includes('Punti Ape')) {
-          throw new Error('[Cloudflare V2] Pagina Punti Ape non riconosciuta.');
-        }
-      }
-
       fs.writeFileSync(path.join(dist, flatFile), html, 'utf8');
       if (!pathname.endsWith('.html')) writeRoute(pathname, html);
     }
+
+    // punti-ape.html belongs to the newer V2 frontend and is not a route
+    // known by the legacy Express server used only during the build.
+    // Copy it directly and create the clean /punti-ape route.
+    const puntiApeHtml = fs.readFileSync(path.join(root, 'punti-ape.html'), 'utf8');
+    if (!/<html/i.test(puntiApeHtml) || !puntiApeHtml.includes('Punti Ape')) {
+      throw new Error('[Cloudflare V2] punti-ape.html non valido.');
+    }
+    fs.writeFileSync(path.join(dist, 'punti-ape.html'), puntiApeHtml, 'utf8');
+    writeRoute('/punti-ape', puntiApeHtml);
 
     const shopHtml = fs.readFileSync(path.join(dist, 'shop-v2.html'), 'utf8');
     fs.writeFileSync(path.join(dist, 'shop.html'), shopHtml, 'utf8');
