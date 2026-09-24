@@ -38,7 +38,8 @@ function copyBrowserAssets() {
     'shop-purchase-i18n.js',
     'render-language-de-test.js',
     'saldo-api.js',
-    'cesto-admin.js'
+    'cesto-admin.js',
+    'cloudflare-v2-fixes.js'
   ];
   for (const file of browserScripts) {
     if (!fs.existsSync(path.join(root, file))) {
