@@ -152,7 +152,7 @@ function init(){
     for(const m of ms)for(const n of m.addedNodes||[])if(n.nodeType===1)scan(n);
   });
   obs.observe(document.body,{subtree:true,childList:true});
-  setInterval(()=>{updateBanner();forceLanguageInputs();},1500);
+  setInterval(()=>{updateBanner();forceLanguageInputs();forcePreviewImages();document.querySelectorAll('.free-wallet-result,.api-wallet-result').forEach(localizeWalletResult);},500);
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init();
 })();
