@@ -173,6 +173,8 @@ section[id]{scroll-margin-top:92px}
  .place{padding:54px 24px}.bee-card,.bee-info{padding:28px}.venom-intro-grid{gap:18px}.venom-intro-manifesto{padding:22px 20px;min-height:0}.venom-slide.active{grid-template-columns:1fr;gap:24px}.venom-slide{min-height:0}.venom-media{min-height:360px;padding:24px}.venom-media img{max-height:310px}.venom-detail{padding-right:0}.venom-detail h3{font-size:clamp(29px,9vw,38px)}.venom-storyline{font-size:clamp(26px,8vw,34px)}.venom-facts{grid-template-columns:1fr;gap:14px}.venom-fact{padding-top:14px}.venom-warning{margin-top:20px}.conversation{padding:54px 0}.footer-inner{grid-template-columns:1fr}
 }
 @media(max-width:760px){#edizioni-aperte-home .wrap{grid-template-columns:1fr!important;gap:28px!important}#edizioni-aperte-home img{max-height:460px!important}}
+
+@media(max-width:760px){#saldo-punti-ape-home .wrap>div{grid-template-columns:auto 1fr!important}#saldo-punti-ape-home .wrap>div>div:last-child{grid-column:1/-1}}
 </style>
 <link rel="stylesheet" href="/global-nav-v2.css?v=20260922-1">
 </head>
@@ -201,6 +203,22 @@ section[id]{scroll-margin-top:92px}
     <h1>L’esperienza dell’alveare <em>durante tutto l’anno.</em></h1>
     <p>Due stagioni, due ambienti, un unico percorso per avvicinarsi all’atmosfera, ai profumi, ai suoni e all’universo dell’alveare.</p>
     <div class="hero-tags"><span>Primavera · Estate — Oasi del Busatello</span><span>Autunno · Inverno — Galena delle Api</span></div>
+  </div>
+</section>
+
+<section id="saldo-punti-ape-home" style="background:#fffaf1;padding:24px 0 18px">
+  <div class="wrap">
+    <div style="background:linear-gradient(135deg,#fff0a8,#e9b52f);border:1px solid #d5a11f;border-radius:26px;padding:22px 24px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;box-shadow:0 14px 34px rgba(91,62,0,.14)">
+      <div style="font-size:38px">🐝</div>
+      <div>
+        <strong style="display:block;font-family:Georgia,'Times New Roman',serif;font-size:25px;line-height:1.08;color:#2e260d">Il tuo Saldo Punti Ape cresce con te.</strong>
+        <p style="margin:7px 0 0;color:#594718;font-weight:700;line-height:1.45">Ogni prodotto contrassegnato con l’ape aggiunge punti. Quando arrivi a <b>100 Punti Ape</b> puoi comporre un cesto omaggio con <b>5 prodotti a scelta</b>.</p>
+      </div>
+      <div style="font-weight:900;background:#153629;color:#fff;border-radius:22px;padding:12px 16px;text-align:center">
+        100 Punti Ape = Cesto omaggio<br>
+        <a href="/punti-ape" style="display:inline-block;margin-top:8px;color:#fff;font-weight:950;text-decoration:underline">Controlla il mio Saldo Punti Ape →</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -504,4 +522,6 @@ document.addEventListener('visibilitychange',()=>{
 });
 </script>
 <script src="/global-tools-v2.js?v=20260922-2"></script><script src="/render-language-de-test.js?v=20260923-10"></script>
-</body></html>
+<script src="/cloudflare-v2-fixes.js?v=20260924-3"></script>
+</body>
+</html>
