@@ -136,9 +136,178 @@ const CORE={
   }
 };
 
+
+const ALVEO_CORE_TRANSLATIONS={
+  en:{
+    "Anteprima parziale · 5 pagine reali. Il PDF completo da 37 pagine è disponibile dopo l’acquisto.":"Partial preview · 5 real pages. The complete 37-page PDF is available after purchase.",
+    "Sfoglia cinque pagine reali: copertina, indice, introduzione e la Colazione 1 completa.":"Browse five real pages: cover, contents, introduction and the complete Breakfast 1.",
+    "LA FABBRICA DELLE API · ALVEO DIGITALE":"LA FABBRICA DELLE API · ALVEO DIGITALE",
+    "Colazione 1 · Varianti e idee":"Breakfast 1 · Variations and ideas",
+    "Colazione 1 · Ricetta":"Breakfast 1 · Recipe",
+    "Introduzione":"Introduction",
+    "Indice":"Contents",
+    "Copertina":"Cover",
+    "Alveo Digitale":"Alveo Digitale",
+    "L’alveare continua anche fuori dal Centro.":"The hive experience continues beyond the Centre.",
+    "Ricette, idee e contenuti digitali legati al mondo della Fabbrica delle Api. Nessun pacco da aspettare: scegli il contenuto e portalo con te.":"Recipes, ideas and digital content inspired by the world of La Fabbrica delle Api. No parcel to wait for: choose your content and take it with you.",
+    "Scopri i contenuti →":"Discover the content →",
+    "Vai direttamente allo shop":"Go straight to the shop",
+    "01 · Scegli":"01 · Choose",
+    "Trova il contenuto che vuoi portare con te.":"Find the content you want to take with you.",
+    "02 · Acquista":"02 · Buy",
+    "Lo aggiungi al carrello come un normale prodotto.":"Add it to your cart like any other product.",
+    "03 · Nessuna spedizione":"03 · No shipping",
+    "Il contenuto è digitale: non vengono applicati costi di spedizione.":"The content is digital: no shipping costs apply.",
+    "Disponibile ora":"Available now",
+    "10 Colazioni dell’Alveare":"10 Breakfasts from the Hive",
+    "La prima uscita Premium di Alveo Digitale.":"The first Premium release from Alveo Digitale.",
+    "Ricette & idee · Edizione Premium":"Recipes & ideas · Premium Edition",
+    "10 Colazioni dell’Alveare – Edizione Premium":"10 Breakfasts from the Hive – Premium Edition",
+    "Un magazine digitale illustrato da consultare e riutilizzare: 10 ricette complete, 20 idee lampo, planner, lista della spesa, quiz e una piccola esperienza di degustazione dei mieli. È disponibile in italiano, inglese, tedesco, francese e spagnolo; dopo il pagamento viene proposta la versione corrispondente alla lingua scelta sul sito.":"An illustrated digital magazine to browse and reuse: 10 complete recipes, 20 quick ideas, a planner, shopping list, quiz and a small honey-tasting experience. Available in Italian, English, German, French and Spanish; after payment, the version matching the language selected on the site is offered.",
+    "Digitale":"Digital",
+    "Spedizione €0":"Shipping €0",
+    "👁 Sfoglia anteprima":"👁 Browse preview",
+    "Apri la scheda e acquista →":"Open the product page and buy →",
+    "Alveo Digitale è una categoria viva.":"Alveo Digitale is a living category.",
+    "Questo è il primo contenuto disponibile; nuovi prodotti digitali potranno essere aggiunti senza trasformare la Bottega in una semplice raccolta di file.":"This is the first available content; new digital products can be added without turning the Shop into a simple file collection.",
+    "10 Colazioni dell’Alveare · Anteprima":"10 Breakfasts from the Hive · Preview",
+    "Chiudi ✕":"Close ✕",
+    "Sfoglia tre pagine reali dell’edizione Premium prima di acquistare.":"Browse three real pages from the Premium Edition before buying.",
+    "Presentazione":"Introduction",
+    "Una ricetta completa":"One complete recipe",
+    "Una pagina extra":"One extra page",
+    "← Indietro":"← Back",
+    "Avanti →":"Next →",
+    "Anteprima parziale · il PDF completo da 37 pagine è disponibile dopo l’acquisto.":"Partial preview · the complete 37-page PDF is available after purchase."
+  },
+  de:{
+    "Anteprima parziale · 5 pagine reali. Il PDF completo da 37 pagine è disponibile dopo l’acquisto.":"Teilvorschau · 5 echte Seiten. Das vollständige 37-seitige PDF ist nach dem Kauf verfügbar.",
+    "Sfoglia cinque pagine reali: copertina, indice, introduzione e la Colazione 1 completa.":"Sehen Sie fünf echte Seiten: Titelseite, Inhalt, Einführung und das vollständige Frühstück 1.",
+    "Colazione 1 · Varianti e idee":"Frühstück 1 · Varianten und Ideen",
+    "Colazione 1 · Ricetta":"Frühstück 1 · Rezept",
+    "Introduzione":"Einführung",
+    "Indice":"Inhalt",
+    "Copertina":"Titelseite",
+    "Alveo Digitale":"Alveo Digitale",
+    "L’alveare continua anche fuori dal Centro.":"Das Erlebnis des Bienenstocks geht auch außerhalb des Zentrums weiter.",
+    "Ricette, idee e contenuti digitali legati al mondo della Fabbrica delle Api. Nessun pacco da aspettare: scegli il contenuto e portalo con te.":"Rezepte, Ideen und digitale Inhalte rund um die Welt von La Fabbrica delle Api. Kein Paket, auf das Sie warten müssen: Inhalt auswählen und direkt mitnehmen.",
+    "Scopri i contenuti →":"Inhalte entdecken →",
+    "Vai direttamente allo shop":"Direkt zum Shop",
+    "01 · Scegli":"01 · Auswählen",
+    "Trova il contenuto che vuoi portare con te.":"Finden Sie den Inhalt, den Sie mitnehmen möchten.",
+    "02 · Acquista":"02 · Kaufen",
+    "Lo aggiungi al carrello come un normale prodotto.":"Fügen Sie ihn wie ein normales Produkt zum Warenkorb hinzu.",
+    "03 · Nessuna spedizione":"03 · Kein Versand",
+    "Il contenuto è digitale: non vengono applicati costi di spedizione.":"Der Inhalt ist digital: Es fallen keine Versandkosten an.",
+    "Disponibile ora":"Jetzt verfügbar",
+    "10 Colazioni dell’Alveare":"10 Frühstücke aus dem Bienenstock",
+    "La prima uscita Premium di Alveo Digitale.":"Die erste Premium-Ausgabe von Alveo Digitale.",
+    "Ricette & idee · Edizione Premium":"Rezepte & Ideen · Premium-Ausgabe",
+    "10 Colazioni dell’Alveare – Edizione Premium":"10 Frühstücke aus dem Bienenstock – Premium-Ausgabe",
+    "Un magazine digitale illustrato da consultare e riutilizzare: 10 ricette complete, 20 idee lampo, planner, lista della spesa, quiz e una piccola esperienza di degustazione dei mieli. È disponibile in italiano, inglese, tedesco, francese e spagnolo; dopo il pagamento viene proposta la versione corrispondente alla lingua scelta sul sito.":"Ein illustriertes digitales Magazin zum Nachschlagen und Wiederverwenden: 10 vollständige Rezepte, 20 schnelle Ideen, Planer, Einkaufsliste, Quiz und eine kleine Honigverkostung. Verfügbar auf Italienisch, Englisch, Deutsch, Französisch und Spanisch; nach der Zahlung wird die Version in der auf der Website gewählten Sprache angeboten.",
+    "Digitale":"Digital",
+    "Spedizione €0":"Versand €0",
+    "👁 Sfoglia anteprima":"👁 Vorschau ansehen",
+    "Apri la scheda e acquista →":"Produktseite öffnen und kaufen →",
+    "Alveo Digitale è una categoria viva.":"Alveo Digitale ist eine lebendige Kategorie.",
+    "Questo è il primo contenuto disponibile; nuovi prodotti digitali potranno essere aggiunti senza trasformare la Bottega in una semplice raccolta di file.":"Dies ist der erste verfügbare Inhalt; weitere digitale Produkte können ergänzt werden, ohne den Shop in eine einfache Dateisammlung zu verwandeln.",
+    "10 Colazioni dell’Alveare · Anteprima":"10 Frühstücke aus dem Bienenstock · Vorschau",
+    "Chiudi ✕":"Schließen ✕",
+    "Sfoglia tre pagine reali dell’edizione Premium prima di acquistare.":"Sehen Sie sich vor dem Kauf drei echte Seiten der Premium-Ausgabe an.",
+    "Presentazione":"Einführung",
+    "Una ricetta completa":"Ein vollständiges Rezept",
+    "Una pagina extra":"Eine Zusatzseite",
+    "← Indietro":"← Zurück",
+    "Avanti →":"Weiter →",
+    "Anteprima parziale · il PDF completo da 37 pagine è disponibile dopo l’acquisto.":"Teilvorschau · das vollständige 37-seitige PDF ist nach dem Kauf verfügbar."
+  },
+  fr:{
+    "Anteprima parziale · 5 pagine reali. Il PDF completo da 37 pagine è disponibile dopo l’acquisto.":"Aperçu partiel · 5 vraies pages. Le PDF complet de 37 pages est disponible après l’achat.",
+    "Sfoglia cinque pagine reali: copertina, indice, introduzione e la Colazione 1 completa.":"Feuilletez cinq vraies pages : couverture, sommaire, introduction et le Petit-déjeuner 1 complet.",
+    "Colazione 1 · Varianti e idee":"Petit-déjeuner 1 · Variantes et idées",
+    "Colazione 1 · Ricetta":"Petit-déjeuner 1 · Recette",
+    "Indice":"Sommaire",
+    "Copertina":"Couverture",
+    "Alveo Digitale":"Alveo Digitale",
+    "L’alveare continua anche fuori dal Centro.":"L’expérience de la ruche continue aussi hors du Centre.",
+    "Ricette, idee e contenuti digitali legati al mondo della Fabbrica delle Api. Nessun pacco da aspettare: scegli il contenuto e portalo con te.":"Recettes, idées et contenus numériques liés à l’univers de La Fabbrica delle Api. Aucun colis à attendre : choisissez votre contenu et emportez-le avec vous.",
+    "Scopri i contenuti →":"Découvrir les contenus →",
+    "Vai direttamente allo shop":"Aller directement à la boutique",
+    "01 · Scegli":"01 · Choisissez",
+    "Trova il contenuto che vuoi portare con te.":"Trouvez le contenu que vous souhaitez emporter avec vous.",
+    "02 · Acquista":"02 · Achetez",
+    "Lo aggiungi al carrello come un normale prodotto.":"Ajoutez-le au panier comme un produit normal.",
+    "03 · Nessuna spedizione":"03 · Aucune livraison",
+    "Il contenuto è digitale: non vengono applicati costi di spedizione.":"Le contenu est numérique : aucun frais de livraison ne s’applique.",
+    "Disponibile ora":"Disponible maintenant",
+    "10 Colazioni dell’Alveare":"10 Petits-déjeuners de la Ruche",
+    "La prima uscita Premium di Alveo Digitale.":"La première édition Premium d’Alveo Digitale.",
+    "Ricette & idee · Edizione Premium":"Recettes & idées · Édition Premium",
+    "10 Colazioni dell’Alveare – Edizione Premium":"10 Petits-déjeuners de la Ruche – Édition Premium",
+    "Un magazine digitale illustrato da consultare e riutilizzare: 10 ricette complete, 20 idee lampo, planner, lista della spesa, quiz e una piccola esperienza di degustazione dei mieli. È disponibile in italiano, inglese, tedesco, francese e spagnolo; dopo il pagamento viene proposta la versione corrispondente alla lingua scelta sul sito.":"Un magazine numérique illustré à consulter et réutiliser : 10 recettes complètes, 20 idées express, un planning, une liste de courses, un quiz et une petite expérience de dégustation des miels. Disponible en italien, anglais, allemand, français et espagnol ; après le paiement, la version correspondant à la langue choisie sur le site est proposée.",
+    "Digitale":"Numérique",
+    "Spedizione €0":"Livraison 0 €",
+    "👁 Sfoglia anteprima":"👁 Feuilleter l’aperçu",
+    "Apri la scheda e acquista →":"Ouvrir la fiche et acheter →",
+    "Alveo Digitale è una categoria viva.":"Alveo Digitale est une catégorie vivante.",
+    "Questo è il primo contenuto disponibile; nuovi prodotti digitali potranno essere aggiunti senza trasformare la Bottega in una semplice raccolta di file.":"Il s’agit du premier contenu disponible ; de nouveaux produits numériques pourront être ajoutés sans transformer la boutique en simple collection de fichiers.",
+    "10 Colazioni dell’Alveare · Anteprima":"10 Petits-déjeuners de la Ruche · Aperçu",
+    "Chiudi ✕":"Fermer ✕",
+    "Sfoglia tre pagine reali dell’edizione Premium prima di acquistare.":"Feuilletez trois vraies pages de l’Édition Premium avant d’acheter.",
+    "Presentazione":"Présentation",
+    "Una ricetta completa":"Une recette complète",
+    "Una pagina extra":"Une page supplémentaire",
+    "← Indietro":"← Retour",
+    "Avanti →":"Suivant →",
+    "Anteprima parziale · il PDF completo da 37 pagine è disponibile dopo l’acquisto.":"Aperçu partiel · le PDF complet de 37 pages est disponible après l’achat."
+  },
+  es:{
+    "Anteprima parziale · 5 pagine reali. Il PDF completo da 37 pagine è disponibile dopo l’acquisto.":"Vista previa parcial · 5 páginas reales. El PDF completo de 37 páginas está disponible después de la compra.",
+    "Sfoglia cinque pagine reali: copertina, indice, introduzione e la Colazione 1 completa.":"Explora cinco páginas reales: portada, índice, introducción y el Desayuno 1 completo.",
+    "Colazione 1 · Varianti e idee":"Desayuno 1 · Variantes e ideas",
+    "Colazione 1 · Ricetta":"Desayuno 1 · Receta",
+    "Introduzione":"Introducción",
+    "Indice":"Índice",
+    "Copertina":"Portada",
+    "Alveo Digitale":"Alveo Digitale",
+    "L’alveare continua anche fuori dal Centro.":"La experiencia de la colmena continúa también fuera del Centro.",
+    "Ricette, idee e contenuti digitali legati al mondo della Fabbrica delle Api. Nessun pacco da aspettare: scegli il contenuto e portalo con te.":"Recetas, ideas y contenidos digitales vinculados al mundo de La Fabbrica delle Api. No hay que esperar ningún paquete: elige el contenido y llévalo contigo.",
+    "Scopri i contenuti →":"Descubre los contenidos →",
+    "Vai direttamente allo shop":"Ir directamente a la tienda",
+    "01 · Scegli":"01 · Elige",
+    "Trova il contenuto che vuoi portare con te.":"Encuentra el contenido que quieres llevar contigo.",
+    "02 · Acquista":"02 · Compra",
+    "Lo aggiungi al carrello come un normale prodotto.":"Añádelo al carrito como un producto normal.",
+    "03 · Nessuna spedizione":"03 · Sin envío",
+    "Il contenuto è digitale: non vengono applicati costi di spedizione.":"El contenido es digital: no se aplican gastos de envío.",
+    "Disponibile ora":"Disponible ahora",
+    "10 Colazioni dell’Alveare":"10 Desayunos de la Colmena",
+    "La prima uscita Premium di Alveo Digitale.":"La primera edición Premium de Alveo Digitale.",
+    "Ricette & idee · Edizione Premium":"Recetas e ideas · Edición Premium",
+    "10 Colazioni dell’Alveare – Edizione Premium":"10 Desayunos de la Colmena – Edición Premium",
+    "Un magazine digitale illustrato da consultare e riutilizzare: 10 ricette complete, 20 idee lampo, planner, lista della spesa, quiz e una piccola esperienza di degustazione dei mieli. È disponibile in italiano, inglese, tedesco, francese e spagnolo; dopo il pagamento viene proposta la versione corrispondente alla lingua scelta sul sito.":"Una revista digital ilustrada para consultar y reutilizar: 10 recetas completas, 20 ideas rápidas, planificador, lista de la compra, quiz y una pequeña experiencia de degustación de mieles. Está disponible en italiano, inglés, alemán, francés y español; después del pago se ofrece la versión correspondiente al idioma elegido en el sitio.",
+    "Digitale":"Digital",
+    "Spedizione €0":"Envío 0 €",
+    "👁 Sfoglia anteprima":"👁 Ver vista previa",
+    "Apri la scheda e acquista →":"Abrir la ficha y comprar →",
+    "Alveo Digitale è una categoria viva.":"Alveo Digitale es una categoría viva.",
+    "Questo è il primo contenuto disponibile; nuovi prodotti digitali potranno essere aggiunti senza trasformare la Bottega in una semplice raccolta di file.":"Este es el primer contenido disponible; podrán añadirse nuevos productos digitales sin convertir la tienda en una simple colección de archivos.",
+    "10 Colazioni dell’Alveare · Anteprima":"10 Desayunos de la Colmena · Vista previa",
+    "Chiudi ✕":"Cerrar ✕",
+    "Sfoglia tre pagine reali dell’edizione Premium prima di acquistare.":"Explora tres páginas reales de la Edición Premium antes de comprar.",
+    "Presentazione":"Presentación",
+    "Una ricetta completa":"Una receta completa",
+    "Una pagina extra":"Una página extra",
+    "← Indietro":"← Atrás",
+    "Avanti →":"Siguiente →",
+    "Anteprima parziale · il PDF completo da 37 pagine è disponibile dopo l’acquisto.":"Vista previa parcial · el PDF completo de 37 páginas está disponible después de la compra."
+  }
+};
+for(const code of ['en','de','fr','es']) Object.assign(CORE[code],ALVEO_CORE_TRANSLATIONS[code]);
+
 const ATTRS=['title','aria-label','placeholder','alt'];
 
-function cacheKeyFor(l){return 'fda-translation-cache-v2-'+l;}
+function cacheKeyFor(l){return 'fda-translation-cache-v3-'+l;}
 function loadCache(l){
   try{return JSON.parse(localStorage.getItem(cacheKeyFor(l))||'{}')||{};}catch(_){return {};}
 }
@@ -152,10 +321,13 @@ function style(){
   if(document.getElementById('fda-language-style'))return;
   const s=document.createElement('style');
   s.id='fda-language-style';
-  s.textContent='#fda-language-test{display:flex;align-items:center;gap:9px;color:#fff;font:800 12px/1.1 Arial,sans-serif;border:1px solid rgba(255,255,255,.32);border-radius:999px;padding:5px 6px 5px 10px;background:rgba(0,0,0,.18);white-space:nowrap}#fda-language-test span{font-weight:800}#fda-language-select{border:0;border-radius:999px;background:#f2b83f;color:#171717;padding:8px 10px;font-weight:900;outline:none;cursor:pointer}#fda-language-test.fallback{position:fixed;right:12px;top:12px;z-index:99999;box-shadow:0 5px 20px rgba(0,0,0,.3)}@media(max-width:900px){#fda-language-test{font-size:11px;padding-left:8px}#fda-language-test span{display:none}#fda-language-select{max-width:150px}}';
+  s.textContent='#fda-language-test{display:flex;align-items:center;gap:9px;color:#fff;font:800 12px/1.1 Arial,sans-serif;border:1px solid rgba(255,255,255,.32);border-radius:999px;padding:5px 6px 5px 10px;background:rgba(0,0,0,.18);white-space:nowrap}#fda-language-test span{font-weight:800}#fda-language-select{border:0;border-radius:999px;background:#f2b83f;color:#171717;padding:8px 10px;font-weight:900;outline:none;cursor:pointer}#fda-language-test.fallback{position:fixed;right:12px;top:12px;z-index:99999;box-shadow:0 5px 20px rgba(0,0,0,.3)}#fda-points-link{display:inline-flex;align-items:center;gap:6px;margin-left:6px;padding:8px 11px;border-radius:999px;background:#f2b83f;color:#171717!important;text-decoration:none!important;font:900 12px/1 Arial,sans-serif;white-space:nowrap;border:1px solid rgba(0,0,0,.12)}#fda-points-link:hover{filter:brightness(.96)}@media(max-width:900px){#fda-language-test{font-size:11px;padding-left:8px}#fda-language-test span{display:none}#fda-language-select{max-width:150px}}';
   document.head.appendChild(s);
 }
 
+function pointsLabel(l){
+  return ({it:'🐝 Saldo Punti Ape',en:'🐝 Bee Points Balance',de:'🐝 Bienenpunkte-Saldo',fr:'🐝 Solde Points Abeille',es:'🐝 Saldo Puntos Abeja'})[l]||'🐝 Saldo Punti Ape';
+}
 function selector(){
   style();
   let box=document.getElementById('fda-language-test');
@@ -168,6 +340,15 @@ function selector(){
     if(target)target.appendChild(box);else{box.classList.add('fallback');document.body.appendChild(box);}
     box.querySelector('select').addEventListener('change',e=>setLang(e.target.value));
   }
+  let points=document.getElementById('fda-points-link');
+  if(!points){
+    points=document.createElement('a');
+    points.id='fda-points-link';
+    points.href='/punti-ape';
+    points.setAttribute('aria-label','Saldo Punti Ape');
+    box.insertAdjacentElement('afterend',points);
+  }
+  points.textContent=pointsLabel(lang);
   const sel=document.getElementById('fda-language-select');
   if(sel)sel.value=lang;
 }
@@ -181,14 +362,27 @@ function shouldTranslate(x){
   return /[A-Za-zÀ-ÿ]/.test(x);
 }
 
+async function directGoogleTranslate(text,target){
+  const clean=cleanText(text);
+  if(!clean||target==='it')return clean;
+  try{
+    const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=it&tl='+encodeURIComponent(target)+'&dt=t&q='+encodeURIComponent(clean);
+    const res=await fetch(url,{credentials:'omit',referrerPolicy:'no-referrer',cache:'no-store'});
+    if(!res.ok)return clean;
+    const data=await res.json();
+    const out=Array.isArray(data?.[0])?data[0].map(v=>Array.isArray(v)?(v[0]||''):'').join(''):clean;
+    return String(out||clean).trim()||clean;
+  }catch(_){return clean;}
+}
+
 async function remoteTranslateBatch(texts){
   if(lang==='it')return texts;
   const unique=[...new Set((texts||[]).map(cleanText).filter(shouldTranslate))];
   const unresolved=unique.filter(text=>!(CORE[lang]||{})[text]&&!cache[text]);
   if(!unresolved.length)return unique.map(text=>(CORE[lang]||{})[text]||cache[text]||text);
 
-  for(let start=0;start<unresolved.length;start+=50){
-    const chunk=unresolved.slice(start,start+50);
+  for(let start=0;start<unresolved.length;start+=20){
+    const chunk=unresolved.slice(start,start+20);
     try{
       const controller=new AbortController();
       const timer=setTimeout(()=>controller.abort(),12000);
@@ -200,15 +394,35 @@ async function remoteTranslateBatch(texts){
           body:JSON.stringify({target:lang,texts:chunk}),
           signal:controller.signal
         });
+        if(!res.ok){
+          const q=encodeURIComponent(JSON.stringify(chunk));
+          res=await fetch('/api/site-translate-get?target='+encodeURIComponent(lang)+'&q='+q,{
+            method:'GET',
+            signal:controller.signal,
+            cache:'no-store'
+          });
+        }
       }finally{clearTimeout(timer);}
       const data=await res.json().catch(()=>null);
       if(res.ok&&data?.ok&&Array.isArray(data.translations)){
         chunk.forEach((text,i)=>{
-          const out=String(data.translations[i]||text);
+          const out=String(data.translations[i]||text).trim();
           if(out&&out!==text)cache[text]=out;
         });
-        saveCache();
       }
+      const stillMissing=chunk.filter(text=>!cache[text]&&!(CORE[lang]||{})[text]);
+      if(stillMissing.length){
+        let cursor=0;
+        const workers=Array.from({length:4},async()=>{
+          while(cursor<stillMissing.length){
+            const text=stillMissing[cursor++];
+            const out=await directGoogleTranslate(text,lang);
+            if(out&&out!==text)cache[text]=out;
+          }
+        });
+        await Promise.all(workers);
+      }
+      saveCache();
     }catch(_){}
   }
   return unique.map(text=>(CORE[lang]||{})[text]||cache[text]||text);

@@ -85,7 +85,7 @@ async function main() {
 
   const port = 39731;
   const origin = 'http://127.0.0.1:' + port;
-  const server = spawn(process.execPath, ['shipping-policy-start.js'], {
+  const server = spawn(process.execPath, ['server.js'], {
     cwd: root,
     env: { ...process.env, PORT: String(port) },
     stdio: 'inherit'
@@ -103,6 +103,7 @@ async function main() {
       ['/chi-siamo', 'chi-siamo.html'],
       ['/contatti', 'contatti.html'],
       ['/alveo-digitale', 'alveo-digitale.html'],
+      ['/punti-ape', 'punti-ape.html'],
       ['/shop', 'shop-v2.html'],
       ['/success.html', 'success.html'],
       ['/cancel.html', 'cancel.html'],
@@ -118,16 +119,26 @@ async function main() {
         if (!html.includes('globalToolsBar') || !html.includes('global-tools-v2.js')) {
           throw new Error('[Cloudflare V2] Home senza strumenti globali/Ape Pelù.');
         }
+        if (!html.includes('Il mondo delle api oggi')) {
+          throw new Error('[Cloudflare V2] Home senza presentazione Edizioni Aperte gratuita.');
+        }
       }
+
       if (pathname === '/shop') {
-        if (!html.includes('Ape Pelù') || !html.includes('shop-purchase-i18n.js')) {
-          throw new Error('[Cloudflare V2] Shop V2 non riconosciuto o Ape Pelù assente.');
-        }
-        if (!html.includes('Alveo Digitale')) {
-          throw new Error('[Cloudflare V2] Shop V2 senza collegamento Alveo Digitale.');
-        }
-        if (!html.includes('Punti Ape') || !html.includes('Saldo Api')) {
-          throw new Error('[Cloudflare V2] Shop V2 senza Punti Ape/Saldo Api.');
+        const required = ['Ape Pelù','Alveo Digitale','10 Colazioni','Punti Ape','Saldo Api','Il mondo delle api oggi'];
+        const missing = required.filter(value => !html.includes(value));
+        if (missing.length) throw new Error('[Cloudflare V2] Shop V2 incompleto: ' + missing.join(', '));
+      }
+
+      if (pathname === '/alveo-digitale') {
+        const required = ['10 Colazioni','Il mondo delle api oggi','Punti Ape'];
+        const missing = required.filter(value => !html.includes(value));
+        if (missing.length) throw new Error('[Cloudflare V2] Alveo Digitale incompleto: ' + missing.join(', '));
+      }
+
+      if (pathname === '/punti-ape') {
+        if (!html.includes('Saldo') || !html.includes('Punti Ape')) {
+          throw new Error('[Cloudflare V2] Pagina Punti Ape non riconosciuta.');
         }
       }
 
@@ -135,14 +146,13 @@ async function main() {
       if (!pathname.endsWith('.html')) writeRoute(pathname, html);
     }
 
-    // Alias storici devono puntare allo shop V2, mai allo shop legacy.
     const shopHtml = fs.readFileSync(path.join(dist, 'shop-v2.html'), 'utf8');
     fs.writeFileSync(path.join(dist, 'shop.html'), shopHtml, 'utf8');
     const shopDir = path.join(dist, 'shop');
     fs.mkdirSync(shopDir, { recursive: true });
     fs.writeFileSync(path.join(shopDir, 'index.html'), shopHtml, 'utf8');
 
-    console.log('[Cloudflare V2] Build PASS: home V2, shop V2, Ape Pelù, collegamento Alveo Digitale, Punti Ape e Saldo Api presenti.');
+    console.log('[Cloudflare V2] Build PASS: Edizioni Aperte, Alveo Digitale, 10 Colazioni, Punti Ape e Saldo Api presenti.');
   } finally {
     if (server.exitCode === null) server.kill('SIGTERM');
   }
