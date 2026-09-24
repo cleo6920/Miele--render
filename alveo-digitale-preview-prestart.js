@@ -46,7 +46,7 @@ try {
                                 <div className="mt-3 text-[11px] font-black uppercase tracking-[0.1em] text-amber-400">Ricetta digitale</div>
                                 <h3 className="mt-1 text-xl font-black text-white">10 Colazioni dell’Alveare</h3>
                                 <p className="mt-2 text-sm font-semibold text-stone-300">Dieci idee semplici con i nostri mieli, da aprire e leggere subito.</p>
-                                <div className="mt-4 text-2xl font-black text-amber-300">€2,90</div>
+                                <div className="mt-4 text-2xl font-black text-amber-300">€5,90</div>
                                 <button type="button" data-alveo-demo="colazioni" className="mt-3 rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2.5 text-sm font-black text-stone-950">Guarda esempio</button>
                               </article>
 
@@ -55,7 +55,7 @@ try {
                                 <div className="mt-3 text-[11px] font-black uppercase tracking-[0.1em] text-amber-400">Video narrato</div>
                                 <h3 className="mt-1 text-xl font-black text-white">Un Momento nell’Alveare</h3>
                                 <p className="mt-2 text-sm font-semibold text-stone-300">Un breve racconto visivo e narrato. Durata di prova: circa 30 secondi.</p>
-                                <div className="mt-4 text-2xl font-black text-amber-300">€2,90</div>
+                                <div className="mt-4 text-lg font-black text-stone-400">In preparazione</div>
                                 <button type="button" data-alveo-demo="video" className="mt-3 rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2.5 text-sm font-black text-stone-950">Guarda esempio</button>
                               </article>
 
@@ -64,7 +64,7 @@ try {
                                 <div className="mt-3 text-[11px] font-black uppercase tracking-[0.1em] text-amber-400">Regalo digitale</div>
                                 <h3 className="mt-1 text-xl font-black text-white">Regala l’Alveare</h3>
                                 <p className="mt-2 text-sm font-semibold text-stone-300">Una dedica e un piccolo contenuto digitale da inviare a chi vuoi.</p>
-                                <div className="mt-4 text-2xl font-black text-amber-300">€2,90</div>
+                                <div className="mt-4 text-lg font-black text-stone-400">In preparazione</div>
                                 <button type="button" data-alveo-demo="regalo" className="mt-3 rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2.5 text-sm font-black text-stone-950">Guarda esempio</button>
                               </article>
                             </div>
