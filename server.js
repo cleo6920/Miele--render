@@ -811,6 +811,99 @@ app.post('/api/free-edition-notification', async (req,res)=>{
   }
 });
 
+app.post('/api/cesto-notification', async (req,res)=>{
+  if(!allowOrderMail(req)) return res.status(429).json({ok:false,error:'Troppe richieste. Riprova tra qualche minuto.'});
+  if(!orderMailConfigured()) return res.status(503).json({ok:false,error:'Servizio email non configurato.'});
+  try{
+    const body=req.body||{};
+    const orderNumber=cleanOrderText(body.orderNumber,100);
+    const code=cleanOrderText(body.code,100);
+    const shipping=body.shipping||{};
+    const customer={
+      name:cleanOrderText(shipping.name,120),
+      email:cleanOrderText(shipping.email,180).toLowerCase(),
+      phone:cleanOrderText(shipping.phone,80),
+      address:cleanOrderText(shipping.address,180),
+      postalCode:cleanOrderText(shipping.postalCode,20),
+      city:cleanOrderText(shipping.city,100),
+      state:cleanOrderText(shipping.state,60).toUpperCase(),
+      country:cleanOrderText(shipping.country||'Italia',80),
+      notes:cleanOrderText(shipping.notes,500)
+    };
+    const gifts=Array.isArray(body.giftProducts)?body.giftProducts.slice(0,5).map(x=>({
+      id:cleanOrderText(x?.id,100),
+      name:cleanOrderText(x?.name,160)
+    })):[];
+    if(!orderNumber||!customer.name||!customer.email||!customer.phone||!customer.address||!customer.postalCode||!customer.city||!customer.state||gifts.length!==5){
+      return res.status(422).json({ok:false,error:'Dati ordine Cesto incompleti.'});
+    }
+    const to=String(process.env.ORDER_EMAIL_TO||'althea12830@gmail.com').trim();
+    const subject=(body.testMode?'TEST · ':'')+'Cesto Punti Ape '+orderNumber+' · '+customer.name;
+    const productsText=gifts.map((g,i)=>(i+1)+'. '+g.name).join('\n');
+    const text=[
+      'LA FABBRICA DELLE API',
+      body.testMode?'ORDINE CESTO PUNTI APE - MODALITA TEST':'ORDINE CESTO PUNTI APE',
+      '',
+      'Ordine: '+orderNumber,
+      'Codice: '+(code||'—'),
+      'Punti utilizzati: '+Number(body.pointsSpent||100),
+      'Stato: DA PREPARARE',
+      '',
+      'CLIENTE E SPEDIZIONE',
+      'Nome: '+customer.name,
+      'Email: '+customer.email,
+      'Telefono: '+customer.phone,
+      'Indirizzo: '+customer.address,
+      'CAP: '+customer.postalCode,
+      'Comune: '+customer.city,
+      'Provincia: '+customer.state,
+      'Paese: '+customer.country,
+      'Note: '+(customer.notes||'—'),
+      '',
+      '5 PRODOTTI SCELTI',
+      productsText,
+      '',
+      'Pagamento: 100 Punti Ape',
+      'Spedizione: GRATUITA',
+      'Totale da pagare: €0,00'
+    ].join('\n');
+    const itemsHtml=gifts.map((g,i)=>'<li style="margin:6px 0"><strong>'+(i+1)+'.</strong> '+escapeOrderHtml(g.name)+'</li>').join('');
+    const html='<div style="font-family:Arial,Helvetica,sans-serif;background:#f6f1e7;padding:28px;color:#17251f">'+
+      '<div style="max-width:720px;margin:auto;background:#fff;border-radius:20px;overflow:hidden;border:1px solid #ded5c5">'+
+      '<div style="background:#10392c;color:#fff;padding:24px 28px">'+
+      '<div style="font-size:12px;font-weight:800;letter-spacing:.12em;color:#f0bd4d">LA FABBRICA DELLE API · PUNTI APE</div>'+
+      '<h1 style="margin:8px 0 0;font-size:25px">'+(body.testMode?'TEST · ':'')+'Nuovo Cesto ottenuto</h1></div>'+
+      '<div style="padding:26px 28px;line-height:1.65">'+
+      '<p><strong>Ordine:</strong> '+escapeOrderHtml(orderNumber)+'<br><strong>Codice:</strong> '+escapeOrderHtml(code||'—')+'<br><strong>Punti:</strong> 100<br><strong>Totale:</strong> €0,00</p>'+
+      '<h2 style="font-size:18px">Cliente e spedizione</h2>'+
+      '<p><strong>'+escapeOrderHtml(customer.name)+'</strong><br>'+escapeOrderHtml(customer.address)+'<br>'+escapeOrderHtml(customer.postalCode)+' '+escapeOrderHtml(customer.city)+' ('+escapeOrderHtml(customer.state)+') · '+escapeOrderHtml(customer.country)+'<br>'+escapeOrderHtml(customer.email)+' · '+escapeOrderHtml(customer.phone)+'</p>'+
+      (customer.notes?'<p><strong>Note:</strong> '+escapeOrderHtml(customer.notes)+'</p>':'')+
+      '<h2 style="font-size:18px">5 prodotti scelti</h2><ol>'+itemsHtml+'</ol>'+
+      '<p style="padding:12px 14px;background:#edf5f0;border-radius:12px"><strong>Spedizione gratuita · Totale da pagare €0,00</strong></p>'+
+      '</div></div></div>';
+    if(orderMailMode()==='resend'){
+      const key=String(process.env.RESEND_API_KEY||'').trim();
+      const from=String(process.env.ORDER_EMAIL_FROM||'La Fabbrica delle Api <onboarding@resend.dev>').trim();
+      const response=await fetch('https://api.resend.com/emails',{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json','Idempotency-Key':'cesto-'+orderNumber},
+        body:JSON.stringify({from,to:[to],reply_to:customer.email,subject,text,html})
+      });
+      const payload=await response.json().catch(()=>null);
+      if(!response.ok) throw new Error('Resend: '+(payload?.message||payload?.error||('HTTP '+response.status)));
+    }else{
+      const transporter=orderTransporter();
+      const user=String(process.env.ORDER_EMAIL_USER||'').trim();
+      await transporter.sendMail({from:'"La Fabbrica delle Api" <'+user+'>',to,replyTo:customer.email,subject,text,html});
+    }
+    console.log('[Cesto Punti Ape] Notifica inviata:',orderNumber);
+    return res.json({ok:true,orderNumber,emailSent:true});
+  }catch(error){
+    console.error('[Cesto Punti Ape] Errore notifica:',error?.message||error);
+    return res.status(500).json({ok:false,error:'Non è stato possibile inviare la notifica del Cesto.'});
+  }
+});
+
 app.post('/api/order-notification', async (req,res)=>{
   if(!allowOrderMail(req)) return res.status(429).json({ok:false,error:'Troppe richieste. Riprova tra qualche minuto.'});
   if(!orderMailConfigured()){
