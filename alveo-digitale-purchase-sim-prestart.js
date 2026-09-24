@@ -46,8 +46,8 @@ try {
     <div id="alveo-sim-body">
       <div id="alveo-sim-checkout">
         <div id="alveo-sim-product">
-          <strong>10 Colazioni dell'Alveare - Raccolta completa 30 pagine</strong>
-          <span>€3,90</span>
+          <strong>10 Colazioni dell'Alveare - Edizione Premium 37 pagine</strong>
+          <span>€5,90</span>
         </div>
         <div id="alveo-sim-notice">🧪 Questa è una simulazione solo su Render. Nessun importo verrà addebitato e non devi inserire dati reali della carta.</div>
         <label for="alveo-sim-email">Email per la prova</label>
@@ -74,8 +74,8 @@ try {
     if(!btn)return false;
     var card=btn.closest('article');
     if(card){
-      var price=Array.from(card.querySelectorAll('div')).find(function(el){return String(el.textContent||'').trim()==='€2,90' || String(el.textContent||'').trim()==='€3,90';});
-      if(price)price.textContent='€3,90';
+      var price=Array.from(card.querySelectorAll('div')).find(function(el){return String(el.textContent||'').trim()==='€5,90' || String(el.textContent||'').trim()==='€3,90' || String(el.textContent||'').trim()==='€2,90';});
+      if(price)price.textContent='€5,90';
       var title=card.querySelector('h3');
       if(title)title.textContent='10 Colazioni dell’Alveare';
       var desc=card.querySelector('p');
@@ -179,7 +179,7 @@ try {
 
   html = html.includes('</body>') ? html.replace('</body>', `${injection}\n</body>`) : `${html}\n${injection}`;
   fs.writeFileSync(indexPath, html, 'utf8');
-  console.log('[Miele Artigianale] Alveo Digitale: PDF definitivo 30 pagine e prezzo €3,90 attivi solo su Render.');
+  console.log('[Miele Artigianale] Alveo Digitale: PDF Premium 37 pagine e prezzo €5,90 attivi solo su Render.');
 } catch (error) {
   console.error('[Miele Artigianale] Errore simulazione acquisto Alveo Digitale:', error);
   process.exitCode = 1;
