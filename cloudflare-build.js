@@ -129,6 +129,9 @@ async function main() {
         if (!html.includes('10 Colazioni') || !html.includes('Alveo Digitale')) {
           throw new Error('[Cloudflare V2] Shop V2 senza prodotti Alveo Digitale/10 Colazioni.');
         }
+        if (!html.includes('Punti Ape') || !html.includes('Saldo Api')) {
+          throw new Error('[Cloudflare V2] Shop V2 senza Punti Ape/Saldo Api.');
+        }
       }
 
       fs.writeFileSync(path.join(dist, flatFile), html, 'utf8');
@@ -142,7 +145,7 @@ async function main() {
     fs.mkdirSync(shopDir, { recursive: true });
     fs.writeFileSync(path.join(shopDir, 'index.html'), shopHtml, 'utf8');
 
-    console.log('[Cloudflare V2] Build PASS: home V2, shop V2, Ape Pelù, Alveo Digitale e 10 Colazioni pronti.');
+    console.log('[Cloudflare V2] Build PASS: home V2, shop V2, Ape Pelù, Alveo Digitale, 10 Colazioni, Punti Ape e Saldo Api pronti.');
   } finally {
     if (server.exitCode === null) server.kill('SIGTERM');
   }
