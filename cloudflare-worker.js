@@ -202,9 +202,53 @@ export default {
     }
 
     // Serve /shop from HTML bundled inside this Worker deployment.
-    // This completely bypasses stale/static HTML aliases and makes one source authoritative.
+    // Apply the final navigation repair here, at the last possible layer, so no
+    // stale/static source or older section markup can override these links.
     if (SHOP_ROUTES.has(url.pathname)) {
-      return new Response(SHOP_HTML, {
+      let shopHtml = SHOP_HTML;
+
+      const navRepairs = [
+        ['href="#alveare">Alveare</a>','href="#prodotto-castagno">Alveare</a>'],
+        ['href="#propoli">Propoli</a>','href="#prodotto-bee-energy-bio">Propoli</a>'],
+        ['href="#cosmesi">Cosmesi</a>','href="#prodotto-cosmesi-crema-mani">Cosmesi</a>'],
+        ['href="#linea-veleni">Linea Veleni</a>','href="#prodotto-unguento-apis">Linea Veleni</a>'],
+        ['href="#tesori-francesco">Tesori</a>','href="#prodotto-tesori-limoncello">Tesori</a>']
+      ];
+      for (const [from,to] of navRepairs) shopHtml = shopHtml.replaceAll(from,to);
+
+      const ctaStyle = '<style id="cf-shop-line-cta-style">.cf-shop-line-cta{margin-top:18px}.cf-shop-line-cta a{display:inline-flex;align-items:center;justify-content:center;padding:11px 16px;border-radius:999px;background:#10392c;color:#fff!important;text-decoration:none!important;font-weight:950;font-size:13px;box-shadow:0 6px 18px rgba(0,0,0,.08)}.venom-world .cf-shop-line-cta a{background:#e0aa2d;color:#17241e!important}</style>';
+      if (!shopHtml.includes('id="cf-shop-line-cta-style"')) {
+        shopHtml = shopHtml.replace('</head>', ctaStyle + '</head>');
+      }
+
+      const oldSections = [
+        ["Una selezione di propoli e integratori da scoprire con semplicità.</p>","Una selezione di propoli e integratori da scoprire con semplicità.</p><div class=\"cf-shop-line-cta\"><a href=\"#prodotto-bee-energy-bio\">Vai alla linea completa →</a></div>"],
+        ["Creme, saponi, burrocacao e creazioni in cera d’api.</p>","Creme, saponi, burrocacao e creazioni in cera d’api.</p><div class=\"cf-shop-line-cta\"><a href=\"#prodotto-cosmesi-crema-mani\">Vai alla linea completa →</a></div>"],
+        ["Mieli selezionati, favo, polline, pappa reale e piccole specialità.</p>","Mieli selezionati, favo, polline, pappa reale e piccole specialità.</p><div class=\"cf-shop-line-cta\"><a href=\"#prodotto-castagno\">Vai alla linea completa →</a></div>"],
+        ["Sette prodotti cosmetici dedicati a massaggio, viso e corpo.</p>","Sette prodotti cosmetici dedicati a massaggio, viso e corpo.</p><div class=\"cf-shop-line-cta\"><a href=\"#prodotto-unguento-apis\">Vai alla linea completa →</a></div>"],
+        ["Limoncello, liquore al caffè e castagne al rum.</p>","Limoncello, liquore al caffè e castagne al rum.</p><div class=\"cf-shop-line-cta\"><a href=\"#prodotto-tesori-limoncello\">Vai alla linea completa →</a></div>"]
+      ];
+      for (const [from,to] of oldSections) {
+        if (!shopHtml.includes(to)) shopHtml = shopHtml.replace(from,to);
+      }
+
+      // Also repair the newer editorial blocks if they are the version bundled.
+      const newerCtas = [
+        ['id="alveare-prodotti"','prodotto-castagno'],
+        ['id="propoli-prodotti"','prodotto-bee-energy-bio'],
+        ['id="cosmesi-prodotti"','prodotto-cosmesi-crema-mani'],
+        ['id="veleni-prodotti"','prodotto-unguento-apis'],
+        ['id="tesori-prodotti"','prodotto-tesori-limoncello']
+      ];
+      for (const [gridId,productId] of newerCtas) {
+        const anchor = '<div class="catalog-grid" ' + gridId;
+        if (shopHtml.includes(anchor) && !shopHtml.includes('href="#' + productId + '">Vai alla linea completa →</a>')) {
+          shopHtml = shopHtml.replace(anchor, '<div class="cf-shop-line-cta"><a href="#' + productId + '">Vai alla linea completa →</a></div>' + anchor);
+        }
+      }
+
+      shopHtml = shopHtml.replace('<body', '<body data-cf-shop-build="20260925-last-mile-2"');
+      return new Response(shopHtml, {
         status: 200,
         headers: {
           'Content-Type': 'text/html; charset=UTF-8',
@@ -212,7 +256,7 @@ export default {
           'Pragma': 'no-cache',
           'Expires': '0',
           'X-Shop-Source': 'worker-bundled-canonical',
-          'X-Shop-Build': '20260925-worker-bundled-1'
+          'X-Shop-Build': '20260925-last-mile-2'
         }
       });
     }
