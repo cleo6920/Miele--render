@@ -174,7 +174,6 @@ async function main() {
       const response = await fetchReady(origin, pathname);
       let html = await response.text();
       if (!/<html/i.test(html)) throw new Error('[Cloudflare V2] HTML non valido da ' + pathname);
-      if (pathname === '/shop') html = hydrateOfficialCatalog(html);
 
       if (pathname === '/' || pathname === '/home') {
         if (!html.includes('globalToolsBar') || !html.includes('global-tools-v2.js')) {
@@ -189,6 +188,10 @@ async function main() {
         const required = ['Ape Pelù','Alveo Digitale','10 Colazioni','Punti Ape','Saldo Api','Il mondo delle api oggi','prodotto-propoli-30-spray-integratore','prodotto-cosmesi-crema-mani','prodotto-apis1-crema-viso-veleno-api','prodotto-tesori-limoncello'];
         const missing = required.filter(value => !html.includes(value));
         if (missing.length) throw new Error('[Cloudflare V2] Shop V2 incompleto: ' + missing.join(', '));
+        const cardCount = (html.match(/class="catalog-card product-openable/g) || []).length;
+        if (cardCount < 38) throw new Error('[Cloudflare V2] Catalogo prerenderizzato incompleto: ' + cardCount + ' card.');
+        const sectionCount = (html.match(/data-official-section=/g) || []).length;
+        if (sectionCount < 7) throw new Error('[Cloudflare V2] Sezioni prodotto mancanti: ' + sectionCount + '/7.');
       }
 
       if (pathname === '/alveo-digitale') {
