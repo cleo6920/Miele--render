@@ -237,13 +237,8 @@ async function checkBalance(){
   button.disabled=true;const old=button.textContent;button.textContent='Controllo in corso…';status.textContent='';
   document.getElementById('result').classList.remove('show');
   try{
-    let endpoint='/api/bee-balance';
-    let body={};body[kind]=value;
-    if(kind==='email'||kind==='phone'){
-      endpoint='/api/bee-wallet';
-      body={action:'lookup',customer:{email:kind==='email'?value:'',phone:kind==='phone'?value:''}};
-    }
-    const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const body={};body[kind]=value;
+    const r=await fetch('/api/bee-balance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const data=await r.json().catch(()=>null);
     if(!r.ok||!data?.ok)throw new Error(data?.error||'Saldo non disponibile.');
     const b=Math.max(0,Number(data.balance||0));
