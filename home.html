@@ -29,13 +29,14 @@ a{color:inherit}
 .nav-links a{text-decoration:none}
 .nav-links .talk{padding:11px 18px;border:1px solid rgba(255,255,255,.55);border-radius:999px;font-weight:700}
 .nav-links .shop{color:#ffe59e;font-weight:700}
-.home-shop-cats{background:#0f3b2f;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(0,0,0,.12);padding:10px 0}
+.home-shop-cats{position:sticky;top:122px;z-index:87;background:#0f3b2f;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(0,0,0,.12);padding:10px 0;box-shadow:0 8px 18px rgba(0,0,0,.12)}
 .home-shop-cats-inner{width:min(1240px,calc(100% - 32px));margin:auto;display:flex;gap:10px;align-items:center;overflow-x:auto;scrollbar-width:none}
 .home-shop-cats-inner::-webkit-scrollbar{display:none}
 .home-shop-cats a{flex:0 0 auto;text-decoration:none;color:#fff;font-weight:900;font-size:13px;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
 .home-shop-cats a.primary{background:#e9ad35;color:#152a20;border-color:#e9ad35}
 .home-shop-cats a:hover{transform:translateY(-1px);background:#1b5443}
 .home-shop-cats a.primary:hover{background:#f0bb47}
+@media(max-width:900px){.home-shop-cats{position:relative;top:auto;z-index:20}}
 section[id]{scroll-margin-top:92px}
 .hero{min-height:650px;display:grid;align-items:end;color:#fff;position:relative;overflow:hidden}
 .hero::before,.hero::after{content:"";position:absolute;inset:0 50% 0 0;background:url('/images/alveari-busatello.jpg?v=home-narrative1') center/cover no-repeat}
