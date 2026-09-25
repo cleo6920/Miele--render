@@ -3,7 +3,8 @@
 <!-- deploy-language-selector-free-edition-20260923 -->
 <html lang="it" translate="no" class="notranslate">
 <head>
-<meta charset="utf-8">\n<meta name="google" content="notranslate">
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>La Fabbrica delle Api · Un mondo da vivere</title>
 <meta name="description" content="La Fabbrica delle Api: storie, luoghi, esperienze e prodotti dal mondo dell'alveare. Un nuovo modo di scoprire prima di acquistare.">
@@ -796,7 +797,8 @@ img{display:block;max-width:100%}
         <div class="product-detail-format" id="productDetailFormat"></div>
         <div class="product-detail-description" id="productDetailDescription"></div>
         <div class="product-detail-warning" id="productDetailWarning"><strong>Avvertenze</strong><span id="productDetailWarningText"></span></div>
-        <button class="alveo-shop-preview-btn" id="productDetailAlveoPreview" type="button" hidden>👁 Sfoglia anteprima</button>\n        <button class="alveo-shop-preview-btn" id="productDetailApiOggiPreview" type="button" hidden>👁 Sfoglia anteprima gratuita</button>
+        <button class="alveo-shop-preview-btn" id="productDetailAlveoPreview" type="button" hidden>👁 Sfoglia anteprima</button>
+        <button class="alveo-shop-preview-btn" id="productDetailApiOggiPreview" type="button" hidden>👁 Sfoglia anteprima gratuita</button>
         <div class="product-detail-buy">
           <div class="product-detail-price"><strong id="productDetailPrice"></strong><span id="productDetailSize"></span></div>
           <button class="product-detail-add" id="productDetailAdd" type="button">Aggiungi al carrello</button>
@@ -1025,7 +1027,8 @@ const SHOP_PRODUCT_POINTS={
   "tesori-limoncello": 2,
   "tesori-liquore-caffe": 2,
   "tesori-castagne-rum": 2,
-  "alveo-digitale-10-colazioni": 2,\n  "alveo-digitale-api-oggi-01": 0
+  "alveo-digitale-10-colazioni": 2,
+  "alveo-digitale-api-oggi-01": 0
 };
 function defaultPointsFor(id){return Number(SHOP_PRODUCT_POINTS[id]||0);}
 shopV2Cart=shopV2Cart.map(x=>({...x,points:defaultPointsFor(x.id)}));
