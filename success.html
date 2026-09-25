@@ -47,6 +47,30 @@ const status=document.getElementById('status'),retry=document.getElementById('re
 document.getElementById('retry').textContent=T.retry;document.getElementById('back').textContent=T.back;
 function money(v){try{return new Intl.NumberFormat(lang()==='it'?'it-IT':lang(),{style:'currency',currency:'EUR'}).format(Number(v||0))}catch(_){return '€ '+Number(v||0).toFixed(2)}}
 function pendingOrder(){try{return JSON.parse(localStorage.getItem('fda-production-pending-order')||'null')}catch(_){return null}}
+function trackGa4PurchaseOnce(transactionId,value,order){
+  try{
+    const id=String(transactionId||'').trim();
+    const amount=Number(value);
+    if(!id||!Number.isFinite(amount)||amount<=0||typeof window.gtag!=='function')return;
+    const marker='fda-ga4-purchase-'+id;
+    if(localStorage.getItem(marker)==='1')return;
+    const payload={transaction_id:id,value:Number(amount.toFixed(2)),currency:'EUR'};
+    const rawItems=Array.isArray(order?.items)?order.items:[];
+    const items=rawItems.map((item,index)=>{
+      const price=Number(item?.amount??item?.price??0);
+      const quantity=Math.max(1,Number(item?.quantity??item?.qty??1)||1);
+      return {
+        item_id:String(item?.productId??item?.id??('item-'+(index+1))),
+        item_name:String(item?.productName??item?.name??('Prodotto '+(index+1))),
+        price:Number.isFinite(price)?Number(price.toFixed(2)):0,
+        quantity
+      };
+    }).filter(item=>item.item_name);
+    if(items.length)payload.items=items;
+    window.gtag('event','purchase',payload);
+    localStorage.setItem(marker,'1');
+  }catch(_){}
+}
 async function finalize(){
   retry.hidden=true;status.className='status';status.textContent=T.wait;
   const qs=new URLSearchParams(location.search);
@@ -92,6 +116,7 @@ async function finalize(){
           }catch(_){}
         }
       }
+      trackGa4PurchaseOnce(vd.codTrans||order?.id,vd.total||order?.total||0,order);
       localStorage.removeItem('fda-shop-v2-cart');
       status.className='status ok';
       status.textContent=T.paid+' · '+T.sent;
@@ -141,6 +166,7 @@ async function finalize(){
       localStorage.removeItem('fda-shop-v2-cart');
       localStorage.removeItem('fda-production-pending-order');
     }
+    trackGa4PurchaseOnce(sessionId,order?.total||0,order);
     status.className='status ok';status.textContent=T.paid+' · '+T.sent;
   }catch(e){
     status.className='status err';status.textContent=e?.message||T.bad;retry.hidden=false;
