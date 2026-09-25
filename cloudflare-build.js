@@ -214,12 +214,6 @@ async function main() {
     fs.writeFileSync(path.join(dist, 'punti-ape.html'), puntiApeHtml, 'utf8');
     writeRoute('/punti-ape', puntiApeHtml);
 
-    const shopHtml = fs.readFileSync(path.join(dist, 'shop-v2.html'), 'utf8');
-    fs.writeFileSync(path.join(dist, 'shop.html'), shopHtml, 'utf8');
-    const shopDir = path.join(dist, 'shop');
-    fs.mkdirSync(shopDir, { recursive: true });
-    fs.writeFileSync(path.join(shopDir, 'index.html'), shopHtml, 'utf8');
-
     console.log('[Cloudflare V2] Build PASS: Edizioni Aperte, Alveo Digitale, 10 Colazioni, Punti Ape e Saldo Api presenti.');
   } finally {
     if (server.exitCode === null) server.kill('SIGTERM');
