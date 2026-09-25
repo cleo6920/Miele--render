@@ -29,6 +29,13 @@ a{color:inherit}
 .nav-links a{text-decoration:none}
 .nav-links .talk{padding:11px 18px;border:1px solid rgba(255,255,255,.55);border-radius:999px;font-weight:700}
 .nav-links .shop{color:#ffe59e;font-weight:700}
+.home-shop-cats{background:#0f3b2f;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(0,0,0,.12);padding:10px 0}
+.home-shop-cats-inner{width:min(1240px,calc(100% - 32px));margin:auto;display:flex;gap:10px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.home-shop-cats-inner::-webkit-scrollbar{display:none}
+.home-shop-cats a{flex:0 0 auto;text-decoration:none;color:#fff;font-weight:900;font-size:13px;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
+.home-shop-cats a.primary{background:#e9ad35;color:#152a20;border-color:#e9ad35}
+.home-shop-cats a:hover{transform:translateY(-1px);background:#1b5443}
+.home-shop-cats a.primary:hover{background:#f0bb47}
 section[id]{scroll-margin-top:92px}
 .hero{min-height:650px;display:grid;align-items:end;color:#fff;position:relative;overflow:hidden}
 .hero::before,.hero::after{content:"";position:absolute;inset:0 50% 0 0;background:url('/images/alveari-busatello.jpg?v=home-narrative1') center/cover no-repeat}
@@ -194,6 +201,17 @@ section[id]{scroll-margin-top:92px}
     </div>
   </nav>
 </header><div class="site-tools-bar" id="globalToolsBar" aria-label="Strumenti del sito"><div class="site-tools-inner"><div class="site-tools-note">Trova subito ciò che cerchi</div><button class="global-ape-launch" id="apeChatLaunch" type="button" aria-label="Chiedi a Ape Pelù: scopri, chiedi e lasciati guidare nel mondo delle api"><span class="global-ape-icon">🐝</span><span class="global-ape-copy"><strong>Chiedi a Ape Pelù</strong><small>Scopri, chiedi, lasciati guidare nel mondo delle api.</small></span></button><div class="global-site-search" id="globalSiteSearch"><div class="global-site-search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="globalSiteSearchInput" type="search" placeholder="Cerca nel sito..." autocomplete="off"><button class="global-site-search-go" id="globalSiteSearchGo" type="button" aria-label="Avvia la ricerca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="global-site-search-results" id="globalSiteSearchResults"></div></div></div></div>
+<nav class="home-shop-cats" id="homeShopCategories" aria-label="Categorie della Bottega">
+  <div class="home-shop-cats-inner">
+    <a class="primary" href="/shop">Bottega</a>
+    <a href="/shop#mieli">Mieli</a>
+    <a href="/shop#prodotto-castagno">Alveare</a>
+    <a href="/shop#prodotto-bee-energy-bio">Propoli</a>
+    <a href="/shop#prodotto-cosmesi-crema-mani">Cosmesi</a>
+    <a href="/shop#prodotto-unguento-apis">Linea Veleni</a>
+    <a href="/shop#prodotto-tesori-limoncello">Tesori</a>
+  </div>
+</nav>
 
 <main>
 <section class="hero" id="top">
