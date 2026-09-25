@@ -53,6 +53,65 @@ function copyBrowserAssets() {
   copyDir(path.join(root, 'downloads'), path.join(dist, 'downloads'));
 }
 
+
+function escHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function hydrateOfficialCatalog(html) {
+  const match = html.match(/const SHOP_OFFICIAL_PRODUCTS=(\[[\s\S]*?\]);/);
+  if (!match) throw new Error('[Cloudflare V2] Catalogo ufficiale non trovato nello shop.');
+  let products;
+  try { products = JSON.parse(match[1]); }
+  catch (error) { throw new Error('[Cloudflare V2] Catalogo ufficiale non leggibile: ' + error.message); }
+
+  const sections = ['alveoterapia-prodotti','alveare','propoli','cosmesi','linea-veleni','tesori-francesco','alveo-digitale'];
+  const category = {
+    'alveoterapia-prodotti':'Alveoterapia',
+    'alveare':'Linea Alimenti',
+    'propoli':'Linea Integratori',
+    'cosmesi':'Cosmesi e Cera d’Api',
+    'linea-veleni':'Linea Cosmetica al Veleno d’Api',
+    'tesori-francesco':'I Tesori di Francesco',
+    'alveo-digitale':'Alveo Digitale'
+  };
+  const points = {
+    'propolterapy-professional':15,'capsule-pb':5,'capsule-propolit':5,'castagno':2,'acacia-zenzero-apinfiore':3,
+    'miele-eucalipto-apinfiore':2,'balsammiel':4,'acacia':1,'favo-integrale-bio':4,'polline-italiano':4,
+    'pappa-reale-italiana-bio':2,'orsetti-gommosi':1,'bee-energy-bio':4,'propol-active-bio':4,
+    'propoli-30-spray-integratore':3,'propoli-30-alcolica-integratore':2,'propoli-analcolica-integratore':2,
+    'cosmesi-crema-mani':3,'cosmesi-burrocacao-propoli-aloe':2,'cosmesi-burrocacao-miele-pappa-reale':2,
+    'cosmesi-shampoo-multivitaminico':3,'cosmesi-saponetta-frutti-bosco':1,'cosmesi-saponetta-lavanda':1,
+    'cosmesi-saponetta-aloe-vera':1,'cosmesi-candela-alveare-cera-api':2,'cosmesi-travel-kit-benessere':5,
+    'unguento-apis':10,'sos-dol-50ml':10,'apis1-crema-viso-veleno-api':9,'apis2-siero-viso-veleno-api':9,
+    'apis4-crema-corpo-veleno-api-manuka':9,'apis5-gommage-veleno-api-manuka':9,'bagnodoccia-veleno-oro':6,
+    'tesori-limoncello':2,'tesori-liquore-caffe':2,'tesori-castagne-rum':2,'alveo-digitale-10-colazioni':2,
+    'alveo-digitale-api-oggi-01':0
+  };
+
+  for (const section of sections) {
+    const items = products.filter(p => p.section === section);
+    if (!items.length) throw new Error('[Cloudflare V2] Nessun prodotto nella sezione ' + section);
+    const cards = items.map(p => {
+      const free = p.id === 'alveo-digitale-api-oggi-01';
+      const price = free ? 'GRATIS' : new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(p.price||0));
+      const pts = free ? '🐝 +1 Punto Ape al download' : '🐝 +' + Number(points[p.id]||0) + ' Punti Ape';
+      return '<article class="catalog-card product-openable'+(free?' free-open-card':'')+'" id="prodotto-'+escHtml(p.id)+'" data-product-id="'+escHtml(p.id)+'" tabindex="0" role="button" aria-label="Apri la scheda completa di '+escHtml(p.name)+'">'+
+        '<div class="catalog-card-media"><img src="'+escHtml(p.image)+'" alt="'+escHtml(p.name)+'" loading="lazy"></div>'+
+        '<div class="catalog-card-body"><small>'+escHtml(category[section]||'Bottega')+'</small><h3>'+escHtml(p.name)+'</h3><p>'+escHtml(p.desc)+'</p>'+
+        '<div class="catalog-points">'+pts+'</div>'+
+        '<button class="product-detail-link" type="button" data-open-product="'+escHtml(p.id)+'">Apri la scheda completa →</button>'+
+        '<div class="catalog-buy-row"><div class="catalog-price"><strong>'+price+'</strong><span>'+escHtml(p.size)+'</span></div>'+
+        '<button class="add-btn official-add" data-id="'+escHtml(p.id)+'" data-name="'+escHtml(p.name)+'" data-price="'+Number(p.price||0)+'" data-size="'+escHtml(p.size)+'" data-points="'+Number(points[p.id]||0)+'">'+(free?'Aggiungi gratis':'Aggiungi')+'</button></div></div></article>';
+    }).join('');
+
+    const re = new RegExp('(<div class="catalog-grid"[^>]*data-official-section="'+section.replace(/[.*+?^$\{\}()|[\]\\]/g,'\\async function fetchReady(origin, pathname) {')+'"[^>]*>)[\\s\\S]*?(<\\/div>)');
+    if (!re.test(html)) throw new Error('[Cloudflare V2] Contenitore catalogo mancante: ' + section);
+    html = html.replace(re, '$1' + cards + '$2');
+  }
+  return html;
+}
+
 async function fetchReady(origin, pathname) {
   let lastError;
   for (let i = 0; i < 60; i++) {
@@ -113,8 +172,9 @@ async function main() {
 
     for (const [pathname, flatFile] of routes) {
       const response = await fetchReady(origin, pathname);
-      const html = await response.text();
+      let html = await response.text();
       if (!/<html/i.test(html)) throw new Error('[Cloudflare V2] HTML non valido da ' + pathname);
+      if (pathname === '/shop') html = hydrateOfficialCatalog(html);
 
       if (pathname === '/' || pathname === '/home') {
         if (!html.includes('globalToolsBar') || !html.includes('global-tools-v2.js')) {
@@ -126,7 +186,7 @@ async function main() {
       }
 
       if (pathname === '/shop') {
-        const required = ['Ape Pelù','Alveo Digitale','10 Colazioni','Punti Ape','Saldo Api','Il mondo delle api oggi'];
+        const required = ['Ape Pelù','Alveo Digitale','10 Colazioni','Punti Ape','Saldo Api','Il mondo delle api oggi','prodotto-propoli-30-spray-integratore','prodotto-cosmesi-crema-mani','prodotto-apis1-crema-viso-veleno-api','prodotto-tesori-limoncello'];
         const missing = required.filter(value => !html.includes(value));
         if (missing.length) throw new Error('[Cloudflare V2] Shop V2 incompleto: ' + missing.join(', '));
       }
