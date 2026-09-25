@@ -84,11 +84,11 @@ const KEY='fda-site-language';
 const SUP=['it','en','de','fr','es'];
 const L=(()=>{try{const v=String(localStorage.getItem(KEY)||'it').toLowerCase();return SUP.includes(v)?v:'it'}catch(_){return'it'}})();
 const TX={
- it:{sub:'ALVEOTERAPIA INTEGRATA',event:'APPUNTAMENTI ITINERANTI',market:'MERCATINO DI STELLATA',when1:'La domenica della seconda settimana',when2:'di ogni mese',download:'Scarica volantino (PDF)'},
- en:{sub:'INTEGRATED ALVEOTHERAPY',event:'MOBILE EVENTS',market:'STELLATA MARKET',when1:'On the Sunday of the second week',when2:'of every month',download:'Download flyer (PDF)'},
- de:{sub:'INTEGRIERTE ALVEOTHERAPIE',event:'MOBILE VERANSTALTUNGEN',market:'MARKT VON STELLATA',when1:'Am Sonntag der zweiten Woche',when2:'jedes Monats',download:'Flyer herunterladen (PDF)'},
- fr:{sub:'ALVÉOTHÉRAPIE INTÉGRÉE',event:'RENDEZ-VOUS ITINÉRANTS',market:'MARCHÉ DE STELLATA',when1:'Le dimanche de la deuxième semaine',when2:'de chaque mois',download:'Télécharger l’affiche (PDF)'},
- es:{sub:'ALVEOTERAPIA INTEGRADA',event:'EVENTOS ITINERANTES',market:'MERCADO DE STELLATA',when1:'El domingo de la segunda semana',when2:'de cada mes',download:'Descargar cartel (PDF)'}
+ it:{tag:'Sapori e benessere dall’alveare',sub:'ALVEOTERAPIA INTEGRATA',bul:['CONSULENZE','MARKETING','PUBBLICITÀ','PROGRESSO E','SVILUPPO'],event:'APPUNTAMENTI ITINERANTI',market:'MERCATINO DI STELLATA',when1:'La domenica della seconda settimana',when2:'di ogni mese',download:'Scarica volantino (PDF)'},
+ en:{tag:'Flavours and wellbeing from the hive',sub:'INTEGRATED ALVEOTHERAPY',bul:['CONSULTING','MARKETING','ADVERTISING','PROGRESS AND','DEVELOPMENT'],event:'MOBILE EVENTS',market:'STELLATA MARKET',when1:'Sunday of the second week',when2:'of every month',download:'Download flyer (PDF)'},
+ de:{tag:'Genuss und Wohlbefinden aus dem Bienenstock',sub:'INTEGRIERTE ALVEOTHERAPIE',bul:['BERATUNG','MARKETING','WERBUNG','FORTSCHRITT UND','ENTWICKLUNG'],event:'MOBILE VERANSTALTUNGEN',market:'MARKT VON STELLATA',when1:'Am Sonntag der zweiten Woche',when2:'jedes Monats',download:'Flyer herunterladen (PDF)'},
+ fr:{tag:'Saveurs et bien-être de la ruche',sub:'ALVÉOTHÉRAPIE INTÉGRÉE',bul:['CONSEIL','MARKETING','PUBLICITÉ','PROGRÈS ET','DÉVELOPPEMENT'],event:'RENDEZ-VOUS ITINÉRANTS',market:'MARCHÉ DE STELLATA',when1:'Le dimanche de la deuxième semaine',when2:'de chaque mois',download:'Télécharger l’affiche (PDF)'},
+ es:{tag:'Sabores y bienestar de la colmena',sub:'ALVEOTERAPIA INTEGRADA',bul:['CONSULTORÍA','MARKETING','PUBLICIDAD','PROGRESO Y','DESARROLLO'],event:'EVENTOS ITINERANTES',market:'MERCADO DE STELLATA',when1:'El domingo de la segunda semana',when2:'de cada mes',download:'Descargar cartel (PDF)'}
 };
 const t=TX[L]||TX.it;
 const canvas=document.getElementById('eventFlyerCanvas');
@@ -104,16 +104,62 @@ function flower(cx,cy,s){for(let i=0;i<6;i++){ctx.save();ctx.translate(cx+Math.c
 function honeyComb(x,y,s,n){ctx.save();ctx.globalAlpha=.5;ctx.strokeStyle='#d89a18';ctx.lineWidth=3;for(let i=0;i<n;i++){const cx=x+(i%3)*s*1.5,cy=y+Math.floor(i/3)*s*1.3+(i%3?0:s*.65);ctx.beginPath();for(let k=0;k<6;k++){const a=Math.PI/3*k,px=cx+Math.cos(a)*s,py=cy+Math.sin(a)*s;k?ctx.lineTo(px,py):ctx.moveTo(px,py)}ctx.closePath();ctx.stroke()}ctx.restore()}
 function wood(){ctx.fillStyle=C.wood;ctx.fillRect(0,0,W,H);for(let x=0;x<W;x+=105){ctx.fillStyle=(Math.floor(x/105)%2)?'#623921':'#4d2a18';ctx.fillRect(x,0,5,H);ctx.fillStyle='rgba(255,255,255,.035)';ctx.fillRect(x+12,0,2,H)}}
 function tile(src,x,y,w,h){return new Promise(resolve=>{const im=new Image();im.onload=()=>{ctx.save();rr(x,y,w,h,13,'#efe1c9','#d28b13',3);ctx.beginPath();ctx.roundRect(x+4,y+4,w-8,h-8,10);ctx.clip();ctx.drawImage(im,x+4,y+4,w-8,h-8);ctx.restore();resolve()};im.onerror=()=>{rr(x,y,w,h,13,'#efe1c9','#d28b13',3);resolve()};im.src=src})}
+function imageFit(src,x,y,w,h,r=0){return new Promise(resolve=>{const im=new Image();im.onload=()=>{const ar=im.width/im.height,tar=w/h;let sx=0,sy=0,sw=im.width,sh=im.height;if(ar>tar){sw=im.height*tar;sx=(im.width-sw)/2}else{sh=im.width/tar;sy=(im.height-sh)/2}ctx.save();if(r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.clip()}ctx.drawImage(im,sx,sy,sw,sh,x,y,w,h);ctx.restore();resolve()};im.onerror=resolve;im.src=src})}
 async function draw(){
  wood();rr(32,20,W-64,H-40,4,C.paper,'#d29a22',4);honeyComb(54,82,18,10);honeyComb(672,850,18,10);flower(145,62,36);flower(202,48,25);flower(690,916,42);flower(725,972,30);flower(667,1014,24);
- rr(94,72,242,92,14,C.green,'#dfac2a',4);txt('LA FABBRICA DELLE API',215,102,18,'800','#efb52f');txt('Sapori e mondo dell’alveare',215,137,12,'700','#fff');
- rr(520,66,160,126,4,'#fffdf6','#d8cdb8',2);txt('ALVEOTERAPIA',600,86,15,'800',C.green);txt('INTEGRATA',600,107,15,'800',C.green);txt('by ALTHEA 12830',600,132,11,'700','#173c30');txt('• CONSULENZE',540,154,10,'700','#173c30','Arial','left');txt('• MARKETING',540,170,10,'700','#173c30','Arial','left');
- txt('TEL.',397,113,12,'800','#a36508');txt('334 847 6020',397,133,17,'800','#0d6049');txt('EMAIL',397,158,11,'800','#a36508');txt('althea12830@gmail.com',397,178,11,'700','#0d6049');
- txt('LA GALENA DELLE API',397,258,48,'800',C.dark,'Georgia');line(172,300,622,300,'#a8690c',3);txt(t.sub,397,329,fit(t.sub,25,17,520),'800',C.dark);txt('LA FABBRICA DELLE API',397,360,18,'800','#a56108');
- txt('Via XX Settembre 20/A',397,433,22,'800',C.dark);txt('46033 Castel d’Ario (MN)',397,465,19,'400',C.dark);txt('Tel.  334 847 6020',397,518,18,'700','#8a5208');txt('Email:  althea12830@gmail.com',397,550,17,'600',C.dark);txt('Sito:  www.lafabbricadelleapi.it',397,582,17,'600',C.dark);
- rr(286,608,222,38,2,'#5a341d');txt('ALTHEA 12830',397,627,18,'800','#fff');
- await Promise.all([tile('/images/tris-linea-render.jpg',92,674,132,96),tile('/images/v2-tesori-limoncello.webp',244,674,132,96),tile('/images/castagno.png',396,674,132,96),tile('/images/tesori.png',548,674,132,96)]);
- rr(82,806,630,260,20,'#fffaf0','#b97810',4);txt(t.event,397,842,fit(t.event,26,17,540),'800','#9b5b08');line(166,871,628,871,'#c88717',2);txt(t.market,397,916,fit(t.market,38,24,550,'Georgia','800'),'800',C.dark,'Georgia');txt('BONDENO (FE)',397,960,24,'800',C.dark);txt('•',397,995,24,'800','#c47c0b');txt(t.when1,397,1024,fit(t.when1,20,14,540),'800','#a56008');txt(t.when2,397,1052,18,'400',C.dark);
+
+ // Testata approvata: marchio a sinistra, ALTHEA sopra i contatti, blocco informativo a destra.
+ rr(76,70,258,105,15,C.green,'#dfac2a',4);
+ txt('LA FABBRICA DELLE API',205,101,19,'800','#efb52f');
+ txt(t.tag,205,140,fit(t.tag,13,9,225),'700','#fff');
+ rr(100,181,210,38,18,'#e6ad22');
+ txt('lafabbricadelleapi.it',205,200,18,'800','#0b4b3a');
+
+ await imageFit('/images/bacheca/althea.webp',350,62,94,94,2);
+ rr(344,162,106,28,2,'#5a341d');
+ txt('ALTHEA 12830',397,176,13,'800','#fff');
+ txt('TEL.',397,205,11,'800','#a36508');
+ txt('334 847 6020',397,225,18,'800','#0d6049');
+ txt('EMAIL',397,250,10,'800','#a36508');
+ txt('althea12830@gmail.com',397,269,10,'700','#0d6049');
+
+ rr(520,64,172,204,4,'#fffdf6','#d29a22',2);
+ txt(t.sub==='ALVEOTERAPIA INTEGRATA'?'ALVEOTERAPIA':t.sub.split(' ')[0],606,88,fit(t.sub==='ALVEOTERAPIA INTEGRATA'?'ALVEOTERAPIA':t.sub.split(' ')[0],16,11,150),'800',C.green);
+ const sub2=t.sub==='ALVEOTERAPIA INTEGRATA'?'INTEGRATA':t.sub.split(' ').slice(1).join(' ');
+ txt(sub2,606,111,fit(sub2,16,10,150),'800',C.green);
+ line(548,129,664,129,'#d89a18',2);
+ txt('by ALTHEA 12830',606,147,11,'700','#173c30');
+ t.bul.forEach((b,i)=>txt('• '+b,538,171+i*18,fit('• '+b,10,8,145),'700','#173c30','Arial','left'));
+
+ txt('LA GALENA DELLE API',397,336,48,'800',C.dark,'Georgia');
+ line(172,378,622,378,'#a8690c',3);
+ txt(t.sub,397,407,fit(t.sub,25,17,520),'800',C.dark);
+ txt('LA FABBRICA DELLE API',397,438,18,'800','#a56108');
+
+ txt('Via XX Settembre 20/A',397,500,22,'800',C.dark);
+ txt('46033 Castel d’Ario (MN)',397,532,19,'400',C.dark);
+ txt('Tel.  334 847 6020',397,578,18,'700','#8a5208');
+ txt('Email:  althea12830@gmail.com',397,608,17,'600',C.dark);
+ txt('Sito:  www.lafabbricadelleapi.it',397,638,17,'600',C.dark);
+ rr(286,660,222,38,2,'#5a341d');
+ txt('ALTHEA 12830',397,679,18,'800','#fff');
+
+ // Le quattro fotografie autentiche ritagliate dal PDF originale.
+ await Promise.all([
+   tile('/images/bacheca/mercatino-1.webp',82,720,148,105),
+   tile('/images/bacheca/mercatino-2.webp',243,720,148,105),
+   tile('/images/bacheca/mercatino-3.webp',404,720,148,105),
+   tile('/images/bacheca/mercatino-4.webp',565,720,148,105)
+ ]);
+
+ rr(82,852,630,238,20,'#fffaf0','#b97810',4);
+ txt(t.event,397,885,fit(t.event,26,17,540),'800','#9b5b08');
+ line(166,912,628,912,'#c88717',2);
+ txt(t.market,397,950,fit(t.market,38,24,550,'Georgia','800'),'800',C.dark,'Georgia');
+ txt('BONDENO (FE)',397,993,24,'800',C.dark);
+ txt('•',397,1024,24,'800','#c47c0b');
+ txt(t.when1,397,1050,fit(t.when1,20,14,540),'800','#a56008');
+ txt(t.when2,397,1075,18,'400',C.dark);
 }
 draw();
 const btn=document.getElementById('downloadEventFlyer');btn.textContent='⬇ '+t.download;
