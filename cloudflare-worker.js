@@ -130,7 +130,7 @@ async function validateAddressNative(url){
 }
 
 
-const SHOP_ROUTES = new Set(['/shop','/shop/','/shop-v2','/shop-v2/','/shop.html']);
+const SHOP_ROUTES = new Set(['/shop','/shop/','/shop/index.html','/shop-v2','/shop-v2/','/shop-v2.html','/shop.html']);
 
 export default {
   async fetch(request, env) {
