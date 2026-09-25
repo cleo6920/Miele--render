@@ -1,3 +1,5 @@
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+
 const VERCEL_V2_ORIGIN = 'https://miele-backend-omega.vercel.app';
 
 export default {
@@ -14,6 +16,37 @@ export default {
       }, {
         headers: { 'Cache-Control': 'no-store' }
       });
+    }
+
+    if (url.pathname === '/api/phone-normalize') {
+      let prefix = String(url.searchParams.get('prefix') || '').trim().replace(/[\s().-]/g, '');
+      let national = String(url.searchParams.get('phone') || '').trim().replace(/[\s().-]/g, '');
+      if (prefix.startsWith('00')) prefix = '+' + prefix.slice(2);
+      if (!prefix.startsWith('+')) prefix = '+' + prefix.replace(/\D/g, '');
+      national = national.replace(/^\+/, '').replace(/\D/g, '');
+
+      if (!/^\+\d{1,4}$/.test(prefix) || !/^\d{4,14}$/.test(national)) {
+        return Response.json({ ok:false, error:'Prefisso o numero non valido.' }, { status:422, headers:{'Cache-Control':'no-store'} });
+      }
+
+      const phone = parsePhoneNumberFromString(prefix + national);
+      if (!phone || !phone.isValid()) {
+        return Response.json({ ok:false, error:'La combinazione prefisso + numero non risulta valida.' }, { status:422, headers:{'Cache-Control':'no-store'} });
+      }
+
+      const callingCode = '+' + phone.countryCallingCode;
+      if (callingCode !== prefix) {
+        return Response.json({ ok:false, error:'Il numero non è compatibile con il prefisso indicato.' }, { status:422, headers:{'Cache-Control':'no-store'} });
+      }
+
+      return Response.json({
+        ok:true,
+        e164:phone.number,
+        international:phone.formatInternational(),
+        callingCode,
+        national:phone.nationalNumber,
+        phoneCountry:phone.country || ''
+      }, { headers:{'Cache-Control':'no-store'} });
     }
 
     if (url.pathname.startsWith('/api/')) {
