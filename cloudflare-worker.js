@@ -1,4 +1,5 @@
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import SHOP_HTML from './cloudflare-shop-html.js';
 
 const VERCEL_V2_ORIGIN = 'https://miele-backend-omega.vercel.app';
 
@@ -200,19 +201,20 @@ export default {
       return fetch(new Request(target, request));
     }
 
-    // Always serve the single canonical V2 shop asset for every shop URL.
-    // This avoids stale /shop/index.html copies surviving across deployments.
+    // Serve /shop from HTML bundled inside this Worker deployment.
+    // This completely bypasses stale/static HTML aliases and makes one source authoritative.
     if (SHOP_ROUTES.has(url.pathname)) {
-      const assetUrl = new URL('/shop-v2.html', request.url);
-      assetUrl.searchParams.set('build', '20260925-shop-canonical-1');
-      const response = await env.ASSETS.fetch(new Request(assetUrl.toString(), request));
-      const headers = new Headers(response.headers);
-      headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
-      headers.set('Pragma', 'no-cache');
-      headers.set('Expires', '0');
-      headers.set('X-Shop-Source', 'shop-v2.html');
-      headers.set('X-Shop-Build', '20260925-shop-canonical-1');
-      return new Response(response.body, { status: response.status, headers });
+      return new Response(SHOP_HTML, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html; charset=UTF-8',
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'X-Shop-Source': 'worker-bundled-canonical',
+          'X-Shop-Build': '20260925-worker-bundled-1'
+        }
+      });
     }
 
     // During migration, always take multilingual digital previews and the free
