@@ -5,6 +5,46 @@ const { spawn } = require('child_process');
 const root = __dirname;
 const dist = path.join(root, 'dist');
 
+const GA_MEASUREMENT_ID = 'G-V6HRR5LSL9';
+const GA_TAG = `
+<!-- Google tag (gtag.js) · La Fabbrica delle Api -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    analytics_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    wait_for_update: 500
+  });
+  gtag('js', new Date());
+  gtag('config', '${GA_MEASUREMENT_ID}');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"></script>
+`;
+
+function injectGoogleAnalytics(html) {
+  if (!html || html.includes(GA_MEASUREMENT_ID)) return html;
+  if (!/<\/head>/i.test(html)) return html;
+  return html.replace(/<\/head>/i, GA_TAG + '\n</head>');
+}
+
+function injectGoogleAnalyticsIntoDist(dir) {
+  if (!fs.existsSync(dir)) return;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      injectGoogleAnalyticsIntoDist(full);
+      continue;
+    }
+    if (!entry.isFile() || path.extname(entry.name).toLowerCase() !== '.html') continue;
+    const html = fs.readFileSync(full, 'utf8');
+    const next = injectGoogleAnalytics(html);
+    if (next !== html) fs.writeFileSync(full, next, 'utf8');
+  }
+}
+
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;
   fs.mkdirSync(dest, { recursive: true });
@@ -213,6 +253,9 @@ async function main() {
     }
     fs.writeFileSync(path.join(dist, 'punti-ape.html'), puntiApeHtml, 'utf8');
     writeRoute('/punti-ape', puntiApeHtml);
+
+    // Installa GA4 su tutte le pagine HTML generate prima di creare il bundle dello shop.
+    injectGoogleAnalyticsIntoDist(dist);
 
     // Bundle the validated shop HTML directly with the Worker.
     // /shop will no longer depend on Cloudflare static-asset HTML routing or stale copies.
