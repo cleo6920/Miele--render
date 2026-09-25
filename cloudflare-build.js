@@ -8,22 +8,64 @@ const dist = path.join(root, 'dist');
 const GA_MEASUREMENT_ID = 'G-V6HRR5LSL9';
 const GA_TAG = `
 <!-- Google tag (gtag.js) · La Fabbrica delle Api -->
+<style>
+  #fda-consent{position:fixed;left:18px;right:18px;bottom:18px;z-index:2147483000;display:none;max-width:760px;margin:auto;background:#fffaf1;color:#173329;border:1px solid #d8c79b;border-radius:18px;box-shadow:0 18px 55px rgba(0,0,0,.28);padding:18px;font-family:Arial,Helvetica,sans-serif}
+  #fda-consent strong{display:block;font-size:18px;margin-bottom:6px}
+  #fda-consent p{margin:0 0 12px;line-height:1.45;font-size:14px}
+  #fda-consent .fda-consent-actions{display:flex;gap:8px;flex-wrap:wrap}
+  #fda-consent button{border:0;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer}
+  #fda-consent-accept{background:#0b3025;color:#fff}
+  #fda-consent-reject{background:#eee6d8;color:#173329}
+  #fda-consent a{color:#8a6116;font-weight:700}
+  #fda-consent-settings{position:fixed;left:14px;bottom:14px;z-index:2147482999;border:1px solid #d8c79b;background:#fffaf1;color:#173329;border-radius:999px;padding:8px 11px;font:700 12px Arial,Helvetica,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.18);cursor:pointer;display:none}
+</style>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('consent', 'default', {
-    ad_storage: 'denied',
-    analytics_storage: 'denied',
-    ad_user_data: 'denied',
-    ad_personalization: 'denied',
-    wait_for_update: 500
+(function(){
+  var KEY='fda-google-consent-v1';
+  var saved=null;
+  try{saved=localStorage.getItem(KEY);}catch(_){}
+  window.dataLayer=window.dataLayer||[];
+  window.gtag=window.gtag||function(){dataLayer.push(arguments);};
+  function state(value){
+    var granted=value==='all';
+    return {
+      ad_storage: granted?'granted':'denied',
+      analytics_storage: granted?'granted':'denied',
+      ad_user_data: granted?'granted':'denied',
+      ad_personalization: granted?'granted':'denied'
+    };
+  }
+  gtag('consent','default',Object.assign(state(saved),{wait_for_update:500}));
+  gtag('js',new Date());
+  gtag('config','${GA_MEASUREMENT_ID}');
+  function apply(value){
+    try{localStorage.setItem(KEY,value);}catch(_){}
+    gtag('consent','update',state(value));
+    var box=document.getElementById('fda-consent');
+    var settings=document.getElementById('fda-consent-settings');
+    if(box)box.style.display='none';
+    if(settings)settings.style.display='block';
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var box=document.createElement('div');
+    box.id='fda-consent';
+    box.innerHTML='<strong>Privacy e misurazione</strong><p>Usiamo strumenti di misurazione Google Analytics e, se acconsenti, dati utili anche a misurare le campagne pubblicitarie. Puoi scegliere solo i cookie necessari oppure accettare tutti. <a href="/privacy.html">Privacy</a></p><div class="fda-consent-actions"><button id="fda-consent-accept" type="button">Accetta tutti</button><button id="fda-consent-reject" type="button">Solo necessari</button></div>';
+    document.body.appendChild(box);
+    var settings=document.createElement('button');
+    settings.id='fda-consent-settings';
+    settings.type='button';
+    settings.textContent='Cookie';
+    document.body.appendChild(settings);
+    box.querySelector('#fda-consent-accept').onclick=function(){apply('all');};
+    box.querySelector('#fda-consent-reject').onclick=function(){apply('necessary');};
+    settings.onclick=function(){box.style.display='block';settings.style.display='none';};
+    if(saved==='all'||saved==='necessary')settings.style.display='block';
+    else box.style.display='block';
   });
-  gtag('js', new Date());
-  gtag('config', '${GA_MEASUREMENT_ID}');
+})();
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"></script>
 `;
-
 function injectGoogleAnalytics(html) {
   if (!html || html.includes(GA_MEASUREMENT_ID)) return html;
   if (!/<\/head>/i.test(html)) return html;
