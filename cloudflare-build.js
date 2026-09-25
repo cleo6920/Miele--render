@@ -214,6 +214,20 @@ async function main() {
     fs.writeFileSync(path.join(dist, 'punti-ape.html'), puntiApeHtml, 'utf8');
     writeRoute('/punti-ape', puntiApeHtml);
 
+    // Bundle the validated shop HTML directly with the Worker.
+    // /shop will no longer depend on Cloudflare static-asset HTML routing or stale copies.
+    const canonicalShopHtml = fs.readFileSync(path.join(dist, 'shop-v2.html'), 'utf8');
+    const canonicalCardCount = (canonicalShopHtml.match(/class="catalog-card product-openable/g) || []).length;
+    const canonicalSectionCount = (canonicalShopHtml.match(/data-official-section=/g) || []).length;
+    if (canonicalCardCount < 38 || canonicalSectionCount < 7) {
+      throw new Error('[Cloudflare V2] Shop canonico incompleto: '+canonicalCardCount+' card, '+canonicalSectionCount+' sezioni.');
+    }
+    fs.writeFileSync(
+      path.join(root, 'cloudflare-shop-html.js'),
+      'export default ' + JSON.stringify(canonicalShopHtml) + ';\n',
+      'utf8'
+    );
+
     console.log('[Cloudflare V2] Build PASS: Edizioni Aperte, Alveo Digitale, 10 Colazioni, Punti Ape e Saldo Api presenti.');
   } finally {
     if (server.exitCode === null) server.kill('SIGTERM');
