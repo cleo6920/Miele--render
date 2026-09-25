@@ -198,7 +198,13 @@ export default {
 
     if (url.pathname.startsWith('/api/')) {
       const target = new URL(url.pathname + url.search, VERCEL_V2_ORIGIN);
-      return fetch(new Request(target, request));
+      const init = {
+        method: request.method,
+        headers: request.headers,
+        redirect: 'manual'
+      };
+      if (request.method !== 'GET' && request.method !== 'HEAD') init.body = request.body;
+      return fetch(new Request(target.toString(), init));
     }
 
     // Serve /shop from HTML bundled inside this Worker deployment.
