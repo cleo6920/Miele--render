@@ -266,10 +266,18 @@ export default {
     if (assetResponse.ok) return assetResponse;
 
     if (url.pathname.startsWith('/images/')) {
-      // Authoritative fallback: the Cloudflare migration branch itself.
-      // This prevents broken product photos when the static asset layer returns 404/503.
-      const raw = 'https://raw.githubusercontent.com/cleo6920/Miele--render/cloudflare-test' + url.pathname;
-      const response = await fetch(raw, { headers:{'User-Agent':'La-Fabbrica-delle-Api-Cloudflare-Test'} });
+      // First fallback: images already present in the Cloudflare migration branch.
+      const rawPrimary = 'https://raw.githubusercontent.com/cleo6920/Miele--render/cloudflare-test' + url.pathname;
+      let response = await fetch(rawPrimary, { headers:{'User-Agent':'La-Fabbrica-delle-Api-Cloudflare-Test'} });
+      if (response.ok) {
+        const headers = new Headers(response.headers);
+        headers.set('Cache-Control','public, max-age=300');
+        return new Response(response.body,{status:200,headers});
+      }
+
+      // Second fallback: newer V2 image assets that still live in miele-backend.
+      const rawSecondary = 'https://raw.githubusercontent.com/cleo6920/miele-backend/main' + url.pathname;
+      response = await fetch(rawSecondary, { headers:{'User-Agent':'La-Fabbrica-delle-Api-Cloudflare-Test'} });
       if (response.ok) {
         const headers = new Headers(response.headers);
         headers.set('Cache-Control','public, max-age=300');
