@@ -62,7 +62,7 @@ async function validateAddressNative(url){
   const country=String(url.searchParams.get('country')||'IT').trim().toUpperCase();
 
   if(!address||!city||!cap)return {status:400,body:{ok:false,eligible:false,validFullAddress:false,error:'Via, numero civico, Comune/Città e codice postale sono obbligatori.'}};
-  if(!/\p{L}/u.test(address)||!\d/.test(address))return {status:422,body:{ok:false,eligible:false,validFullAddress:false,error:'Inserisci sia il nome della via sia il numero civico.'}};
+  if(!/\p{L}/u.test(address)||!/\d/.test(address))return {status:422,body:{ok:false,eligible:false,validFullAddress:false,error:'Inserisci sia il nome della via sia il numero civico.'}};
   if(country==='IT'){
     if(!/^\d{5}$/.test(cap))return {status:422,body:{ok:false,eligible:false,validFullAddress:false,error:'Il CAP deve essere composto da 5 cifre.'}};
     if(!/^[A-Z]{2}$/.test(province))return {status:422,body:{ok:false,eligible:false,validFullAddress:false,error:'La Provincia deve essere indicata con due lettere, ad esempio VR.'}};
