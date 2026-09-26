@@ -191,7 +191,7 @@ async function siteTranslateBatchAI(texts,target){
   const prompt=[
     'Translate each Italian website UI string into '+language+'.',
     'Return ONLY valid JSON: an array of objects with exactly {"index":number,"translation":string}.',
-    'Keep brand names unchanged: LA FABBRICA DELLE API, ALTHEA 12830, La Galena delle Api, Oasi del Busatello, Alveo Digitale, Ape Pelù.',
+    'Keep brand names unchanged: LA FABBRICA DELLE API, ALTHEA 12830, La Galena delle Api, Oasi del Busatello, Alveo Digitale, Ape Telù.',
     'Keep product codes, numbers, prices, units and URLs unchanged.',
     'Translate all ordinary headings, descriptions, buttons and labels naturally and completely.',
     'Do not add explanations.',
@@ -1085,11 +1085,11 @@ function getApeContextAction(message, reply, lang='it') {
 app.post('/api/ape-pelu-chat', async (req, res) => {
   const apiKey = String(process.env.GROQ_API_KEY || '').trim();
   if (!apiKey) {
-    console.warn('[Ape Pelù] GROQ_API_KEY assente: uso fallback locale.');
+    console.warn('[Ape Telù] GROQ_API_KEY assente: uso fallback locale.');
     return res.status(503).json({
       ok:false,
       aiConfigured:false,
-      error:'Ape Pelù AI non è ancora collegata al motore esterno.'
+      error:'Ape Telù AI non è ancora collegata al motore esterno.'
     });
   }
 
@@ -1102,7 +1102,7 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
     const languageName = {it:'Italiano',en:'English',de:'Deutsch',fr:'Français',es:'Español'}[requestedLanguage];
 
     if (!message) {
-      return res.status(400).json({ok:false,error:'Scrivi una domanda per Ape Pelù.'});
+      return res.status(400).json({ok:false,error:'Scrivi una domanda per Ape Telù.'});
     }
 
     const digitalIntent=/\b(prodotto digitale|prodotti digitali|digitale|ebook|e-book|ricettario digitale|alveo digitale|digital product|digital products)\b/i.test(message);
@@ -1141,7 +1141,7 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
     const productContext = /(veleno|linea veleni|bee venom|bienengift|venin d['’]abeille|veneno de abeja|sos dol|apis\s*[12457]|prodotto|product|produkt|produit|producto|crema|cream|cr[eè]me|unguento|ointment|salbe|pommade|pomada|gommage|bagnodoccia)/i.test(message);
 
     if (productContext && (asksDose || asksDrugChange || asksMedicalOutcome)) {
-      console.log('[Ape Pelù] Guardia non-medica attivata.');
+      console.log('[Ape Telù] Guardia non-medica attivata.');
       return res.json({
         ok:true,
         guarded:true,
@@ -1166,7 +1166,7 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
       .filter(item => item.content);
 
     const instructions = `
-Sei "Ape Pelù", la guida esperta della Fabbrica delle Api.
+Sei "Ape Telù", la guida esperta della Fabbrica delle Api.
 
 IDENTITÀ E PRIORITÀ
 - Prima di tutto sei una guida competente sul mondo delle api, dell'alveare, dell'apicoltura, degli impollinatori, della biodiversità e dei prodotti dell'alveare.
@@ -1246,10 +1246,10 @@ ACCURATEZZA E ANTI-INVENZIONE
 - Evita frasi antropomorfiche forti come "la colonia costruisce una mappa interna" se non sono necessarie.
 
 SALUTE E SICUREZZA
-- Ape Pelù NON è un medico, NON è un farmacista e NON deve comportarsi come tale.
+- Ape Telù NON è un medico, NON è un farmacista e NON deve comportarsi come tale.
 - Non fare diagnosi, prescrizioni, dosaggi, indicazioni terapeutiche, valutazioni cliniche o promesse di cura.
 - Non usare linguaggio medico o farmaceutico come tono abituale. Evita parole e formule come: terapia, trattamento, analgesico, antinfiammatorio, efficacia clinica, stimola la circolazione, prescrizione, dosaggio, patologia, sintomo, guarigione, cura.
-- Questi termini possono comparire solo se servono per spiegare chiaramente che NON è il campo di Ape Pelù o per distinguere un uso cosmetico da uno medico.
+- Questi termini possono comparire solo se servono per spiegare chiaramente che NON è il campo di Ape Telù o per distinguere un uso cosmetico da uno medico.
 - Non presentare alveoterapia, veleno d'api, SOS DOL o altri prodotti come cure o trattamenti medici.
 - Per cosmetica e Linea Veleni usa parole semplici e non mediche: uso cosmetico, massaggio, pelle, gesto quotidiano, texture, profumo, sensazione, comfort.
 - Se l'utente chiede una cura o un consiglio medico, rispondi con una frase breve e naturale che chiarisca il limite e poi torna su informazioni educative, naturalistiche o cosmetiche non mediche.
@@ -1312,8 +1312,8 @@ Risposta attesa: impollinazione, cibo, agricoltura, lavoro, economia, cultura, e
     const data = await aiResponse.json().catch(() => null);
 
     if (!aiResponse.ok) {
-      console.error('[Ape Pelù] Groq error:', aiResponse.status, data?.error?.message || 'unknown');
-      return res.status(502).json({ok:false,aiConfigured:true,error:'Ape Pelù non riesce a rispondere con il motore AI in questo momento.'});
+      console.error('[Ape Telù] Groq error:', aiResponse.status, data?.error?.message || 'unknown');
+      return res.status(502).json({ok:false,aiConfigured:true,error:'Ape Telù non riesce a rispondere con il motore AI in questo momento.'});
     }
 
     const reply = String(data?.choices?.[0]?.message?.content || '').trim();
@@ -1322,12 +1322,12 @@ Risposta attesa: impollinazione, cibo, agricoltura, lavoro, economia, cultura, e
       return res.status(502).json({ok:false,aiConfigured:true,error:'Risposta AI vuota.'});
     }
 
-    console.log('[Ape Pelù] Groq OK:', String(process.env.GROQ_MODEL || 'openai/gpt-oss-20b'));
+    console.log('[Ape Telù] Groq OK:', String(process.env.GROQ_MODEL || 'openai/gpt-oss-20b'));
     const action=getApeContextAction(message,reply,requestedLanguage);
     return res.json({ok:true,reply,action});
   } catch (error) {
-    console.error('[Ape Pelù] Errore chat AI:', error);
-    return res.status(500).json({ok:false,aiConfigured:true,error:'Errore temporaneo di Ape Pelù.'});
+    console.error('[Ape Telù] Errore chat AI:', error);
+    return res.status(500).json({ok:false,aiConfigured:true,error:'Errore temporaneo di Ape Telù.'});
   }
 });
 
@@ -2000,7 +2000,7 @@ app.get('/downloads/10-colazioni-:lang.pdf',(req,res)=>{
   res.setHeader('Cache-Control','public, max-age=3600');
   return res.sendFile(filePath);
 });
-const GLOBAL_TOOLS_MARKUP="<div class=\"site-tools-bar\" id=\"globalToolsBar\" aria-label=\"Strumenti del sito\"><div class=\"site-tools-inner\"><div class=\"site-tools-note\">Trova subito ciò che cerchi</div><button class=\"global-ape-launch\" id=\"apeChatLaunch\" type=\"button\" aria-label=\"Chiedi a Ape Pelù: scopri, chiedi e lasciati guidare nel mondo delle api\"><span class=\"global-ape-icon\">🐝</span><span class=\"global-ape-copy\"><strong>Chiedi a Ape Pelù</strong><small>Scopri, chiedi, lasciati guidare nel mondo delle api.</small></span></button><div class=\"global-site-search\" id=\"globalSiteSearch\"><div class=\"global-site-search-box\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><input id=\"globalSiteSearchInput\" type=\"search\" placeholder=\"Cerca nel sito...\" autocomplete=\"off\"><button class=\"global-site-search-go\" id=\"globalSiteSearchGo\" type=\"button\" aria-label=\"Avvia la ricerca\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></button></div><div class=\"global-site-search-results\" id=\"globalSiteSearchResults\"></div></div></div></div>";
+const GLOBAL_TOOLS_MARKUP="<div class=\"site-tools-bar\" id=\"globalToolsBar\" aria-label=\"Strumenti del sito\"><div class=\"site-tools-inner\"><div class=\"site-tools-note\">Trova subito ciò che cerchi</div><button class=\"global-ape-launch\" id=\"apeChatLaunch\" type=\"button\" aria-label=\"Chiedi a Ape Telù: scopri, chiedi e lasciati guidare nel mondo delle api\"><span class=\"global-ape-icon\">🐝</span><span class=\"global-ape-copy\"><strong>Chiedi a Ape Telù</strong><small>Scopri, chiedi, lasciati guidare nel mondo delle api.</small></span></button><div class=\"global-site-search\" id=\"globalSiteSearch\"><div class=\"global-site-search-box\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><input id=\"globalSiteSearchInput\" type=\"search\" placeholder=\"Cerca nel sito...\" autocomplete=\"off\"><button class=\"global-site-search-go\" id=\"globalSiteSearchGo\" type=\"button\" aria-label=\"Avvia la ricerca\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></button></div><div class=\"global-site-search-results\" id=\"globalSiteSearchResults\"></div></div></div></div>";
 const sendPage=(filename)=>(_req,res)=>{
   res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');
   if(filename==='shop-v2.html') return res.sendFile(path.join(__dirname,filename));
