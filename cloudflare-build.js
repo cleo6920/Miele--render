@@ -259,7 +259,7 @@ async function main() {
 
       if (pathname === '/' || pathname === '/home') {
         if (!html.includes('globalToolsBar') || !html.includes('global-tools-v2.js')) {
-          throw new Error('[Cloudflare V2] Home senza strumenti globali/Ape Pelù.');
+          throw new Error('[Cloudflare V2] Home senza strumenti globali/Ape Telù.');
         }
         if (!html.includes('Il mondo delle api oggi')) {
           throw new Error('[Cloudflare V2] Home senza presentazione Edizioni Aperte gratuita.');
@@ -267,7 +267,7 @@ async function main() {
       }
 
       if (pathname === '/shop') {
-        const required = ['Ape Pelù','Alveo Digitale','10 Colazioni','Punti Ape','Saldo Api','Il mondo delle api oggi','prodotto-propoli-30-spray-integratore','prodotto-cosmesi-crema-mani','prodotto-apis1-crema-viso-veleno-api','prodotto-tesori-limoncello'];
+        const required = ['Ape Telù','Alveo Digitale','10 Colazioni','Punti Ape','Saldo Api','Il mondo delle api oggi','prodotto-propoli-30-spray-integratore','prodotto-cosmesi-crema-mani','prodotto-apis1-crema-viso-veleno-api','prodotto-tesori-limoncello'];
         const missing = required.filter(value => !html.includes(value));
         if (missing.length) throw new Error('[Cloudflare V2] Shop V2 incompleto: ' + missing.join(', '));
         const cardCount = (html.match(/class="catalog-card product-openable/g) || []).length;
