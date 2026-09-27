@@ -110,7 +110,7 @@ function copyBrowserAssets() {
   for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
     if (!entry.isFile()) continue;
     const ext = path.extname(entry.name).toLowerCase();
-    if (['.html', '.css', '.svg', '.ico', '.txt', '.webmanifest'].includes(ext)) {
+    if (['.html', '.css', '.svg', '.ico', '.txt', '.xml', '.webmanifest'].includes(ext)) {
       copyFileIfPresent(entry.name);
     }
   }
