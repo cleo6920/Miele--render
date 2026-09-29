@@ -72,6 +72,51 @@ function injectGoogleAnalytics(html) {
   return html.replace(/<\/head>/i, GA_TAG + '\n</head>');
 }
 
+
+function injectBrandSeo(html, pathname) {
+  if (!html || (pathname !== '/' && pathname !== '/home')) return html;
+
+  const title = "La Fabbrica delle Api | Alveoterapia Integrata a Castel d’Ario";
+  const description = "La Fabbrica delle Api a Castel d’Ario (MN): Alveoterapia Integrata, La Galena delle Api, Oasi del Busatello e prodotti dell’alveare.";
+  const canonical = "https://lafabbricadelleapi.it/";
+
+  if (/<title>[\s\S]*?<\/title>/i.test(html)) {
+    html = html.replace(/<title>[\s\S]*?<\/title>/i, '<title>' + title + '</title>');
+  } else {
+    html = html.replace(/<\/head>/i, '<title>' + title + '</title>\n</head>');
+  }
+
+  if (/<meta\s+name=["']description["'][^>]*>/i.test(html)) {
+    html = html.replace(/<meta\s+name=["']description["'][^>]*>/i, '<meta name="description" content="' + description + '">');
+  } else {
+    html = html.replace(/<\/head>/i, '<meta name="description" content="' + description + '">\n</head>');
+  }
+
+  if (/<link\s+rel=["']canonical["'][^>]*>/i.test(html)) {
+    html = html.replace(/<link\s+rel=["']canonical["'][^>]*>/i, '<link rel="canonical" href="' + canonical + '">');
+  } else {
+    html = html.replace(/<\/head>/i, '<link rel="canonical" href="' + canonical + '">\n</head>');
+  }
+
+  html = html.replace(
+    /("@type"\s*:\s*"Organization"\s*,)(?!\s*"logo")/g,
+    '$1"logo":"https://lafabbricadelleapi.it/favicon.svg",'
+  );
+
+  if (!/"@type"\s*:\s*"Organization"/.test(html)) {
+    const orgSchema = '<script type="application/ld+json">' + JSON.stringify({
+      "@context":"https://schema.org",
+      "@type":"Organization",
+      "name":"La Fabbrica delle Api",
+      "url":"https://lafabbricadelleapi.it/",
+      "logo":"https://lafabbricadelleapi.it/favicon.svg"
+    }) + '</script>';
+    html = html.replace(/<\/head>/i, orgSchema + '\n</head>');
+  }
+
+  return html;
+}
+
 function injectGoogleAnalyticsIntoDist(dir) {
   if (!fs.existsSync(dir)) return;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -255,6 +300,7 @@ async function main() {
     for (const [pathname, flatFile] of routes) {
       const response = await fetchReady(origin, pathname);
       let html = await response.text();
+      html = injectBrandSeo(html, pathname);
       if (!/<html/i.test(html)) throw new Error('[Cloudflare V2] HTML non valido da ' + pathname);
 
       if (pathname === '/' || pathname === '/home') {
