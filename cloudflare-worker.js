@@ -247,6 +247,19 @@ export default {
       });
     }
 
+    // Serve the Galena hero image directly from the repository.
+    // This bypasses a stale/broken static-asset response seen on the public /centro page.
+    if (url.pathname === '/images/galena-ingresso-google.jpg') {
+      const raw = 'https://raw.githubusercontent.com/cleo6920/Miele--render/cloudflare-test/images/galena-ingresso-google.jpg';
+      const response = await fetch(raw, { headers:{'User-Agent':'La-Fabbrica-delle-Api-Cloudflare-Test'} });
+      if (response.ok) {
+        const headers = new Headers(response.headers);
+        headers.set('Content-Type','image/jpeg');
+        headers.set('Cache-Control','public, max-age=300');
+        return new Response(response.body,{status:200,headers});
+      }
+    }
+
     // During migration, always take multilingual digital previews and the free
     // magazine PDFs from the authoritative latest V2 repository instead of the
     // older Render asset set.
