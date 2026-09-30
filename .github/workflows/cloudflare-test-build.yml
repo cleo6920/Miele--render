@@ -37,3 +37,6 @@ jobs:
           test -f cloudflare-worker.js
           test -f wrangler.jsonc
           echo "Cloudflare test build PASS"
+
+      - name: Deploy Cloudflare Worker
+        run: npx wrangler deploy
