@@ -2159,19 +2159,23 @@ function apeUpdateMicButton(){
   apeMicBtn.title=apeListening?'Ferma ascolto':'Parla con Ape Telù';
   apeMicBtn.setAttribute('aria-label',apeMicBtn.title);
 }
-function apeStartListening(){
+function apeStartListening(retryCount=0){
   const Ctor=apeRecognitionCtor();if(!Ctor||apeListening)return;
   apeStopVoice();
   try{
     const rec=new Ctor();apeRecognition=rec;apeListening=true;apeUpdateMicButton();
     rec.lang=apeVoiceLocale();rec.interimResults=false;rec.continuous=false;rec.maxAlternatives=1;
     rec.onresult=e=>{const transcript=String(e.results?.[0]?.[0]?.transcript||'').trim();if(transcript){apeChatInput.value=transcript;setTimeout(()=>apeAsk(transcript),80)}};
-    rec.onerror=()=>{};
+    rec.onerror=e=>{
+      const err=String(e&&e.error||'');
+      apeListening=false;apeRecognition=null;apeUpdateMicButton();
+      if(err==='network'&&retryCount<1){setTimeout(()=>apeStartListening(retryCount+1),350)}
+    };
     rec.onend=()=>{apeListening=false;apeRecognition=null;apeUpdateMicButton()};
     rec.start();
   }catch(_){apeListening=false;apeRecognition=null;apeUpdateMicButton()}
 }
-function apeStopListening(){try{apeRecognition?.stop()}catch(_){}apeListening=false;apeRecognition=null;apeUpdateMicButton()}
+function apeStopListening(){try{apeRecognition?.abort()}catch(_){}apeListening=false;apeRecognition=null;apeUpdateMicButton()}
 apeUpdateVoiceButton();apeUpdateMicButton();
 if(apeVoiceSupported())window.speechSynthesis.onvoiceschanged=apeUpdateVoiceButton;
 apeVoiceBtn?.addEventListener('click',()=>{apeVoiceEnabled=!apeVoiceEnabled;try{localStorage.setItem(APE_VOICE_KEY,apeVoiceEnabled?'on':'off')}catch(_){}if(!apeVoiceEnabled)apeStopVoice();apeUpdateVoiceButton()});
