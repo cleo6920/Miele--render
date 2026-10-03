@@ -329,6 +329,24 @@ linear-gradient(150deg,transparent 24%,rgba(198,151,40,.08) 25%,rgba(198,151,40,
 
 @media(max-width:760px){#saldo-punti-ape-home .wrap>div{grid-template-columns:auto 1fr!important}#saldo-punti-ape-home .wrap>div>div:last-child{grid-column:1/-1}}
 </style>
+<style id="global-tools-critical">
+.site-tools-bar{position:sticky;top:68px;z-index:88;background:#10392c;color:#fff;border-bottom:1px solid rgba(255,255,255,.1)}
+.site-tools-inner{width:min(1280px,calc(100% - 28px));min-height:54px;margin:auto;display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:7px 0}
+.site-tools-note{margin-right:auto;color:#dce9e2;font:800 12px/1 Arial,sans-serif}
+.global-ape-launch{box-sizing:border-box;min-height:46px;min-width:370px;border:1px solid rgba(255,255,255,.22);background:#e3ad31;color:#153126;border-radius:999px;padding:5px 18px 5px 9px;display:inline-flex;align-items:center;justify-content:flex-start;gap:10px;cursor:pointer;white-space:nowrap;box-shadow:0 5px 16px rgba(0,0,0,.10)}
+.global-ape-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#fff3c9;font-size:20px;flex:0 0 34px}
+.global-ape-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;line-height:1.08}
+.global-ape-copy strong{font:950 13px/1.05 Arial,sans-serif}.global-ape-copy small{font:750 10.5px/1.1 Arial,sans-serif;color:#355646}
+.global-site-search{position:relative;flex:0 0 min(360px,31vw);z-index:110}
+.global-site-search-box{box-sizing:border-box;height:40px;display:flex;align-items:center;gap:8px;border-radius:999px;background:#fff;color:#173126;border:1px solid rgba(255,255,255,.55);box-shadow:0 4px 14px rgba(0,0,0,.12);padding:0 7px 0 13px}
+.global-site-search-box>svg{width:17px!important;height:17px!important;max-width:17px;max-height:17px;flex:0 0 17px;color:#31594b}
+.global-site-search-box input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#173126;font:700 13px/1 Arial,sans-serif}
+.global-site-search-go{box-sizing:border-box;width:29px;height:29px;flex:0 0 29px;border:0;border-radius:999px;background:#e0aa2d;color:#152119;display:grid;place-items:center;padding:0}
+.global-site-search-go svg{width:15px!important;height:15px!important;max-width:15px;max-height:15px}
+.global-site-search-results{display:none}
+@media(max-width:900px){.site-tools-bar{position:relative;top:auto}.site-tools-inner{width:calc(100% - 18px);flex-wrap:wrap;gap:7px}.site-tools-note{display:none}.global-ape-launch{order:1}.global-site-search{order:2;flex:1 1 250px}}
+@media(max-width:700px){.global-ape-launch{min-width:0;flex:1 1 100%;width:100%}.global-ape-copy small{white-space:normal}.global-site-search{flex:1 1 100%}}
+</style>
 <link rel="stylesheet" href="/global-nav-v2.css?v=20260922-1">
 </head>
 <body translate="no" class="notranslate">
@@ -819,7 +837,7 @@ document.addEventListener('visibilitychange',()=>{
   else resetVenomAuto();
 });
 </script>
-<script src="/global-tools-v2.js?v=20260922-2"></script><script src="/render-language-de-test.js?v=20260923-10"></script>
+<script src="/global-tools-v2.js?v=20261003-2"></script><script src="/render-language-de-test.js?v=20260923-10"></script>
 <script src="/cloudflare-v2-fixes.js?v=20260924-3"></script>
 </body>
 </html>
