@@ -8,6 +8,13 @@ const {
 
 const DEFAULT_SITE_URL = 'https://miele-backend-omega.vercel.app';
 
+const DISABLED_VELENI_PRODUCT_IDS = new Set([
+  'unguento-apis','sos-dol-50ml','apis1-crema-viso-veleno-api','apis2-siero-viso-veleno-api',
+  'apis4-crema-corpo-veleno-api-manuka','apis5-gommage-veleno-api-manuka','bagnodoccia-veleno-oro'
+]);
+const DISABLED_VELENI_NAME_RE = /(?:linea\s+veleni|veleno\s+d[’']?api|sos\s*dol|apis\s*[12457]|veleno\s+d[’']?oro)/i;
+
+
 function cleanText(value, maxLength = 200) {
   return String(value || '').trim().slice(0, maxLength);
 }
@@ -71,6 +78,11 @@ module.exports = async (req, res) => {
     }
 
     const cartMeta = Array.isArray(body.xpayCart) ? body.xpayCart : [];
+    const blockedById = cartMeta.some(item => DISABLED_VELENI_PRODUCT_IDS.has(cleanText(item && (item.productId || item.id), 180)));
+    const blockedByName = sanitizedItems.some(item => DISABLED_VELENI_NAME_RE.test(item.name));
+    if (blockedById || blockedByName) {
+      return res.status(409).json({ error: 'La Linea Veleni è temporaneamente non disponibile per l’acquisto.' });
+    }
     const orderNote = cleanText(body.notes, 120);
     const isAlveoDigitalOrder =
       sanitizedItems.length === 1 &&
