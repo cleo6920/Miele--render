@@ -5,6 +5,19 @@ const { spawn } = require('child_process');
 const root = __dirname;
 const dist = path.join(root, 'dist');
 
+const VELENI_PUBLIC = false;
+
+function hideVeleniFromPublicHtml(html) {
+  if (VELENI_PUBLIC || !html) return html;
+  // Temporary commercial hold: keep source material reversible, but remove the
+  // Linea Veleni from every public HTML surface until the supplier agreement is defined.
+  html = html.replace(/<section class="venom" id="veleni">[\s\S]*?<\/section>/gi, '');
+  html = html.replace(/<section class="catalog-world venom-world" id="linea-veleni">[\s\S]*?<\/section>/gi, '');
+  html = html.replace(/<a\b[^>]*href=["'][^"']*(?:#linea-veleni|#veleni-prodotti|#veleni|linea=veleni)[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
+  return html;
+}
+
+
 const GA_MEASUREMENT_ID = 'G-V6HRR5LSL9';
 const GA_TAG = `
 <!-- Google tag (gtag.js) · La Fabbrica delle Api -->
@@ -300,6 +313,7 @@ async function main() {
     for (const [pathname, flatFile] of routes) {
       const response = await fetchReady(origin, pathname);
       let html = await response.text();
+      html = hideVeleniFromPublicHtml(html);
       html = injectBrandSeo(html, pathname);
       if (!/<html/i.test(html)) throw new Error('[Cloudflare V2] HTML non valido da ' + pathname);
 
@@ -313,13 +327,13 @@ async function main() {
       }
 
       if (pathname === '/shop') {
-        const required = ['Ape Telù','Alveo Digitale','10 Colazioni','Punti Ape','Saldo Api','Il mondo delle api oggi','prodotto-propoli-30-spray-integratore','prodotto-cosmesi-crema-mani','prodotto-apis1-crema-viso-veleno-api','prodotto-tesori-limoncello'];
+        const required = ['Ape Telù','Alveo Digitale','10 Colazioni','Punti Ape','Saldo Api','Il mondo delle api oggi','prodotto-propoli-30-spray-integratore','prodotto-cosmesi-crema-mani','prodotto-tesori-limoncello'];
         const missing = required.filter(value => !html.includes(value));
         if (missing.length) throw new Error('[Cloudflare V2] Shop V2 incompleto: ' + missing.join(', '));
         const cardCount = (html.match(/class="catalog-card product-openable/g) || []).length;
-        if (cardCount < 38) throw new Error('[Cloudflare V2] Catalogo prerenderizzato incompleto: ' + cardCount + ' card.');
+        if (cardCount < 30) throw new Error('[Cloudflare V2] Catalogo prerenderizzato incompleto: ' + cardCount + ' card.');
         const sectionCount = (html.match(/data-official-section=/g) || []).length;
-        if (sectionCount < 7) throw new Error('[Cloudflare V2] Sezioni prodotto mancanti: ' + sectionCount + '/7.');
+        if (sectionCount < 6) throw new Error('[Cloudflare V2] Sezioni prodotto mancanti: ' + sectionCount + '/6.');
       }
 
       if (pathname === '/alveo-digitale') {
@@ -350,7 +364,7 @@ async function main() {
     const canonicalShopHtml = fs.readFileSync(path.join(dist, 'shop-v2.html'), 'utf8');
     const canonicalCardCount = (canonicalShopHtml.match(/class="catalog-card product-openable/g) || []).length;
     const canonicalSectionCount = (canonicalShopHtml.match(/data-official-section=/g) || []).length;
-    if (canonicalCardCount < 38 || canonicalSectionCount < 7) {
+    if (canonicalCardCount < 30 || canonicalSectionCount < 6) {
       throw new Error('[Cloudflare V2] Shop canonico incompleto: '+canonicalCardCount+' card, '+canonicalSectionCount+' sezioni.');
     }
     fs.writeFileSync(
