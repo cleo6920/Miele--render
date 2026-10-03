@@ -2014,7 +2014,24 @@ app.get('/downloads/10-colazioni-:lang.pdf',(req,res)=>{
   res.setHeader('Cache-Control','public, max-age=3600');
   return res.sendFile(filePath);
 });
-const GLOBAL_TOOLS_MARKUP="<div class=\"site-tools-bar\" id=\"globalToolsBar\" aria-label=\"Strumenti del sito\"><div class=\"site-tools-inner\"><div class=\"site-tools-note\">Trova subito ciò che cerchi</div><button class=\"global-ape-launch\" id=\"apeChatLaunch\" type=\"button\" aria-label=\"Chiedi a Ape Telù: scopri, chiedi e lasciati guidare nel mondo delle api\"><span class=\"global-ape-icon\">🐝</span><span class=\"global-ape-copy\"><strong>Chiedi a Ape Telù</strong><small>Scopri, chiedi, lasciati guidare nel mondo delle api.</small></span></button><div class=\"global-site-search\" id=\"globalSiteSearch\"><div class=\"global-site-search-box\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><input id=\"globalSiteSearchInput\" type=\"search\" placeholder=\"Cerca nel sito...\" autocomplete=\"off\"><button class=\"global-site-search-go\" id=\"globalSiteSearchGo\" type=\"button\" aria-label=\"Avvia la ricerca\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></button></div><div class=\"global-site-search-results\" id=\"globalSiteSearchResults\"></div></div></div></div>";
+const GLOBAL_TOOLS_MARKUP="<style id=\"global-tools-critical\">
+.site-tools-bar{position:sticky;top:68px;z-index:88;background:#10392c;color:#fff;border-bottom:1px solid rgba(255,255,255,.1)}
+.site-tools-inner{width:min(1280px,calc(100% - 28px));min-height:54px;margin:auto;display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:7px 0}
+.site-tools-note{margin-right:auto;color:#dce9e2;font:800 12px/1 Arial,sans-serif}
+.global-ape-launch{box-sizing:border-box;min-height:46px;min-width:370px;border:1px solid rgba(255,255,255,.22);background:#e3ad31;color:#153126;border-radius:999px;padding:5px 18px 5px 9px;display:inline-flex;align-items:center;justify-content:flex-start;gap:10px;cursor:pointer;white-space:nowrap;box-shadow:0 5px 16px rgba(0,0,0,.10)}
+.global-ape-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#fff3c9;font-size:20px;flex:0 0 34px}
+.global-ape-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;line-height:1.08}
+.global-ape-copy strong{font:950 13px/1.05 Arial,sans-serif}.global-ape-copy small{font:750 10.5px/1.1 Arial,sans-serif;color:#355646}
+.global-site-search{position:relative;flex:0 0 min(360px,31vw);z-index:110}
+.global-site-search-box{box-sizing:border-box;height:40px;display:flex;align-items:center;gap:8px;border-radius:999px;background:#fff;color:#173126;border:1px solid rgba(255,255,255,.55);box-shadow:0 4px 14px rgba(0,0,0,.12);padding:0 7px 0 13px}
+.global-site-search-box>svg{width:17px!important;height:17px!important;max-width:17px;max-height:17px;flex:0 0 17px;color:#31594b}
+.global-site-search-box input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#173126;font:700 13px/1 Arial,sans-serif}
+.global-site-search-go{box-sizing:border-box;width:29px;height:29px;flex:0 0 29px;border:0;border-radius:999px;background:#e0aa2d;color:#152119;display:grid;place-items:center;padding:0}
+.global-site-search-go svg{width:15px!important;height:15px!important;max-width:15px;max-height:15px}
+.global-site-search-results{display:none}
+@media(max-width:900px){.site-tools-bar{position:relative;top:auto}.site-tools-inner{width:calc(100% - 18px);flex-wrap:wrap;gap:7px}.site-tools-note{display:none}.global-ape-launch{order:1}.global-site-search{order:2;flex:1 1 250px}}
+@media(max-width:700px){.global-ape-launch{min-width:0;flex:1 1 100%;width:100%}.global-ape-copy small{white-space:normal}.global-site-search{flex:1 1 100%}}
+</style><div class=\"site-tools-bar\" id=\"globalToolsBar\" aria-label=\"Strumenti del sito\"><div class=\"site-tools-inner\"><div class=\"site-tools-note\">Trova subito ciò che cerchi</div><button class=\"global-ape-launch\" id=\"apeChatLaunch\" type=\"button\" aria-label=\"Chiedi a Ape Telù: scopri, chiedi e lasciati guidare nel mondo delle api\"><span class=\"global-ape-icon\">🐝</span><span class=\"global-ape-copy\"><strong>Chiedi a Ape Telù</strong><small>Scopri, chiedi, lasciati guidare nel mondo delle api.</small></span></button><div class=\"global-site-search\" id=\"globalSiteSearch\"><div class=\"global-site-search-box\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><input id=\"globalSiteSearchInput\" type=\"search\" placeholder=\"Cerca nel sito...\" autocomplete=\"off\"><button class=\"global-site-search-go\" id=\"globalSiteSearchGo\" type=\"button\" aria-label=\"Avvia la ricerca\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m16.5 16.5 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></button></div><div class=\"global-site-search-results\" id=\"globalSiteSearchResults\"></div></div></div></div><script src=\"/global-tools-v2.js?v=20261003-1\"></script>";
 const sendPage=(filename)=>(_req,res)=>{
   res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');
   if(filename==='shop-v2.html') return res.sendFile(path.join(__dirname,filename));
@@ -2023,13 +2040,16 @@ const sendPage=(filename)=>(_req,res)=>{
     if(!/name=["']google["'][^>]*content=["']notranslate["']/i.test(html)){
       html=html.includes('<head>')?html.replace('<head>','<head><meta name="google" content="notranslate">'):html;
     }
+    if(!html.includes('rel="preload" href="/global-tools-v2.js')){
+      html=html.includes('</head>')?html.replace('</head>','<link rel="preload" href="/global-tools-v2.js?v=20261003-1" as="script">\n</head>'):html;
+    }
     html=html.replace(/<html(?![^>]*\btranslate=)([^>]*)>/i,'<html$1 translate="no" class="notranslate">');
     html=html.replace(/<body(?![^>]*\btranslate=)([^>]*)>/i,'<body$1 translate="no" class="notranslate">');
     if(!html.includes('id="globalToolsBar"')){
       html=html.includes('</header>')?html.replace('</header>','</header>'+GLOBAL_TOOLS_MARKUP):GLOBAL_TOOLS_MARKUP+html;
     }
     if(!html.includes('/global-tools-v2.js')){
-      html=html.includes('</body>')?html.replace('</body>','<script src="/global-tools-v2.js?v=20260922-2"></script></body>'):html+'<script src="/global-tools-v2.js?v=20260922-2"></script>';
+      html=html.includes('</body>')?html.replace('</body>','<script src="/global-tools-v2.js?v=20261003-1"></script></body>'):html+'<script src="/global-tools-v2.js?v=20261003-1"></script>';
     }
     return res.type('html').send(html);
   }catch(error){
