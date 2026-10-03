@@ -974,6 +974,9 @@ app.post('/api/order-notification', async (req,res)=>{
   }
 });
 
+const APE_V2_DISABLED_PRODUCT_IDS = new Set(['unguento-apis','sos-dol-50ml','apis1-crema-viso-veleno-api','apis2-siero-viso-veleno-api','apis4-crema-corpo-veleno-api-manuka','apis5-gommage-veleno-api-manuka','bagnodoccia-veleno-oro']);
+const APE_V2_PUBLIC_PRODUCTS = APE_V2_OFFICIAL_PRODUCTS.filter(product=>!APE_V2_DISABLED_PRODUCT_IDS.has(product.id));
+
 const APE_V2_PRODUCT_ALIASES = {"propolterapy-professional":["propolterapy professional","propolterapy","diffusore professional"],"capsule-pb":["capsule p+b","capsule propoli p+b","p+b"],"capsule-propolit":["capsule propolit","propolit"],"acacia-zenzero-apinfiore":["acacia e zenzero","acacia zenzero"],"miele-eucalipto-apinfiore":["miele di eucalipto"],"balsammiel":["balsammiel","balsam miel"],"acacia":["acacia 40 g","acacia 40g"],"favo-integrale-bio":["acacia in favo","miele in favo","favo integrale"],"orsetti-gommosi":["orsetti gommosi"],"bee-energy-bio":["bee energy"],"propol-active-bio":["propol active"],"propoli-30-spray-integratore":["propoli 30% spray","propoli spray"],"propoli-30-alcolica-integratore":["propoli 30% alcolica","propoli alcolica"],"propoli-analcolica-integratore":["propoli analcolica"],"cosmesi-burrocacao-propoli-aloe":["burrocacao propoli aloe"],"cosmesi-burrocacao-miele-pappa-reale":["burrocacao miele pappa reale"],"cosmesi-shampoo-multivitaminico":["shampoo multivitaminico"],"cosmesi-saponetta-frutti-bosco":["saponetta frutti di bosco"],"cosmesi-saponetta-lavanda":["saponetta lavanda"],"cosmesi-saponetta-aloe-vera":["saponetta aloe vera"],"cosmesi-candela-alveare-cera-api":["candela alveare","candela in cera d api"],"cosmesi-travel-kit-benessere":["kit da viaggio","travel kit apinfiore","travel kit"],"unguento-apis":["sos dol"],"apis1-crema-viso-veleno-api":["apis1"],"apis2-siero-viso-veleno-api":["apis2"],"apis4-crema-corpo-veleno-api-manuka":["apis4"],"apis5-gommage-veleno-api-manuka":["apis5"],"bagnodoccia-veleno-oro":["apis7"],"tesori-limoncello":["tesori limoncello"],"tesori-liquore-caffe":["tesori liquore caffe","liquore al caffe"],"tesori-castagne-rum":["tesori castagne rum","castagne al rum"]};
 function apeProductNormalize(value){
   return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
@@ -981,7 +984,7 @@ function apeProductNormalize(value){
 function findApeV2ProductContext(value){
   const hay=apeProductNormalize(value);
   let best=null;
-  for(const product of APE_V2_OFFICIAL_PRODUCTS){
+  for(const product of APE_V2_PUBLIC_PRODUCTS){
     const candidates=[product.name,...(APE_V2_PRODUCT_ALIASES[product.id]||[])];
     for(const candidateRaw of candidates){
       const candidate=apeProductNormalize(candidateRaw);
@@ -995,7 +998,7 @@ function findApeV2ProductContext(value){
 function findApeV2ProductsContext(value){
   const hay=apeProductNormalize(value);
   const found=[];
-  for(const product of APE_V2_OFFICIAL_PRODUCTS){
+  for(const product of APE_V2_PUBLIC_PRODUCTS){
     const candidates=[product.name,...(APE_V2_PRODUCT_ALIASES[product.id]||[])];
     if(candidates.some(candidateRaw=>{
       const candidate=apeProductNormalize(candidateRaw);
@@ -1010,7 +1013,7 @@ function findPrimaryApeV2ProductContext(reply){
   const firstBlock=raw.split(/\n\s*\n/)[0].slice(0,900);
   const hay=apeProductNormalize(firstBlock);
   let best=null;
-  for(const product of APE_V2_OFFICIAL_PRODUCTS){
+  for(const product of APE_V2_PUBLIC_PRODUCTS){
     const candidates=[product.name,...(APE_V2_PRODUCT_ALIASES[product.id]||[])];
     for(const rawCandidate of candidates){
       const candidate=apeProductNormalize(rawCandidate);
@@ -1105,6 +1108,18 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
       return res.status(400).json({ok:false,error:'Scrivi una domanda per Ape Telù.'});
     }
 
+    const hiddenVeleniIntent=/(linea veleni|veleno d['’ ]?api|bee venom|bienengift|venin d['’]?abeille|veneno de abeja|sos dol|apis\s*[12457]|unguento apis|bagnodoccia veleno|gommage.*veleno)/i.test(message);
+    if(hiddenVeleniIntent){
+      const hiddenReply={
+        it:'Questa linea non è attualmente disponibile sul sito.',
+        en:'This line is not currently available on the website.',
+        de:'Diese Produktlinie ist derzeit nicht auf der Website verfügbar.',
+        fr:'Cette gamme n’est actuellement pas disponible sur le site.',
+        es:'Esta línea no está disponible actualmente en el sitio.'
+      }[requestedLanguage];
+      return res.status(200).json({ok:true,reply:hiddenReply,action:null,suppressAction:true});
+    }
+
     const digitalIntent=/\b(prodotto digitale|prodotti digitali|digitale|ebook|e-book|ricettario digitale|alveo digitale|digital product|digital products)\b/i.test(message);
     if(digitalIntent){
       const digitalReply={
@@ -1182,13 +1197,12 @@ CONTESTO DEL PROGETTO
 - Primavera/estate: esperienza naturale all'aperto presso l'Oasi del Busatello con arnie vere e api.
 - Autunno/inverno: esperienza nella Galena delle Api di Castel d'Ario tramite ambienti e diffusori dedicati.
 - La Galena delle Api è un luogo di conoscenza ed esperienza del mondo dell'alveare.
-- "Linea Veleni" è una linea specialistica cosmetica e da massaggio legata al veleno d'api.
-- Non mostrare mai la parola visibile "Veleni" da sola: usa "Linea Veleni", "Linea Veleni d'Api" o formulazioni contestualizzate.
+- La Linea Veleni è temporaneamente sospesa dal sito per motivi commerciali. Non proporla, non descriverne i prodotti e non fornire collegamenti finché resta sospesa.
 - Punti Ape: i prodotti possono assegnare punti; 100 Punti Ape = cesto omaggio con 5 prodotti a scelta.
 - Nel catalogo attuale i Mieli del Busatello da 250 g sono: Miele Millefiori, Miele al Melone, Miele alla Fragola, Miele alla Pesca, Miele all'Arancia, ciascuno a €4,90 e 2 Punti Ape.
 - Usa SEMPRE questi nomi ufficiali esatti in italiano: "Miele Millefiori", "Miele al Melone", "Miele alla Fragola", "Miele alla Pesca", "Miele all'Arancia". Non trasformarli in "Miele di Melone", "Miele di Fragola", "Miele di Pesca" o "Miele di Arancia".
 - Non inventare prezzi, disponibilità, formati o condizioni commerciali non presenti in queste informazioni.
-- CATALOGO ATTUALE VINCOLANTE: oltre ai 5 Mieli del Busatello sopra indicati, i soli prodotti presenti sono:\n${APE_V2_OFFICIAL_PRODUCTS.map(p=>'- '+p.name+' | '+p.size+' | €'+Number(p.price).toFixed(2).replace('.',',')+' | '+p.desc).join('\n')}
+- CATALOGO ATTUALE VINCOLANTE: oltre ai 5 Mieli del Busatello sopra indicati, i soli prodotti presenti sono:\n${APE_V2_PUBLIC_PRODUCTS.map(p=>'- '+p.name+' | '+p.size+' | €'+Number(p.price).toFixed(2).replace('.',',')+' | '+p.desc).join('\n')}
 - Quando parli di uno di questi prodotti, usa almeno una volta il nome esatto riportato nel catalogo: serve anche a collegare correttamente il pulsante diretto al prodotto.
 - Quando l'utente chiede informazioni su un prodotto dello shop, attieniti a nome, formato, prezzo e descrizione riportati in questo catalogo. Non dedurre benefici ulteriori dal nome del prodotto o dagli ingredienti.
 - Non proporre prodotti che non compaiono in questo elenco o nei 5 Mieli del Busatello.
@@ -1202,7 +1216,7 @@ PRINCIPIO DI APPARTENENZA SEMANTICA
 - Esempio: "chi è il Presidente della Repubblica?" è fuori tema perché il soggetto della domanda appartiene chiaramente a un altro ambito.
 - Se la frase può essere interpretata in modo sensato dentro il tuo mondo e non contiene un soggetto esplicitamente esterno, preferisci l'interpretazione interna.
 - Usa anche la conversazione immediatamente precedente: pronomi, confronti e formule come "quello", "il più economico", "e questo?", "quale dei due?" ereditano il contesto già stabilito.
-- Il tuo mondo comprende: api, alveari, arnie, apicoltura, impollinazione, biodiversità, prodotti dell'alveare, catalogo e prezzi della Fabbrica delle Api, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Linea Veleni, Punti Ape, ordini e spedizioni.
+- Il tuo mondo comprende: api, alveari, arnie, apicoltura, impollinazione, biodiversità, prodotti dell'alveare, catalogo e prezzi della Fabbrica delle Api, Alveoterapia Integrata, Oasi del Busatello, Galena delle Api, Punti Ape, ordini e spedizioni.
 - Dichiara una domanda fuori tema solo quando il significato complessivo è chiaramente esterno; non perché manca una parola chiave prevista.
 - Interpreta "offerta", "sconto" e "promozione" nel loro significato commerciale: NON significano "prodotti disponibili". Non dichiarare mai un prodotto in offerta se nel contesto certo non è indicato uno sconto o una promozione.
 - Se una domanda è generale e la risposta cita più prodotti, non scegliere arbitrariamente una singola referenza come se fosse la risposta principale.
