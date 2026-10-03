@@ -13,7 +13,8 @@ function hideVeleniFromPublicHtml(html) {
   // Linea Veleni from every public HTML surface until the supplier agreement is defined.
   html = html.replace(/<section class="venom" id="veleni">[\s\S]*?<\/section>/gi, '');
   html = html.replace(/<section class="catalog-world venom-world" id="linea-veleni">[\s\S]*?<\/section>/gi, '');
-  html = html.replace(/<a\b[^>]*href=["'][^"']*(?:#linea-veleni|#veleni-prodotti|#veleni|linea=veleni)[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
+  html = html.replace(/<a\b[^>]*href=["'][^"']*(?:#linea-veleni|#veleni-prodotti|#veleni|linea=veleni|#prodotto-(?:unguento-apis|sos-dol-50ml|apis1-crema-viso-veleno-api|apis2-siero-viso-veleno-api|apis4-crema-corpo-veleno-api-manuka|apis5-gommage-veleno-api-manuka|bagnodoccia-veleno-oro))[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
+  html = html.replace(/<a\b[^>]*>\s*Linea Veleni\s*<\/a>/gi, '');
   return html;
 }
 
