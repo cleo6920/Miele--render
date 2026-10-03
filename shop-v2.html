@@ -1154,6 +1154,24 @@ async function calculateShipping(){
   return shippingState;
 }
 
+// Ecommerce events follow the existing Google tag and Consent Mode settings.
+// Only catalogue fields are sent; checkout contact/address data are excluded.
+function trackShopEcommerce(eventName, products){
+  try{
+    if(typeof window.gtag!=='function')return;
+    const items=products.map(p=>({
+      item_id:String(p.id),
+      item_name:String(p.name||p.id),
+      item_variant:String(p.size||''),
+      price:Number(p.price),
+      quantity:Number(p.qty||1)
+    })).filter(p=>p.item_id && Number.isFinite(p.price) && p.price>=0 && Number.isFinite(p.quantity) && p.quantity>0);
+    if(!items.length)return;
+    const value=Math.round(items.reduce((sum,p)=>sum+p.price*p.quantity,0)*100)/100;
+    window.gtag('event',eventName,{currency:'EUR',value,items});
+  }catch(_){} // Measurement must never interrupt shopping.
+}
+
 function addV2Product(btn){
   const id=btn.dataset.id;
   const found=shopV2Cart.find(x=>x.id===id);
@@ -1170,6 +1188,7 @@ function addV2Product(btn){
     });
   }
   saveV2Cart();
+  trackShopEcommerce('add_to_cart',[{...shopV2Cart.find(x=>x.id===id),qty:1}]);
   document.getElementById('cartDrawer').classList.add('open');
 }
 
@@ -1564,6 +1583,7 @@ function openProductDetail(id){
   productDetailAdd.textContent=isFreeEditionId(p.id)?'Aggiungi gratis al carrello':'Aggiungi al carrello';
   productDetailOverlay.classList.add('open');
   productDetailOverlay.setAttribute('aria-hidden','false');
+  trackShopEcommerce('view_item',[{...p,qty:1}]);
   document.body.style.overflow='hidden';
   if(window.fdaTranslateNow) window.fdaTranslateNow(productDetailOverlay);
   setTimeout(()=>productDetailClose.focus(),40);
@@ -2061,6 +2081,7 @@ document.getElementById('startCheckout').addEventListener('click',()=>{
   document.getElementById('checkoutOverlay').classList.add('open');
   document.getElementById('checkoutOverlay').setAttribute('aria-hidden','false');
   showCheckoutStep(1);
+  trackShopEcommerce('begin_checkout',shopV2Cart);
 });
 document.getElementById('checkoutClose').addEventListener('click',()=>{document.getElementById('checkoutOverlay').classList.remove('open');document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');});
 document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('click',async()=>{
