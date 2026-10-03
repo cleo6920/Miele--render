@@ -2695,14 +2695,14 @@ const APE_UI_I18N={
   },
   fr:{
     subtitle:'Votre guide dans La Fabbrica delle Api',
-    greeting:'<strong>Bonjour, je suis Ape Telù 🐝</strong><br>Je peux vous accompagner à travers l’Alvéothérapie Intégrée, l’Oasis du Busatello, Galena delle Api, les miels, la Ligne Venin d’Abeille, les Points Abeille, les commandes et les livraisons. Qu’est-ce qui vous intrigue ?',
+    greeting:'<strong>Bonjour, je suis Ape Telù 🐝</strong><br>Je peux vous accompagner à travers l’Alvéothérapie Intégrée, l’Oasis du Busatello, Galena delle Api, les miels, les Points Abeille, les commandes et les livraisons. Qu’est-ce qui vous intrigue ?',
     placeholder:'Écrivez votre question...',send:'Envoyer',
     note:'Ape Telù informe et oriente. Elle ne remplace pas un médecin ni un professionnel de santé.',
     quick:[['Alvéothérapie',"Qu’est-ce que l’Alvéothérapie Intégrée ?"],['Oasis',"Parle-moi de l’Oasis du Busatello"],['Galena',"Qu’est-ce que Galena delle Api ?"],['Miels',"Comment choisir un miel ?"],['Points Abeille',"Comment fonctionnent les Points Abeille ?"],['Commandes et livraisons',"Comment fonctionnent les commandes et les livraisons ?"]]
   },
   es:{
     subtitle:'Tu guía en La Fabbrica delle Api',
-    greeting:'<strong>Hola, soy Ape Telù 🐝</strong><br>Puedo acompañarte por la Alveoterapia Integrada, el Oasis del Busatello, Galena delle Api, las mieles, la Línea Veneno de Abeja, los Puntos Abeja, los pedidos y los envíos. ¿Qué te da curiosidad?',
+    greeting:'<strong>Hola, soy Ape Telù 🐝</strong><br>Puedo acompañarte por la Alveoterapia Integrada, el Oasis del Busatello, Galena delle Api, las mieles, los Puntos Abeja, los pedidos y los envíos. ¿Qué te da curiosidad?',
     placeholder:'Escribe tu pregunta...',send:'Enviar',
     note:'Ape Telù informa y orienta. No sustituye a un médico ni a un profesional sanitario.',
     quick:[['Alveoterapia','¿Qué es la Alveoterapia Integrada?'],['Oasis','Háblame del Oasis del Busatello'],['Galena','¿Qué es Galena delle Api?'],['Mieles','¿Cómo elijo una miel?'],['Puntos Abeja','¿Cómo funcionan los Puntos Abeja?'],['Pedidos y envíos','¿Cómo funcionan los pedidos y los envíos?']]
@@ -2786,7 +2786,10 @@ async function apeAsk(text){
 
   // Rete di sicurezza: se l'AI non è configurata o non risponde,
   // Ape Telù continua a funzionare con la base di conoscenza locale.
-  const fallback=apeKeepConversation(value,apePelùReply(value,historyToSend));
+  const rawFallback=apeKeepConversation(value,apePelùReply(value,historyToSend));
+  const fallback=/(?:Linea Veleni|Bee Venom|Bienengift|Venin d['’]Abeille|Veneno de Abeja|SOS DOL|APIS\s*[12457])/i.test(String(rawFallback))
+    ? 'Posso aiutarti con i prodotti attualmente disponibili nella Bottega, i mieli, la cosmesi dell’alveare, Punti Ape, ordini e spedizioni.'
+    : rawFallback;
   const fallbackPlain=String(fallback).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
   apeChatHistory.push({
     role:'assistant',
