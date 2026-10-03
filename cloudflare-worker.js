@@ -3,6 +3,25 @@ import SHOP_HTML from './cloudflare-shop-html.js';
 
 const VERCEL_V2_ORIGIN = 'https://miele-backend-omega.vercel.app';
 
+const DISABLED_VELENI_PRODUCT_IDS = new Set([
+  'unguento-apis','sos-dol-50ml','apis1-crema-viso-veleno-api','apis2-siero-viso-veleno-api',
+  'apis4-crema-corpo-veleno-api-manuka','apis5-gommage-veleno-api-manuka','bagnodoccia-veleno-oro'
+]);
+const DISABLED_VELENI_NAME_RE = /(?:linea\s+veleni|veleno\s+d[’']?api|sos\s*dol|apis\s*[12457]|veleno\s+d[’']?oro)/i;
+function payloadHasDisabledVeleni(payload){
+  if(!payload || typeof payload!=='object') return false;
+  const groups=[payload.xpayCart,payload.items,payload.testCart].filter(Array.isArray);
+  for(const items of groups){
+    for(const item of items){
+      const id=String(item?.productId||item?.id||'').trim();
+      const name=String(item?.name||'').trim();
+      if(DISABLED_VELENI_PRODUCT_IDS.has(id) || DISABLED_VELENI_NAME_RE.test(name)) return true;
+    }
+  }
+  return false;
+}
+
+
 const ORDER_SHIP_WEIGHT_G = {
   millefiori:430,melone:430,fragola:430,pesca:430,arancia:430,
   'propolterapy-professional':1500,'capsule-pb':120,'capsule-propolit':120,
@@ -194,6 +213,17 @@ export default {
         return Response.json({ok:false,error:'Dati spedizione non validi.'},{status:400,headers:{'Cache-Control':'no-store'}});
       }
       return Response.json(calcPosteShipping(country,items),{headers:{'Cache-Control':'no-store'}});
+    }
+
+    if (url.pathname === '/api/create-checkout-session' && request.method === 'POST') {
+      let checkoutPayload=null;
+      try{ checkoutPayload=await request.clone().json(); }catch(_){}
+      if(payloadHasDisabledVeleni(checkoutPayload)){
+        return Response.json(
+          {error:'La Linea Veleni è temporaneamente non disponibile per l’acquisto.'},
+          {status:409,headers:{'Cache-Control':'no-store'}}
+        );
+      }
     }
 
     if (url.pathname.startsWith('/api/')) {
