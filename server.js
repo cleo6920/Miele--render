@@ -1111,13 +1111,13 @@ app.post('/api/ape-pelu-chat', async (req, res) => {
     const hiddenVeleniIntent=/(linea veleni|veleno d['’ ]?api|bee venom|bienengift|venin d['’]?abeille|veneno de abeja|sos dol|apis\s*[12457]|unguento apis|bagnodoccia veleno|gommage.*veleno)/i.test(message);
     if(hiddenVeleniIntent){
       const hiddenReply={
-        it:'Questa linea non è attualmente disponibile sul sito.',
-        en:'This line is not currently available on the website.',
-        de:'Diese Produktlinie ist derzeit nicht auf der Website verfügbar.',
-        fr:'Cette gamme n’est actuellement pas disponible sur le site.',
-        es:'Esta línea no está disponible actualmente en el sitio.'
+        it:'La Linea Veleni d’Api è presentata come percorso di conoscenza della cosmesi e del massaggio. Per maggiori informazioni chiama il 334 847 6020, scrivici su WhatsApp allo stesso numero o a althea12830@gmail.com.',
+        en:'Discover our Bee Venom Line through an information journey about cosmetics and massage. For details, call or WhatsApp +39 334 847 6020, or email althea12830@gmail.com.',
+        de:'Entdecken Sie die Bienengift-Linie als Informationsangebot zu Kosmetik und Massage. Telefon oder WhatsApp: +39 334 847 6020. E-Mail: althea12830@gmail.com.',
+        fr:'Découvrez la ligne Venin d’Abeille à travers un parcours consacré à la cosmétique et au massage. Téléphone ou WhatsApp : +39 334 847 6020. Email : althea12830@gmail.com.',
+        es:'Descubre la línea Veneno de Abeja a través de un recorrido informativo sobre cosmética y masaje. Teléfono o WhatsApp: +39 334 847 6020. Email: althea12830@gmail.com.'
       }[requestedLanguage];
-      return res.status(200).json({ok:true,reply:hiddenReply,action:null,suppressAction:true});
+      return res.status(200).json({ok:true,reply:hiddenReply,action:{href:'/shop#conoscere-veleni',label:'Conosci la Linea Veleni · Contattaci →'}});
     }
 
     const digitalIntent=/\b(prodotto digitale|prodotti digitali|digitale|ebook|e-book|ricettario digitale|alveo digitale|digital product|digital products)\b/i.test(message);
@@ -2031,7 +2031,7 @@ const GLOBAL_TOOLS_MARKUP=`<style id="global-tools-critical">
 .global-site-search-results{display:none}
 @media(max-width:900px){.site-tools-bar{position:relative;top:auto}.site-tools-inner{width:calc(100% - 18px);flex-wrap:wrap;gap:7px}.site-tools-note{display:none}.global-ape-launch{order:1}.global-site-search{order:2;flex:1 1 250px}}
 @media(max-width:700px){.global-ape-launch{min-width:0;flex:1 1 100%;width:100%}.global-ape-copy small{white-space:normal}.global-site-search{flex:1 1 100%}}
-</style><div class="site-tools-bar" id="globalToolsBar" aria-label="Strumenti del sito"><div class="site-tools-inner"><div class="site-tools-note">Trova subito ciò che cerchi</div><button class="global-ape-launch" id="apeChatLaunch" type="button" aria-label="Chiedi a Ape Telù: scopri, chiedi e lasciati guidare nel mondo delle api"><span class="global-ape-icon">🐝</span><span class="global-ape-copy"><strong>Chiedi a Ape Telù</strong><small>Scopri, chiedi, lasciati guidare nel mondo delle api.</small></span></button><div class="global-site-search" id="globalSiteSearch"><div class="global-site-search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="globalSiteSearchInput" type="search" placeholder="Cerca nel sito..." autocomplete="off"><button class="global-site-search-go" id="globalSiteSearchGo" type="button" aria-label="Avvia la ricerca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="global-site-search-results" id="globalSiteSearchResults"></div></div></div></div><script src="/global-tools-v2.js?v=20261003-2"></script>`;
+</style><div class="site-tools-bar" id="globalToolsBar" aria-label="Strumenti del sito"><div class="site-tools-inner"><div class="site-tools-note">Trova subito ciò che cerchi</div><button class="global-ape-launch" id="apeChatLaunch" type="button" aria-label="Chiedi a Ape Telù: scopri, chiedi e lasciati guidare nel mondo delle api"><span class="global-ape-icon">🐝</span><span class="global-ape-copy"><strong>Chiedi a Ape Telù</strong><small>Scopri, chiedi, lasciati guidare nel mondo delle api.</small></span></button><div class="global-site-search" id="globalSiteSearch"><div class="global-site-search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="globalSiteSearchInput" type="search" placeholder="Cerca nel sito..." autocomplete="off"><button class="global-site-search-go" id="globalSiteSearchGo" type="button" aria-label="Avvia la ricerca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="global-site-search-results" id="globalSiteSearchResults"></div></div></div></div><script src="/global-tools-v2.js?v=20261004-linea-info"></script>`;
 const sendPage=(filename)=>(_req,res)=>{
   res.setHeader('Cache-Control','no-cache, no-store, must-revalidate');
   if(filename==='shop-v2.html') return res.sendFile(path.join(__dirname,filename));
@@ -2041,7 +2041,7 @@ const sendPage=(filename)=>(_req,res)=>{
       html=html.includes('<head>')?html.replace('<head>','<head><meta name="google" content="notranslate">'):html;
     }
     if(!html.includes('rel="preload" href="/global-tools-v2.js')){
-      html=html.includes('</head>')?html.replace('</head>','<link rel="preload" href="/global-tools-v2.js?v=20261003-2" as="script">\n</head>'):html;
+      html=html.includes('</head>')?html.replace('</head>','<link rel="preload" href="/global-tools-v2.js?v=20261004-linea-info" as="script">\n</head>'):html;
     }
     html=html.replace(/<html(?![^>]*\btranslate=)([^>]*)>/i,'<html$1 translate="no" class="notranslate">');
     html=html.replace(/<body(?![^>]*\btranslate=)([^>]*)>/i,'<body$1 translate="no" class="notranslate">');
@@ -2049,7 +2049,7 @@ const sendPage=(filename)=>(_req,res)=>{
       html=html.includes('</header>')?html.replace('</header>','</header>'+GLOBAL_TOOLS_MARKUP):GLOBAL_TOOLS_MARKUP+html;
     }
     if(!html.includes('/global-tools-v2.js')){
-      html=html.includes('</body>')?html.replace('</body>','<script src="/global-tools-v2.js?v=20261003-2"></script></body>'):html+'<script src="/global-tools-v2.js?v=20261003-2"></script>';
+      html=html.includes('</body>')?html.replace('</body>','<script src="/global-tools-v2.js?v=20261004-linea-info"></script></body>'):html+'<script src="/global-tools-v2.js?v=20261004-linea-info"></script>';
     }
     return res.type('html').send(html);
   }catch(error){

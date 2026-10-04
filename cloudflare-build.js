@@ -5,19 +5,35 @@ const { spawn } = require('child_process');
 const root = __dirname;
 const dist = path.join(root, 'dist');
 
-const VELENI_PUBLIC = false;
+const VELENI_PUBLIC = false; // Product sales remain disabled.
+const VELENI_INFORMATION = `<section id="conoscere-veleni" aria-labelledby="veleni-info-title" style="padding:64px 24px;background:#fffaf1;color:#173329;scroll-margin-top:120px">
+<div style="max-width:1000px;margin:auto"><span id="veleni"></span><span id="linea-veleni"></span><span id="veleni-prodotti"></span>
+<p style="font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#956817">Conoscere il mondo dell’alveare</p>
+<h2 id="veleni-info-title" style="font-family:Georgia,serif;font-size:clamp(32px,5vw,54px);line-height:1.1">Linea Veleni d’Api · Conoscere prima di scegliere</h2>
+<p style="font-size:19px;line-height:1.7">Un elemento sorprendente dell’alveare, un percorso da approfondire insieme. Questa sezione è dedicata alla conoscenza della Linea Veleni d’Api e al dialogo con chi desidera saperne di più.</p>
+<h3>Una storia che parte dalle api</h3>
+<p style="font-size:17px;line-height:1.7">Il veleno d’api appartiene al sistema naturale di difesa dell’ape. La Linea Veleni d’Api ci offre l’occasione di raccontare questo aspetto dell’alveare e il suo impiego nel mondo della cosmesi e del massaggio.</p>
+<h3>Ne parliamo insieme?</h3>
+<p style="font-size:17px;line-height:1.7">Vuoi conoscere meglio la linea, la sua filosofia e gli ambiti cosmetici a cui si rivolge? Contattaci: ti accompagneremo con informazioni e chiarimenti dedicati.</p>
+<div style="display:flex;flex-wrap:wrap;gap:12px;margin:24px 0">
+<a href="tel:+393348476020" style="padding:14px 20px;border-radius:28px;background:#173329;color:white;font-weight:800">Chiama · 334 847 6020</a>
+<a href="https://wa.me/393348476020?text=Buongiorno%2C%20vorrei%20maggiori%20informazioni%20sulla%20Linea%20Veleni%20d%27Api." target="_blank" rel="noopener" style="padding:14px 20px;border-radius:28px;background:#173329;color:white;font-weight:800">Scrivici su WhatsApp</a>
+<a href="mailto:althea12830@gmail.com?subject=Informazioni%20Linea%20Veleni%20d%27Api" style="padding:14px 20px;border-radius:28px;background:#dda52e;color:#173329;font-weight:800">Richiedi informazioni via email</a>
+</div><p style="font-size:14px;color:#596b61">Un percorso informativo dedicato alla cosmesi e al massaggio, senza promesse di cura.</p></div></section>`;
 
 function hideVeleniFromPublicHtml(html) {
   if (VELENI_PUBLIC || !html) return html;
-  // Temporary commercial hold: keep source material reversible, but remove the
-  // Linea Veleni from every public HTML surface until the supplier agreement is defined.
-  html = html.replace(/<section class="venom" id="veleni">[\s\S]*?<\/section>/gi, '');
-  html = html.replace(/<section class="catalog-world venom-world" id="linea-veleni">[\s\S]*?<\/section>/gi, '');
-  html = html.replace(/<article class="quick-card">[\s\S]*?<\/article>/gi, block => /Linea Veleni|Bee Venom|Bienengift|Venin d['’]Abeille|Veneno de Abeja/i.test(block) ? '' : block);
+  // Replace commercial presentations with an information and contact section.
+  html = html.replace(/<section class="venom" id="veleni">[\s\S]*?<\/section>/gi, VELENI_INFORMATION);
+  html = html.replace(/<section class="catalog-world venom-world" id="linea-veleni">[\s\S]*?<\/section>/gi, VELENI_INFORMATION);
+  html = html.replace(/<article class="quick-card">[\s\S]*?<\/article>/gi, block => /Linea Veleni|Bee Venom|Bienengift|Venin d['’]Abeille|Veneno de Abeja/i.test(block) ? '<article class="quick-card"><small>Conoscere l’alveare</small><h3>Linea Veleni d’Api</h3><p>Un percorso di conoscenza da approfondire insieme.</p><a href="#conoscere-veleni">Scopri e chiedi informazioni →</a></article>' : block);
   html = html.replace(/<section class="feature-story">[\s\S]*?<\/section>/gi, block => /Linea Veleni|Bee Venom|Bienengift|Venin d['’]Abeille|Veneno de Abeja/i.test(block) ? '' : block);
   html = html.replace(/<button\b[^>]*data-ape-q=["'][^"']*(?:Linea Veleni|Bee Venom|Bienengift|Venin|Veneno)[^"']*["'][^>]*>[\s\S]*?<\/button>/gi, '');
   html = html.replace(/<a\b[^>]*href=["'][^"']*(?:#linea-veleni|#veleni-prodotti|#veleni|linea=veleni|#prodotto-(?:unguento-apis|sos-dol-50ml|apis1-crema-viso-veleno-api|apis2-siero-viso-veleno-api|apis4-crema-corpo-veleno-api-manuka|apis5-gommage-veleno-api-manuka|bagnodoccia-veleno-oro))[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
   html = html.replace(/<a\b[^>]*>\s*Linea Veleni\s*<\/a>/gi, '');
+  if (html.includes('id="conoscere-veleni"')) {
+    html = html.replace(/(<div class="nav-links">[\s\S]*?)(<\/div>)/i, '$1<a href="#conoscere-veleni">Linea Veleni · Informazioni</a>$2');
+  }
   return html;
 }
 

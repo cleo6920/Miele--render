@@ -1904,7 +1904,7 @@ function buildSiteSearchIndex(){
     {title:'Prodotti dell’alveare',type:'Sezione',href:'/shop#alveare',keywords:'alimenti alveare miele favo polline pappa reale orsetti'},
     {title:'Propoli e integratori',type:'Sezione',href:'/shop#propoli',keywords:'propoli integratori spray contagocce bee energy propol active'},
     {title:'Cosmesi dell’alveare',type:'Sezione',href:'/shop#cosmesi',keywords:'cosmesi crema mani shampoo sapone saponetta burrocacao cera candela kit viaggio'},
-    {title:'Linea Veleni d’Api',type:'Sezione',href:'/shop#linea-veleni',keywords:'linea veleni veleno api sos dol apis1 apis2 apis4 apis5 apis7 massaggio viso corpo gommage bagnodoccia'},
+    {title:'Conosci la Linea Veleni d’Api',type:'Informazioni',href:'/shop#conoscere-veleni',keywords:'linea veleni veleno api sos dol apis1 apis2 apis4 apis5 apis7 massaggio viso corpo gommage bagnodoccia'},
     {title:'I Tesori di Francesco',type:'Sezione',href:'/shop#tesori-francesco',keywords:'tesori francesco limoncello caffe castagne rum degustazione'},
     {title:'Storie della Fabbrica',type:'Sezione',href:'/shop#storie',keywords:'storie racconto territorio progetto'},
     {title:'Oggi nella Fabbrica delle Api',type:'Sezione',href:'/shop#oggi',keywords:'oggi novita stagione fioriture centro oasi'},
@@ -2775,8 +2775,8 @@ async function apeAsk(text){
   const value=String(text||'').trim();
   if(!value)return;
   if(/linea veleni|veleno d['’ ]?api|bee venom|bienengift|venin d['’]?abeille|veneno de abeja|sos dol|apis\s*[12457]|unguento apis|bagnodoccia veleno|gommage.*veleno/i.test(value)){
-    const hiddenMsg={it:'Questa linea non è attualmente disponibile sul sito.',en:'This line is not currently available on the website.',de:'Diese Produktlinie ist derzeit nicht auf der Website verfügbar.',fr:'Cette gamme n’est actuellement pas disponible sur le site.',es:'Esta línea no está disponible actualmente en el sitio.'}[apeCurrentLanguage()]||'Questa linea non è attualmente disponibile sul sito.';
-    apeStopListening();apeStopVoice();apeAddMessage(value,'user');apeChatInput.value='';apeChatHistory.push({role:'user',content:value},{role:'assistant',content:hiddenMsg});apeAddMessage(hiddenMsg,'bot');apeSpeak(hiddenMsg);return;
+    const hiddenMsg={it:'La Linea Veleni d’Api è presentata come percorso di conoscenza della cosmesi e del massaggio. Per maggiori informazioni chiama il 334 847 6020, scrivici su WhatsApp allo stesso numero o a althea12830@gmail.com.',en:'Discover our Bee Venom Line through an information journey about cosmetics and massage. For details, call or WhatsApp +39 334 847 6020, or email althea12830@gmail.com.',de:'Entdecken Sie die Bienengift-Linie als Informationsangebot zu Kosmetik und Massage. Telefon oder WhatsApp: +39 334 847 6020. E-Mail: althea12830@gmail.com.',fr:'Découvrez la ligne Venin d’Abeille à travers un parcours consacré à la cosmétique et au massage. Téléphone ou WhatsApp : +39 334 847 6020. Email : althea12830@gmail.com.',es:'Descubre la línea Veneno de Abeja a través de un recorrido informativo sobre cosmética y masaje. Teléfono o WhatsApp: +39 334 847 6020. Email: althea12830@gmail.com.'}[apeCurrentLanguage()]||'La Linea Veleni d’Api è presentata come percorso di conoscenza della cosmesi e del massaggio. Per maggiori informazioni chiama il 334 847 6020, scrivici su WhatsApp allo stesso numero o a althea12830@gmail.com.';
+    apeStopListening();apeStopVoice();apeAddMessage(value,'user');apeChatInput.value='';apeChatHistory.push({role:'user',content:value},{role:'assistant',content:hiddenMsg});apeAddMessage(hiddenMsg,'bot');apeSpeak(hiddenMsg);apeAddContextLink({href:'/shop#conoscere-veleni',label:'Conosci la Linea Veleni · Contattaci →'});return;
   }
 
   apeStopListening();
