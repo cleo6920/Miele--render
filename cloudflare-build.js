@@ -7,7 +7,7 @@ const dist = path.join(root, 'dist');
 
 const VELENI_PUBLIC = false; // Product sales remain disabled.
 const VELENI_INFORMATION = `<section id="conoscere-veleni" aria-labelledby="veleni-info-title" style="padding:64px 24px;background:#fffaf1;color:#173329;scroll-margin-top:120px">
-<div style="max-width:1000px;margin:auto"><span id="veleni"></span><span id="linea-veleni"></span><span id="veleni-prodotti"></span>
+<div style="max-width:1000px;margin:auto"><span id="linea-veleni"></span><span id="veleni-prodotti"></span>
 <p style="font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#956817">Conoscere il mondo dell’alveare</p>
 <h2 id="veleni-info-title" style="font-family:Georgia,serif;font-size:clamp(32px,5vw,54px);line-height:1.1">Linea Veleni d’Api · Conoscere prima di scegliere</h2>
 <p style="font-size:19px;line-height:1.7">Un elemento sorprendente dell’alveare, un percorso da approfondire insieme. Questa sezione è dedicata alla conoscenza della Linea Veleni d’Api e al dialogo con chi desidera saperne di più.</p>
@@ -24,10 +24,13 @@ const VELENI_INFORMATION = `<section id="conoscere-veleni" aria-labelledby="vele
 function hideVeleniFromPublicHtml(html) {
   if (VELENI_PUBLIC || !html) return html;
   // Replace commercial presentations with an information and contact section.
-  html = html.replace(/<section class="venom" id="veleni">[\s\S]*?<\/section>/gi, VELENI_INFORMATION);
+  html = html.replace(/<section class="venom" id="veleni">[\s\S]*?<\/section>/gi, block => {
+    const intro = block.split('<div class="venom-launch">')[0];
+    return intro.replace('Sei prodotti, sei esperienze diverse:', 'Un percorso da approfondire insieme:') + '<div class="venom-launch"><a class="btn btn-gold" href="/shop#conoscere-veleni">Scopri la Linea Veleni</a></div></div></section>';
+  });
   html = html.replace(/<section class="catalog-world venom-world" id="linea-veleni">[\s\S]*?<\/section>/gi, VELENI_INFORMATION);
   html = html.replace(/<article class="quick-card">[\s\S]*?<\/article>/gi, block => /Linea Veleni|Bee Venom|Bienengift|Venin d['’]Abeille|Veneno de Abeja/i.test(block) ? '<article class="quick-card"><small>Conoscere l’alveare</small><h3>Linea Veleni d’Api</h3><p>Un percorso di conoscenza da approfondire insieme.</p><a href="#conoscere-veleni">Scopri e chiedi informazioni →</a></article>' : block);
-  html = html.replace(/<section class="feature-story">[\s\S]*?<\/section>/gi, block => /Linea Veleni|Bee Venom|Bienengift|Venin d['’]Abeille|Veneno de Abeja/i.test(block) ? '' : block);
+  html = html.replace(/<section class="feature-story">[\s\S]*?<\/section>/gi, block => /Linea Veleni|Bee Venom|Bienengift|Venin d['’]Abeille|Veneno de Abeja/i.test(block) ? block.replace('puoi passare direttamente alla scelta del prodotto legato a quel momento.', 'puoi approfondire la linea e richiedere informazioni dedicate.').replace('Scopri e scegli nella Linea Veleni →', 'Scopri la Linea Veleni →').replaceAll('href="#veleni-prodotti"', 'href="#conoscere-veleni"').replace('/images/veleno-apis1-hd.svg', '/images/alveari-busatello.jpg') : block);
   html = html.replace(/<button\b[^>]*data-ape-q=["'][^"']*(?:Linea Veleni|Bee Venom|Bienengift|Venin|Veneno)[^"']*["'][^>]*>[\s\S]*?<\/button>/gi, '');
   html = html.replace(/<a\b[^>]*href=["'][^"']*(?:#linea-veleni|#veleni-prodotti|#veleni|linea=veleni|#prodotto-(?:unguento-apis|sos-dol-50ml|apis1-crema-viso-veleno-api|apis2-siero-viso-veleno-api|apis4-crema-corpo-veleno-api-manuka|apis5-gommage-veleno-api-manuka|bagnodoccia-veleno-oro))[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
   html = html.replace(/<a\b[^>]*>\s*Linea Veleni\s*<\/a>/gi, '');
