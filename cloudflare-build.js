@@ -28,7 +28,17 @@ function hideVeleniFromPublicHtml(html) {
     const intro = block.split('<div class="venom-launch">')[0];
     return intro.replace('Sei prodotti, sei esperienze diverse:', 'Un percorso da approfondire insieme:') + '<div class="venom-launch"><a class="btn btn-gold" href="/shop#conoscere-veleni">Scopri la Linea Veleni</a></div></div></section>';
   });
-  html = html.replace(/<section class="catalog-world venom-world" id="linea-veleni">[\s\S]*?<\/section>/gi, VELENI_INFORMATION);
+  const catalogMatch = html.match(/const SHOP_OFFICIAL_PRODUCTS=(\[[\s\S]*?\]);/);
+  let information = VELENI_INFORMATION;
+  if (catalogMatch) {
+    const products = JSON.parse(catalogMatch[1]).filter(p => p.section === 'linea-veleni');
+    const cards = products.map(p => {
+      const question = 'Buongiorno, vorrei maggiori informazioni su ' + p.name + ' (' + p.size + ') della Linea Veleni d’Api.';
+      return '<article class="catalog-card" id="informazioni-' + escHtml(p.id) + '"><div class="catalog-card-media"><img src="' + escHtml(p.image) + '" alt="' + escHtml(p.name) + '" loading="lazy"></div><div class="catalog-card-body"><small>Linea Veleni d’Api · Informazioni</small><h3>' + escHtml(p.name) + '</h3><p><strong>' + escHtml(p.size) + '</strong></p><p>' + escHtml(p.desc) + '</p><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px"><a class="btn btn-gold" href="https://wa.me/393348476020?text=' + encodeURIComponent(question) + '" target="_blank" rel="noopener">Chiedi informazioni su WhatsApp</a><a href="mailto:althea12830@gmail.com?subject=' + encodeURIComponent('Informazioni: ' + p.name + ' ' + p.size) + '&amp;body=' + encodeURIComponent(question) + '" style="font-weight:800">Scrivi via email</a><a href="tel:+393348476020" style="font-weight:800">Chiama</a></div></div></article>';
+    }).join('');
+    information = information.replace('</h2>', '</h2><p>Scopri ogni proposta della linea e contattaci per informazioni dedicate.</p><div class="catalog-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:22px;margin:28px 0 44px">' + cards + '</div>');
+  }
+  html = html.replace(/<section class="catalog-world venom-world" id="linea-veleni">[\s\S]*?<\/section>/gi, information);
   html = html.replace(/<article class="quick-card">[\s\S]*?<\/article>/gi, block => /Linea Veleni|Bee Venom|Bienengift|Venin d['’]Abeille|Veneno de Abeja/i.test(block) ? '<article class="quick-card"><small>Conoscere l’alveare</small><h3>Linea Veleni d’Api</h3><p>Un percorso di conoscenza da approfondire insieme.</p><a href="#conoscere-veleni">Scopri e chiedi informazioni →</a></article>' : block);
   html = html.replace(/<section class="feature-story">[\s\S]*?<\/section>/gi, block => /Linea Veleni|Bee Venom|Bienengift|Venin d['’]Abeille|Veneno de Abeja/i.test(block) ? block.replace('puoi passare direttamente alla scelta del prodotto legato a quel momento.', 'puoi approfondire la linea e richiedere informazioni dedicate.').replace('Scopri e scegli nella Linea Veleni →', 'Scopri la Linea Veleni →').replaceAll('href="#veleni-prodotti"', 'href="#conoscere-veleni"').replace('/images/veleno-apis1-hd.svg', '/images/alveari-busatello.jpg') : block);
   html = html.replace(/<button\b[^>]*data-ape-q=["'][^"']*(?:Linea Veleni|Bee Venom|Bienengift|Venin|Veneno)[^"']*["'][^>]*>[\s\S]*?<\/button>/gi, '');
