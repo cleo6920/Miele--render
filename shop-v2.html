@@ -1517,7 +1517,7 @@ const BUSATELLO_DETAIL_META={
 };
 
 function getShopProductDetail(id){
-  const dynamic=SHOP_PUBLIC_PRODUCTS.find(p=>p.id===id);
+  const dynamic=SHOP_OFFICIAL_PRODUCTS.find(p=>p.id===id);
   if(dynamic){
     return {
       id:dynamic.id,name:dynamic.name,image:dynamic.image,size:dynamic.size,
@@ -1581,6 +1581,26 @@ function openProductDetail(id){
   productDetailAdd.dataset.size=p.size;
   productDetailAdd.dataset.points=String(isFreeEditionId(p.id)?0:(p.points||0));
   productDetailAdd.textContent=isFreeEditionId(p.id)?'Aggiungi gratis al carrello':'Aggiungi al carrello';
+  const informationOnly=HIDDEN_VELENI_IDS.has(p.id);
+  const purchaseRow=productDetailAdd.parentElement;
+  purchaseRow.style.display=informationOnly?'none':'';
+  let informationActions=document.getElementById('productDetailInformationActions');
+  if(!informationActions){
+    informationActions=document.createElement('div');
+    informationActions.id='productDetailInformationActions';
+    purchaseRow.insertAdjacentElement('afterend',informationActions);
+  }
+  informationActions.style.display=informationOnly?'flex':'none';
+  informationActions.style.flexWrap='wrap';
+  informationActions.style.gap='12px';
+  informationActions.style.marginTop='24px';
+  informationActions.replaceChildren();
+  if(informationOnly){
+    const question='Buongiorno, vorrei maggiori informazioni su '+p.name+' ('+p.size+') della Linea Veleni d’Api.';
+    const links=[['Richiedi informazioni su WhatsApp','https://wa.me/393348476020?text='+encodeURIComponent(question)],['Richiedi informazioni via email','mailto:althea12830@gmail.com?subject='+encodeURIComponent('Informazioni: '+p.name+' '+p.size)+'&body='+encodeURIComponent(question)],['Chiama · 334 847 6020','tel:+393348476020']];
+    for(const [label,href] of links){const link=document.createElement('a');link.className='btn btn-gold';link.textContent=label;link.href=href;if(href.startsWith('https:')){link.target='_blank';link.rel='noopener';}informationActions.appendChild(link);}
+  }
+
   productDetailOverlay.classList.add('open');
   productDetailOverlay.setAttribute('aria-hidden','false');
   trackShopEcommerce('view_item',[{...p,qty:1}]);
@@ -1642,6 +1662,7 @@ productDetailClose.addEventListener('click',closeProductDetail);
 productDetailOverlay.addEventListener('click',e=>{if(e.target===productDetailOverlay)closeProductDetail();});
 productDetailAdd.addEventListener('click',e=>{
   e.stopPropagation();
+  if(currentDetailProduct && HIDDEN_VELENI_IDS.has(currentDetailProduct.id))return;
   addV2Product(productDetailAdd);
   closeProductDetail();
 });
