@@ -51,6 +51,27 @@ function hideVeleniFromPublicHtml(html) {
 }
 
 
+
+// Prezzi e pulsanti di acquisto Apinfiore vengono eliminati anche dall'HTML
+// prerenderizzato, prima che JavaScript inizializzi il catalogo.
+const APINFIORE_INFO_CARD_IDS=["castagno","acacia-zenzero-apinfiore","miele-eucalipto-apinfiore","balsammiel","acacia","favo-integrale-bio","polline-italiano","pappa-reale-italiana-bio","orsetti-gommosi","bee-energy-bio","propol-active-bio","propoli-30-spray-integratore","propoli-30-alcolica-integratore","propoli-analcolica-integratore","cosmesi-crema-mani","cosmesi-burrocacao-propoli-aloe","cosmesi-burrocacao-miele-pappa-reale","cosmesi-shampoo-multivitaminico","cosmesi-saponetta-frutti-bosco","cosmesi-saponetta-lavanda","cosmesi-saponetta-aloe-vera","cosmesi-candela-alveare-cera-api","cosmesi-travel-kit-benessere"];
+function hideApinfioreFromPublicCards(html) {
+  for (const id of APINFIORE_INFO_CARD_IDS) {
+    const re=new RegExp('(<article\\b[^>]*\\bid="prodotto-'+id+'"[^>]*>)([\\s\\S]*?)(<\\/article>)','g');
+    let changed=0;
+    html=html.replace(re,(full,open,body,close)=>{
+      const next=body.replace(/<div class="catalog-buy-row">[\s\S]*?<\/button><\/div>/,
+        '<div class="catalog-buy-row"><button class="product-detail-link" type="button" data-open-product="'+id+'">Richiedi informazioni →</button></div>')
+        .replace(/<div class="catalog-points">[\s\S]*?<\/div>/,'');
+      if(next===body || next.includes('data-price='))throw new Error('[Cloudflare V2] Scheda Apinfiore non protetta: '+id);
+      changed++;
+      return open+next+close;
+    });
+    if(changed!==1)throw new Error('[Cloudflare V2] Scheda Apinfiore mancante o duplicata: '+id+' ('+changed+')');
+  }
+  return html;
+}
+
 const GA_MEASUREMENT_ID = 'G-V6HRR5LSL9';
 const GA_TAG = `
 <!-- Google tag (gtag.js) · La Fabbrica delle Api -->
@@ -347,6 +368,7 @@ async function main() {
       const response = await fetchReady(origin, pathname);
       let html = await response.text();
       html = hideVeleniFromPublicHtml(html);
+      if(pathname==='/shop')html=hideApinfioreFromPublicCards(html);
       html = injectBrandSeo(html, pathname);
       if (!/<html/i.test(html)) throw new Error('[Cloudflare V2] HTML non valido da ' + pathname);
 
