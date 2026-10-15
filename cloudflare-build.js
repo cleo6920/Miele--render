@@ -54,7 +54,7 @@ function hideVeleniFromPublicHtml(html) {
 
 // Prezzi e pulsanti di acquisto Apinfiore vengono eliminati anche dall'HTML
 // prerenderizzato, prima che JavaScript inizializzi il catalogo.
-const APINFIORE_INFO_CARD_IDS=["acacia-zenzero-apinfiore","miele-eucalipto-apinfiore","balsammiel","acacia","favo-integrale-bio","polline-italiano","pappa-reale-italiana-bio","orsetti-gommosi","bee-energy-bio","propol-active-bio","propoli-30-spray-integratore","propoli-30-alcolica-integratore","propoli-analcolica-integratore","cosmesi-crema-mani","cosmesi-burrocacao-propoli-aloe","cosmesi-burrocacao-miele-pappa-reale","cosmesi-shampoo-multivitaminico","cosmesi-saponetta-frutti-bosco","cosmesi-saponetta-lavanda","cosmesi-saponetta-aloe-vera","cosmesi-candela-alveare-cera-api","cosmesi-travel-kit-benessere"];
+const APINFIORE_INFO_CARD_IDS=["castagno","acacia-zenzero-apinfiore","miele-eucalipto-apinfiore","balsammiel","acacia","favo-integrale-bio","polline-italiano","pappa-reale-italiana-bio","orsetti-gommosi","bee-energy-bio","propol-active-bio","propoli-30-spray-integratore","propoli-30-alcolica-integratore","propoli-analcolica-integratore","cosmesi-crema-mani","cosmesi-burrocacao-propoli-aloe","cosmesi-burrocacao-miele-pappa-reale","cosmesi-shampoo-multivitaminico","cosmesi-saponetta-frutti-bosco","cosmesi-saponetta-lavanda","cosmesi-saponetta-aloe-vera","cosmesi-candela-alveare-cera-api","cosmesi-travel-kit-benessere"];
 function hideApinfioreFromPublicCards(html) {
   for (const id of APINFIORE_INFO_CARD_IDS) {
     const re=new RegExp('(<article\\b[^>]*\\bid="prodotto-'+id+'"[^>]*>)([\\s\\S]*?)(<\\/article>)','g');
