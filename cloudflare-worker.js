@@ -6,7 +6,7 @@ const VERCEL_V2_ORIGIN = 'https://miele-backend-omega.vercel.app';
 const DISABLED_VELENI_PRODUCT_IDS = new Set([
   'unguento-apis','sos-dol-50ml','apis1-crema-viso-veleno-api','apis2-siero-viso-veleno-api',
   'apis4-crema-corpo-veleno-api-manuka','apis5-gommage-veleno-api-manuka','bagnodoccia-veleno-oro',
-  'castagno','acacia-zenzero-apinfiore','miele-eucalipto-apinfiore','balsammiel','acacia','favo-integrale-bio','polline-italiano','pappa-reale-italiana-bio','orsetti-gommosi','bee-energy-bio','propol-active-bio','propoli-30-spray-integratore','propoli-30-alcolica-integratore','propoli-analcolica-integratore','cosmesi-crema-mani','cosmesi-burrocacao-propoli-aloe','cosmesi-burrocacao-miele-pappa-reale','cosmesi-shampoo-multivitaminico','cosmesi-saponetta-frutti-bosco','cosmesi-saponetta-lavanda','cosmesi-saponetta-aloe-vera','cosmesi-candela-alveare-cera-api','cosmesi-travel-kit-benessere'
+  'castagno','acacia-zenzero-apinfiore','miele-eucalipto-apinfiore','balsammiel','acacia','favo-integrale-bio','polline-italiano','pappa-reale-italiana-bio','propoli-30-spray-integratore','propoli-30-alcolica-integratore','propoli-analcolica-integratore','cosmesi-crema-mani','cosmesi-burrocacao-propoli-aloe','cosmesi-burrocacao-miele-pappa-reale','cosmesi-shampoo-multivitaminico','cosmesi-saponetta-frutti-bosco','cosmesi-saponetta-lavanda','cosmesi-saponetta-aloe-vera','cosmesi-candela-alveare-cera-api','cosmesi-travel-kit-benessere'
 ]);
 const DISABLED_VELENI_NAME_RE = /(?:linea\s+veleni|veleno\s+d[’']?api|sos\s*dol|apis\s*[12457]|veleno\s+d[’']?oro)/i;
 function payloadHasDisabledVeleni(payload){
