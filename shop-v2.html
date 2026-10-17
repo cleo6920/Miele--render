@@ -1053,16 +1053,17 @@ const SHOP_PRODUCT_POINTS={
   "alveo-digitale-api-oggi-01": 0
 };
 function defaultPointsFor(id){return Number(SHOP_PRODUCT_POINTS[id]||0);}
+// Ricalcolo preventivo dei tre prezzi Kontak senza dipendere dal catalogo dichiarato più avanti.
+const KONTAK_SAFE_PRICES={'bee-energy-bio':14.9,'propol-active-bio':10.9,'orsetti-gommosi':3.9};
 shopV2Cart=shopV2Cart.filter(x=>{
   const id=String(x?.id||'');
   if(INFORMATION_ONLY_IDS.has(id))return false;
-  const catalog=SHOP_OFFICIAL_PRODUCTS.find(p=>p.id===id);
-  const price=catalog?Number(catalog.price):Number(x?.price);
+  const price=Object.prototype.hasOwnProperty.call(KONTAK_SAFE_PRICES,id)?KONTAK_SAFE_PRICES[id]:Number(x?.price);
   return isFreeEditionId(id)||(Number.isFinite(price)&&price>0);
-}).map(x=>{
-  const catalog=SHOP_OFFICIAL_PRODUCTS.find(p=>p.id===x.id);
-  return {...x,price:catalog?Number(catalog.price):Number(x.price),points:defaultPointsFor(x.id)};
-});
+}).map(x=>({...x,
+  price:Object.prototype.hasOwnProperty.call(KONTAK_SAFE_PRICES,String(x.id))?KONTAK_SAFE_PRICES[x.id]:Number(x.price),
+  points:defaultPointsFor(x.id)
+}));
 localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));
 
 function saveV2Cart(){localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));renderV2Cart();}
