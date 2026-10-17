@@ -1053,7 +1053,16 @@ const SHOP_PRODUCT_POINTS={
   "alveo-digitale-api-oggi-01": 0
 };
 function defaultPointsFor(id){return Number(SHOP_PRODUCT_POINTS[id]||0);}
-shopV2Cart=shopV2Cart.filter(x=>!INFORMATION_ONLY_IDS.has(String(x?.id||''))).map(x=>({...x,points:defaultPointsFor(x.id)}));
+shopV2Cart=shopV2Cart.filter(x=>{
+  const id=String(x?.id||'');
+  if(INFORMATION_ONLY_IDS.has(id))return false;
+  const catalog=SHOP_OFFICIAL_PRODUCTS.find(p=>p.id===id);
+  const price=catalog?Number(catalog.price):Number(x?.price);
+  return isFreeEditionId(id)||(Number.isFinite(price)&&price>0);
+}).map(x=>{
+  const catalog=SHOP_OFFICIAL_PRODUCTS.find(p=>p.id===x.id);
+  return {...x,price:catalog?Number(catalog.price):Number(x.price),points:defaultPointsFor(x.id)};
+});
 localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));
 
 function saveV2Cart(){localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));renderV2Cart();}
