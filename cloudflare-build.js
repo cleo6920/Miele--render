@@ -423,6 +423,48 @@ body.fda-xmas-points h1{color:#812c3c}
 body.fda-xmas-other main>section:nth-of-type(odd){background:#fff1e3!important}
 body.fda-xmas-other main>section:nth-of-type(even){background:#f9e9e7!important}
 @media(max-width:760px){body.fda-xmas-about .hero:after{font-size:22px;top:12%;right:4%}body.fda-xmas-alveoterapia .story-hero:after{font-size:18px;letter-spacing:4px}}
+
+/* Christmas 4: cover EVERY content section, not just the hero. Section-by-section variety. */
+body[class*="fda-xmas-"] main section:not(.hero):not(.story-hero):not(.board-hero):not(.galena-opening):not(.shipping-promo):not(.checkout-panel):not(.product-detail-panel):not(.catalog-card),
+body[class*="fda-xmas-"] main .chapter:not(.bottega){border-top:1px solid rgba(189,139,67,.3)}
+body.fda-xmas-home .steps-section{background:linear-gradient(115deg,#682b3a,#9c4350)!important;color:#fff6e9!important}
+body.fda-xmas-home .steps-section h1,body.fda-xmas-home .steps-section h2,body.fda-xmas-home .steps-section h3,body.fda-xmas-home .steps-section p,body.fda-xmas-home .steps-section .step{color:#fff7e9!important}
+body.fda-xmas-home .steps-section .step{border-color:#f0c36e!important}
+body.fda-xmas-home .steps-section .step strong,body.fda-xmas-home .steps-section .step-number{color:#ffd277!important}
+body.fda-xmas-home .home-today{background:#fff0d9!important}
+body.fda-xmas-home .ape-telu-home{background:#f6e5e2!important}
+body.fda-xmas-home .places{background:#f7eee0!important}
+body.fda-xmas-home .venom{background:#f4e1e1!important}
+body.fda-xmas-home .products{background:#fff2dc!important}
+body.fda-xmas-home .conversation{background:linear-gradient(115deg,#63283b,#8f3a48)!important;color:#fff7e7!important}
+body.fda-xmas-home .conversation h2,body.fda-xmas-home .conversation p{color:#fff7e7!important}
+body.fda-xmas-home main>.section:not(.steps-section):not(.venom):not(.products){background:#fff4e5!important}
+body.fda-xmas-home main>.section.alt{background:#f9e8e3!important}
+body.fda-xmas-about .section:not(.hero):not(.alt){background:#fff2df!important}
+body.fda-xmas-about .section.alt{background:#f6e5e3!important}
+body.fda-xmas-about .section.story{background:#fff8ee!important}
+body.fda-xmas-about .statement{background:linear-gradient(120deg,#732a39,#a0474a)!important;color:#fff6e6!important}
+body.fda-xmas-about .statement h2,body.fda-xmas-about .statement p{color:#fff6e6!important}
+body.fda-xmas-about .closing{background:#fff0d6!important}
+body.fda-xmas-alveoterapia .section:not(.alt){background:#fff1df!important}
+body.fda-xmas-alveoterapia .section.alt{background:#f4e5e3!important}
+body.fda-xmas-alveoterapia .story-manifesto{background:linear-gradient(125deg,#702e40,#994c51)!important;color:#fff6e7!important}
+body.fda-xmas-alveoterapia .story-manifesto h2,body.fda-xmas-alveoterapia .story-manifesto p{color:#fff6e7!important}
+body.fda-xmas-galena .section:not(.alt){background:#fff1da!important}
+body.fda-xmas-galena .section.alt{background:#f8e6df!important}
+body.fda-xmas-galena .galena-contact{background:#f7dfc4!important}
+body.fda-xmas-galena .story-manifesto{background:linear-gradient(110deg,#702d3c,#a15b46)!important;color:#fff5e7!important}
+body.fda-xmas-shop .chapter.today{background:#fff0dc!important}
+body.fda-xmas-shop .chapter.story-flow{background:#f9e6e3!important}
+body.fda-xmas-shop .chapter.pathways{background:#fff5e6!important}
+body.fda-xmas-shop .chapter.journal{background:#f4e5df!important}
+body.fda-xmas-shop .chapter.bottega{background:#fff7e9!important}
+body.fda-xmas-shop .editorial-hook{background:#fff0d7!important}
+body.fda-xmas-board .board-wrap{background:#fff3e2!important}
+body.fda-xmas-board .event-card{box-shadow:0 7px 24px rgba(116,43,55,.08)}
+body.fda-xmas-other main>.section:nth-of-type(3n+1){background:#fff0db!important}
+body.fda-xmas-other main>.section:nth-of-type(3n+2){background:#f7e5e3!important}
+body.fda-xmas-other main>.section:nth-of-type(3n){background:#f7ebdf!important}
 </style>`;
   const sprig = String.raw`<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M-9 1Q64 12 126 94" stroke="#7a522f" stroke-width="5" fill="none"/><g stroke-linecap="round"><path d="M8 7L68 66M13 12L85 27M27 21L36 79M36 27L111 47M52 39L69 94M67 49L136 65M78 62L98 105" stroke="#1b6245" stroke-width="12"/><path d="M8 7L68 66M13 12L85 27M27 21L36 79M36 27L111 47M52 39L69 94M67 49L136 65M78 62L98 105" stroke="#38805a" stroke-width="5"/></g><g fill="#c53c44"><circle cx="45" cy="30" r="7"/><circle cx="58" cy="31" r="6"/><circle cx="53" cy="43" r="7"/></g><g fill="#f7d57a"><circle cx="96" cy="46" r="4"/><circle cx="115" cy="68" r="4"/></g></svg>`;
   const decor = '<div id="fda-christmas-corners" aria-hidden="true"><div class="fda-sprig left">'+sprig+'</div><div class="fda-sprig right">'+sprig+'</div></div>';
