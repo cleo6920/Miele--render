@@ -321,6 +321,44 @@ async function fetchReady(origin, pathname) {
   throw lastError || new Error('Server locale non disponibile');
 }
 
+
+/* Christmas presentation layer: visual-only; no commerce or navigation handlers. */
+function injectChristmasTheme(html) {
+  if (!/<\/head>/i.test(html) || html.includes('id="fda-christmas-theme"')) return html;
+  const css = String.raw`
+<style id="fda-christmas-theme">
+:root{--christmas-red:#a52b35;--christmas-gold:#e9bc59;--christmas-pine:#123e31}
+html{scrollbar-color:#bd9345 #f6f0e4}
+body{background-color:#faf4e9}
+.site-header,.project-bar,header.site-header{background-color:#103b30!important}
+.site-header{border-bottom:2px solid #c59a48!important}
+.site-header .brand-mark{box-shadow:0 0 0 2px #f5db96,0 0 17px rgba(238,195,93,.28)}
+.site-header .nav-links a[aria-current="page"],.site-header .nav-links .shop{color:#ffe09b!important}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #c5484c;outline-offset:3px}
+#fda-christmas-corners{position:fixed;inset:0;z-index:109;pointer-events:none;overflow:hidden}
+#fda-christmas-corners .fda-sprig{position:absolute;top:0;width:150px;height:112px;opacity:.95;filter:drop-shadow(0 3px 5px rgba(0,0,0,.18))}
+#fda-christmas-corners .fda-sprig.left{left:0}
+#fda-christmas-corners .fda-sprig.right{right:0;transform:scaleX(-1)}
+#fda-christmas-corners .fda-sprig svg{width:100%;height:100%}
+#fda-christmas-ribbon{display:flex;align-items:center;justify-content:center;gap:13px;min-height:33px;padding:5px 24px;background:linear-gradient(100deg,#7b1e29,#a12e39 45%,#79212d);color:#fff4d8;font:700 12px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.08em;text-align:center;border-bottom:2px solid #d9b45d;position:relative;z-index:1}
+#fda-christmas-ribbon .star{color:#ffe6a0;font-size:16px}
+#fda-christmas-ribbon strong{color:#ffe6a0}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 3% 8%,rgba(220,180,87,.09),transparent 30%),radial-gradient(ellipse at 98% 88%,rgba(135,30,44,.045),transparent 35%)}
+@media(max-width:760px){
+#fda-christmas-corners .fda-sprig{width:66px;height:53px;opacity:.85}
+#fda-christmas-ribbon{font-size:10px;min-height:28px;padding:5px 44px;letter-spacing:.025em;gap:6px}
+#fda-christmas-ribbon .star{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){#fda-christmas-corners *{animation:none!important;transition:none!important}}
+</style>`;
+  const sprig = String.raw`<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M-9 1Q64 12 126 94" stroke="#7a522f" stroke-width="5" fill="none"/><g stroke-linecap="round"><path d="M8 7L68 66M13 12L85 27M27 21L36 79M36 27L111 47M52 39L69 94M67 49L136 65M78 62L98 105" stroke="#1b6245" stroke-width="12"/><path d="M8 7L68 66M13 12L85 27M27 21L36 79M36 27L111 47M52 39L69 94M67 49L136 65M78 62L98 105" stroke="#38805a" stroke-width="5"/></g><g fill="#c53c44"><circle cx="45" cy="30" r="7"/><circle cx="58" cy="31" r="6"/><circle cx="53" cy="43" r="7"/></g><g fill="#f7d57a"><circle cx="96" cy="46" r="4"/><circle cx="115" cy="68" r="4"/></g></svg>`;
+  const decor = '<div id="fda-christmas-corners" aria-hidden="true"><div class="fda-sprig left">'+sprig+'</div><div class="fda-sprig right">'+sprig+'</div></div>';
+  const ribbon = '<div id="fda-christmas-ribbon" aria-label="Atmosfera natalizia alla Fabbrica delle Api"><span class="star" aria-hidden="true">✦</span><span><strong>Natale alla Fabbrica delle Api</strong> · la magia delle feste incontra il mondo delle api</span><span class="star" aria-hidden="true">✦</span></div>';
+  html=html.replace(/<\/head>/i,css+'</head>');
+  html=html.replace(/<body([^>]*)>/i, (full, attrs)=>'<body'+attrs+'>'+decor+ribbon);
+  return html;
+}
+
 function writeRoute(route, html) {
   const clean = route.replace(/^\/+|\/+$/g, '');
   if (!clean) {
@@ -370,6 +408,7 @@ async function main() {
       html = hideVeleniFromPublicHtml(html);
       if(pathname==='/shop')html=hideApinfioreFromPublicCards(html);
       html = injectBrandSeo(html, pathname);
+      html = injectChristmasTheme(html);
       if (!/<html/i.test(html)) throw new Error('[Cloudflare V2] HTML non valido da ' + pathname);
 
       if (pathname === '/' || pathname === '/home') {
@@ -408,8 +447,9 @@ async function main() {
     if (!/<html/i.test(puntiApeHtml) || !puntiApeHtml.includes('Punti Ape')) {
       throw new Error('[Cloudflare V2] punti-ape.html non valido.');
     }
-    fs.writeFileSync(path.join(dist, 'punti-ape.html'), puntiApeHtml, 'utf8');
-    writeRoute('/punti-ape', puntiApeHtml);
+    const christmasPuntiApeHtml = injectChristmasTheme(puntiApeHtml);
+    fs.writeFileSync(path.join(dist, 'punti-ape.html'), christmasPuntiApeHtml, 'utf8');
+    writeRoute('/punti-ape', christmasPuntiApeHtml);
 
     // Installa GA4 su tutte le pagine HTML generate prima di creare il bundle dello shop.
     injectGoogleAnalyticsIntoDist(dist);
