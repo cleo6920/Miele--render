@@ -466,7 +466,7 @@ body.fda-xmas-other main>.section:nth-of-type(3n+1){background:#fff0db!important
 body.fda-xmas-other main>.section:nth-of-type(3n+2){background:#f7e5e3!important}
 body.fda-xmas-other main>.section:nth-of-type(3n){background:#f7ebdf!important}
 
-.fda-alveo-identity{max-width:1120px;margin:28px auto;padding:30px 36px;border:1px solid #dfb775;border-radius:18px;background:linear-gradient(115deg,#712b3c,#9b4b4b);color:#fff7e9;box-shadow:0 9px 25px rgba(89,37,47,.13)}
+body.fda-xmas-home .hero .fda-alveo-identity{max-width:780px;margin:22px 0 24px;padding:20px 24px;background:linear-gradient(105deg,rgba(104,35,52,.93),rgba(135,59,60,.87));border-color:#e6bb72}body.fda-xmas-home .hero .fda-alveo-identity h2{font-size:clamp(32px,3.5vw,53px)!important}body.fda-xmas-home .hero .fda-alveo-identity p{font-size:16px!important}.fda-alveo-identity{max-width:1120px;margin:28px auto;padding:30px 36px;border:1px solid #dfb775;border-radius:18px;background:linear-gradient(115deg,#712b3c,#9b4b4b);color:#fff7e9;box-shadow:0 9px 25px rgba(89,37,47,.13)}
 .fda-alveo-identity .fda-alveo-kicker{display:block;font:800 12px Arial,sans-serif;letter-spacing:.18em;color:#ffdc9a}
 .fda-alveo-identity h2{font:700 clamp(32px,4.2vw,60px)/1.1 Georgia,serif!important;color:#fff8e8!important;margin:12px 0!important}
 .fda-alveo-identity p{font:400 clamp(15px,1.4vw,19px)/1.55 Arial,sans-serif!important;color:#ffe9d5!important;max-width:790px;margin:0!important}
@@ -480,7 +480,7 @@ body.fda-xmas-other main>.section:nth-of-type(3n){background:#f7ebdf!important}
   html=html.replace(/<body([^>]*)>/i, (full,attrs)=>'<body'+(/\bclass\s*=/.test(attrs)?attrs.replace(/\bclass\s*=\s*(["\'])(.*?)\1/i,(m,q,c)=>'class='+q+c+' fda-xmas-'+pageType+q):attrs+' class="fda-xmas-'+pageType+'"')+'>');
 
   const identitySlots={
-    home:[['steps-section','IL NOSTRO PERCORSO','Un’esperienza che unisce alveare, territorio e conoscenza delle api.'],['places','DUE LUOGHI, UN PERCORSO','Dall’Oasi del Busatello alla Galena delle Api, in ogni stagione.']],
+    home:[['hero','IL NOSTRO SEGNO DISTINTIVO','Un percorso che unisce l’esperienza dell’alveare, i luoghi e la conoscenza delle api.'],['steps-section','IL NOSTRO PERCORSO','Un’esperienza che unisce alveare, territorio e conoscenza delle api.'],['places','DUE LUOGHI, UN PERCORSO','Dall’Oasi del Busatello alla Galena delle Api, in ogni stagione.']],
     alveoterapia:[['story-hero','IL CUORE DEL PROGETTO','Natura, alveare e conoscenza in un’esperienza guidata e consapevole.'],['section alt','UN FILO CHE CONTINUA','L’esperienza cambia con le stagioni, il legame con le api rimane.']],
     about:[['section story','LA NOSTRA IDENTITÀ','Il progetto che collega luoghi, incontri e cultura dell’alveare.']],
     galena:[['galena-opening','ANCHE NELLA STAGIONE FREDDA','L’esperienza dell’alveare prosegue nella Galena delle Api.'],['galena-contact','VIENI A CONOSCERCI','Scopri il nostro percorso dedicato al mondo delle api.']],
