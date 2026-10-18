@@ -32,6 +32,12 @@ function run(){
       try{
         if(typeof addV2Product==='function'){
           addV2Product(add);
+          // Make the successful action visible even if another listener fails to show the drawer.
+          const drawer=document.getElementById('cartDrawer');
+          if(drawer && Number(document.getElementById('cartCount')?.textContent||0)>0){
+            drawer.classList.add('open');
+            drawer.style.zIndex='1000';
+          }
           if(add.classList.contains('product-detail-add') && typeof closeProductDetail==='function') closeProductDetail();
           return;
         }
