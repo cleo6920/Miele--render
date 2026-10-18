@@ -465,12 +465,38 @@ body.fda-xmas-board .event-card{box-shadow:0 7px 24px rgba(116,43,55,.08)}
 body.fda-xmas-other main>.section:nth-of-type(3n+1){background:#fff0db!important}
 body.fda-xmas-other main>.section:nth-of-type(3n+2){background:#f7e5e3!important}
 body.fda-xmas-other main>.section:nth-of-type(3n){background:#f7ebdf!important}
+
+.fda-alveo-identity{max-width:1120px;margin:28px auto;padding:30px 36px;border:1px solid #dfb775;border-radius:18px;background:linear-gradient(115deg,#712b3c,#9b4b4b);color:#fff7e9;box-shadow:0 9px 25px rgba(89,37,47,.13)}
+.fda-alveo-identity .fda-alveo-kicker{display:block;font:800 12px Arial,sans-serif;letter-spacing:.18em;color:#ffdc9a}
+.fda-alveo-identity h2{font:700 clamp(32px,4.2vw,60px)/1.1 Georgia,serif!important;color:#fff8e8!important;margin:12px 0!important}
+.fda-alveo-identity p{font:400 clamp(15px,1.4vw,19px)/1.55 Arial,sans-serif!important;color:#ffe9d5!important;max-width:790px;margin:0!important}
+.fda-alveo-identity.variant-1{background:linear-gradient(115deg,#694047,#ad7650)}
+@media(max-width:760px){.fda-alveo-identity{margin:20px 12px;padding:22px;border-radius:14px}}
 </style>`;
   const sprig = String.raw`<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M-9 1Q64 12 126 94" stroke="#7a522f" stroke-width="5" fill="none"/><g stroke-linecap="round"><path d="M8 7L68 66M13 12L85 27M27 21L36 79M36 27L111 47M52 39L69 94M67 49L136 65M78 62L98 105" stroke="#1b6245" stroke-width="12"/><path d="M8 7L68 66M13 12L85 27M27 21L36 79M36 27L111 47M52 39L69 94M67 49L136 65M78 62L98 105" stroke="#38805a" stroke-width="5"/></g><g fill="#c53c44"><circle cx="45" cy="30" r="7"/><circle cx="58" cy="31" r="6"/><circle cx="53" cy="43" r="7"/></g><g fill="#f7d57a"><circle cx="96" cy="46" r="4"/><circle cx="115" cy="68" r="4"/></g></svg>`;
   const decor = '<div id="fda-christmas-corners" aria-hidden="true"><div class="fda-sprig left">'+sprig+'</div><div class="fda-sprig right">'+sprig+'</div></div>';
   const ribbon = '<div id="fda-christmas-ribbon" aria-label="Atmosfera natalizia alla Fabbrica delle Api"><span class="star" aria-hidden="true">✦</span><span><strong>Natale alla Fabbrica delle Api</strong> · la magia delle feste incontra il mondo delle api</span><span class="star" aria-hidden="true">✦</span></div>';
   const pageType = pathname === '/chi-siamo' ? 'about' : pathname === '/alveoterapia' ? 'alveoterapia' : pathname === '/centro' ? 'galena' : pathname === '/' || pathname === '/home' ? 'home' : pathname === '/shop' ? 'shop' : pathname === '/alveo-digitale' ? 'digital' : pathname === '/bacheca' ? 'board' : pathname === '/punti-ape' || pathname === '/saldo-api.html' ? 'points' : 'other';
   html=html.replace(/<body([^>]*)>/i, (full,attrs)=>'<body'+(/\bclass\s*=/.test(attrs)?attrs.replace(/\bclass\s*=\s*(["\'])(.*?)\1/i,(m,q,c)=>'class='+q+c+' fda-xmas-'+pageType+q):attrs+' class="fda-xmas-'+pageType+'"')+'>');
+
+  const identitySlots={
+    home:[['steps-section','IL NOSTRO PERCORSO','Un’esperienza che unisce alveare, territorio e conoscenza delle api.'],['places','DUE LUOGHI, UN PERCORSO','Dall’Oasi del Busatello alla Galena delle Api, in ogni stagione.']],
+    alveoterapia:[['story-hero','IL CUORE DEL PROGETTO','Natura, alveare e conoscenza in un’esperienza guidata e consapevole.'],['section alt','UN FILO CHE CONTINUA','L’esperienza cambia con le stagioni, il legame con le api rimane.']],
+    about:[['section story','LA NOSTRA IDENTITÀ','Il progetto che collega luoghi, incontri e cultura dell’alveare.']],
+    galena:[['galena-opening','ANCHE NELLA STAGIONE FREDDA','L’esperienza dell’alveare prosegue nella Galena delle Api.'],['galena-contact','VIENI A CONOSCERCI','Scopri il nostro percorso dedicato al mondo delle api.']],
+    shop:[['story-flow','DIETRO OGNI PRODOTTO','Prima dei prodotti c’è un mondo da conoscere: l’alveare e il territorio.']]
+  };
+  const slots=identitySlots[pageType]||[];
+  for(let i=0;i<slots.length;i++){
+    const [cls,kicker,desc]=slots[i];
+    const re=/<section\b[^>]*class=["'][^"']*["'][^>]*>/gi;
+    let m;while((m=re.exec(html))!==null){
+      const classAttr=m[0].match(/class=["']([^"']+)["']/i);
+      if(!classAttr||!cls.split(' ').every(x=>classAttr[1].split(/\s+/).includes(x)))continue;
+      const panel='<div class="fda-alveo-identity variant-'+(i%2)+'"><span class="fda-alveo-kicker">'+kicker+'</span><h2>Alveoterapia Integrata</h2><p>'+desc+'</p></div>';
+      html=html.slice(0,m.index+m[0].length)+panel+html.slice(m.index+m[0].length);break;
+    }
+  }
   html=html.replace(/<\/head>/i,css+'</head>');
   html=html.replace(/<body([^>]*)>/i, (full, attrs)=>'<body'+attrs+'>'+decor+ribbon);
   return html;
