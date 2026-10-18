@@ -960,7 +960,7 @@ img{display:block;max-width:100%}
           <div class="field"><label>Comune / Città *</label><input id="coCity" autocomplete="address-level2"></div>
           <div class="field full"><label>Via e numero civico *</label><input id="coAddress" autocomplete="street-address"></div>
           <div class="field"><label>CAP / Codice postale *</label><input id="coCap" maxlength="12" autocomplete="postal-code"></div>
-          <div class="field"><label>Provincia / Regione</label><input id="coProvince" maxlength="80" placeholder="es. MN / Madrid"></div>
+          <div class="field"><label>Provincia / Regione</label><input id="coProvince" maxlength="80" placeholder="es. BO (Bologna) / Madrid" autocomplete="address-level1" list="italianProvinceSuggestions"><datalist id="italianProvinceSuggestions"><option value="BO">Bologna</option><option value="MN">Mantova</option><option value="VR">Verona</option><option value="MI">Milano</option><option value="RM">Roma</option><option value="FI">Firenze</option><option value="TO">Torino</option><option value="NA">Napoli</option><option value="PD">Padova</option><option value="VE">Venezia</option></datalist></div>
         </div>
         <div class="checkout-actions"><button class="next-btn" type="button" data-next="2">Continua →</button></div>
       </div>
@@ -1184,8 +1184,8 @@ async function calculateShipping(){
   }
 
   shippingState={
-    cost:(country==='IT' && [8,10].includes(Number(estimate.cost))) ? 6 : Number(estimate.cost||0),pending:false,weightKg:Number(estimate.weightKg||0),zone:estimate.zone||'',
-    label:euro((country==='IT' && [8,10].includes(Number(estimate.cost))) ? 6 : Number(estimate.cost||0)),
+    cost:country==='IT' ? 6 : Number(estimate.cost||0),pending:false,weightKg:Number(estimate.weightKg||0),zone:estimate.zone||'',
+    label:euro(country==='IT' ? 6 : Number(estimate.cost||0)),
     reason:country==='IT'
       ? purchaseT('posteItalyReason')(Number(estimate.weightKg||0))
       : purchaseT('posteIntlReason')(Number(estimate.weightKg||0),estimate.zone||'')
