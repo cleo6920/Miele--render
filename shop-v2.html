@@ -452,6 +452,15 @@ img{display:block;max-width:100%}
 .catalog-intro-media.tesori img{max-height:250px;object-fit:contain;background:rgba(255,255,255,.88);border-radius:18px;padding:10px}
 .catalog-grid[id]{scroll-margin-top:145px}
 @media(max-width:820px){.catalog-intro-card{grid-template-columns:1fr}.catalog-intro-media{min-height:230px}.catalog-intro-media.tesori{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.shipping-promo{background:#f8e7b5;color:#17372a;border-bottom:3px solid #c38c23;padding:14px 16px;text-align:center;position:relative;z-index:1}
+.shipping-promo-inner{max-width:1120px;margin:auto;display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;font-size:16px}
+.shipping-promo strong{font-size:20px;font-weight:900}
+.shipping-promo .shipping-tag{background:#123d2c;color:white;border-radius:999px;padding:6px 13px;font-weight:800}
+.shipping-progress{margin:12px 0;padding:12px;background:#fff6db;color:#17372a;border:1px solid #e4c16d;border-radius:12px;font-weight:800}
+.shipping-progress-track{height:8px;background:#e7d5a7;border-radius:99px;overflow:hidden;margin-top:8px}
+.shipping-progress-fill{height:100%;background:#23704a;width:0%;transition:width .2s}
+@media(max-width:620px){.shipping-promo-inner{font-size:14px;gap:7px}.shipping-promo strong{font-size:18px}}
 </style>
 <link rel="stylesheet" href="/global-nav-v2.css?v=20260922-1">
 </head>
@@ -505,6 +514,7 @@ img{display:block;max-width:100%}
   </div>
 </div>
 
+<section class="shipping-promo" aria-label="Promozione spedizioni Italia"><div class="shipping-promo-inner"><span class="shipping-tag">🚚 SPEDIZIONI ITALIA</span><strong>6 €</strong><span>· GRATIS da 69,90 € di prodotti</span></div></section>
 <main>
 <section class="hero">
   <div class="hero-bg"></div>
@@ -897,7 +907,7 @@ img{display:block;max-width:100%}
 <aside class="cart-drawer" id="cartDrawer" aria-label="Cestino">
   <div class="cart-head"><h2>Il tuo cestino</h2><button class="cart-close" id="cartClose" type="button">×</button></div>
   <div class="cart-items" id="cartItems"></div>
-  <div class="cart-foot"><div class="cart-points"><span>🐝 Punti Ape di questo ordine</span><span id="cartPoints">0</span></div><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><button class="checkout-new" type="button" id="startCheckout">Continua con l'ordine →</button><div class="cart-note">100 Punti Ape = cesto omaggio con 5 prodotti a scelta.</div></div>
+  <div class="cart-foot"><div class="shipping-progress" id="shippingProgress" aria-live="polite"><span id="shippingProgressText">Spedizione gratuita in Italia da 69,90 €</span><div class="shipping-progress-track"><div class="shipping-progress-fill" id="shippingProgressFill"></div></div></div><div class="cart-points"><span>🐝 Punti Ape di questo ordine</span><span id="cartPoints">0</span></div><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><button class="checkout-new" type="button" id="startCheckout">Continua con l'ordine →</button><div class="cart-note">100 Punti Ape = cesto omaggio con 5 prodotti a scelta.</div></div>
 </aside>
 
 
@@ -1135,7 +1145,7 @@ async function calculateShipping(){
     return shippingState;
   }
   const country=document.getElementById('coCountry').value||'IT';
-  if(country==='IT' && cartTotal()>=200){
+  if(country==='IT' && cartTotal()>=69.90){
     const estimate=await fetch('/api/shipping-estimate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({country,items:shopV2Cart.filter(x=>x.id!=='alveo-digitale-10-colazioni').map(x=>({id:x.id,qty:x.qty}))})}).then(r=>r.json()).catch(()=>null);
     shippingState={cost:0,pending:false,weightKg:Number(estimate?.weightKg||0),label:purchaseT('free'),reason:purchaseT('order200Reason')};
     return shippingState;
@@ -1167,8 +1177,8 @@ async function calculateShipping(){
   }
 
   shippingState={
-    cost:Number(estimate.cost||0),pending:false,weightKg:Number(estimate.weightKg||0),zone:estimate.zone||'',
-    label:euro(estimate.cost),
+    cost:(country==='IT' && [8,10].includes(Number(estimate.cost))) ? 6 : Number(estimate.cost||0),pending:false,weightKg:Number(estimate.weightKg||0),zone:estimate.zone||'',
+    label:euro((country==='IT' && [8,10].includes(Number(estimate.cost))) ? 6 : Number(estimate.cost||0)),
     reason:country==='IT'
       ? purchaseT('posteItalyReason')(Number(estimate.weightKg||0))
       : purchaseT('posteIntlReason')(Number(estimate.weightKg||0),estimate.zone||'')
@@ -1226,6 +1236,11 @@ function addV2Product(btn){
 
 function removeV2Product(id){shopV2Cart=shopV2Cart.filter(x=>x.id!==id);saveV2Cart();}
 function renderV2Cart(){
+  const progressText=document.getElementById('shippingProgressText');
+  const progressFill=document.getElementById('shippingProgressFill');
+  const remaining=Math.max(0,69.90-cartTotal());
+  if(progressText)progressText.textContent=cartTotal()>=69.90?'🎉 Hai raggiunto la spedizione gratuita in Italia!':cartTotal()>0?'Ti mancano '+euro(remaining)+' per la spedizione gratuita in Italia!':'Spedizione gratuita in Italia da 69,90 €';
+  if(progressFill)progressFill.style.width=Math.min(100,Math.max(0,cartTotal()/69.90*100))+'%';
   const box=document.getElementById('cartItems');
   const count=shopV2Cart.reduce((s,x)=>s+x.qty,0);
   document.getElementById('cartCount').textContent=count;
