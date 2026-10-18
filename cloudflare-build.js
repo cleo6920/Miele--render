@@ -323,7 +323,7 @@ async function fetchReady(origin, pathname) {
 
 
 /* Christmas presentation layer: visual-only; no commerce or navigation handlers. */
-function injectChristmasTheme(html) {
+function injectChristmasTheme(html, pathname) {
   if (!/<\/head>/i.test(html) || html.includes('id="fda-christmas-theme"')) return html;
   const css = String.raw`
 <style id="fda-christmas-theme">
@@ -378,10 +378,57 @@ main section:not(.shipping-promo):not(.checkout-panel):not(.product-detail-panel
 .shipping-promo{background:#fff0c9!important}
 #fda-christmas-ribbon:after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:linear-gradient(90deg,transparent,#ffdc8c,transparent)}
 @media(max-width:760px){.editorial-hook{padding-top:25px;padding-bottom:25px}#fda-christmas-ribbon{font-size:10px}}
+
+/* Distinct Christmas art direction for each page. Never restyle checkout forms or product actions. */
+body.fda-xmas-about .hero{background:radial-gradient(circle at 85% 20%,rgba(240,198,112,.22),transparent 30%),linear-gradient(118deg,#5b2430 0%,#8d3440 55%,#4f2632 100%)!important;position:relative}
+body.fda-xmas-about .hero:after{content:"✦   ✧   ✦";position:absolute;right:6%;top:22%;font:54px Georgia,serif;letter-spacing:14px;color:#e7c47c;opacity:.65;pointer-events:none}
+body.fda-xmas-about .hero h1,body.fda-xmas-about .hero p{color:#fff8e8!important}
+body.fda-xmas-about .values-grid .value:nth-child(3n+1){background:#fff0d8!important;border-top:4px solid #cfa453}
+body.fda-xmas-about .values-grid .value:nth-child(3n+2){background:#f8e7e6!important;border-top:4px solid #9f3844}
+body.fda-xmas-about .values-grid .value:nth-child(3n){background:#f0e7d7!important;border-top:4px solid #64765a}
+body.fda-xmas-about .story-card.green{background:#70303c!important;color:#fff7e7!important}
+body.fda-xmas-about .story-card.brown{background:#a66b43!important;color:#fff7e7!important}
+body.fda-xmas-alveoterapia .story-hero{box-shadow:inset 0 0 0 5px rgba(237,200,132,.35)}
+body.fda-xmas-alveoterapia .story-hero:after{content:"❄   ✧   ❄";position:absolute;right:6%;bottom:8%;font:32px Georgia,serif;letter-spacing:12px;color:#f5e5ce;pointer-events:none}
+body.fda-xmas-alveoterapia .story-quote{border-left:5px solid #a73d4c!important;background:#fff1e4!important;color:#652836!important}
+body.fda-xmas-alveoterapia .story-point:nth-child(odd){background:#f7e9e1!important}
+body.fda-xmas-alveoterapia .story-point:nth-child(even){background:#f0ebdb!important}
+body.fda-xmas-galena .galena-opening{background:radial-gradient(circle at 78% 22%,rgba(255,225,151,.23),transparent 38%),linear-gradient(130deg,#502b3b,#8e493f)!important}
+body.fda-xmas-galena .galena-opening h1,body.fda-xmas-galena .galena-opening p{color:#fff6e5!important}
+body.fda-xmas-galena .story-photo{border:5px solid #e0bd7e!important;box-shadow:0 12px 28px rgba(99,42,44,.16)}
+body.fda-xmas-galena .story-quote{background:#fff0d3!important;border-left:4px solid #d7a24e!important}
+body.fda-xmas-home .hero{box-shadow:inset 0 0 0 4px rgba(230,184,96,.3)}
+body.fda-xmas-home .hero-kicker{color:#ffe0a3!important}
+body.fda-xmas-home .bee-card:nth-child(3n+1){background:#fff0da!important;border-top:4px solid #c79343}
+body.fda-xmas-home .bee-card:nth-child(3n+2){background:#f8e6e3!important;border-top:4px solid #a93947}
+body.fda-xmas-home .bee-card:nth-child(3n){background:#ece7d9!important;border-top:4px solid #61765e}
+body.fda-xmas-shop .hero{box-shadow:inset 0 0 0 4px rgba(255,217,138,.28)}
+body.fda-xmas-shop .hero-kicker{color:#ffe2a1!important}
+body.fda-xmas-shop .today-card:nth-child(odd),body.fda-xmas-shop .guide-card:nth-child(odd){border-top:4px solid #a53949!important}
+body.fda-xmas-shop .today-card:nth-child(even),body.fda-xmas-shop .guide-card:nth-child(even){border-top:4px solid #d9a345!important}
+body.fda-xmas-shop .chapter:not(.bottega):nth-of-type(even){background:#fff0e4!important}
+body.fda-xmas-shop .chapter:not(.bottega):nth-of-type(odd){background:#fff8ec!important}
+body.fda-xmas-shop .catalog-card{background:#fffaf2!important}
+body.fda-xmas-shop .catalog-card:nth-child(4n+2){border-top:3px solid #a93c48!important}
+body.fda-xmas-shop .catalog-card:nth-child(4n+3){border-top:3px solid #cfa049!important}
+body.fda-xmas-digital .hero{background:radial-gradient(circle at 86% 18%,rgba(255,217,139,.24),transparent 36%),linear-gradient(125deg,#632a3a,#9a414a)!important}
+body.fda-xmas-digital .hero h1,body.fda-xmas-digital .hero p{color:#fff5e4!important}
+body.fda-xmas-digital .alveo-preview-intro{background:#fff0d9!important;border:2px solid #d8af66!important}
+body.fda-xmas-board .board-hero{background:linear-gradient(115deg,#7b2637,#ad5146)!important}
+body.fda-xmas-board .board-hero h1,body.fda-xmas-board .board-hero p{color:#fff5e5!important}
+body.fda-xmas-board .event-card:nth-child(odd){background:#fff1dc!important;border-left:5px solid #ba8a3f}
+body.fda-xmas-board .event-card:nth-child(even){background:#f9e7e6!important;border-left:5px solid #9f3544}
+body.fda-xmas-points main{background:linear-gradient(180deg,#fff3d6,#fff9ee)!important}
+body.fda-xmas-points h1{color:#812c3c}
+body.fda-xmas-other main>section:nth-of-type(odd){background:#fff1e3!important}
+body.fda-xmas-other main>section:nth-of-type(even){background:#f9e9e7!important}
+@media(max-width:760px){body.fda-xmas-about .hero:after{font-size:22px;top:12%;right:4%}body.fda-xmas-alveoterapia .story-hero:after{font-size:18px;letter-spacing:4px}}
 </style>`;
   const sprig = String.raw`<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M-9 1Q64 12 126 94" stroke="#7a522f" stroke-width="5" fill="none"/><g stroke-linecap="round"><path d="M8 7L68 66M13 12L85 27M27 21L36 79M36 27L111 47M52 39L69 94M67 49L136 65M78 62L98 105" stroke="#1b6245" stroke-width="12"/><path d="M8 7L68 66M13 12L85 27M27 21L36 79M36 27L111 47M52 39L69 94M67 49L136 65M78 62L98 105" stroke="#38805a" stroke-width="5"/></g><g fill="#c53c44"><circle cx="45" cy="30" r="7"/><circle cx="58" cy="31" r="6"/><circle cx="53" cy="43" r="7"/></g><g fill="#f7d57a"><circle cx="96" cy="46" r="4"/><circle cx="115" cy="68" r="4"/></g></svg>`;
   const decor = '<div id="fda-christmas-corners" aria-hidden="true"><div class="fda-sprig left">'+sprig+'</div><div class="fda-sprig right">'+sprig+'</div></div>';
   const ribbon = '<div id="fda-christmas-ribbon" aria-label="Atmosfera natalizia alla Fabbrica delle Api"><span class="star" aria-hidden="true">✦</span><span><strong>Natale alla Fabbrica delle Api</strong> · la magia delle feste incontra il mondo delle api</span><span class="star" aria-hidden="true">✦</span></div>';
+  const pageType = pathname === '/chi-siamo' ? 'about' : pathname === '/alveoterapia' ? 'alveoterapia' : pathname === '/centro' ? 'galena' : pathname === '/' || pathname === '/home' ? 'home' : pathname === '/shop' ? 'shop' : pathname === '/alveo-digitale' ? 'digital' : pathname === '/bacheca' ? 'board' : pathname === '/punti-ape' || pathname === '/saldo-api.html' ? 'points' : 'other';
+  html=html.replace(/<body([^>]*)>/i, (full,attrs)=>'<body'+attrs+' class="fda-xmas-'+pageType+'">');
   html=html.replace(/<\/head>/i,css+'</head>');
   html=html.replace(/<body([^>]*)>/i, (full, attrs)=>'<body'+attrs+'>'+decor+ribbon);
   return html;
@@ -436,7 +483,7 @@ async function main() {
       html = hideVeleniFromPublicHtml(html);
       if(pathname==='/shop')html=hideApinfioreFromPublicCards(html);
       html = injectBrandSeo(html, pathname);
-      html = injectChristmasTheme(html);
+      html = injectChristmasTheme(html, pathname);
       if (!/<html/i.test(html)) throw new Error('[Cloudflare V2] HTML non valido da ' + pathname);
 
       if (pathname === '/' || pathname === '/home') {
@@ -475,7 +522,7 @@ async function main() {
     if (!/<html/i.test(puntiApeHtml) || !puntiApeHtml.includes('Punti Ape')) {
       throw new Error('[Cloudflare V2] punti-ape.html non valido.');
     }
-    const christmasPuntiApeHtml = injectChristmasTheme(puntiApeHtml);
+    const christmasPuntiApeHtml = injectChristmasTheme(puntiApeHtml, '/punti-ape');
     fs.writeFileSync(path.join(dist, 'punti-ape.html'), christmasPuntiApeHtml, 'utf8');
     writeRoute('/punti-ape', christmasPuntiApeHtml);
 
