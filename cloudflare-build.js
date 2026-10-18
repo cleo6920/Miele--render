@@ -335,8 +335,8 @@ body{background-color:#faf4e9}
 .site-header .brand-mark{box-shadow:0 0 0 2px #f5db96,0 0 17px rgba(238,195,93,.28)}
 .site-header .nav-links a[aria-current="page"],.site-header .nav-links .shop{color:#ffe09b!important}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #c5484c;outline-offset:3px}
-#fda-christmas-corners{position:fixed;inset:0;z-index:109;pointer-events:none;overflow:hidden}
-#fda-christmas-corners .fda-sprig{position:absolute;top:0;width:150px;height:112px;opacity:.95;filter:drop-shadow(0 3px 5px rgba(0,0,0,.18))}
+#fda-christmas-corners{position:absolute;top:33px;left:0;right:0;height:0;z-index:1;pointer-events:none}
+#fda-christmas-corners .fda-sprig{position:absolute;top:0;width:74px;height:54px;opacity:.85;filter:drop-shadow(0 3px 5px rgba(0,0,0,.18))}
 #fda-christmas-corners .fda-sprig.left{left:0}
 #fda-christmas-corners .fda-sprig.right{right:0;transform:scaleX(-1)}
 #fda-christmas-corners .fda-sprig svg{width:100%;height:100%}
@@ -345,11 +345,39 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 #fda-christmas-ribbon strong{color:#ffe6a0}
 body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 3% 8%,rgba(220,180,87,.09),transparent 30%),radial-gradient(ellipse at 98% 88%,rgba(135,30,44,.045),transparent 35%)}
 @media(max-width:760px){
-#fda-christmas-corners .fda-sprig{width:66px;height:53px;opacity:.85}
+#fda-christmas-corners .fda-sprig{width:38px;height:30px;opacity:.7}
 #fda-christmas-ribbon{font-size:10px;min-height:28px;padding:5px 44px;letter-spacing:.025em;gap:6px}
 #fda-christmas-ribbon .star{font-size:12px}
 }
 @media(prefers-reduced-motion:reduce){#fda-christmas-corners *{animation:none!important;transition:none!important}}
+
+/* Christmas 2: full-page festive editorial palette, not a green-only header. */
+:root{--fda-xmas-wine:#811f31;--fda-xmas-red:#a42f3e;--fda-xmas-cream:#fff5e6;--fda-xmas-gold:#edc365}
+body{background:#fff8ed!important}
+#fda-christmas-ribbon{background:linear-gradient(90deg,#751b2c,#ae3545 48%,#751b2c)}
+/* Red wine navigation and burgundy secondary navigation, with preserved readable controls. */
+.site-header,header.site-header,.project-bar{background:#681e2d!important}
+.project-bar{border-bottom:2px solid #d7a64d!important}
+.site-header a,.project-bar a{transition:color .2s ease}
+.site-header a:hover,.project-bar a:hover{color:#ffdc8b!important}
+/* Festive cards, headings, and alternating content blocks across the public pages. */
+main section:not(.shipping-promo):not(.checkout-panel):not(.product-detail-panel):nth-of-type(even){background-color:#fff3df}
+main section:not(.shipping-promo):not(.checkout-panel):not(.product-detail-panel):nth-of-type(odd){border-color:#dfc18a}
+.section-head h2,.section-head h3,.feature-story h2,.feature-copy h2,.story-flow h2{color:#7f2534}
+.catalog-card,.today-card,.quick-card,.guide-card,.story-step,.note-card{border-color:#d6b56f!important;box-shadow:0 7px 24px rgba(94,30,38,.08)}
+.catalog-card:hover,.today-card:hover,.quick-card:hover,.guide-card:hover{box-shadow:0 12px 28px rgba(130,36,52,.17)}
+.catalog-points,.catalog-intro-tags,.editorial-hook-meta{color:#742537}
+.editorial-hook{background:linear-gradient(115deg,#791f31 0%,#982d3c 64%,#632132 100%)!important;border-top:3px solid #e8b95e;border-bottom:3px solid #e8b95e}
+.editorial-hook h1,.editorial-hook h2,.editorial-hook h3,.editorial-hook .editorial-hook-copy{color:#fff7e9!important}
+.editorial-hook p,.editorial-hook small,.editorial-hook .editorial-hook-meta{color:#ffe8bf!important}
+.editorial-hook .editorial-hook-meta span{border-color:#dcb56b!important}
+.catalog-intro-card.dark,.feature-copy.dark{background:linear-gradient(135deg,#762538,#a33743)!important;color:#fff7e8!important}
+.catalog-intro-card.dark h2,.feature-copy.dark h2,.catalog-intro-card.dark p,.feature-copy.dark p{color:#fff5e4!important}
+.catalog-intro-card:not(.dark),.feature-story,.note-card{background-color:#fff3e0}
+.footer,footer.footer{background:#581b2b!important;border-top:4px solid #d9a950!important}
+.shipping-promo{background:#fff0c9!important}
+#fda-christmas-ribbon:after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:linear-gradient(90deg,transparent,#ffdc8c,transparent)}
+@media(max-width:760px){.editorial-hook{padding-top:25px;padding-bottom:25px}#fda-christmas-ribbon{font-size:10px}}
 </style>`;
   const sprig = String.raw`<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M-9 1Q64 12 126 94" stroke="#7a522f" stroke-width="5" fill="none"/><g stroke-linecap="round"><path d="M8 7L68 66M13 12L85 27M27 21L36 79M36 27L111 47M52 39L69 94M67 49L136 65M78 62L98 105" stroke="#1b6245" stroke-width="12"/><path d="M8 7L68 66M13 12L85 27M27 21L36 79M36 27L111 47M52 39L69 94M67 49L136 65M78 62L98 105" stroke="#38805a" stroke-width="5"/></g><g fill="#c53c44"><circle cx="45" cy="30" r="7"/><circle cx="58" cy="31" r="6"/><circle cx="53" cy="43" r="7"/></g><g fill="#f7d57a"><circle cx="96" cy="46" r="4"/><circle cx="115" cy="68" r="4"/></g></svg>`;
   const decor = '<div id="fda-christmas-corners" aria-hidden="true"><div class="fda-sprig left">'+sprig+'</div><div class="fda-sprig right">'+sprig+'</div></div>';
