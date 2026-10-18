@@ -466,6 +466,7 @@ img{display:block;max-width:100%}
 /* Keep shipping announcement visible but prevent sticky bar from intercepting clicks on products underneath. */
 .project-bar>.shipping-promo{pointer-events:none!important}
 .project-bar>.shipping-promo *{pointer-events:none!important}
+.shop-qty-input{width:68px;min-height:42px;padding:7px 8px;border:1px solid #cbbd9f;border-radius:12px;background:#fff;color:#17372a;font:700 16px inherit;text-align:center}.detail-purchase-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.detail-purchase-controls label{font-weight:700}.cart-qty-controls{display:flex;align-items:center;gap:10px;margin-top:9px}.cart-qty-controls button{width:30px;height:30px;border:1px solid #c9b78c;border-radius:9px;background:#fff9e9;color:#15382b;font-size:20px;cursor:pointer}.cart-qty-controls span{font-weight:800}.cart-continue-shopping{display:block;width:100%;border:2px solid #153b2d;background:#fff;color:#153b2d;border-radius:999px;padding:12px 16px;margin-bottom:10px;font-weight:850;cursor:pointer}@media(max-width:760px){.detail-purchase-controls{width:100%}.detail-purchase-controls .product-detail-add{flex:1;min-width:160px}.product-buy .shop-qty-input{width:58px}}
 </style>
 <link rel="stylesheet" href="/global-nav-v2.css?v=20260922-1">
 </head>
@@ -830,7 +831,7 @@ img{display:block;max-width:100%}
         <button class="alveo-shop-preview-btn" id="productDetailApiOggiPreview" type="button" hidden>👁 Sfoglia anteprima gratuita</button>
         <div class="product-detail-buy">
           <div class="product-detail-price"><strong id="productDetailPrice"></strong><span id="productDetailSize"></span></div>
-          <button class="product-detail-add" id="productDetailAdd" type="button">Aggiungi al carrello</button>
+          <div class="detail-purchase-controls"><label for="productDetailQty">Quantità</label><input id="productDetailQty" class="shop-qty-input" type="number" min="1" max="99" step="1" value="1" inputmode="numeric"><button class="product-detail-add" id="productDetailAdd" type="button">Aggiungi al carrello</button></div>
         </div>
         <div class="product-detail-source-note">Informazioni prodotto e descrizione completa della selezione.</div>
       </div>
@@ -912,7 +913,7 @@ img{display:block;max-width:100%}
 <aside class="cart-drawer" id="cartDrawer" aria-label="Cestino">
   <div class="cart-head"><h2>Il tuo cestino</h2><button class="cart-close" id="cartClose" type="button">×</button></div>
   <div class="cart-items" id="cartItems"></div>
-  <div class="cart-foot"><div class="shipping-progress" id="shippingProgress" aria-live="polite"><span id="shippingProgressText">Spedizione gratuita in Italia da 69,90 €</span><div class="shipping-progress-track"><div class="shipping-progress-fill" id="shippingProgressFill"></div></div></div><div class="cart-points"><span>🐝 Punti Ape di questo ordine</span><span id="cartPoints">0</span></div><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><button class="checkout-new" type="button" id="startCheckout">Continua con l'ordine →</button><div class="cart-note">100 Punti Ape = cesto omaggio con 5 prodotti a scelta.</div></div>
+  <div class="cart-foot"><div class="shipping-progress" id="shippingProgress" aria-live="polite"><span id="shippingProgressText">Spedizione gratuita in Italia da 69,90 €</span><div class="shipping-progress-track"><div class="shipping-progress-fill" id="shippingProgressFill"></div></div></div><div class="cart-points"><span>🐝 Punti Ape di questo ordine</span><span id="cartPoints">0</span></div><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><button class="cart-continue-shopping" type="button" id="cartContinueShopping">← Continua lo shopping</button><button class="checkout-new" type="button" id="startCheckout">Continua con l'ordine →</button><div class="cart-note">100 Punti Ape = cesto omaggio con 5 prodotti a scelta.</div></div>
 </aside>
 
 
@@ -1224,8 +1225,9 @@ function addV2Product(btn){
   }
   btn.dataset.price=String(trustedPrice);
   const found=shopV2Cart.find(x=>x.id===id);
+  const requestedQty=Math.max(1,Math.min(99,Math.floor(Number(btn.closest(".detail-purchase-controls, .product-buy")?.querySelector(".shop-qty-input")?.value||1)||1)));
   if(found){
-    found.qty+=1;
+    found.qty+=requestedQty;
   }else{
     shopV2Cart.push({
       id,
@@ -1233,15 +1235,16 @@ function addV2Product(btn){
       price:Number(btn.dataset.price),
       size:btn.dataset.size,
       points:Number(btn.dataset.points||defaultPointsFor(id)),
-      qty:1
+      qty:requestedQty
     });
   }
   saveV2Cart();
-  trackShopEcommerce('add_to_cart',[{...shopV2Cart.find(x=>x.id===id),qty:1}]);
+  trackShopEcommerce('add_to_cart',[{...shopV2Cart.find(x=>x.id===id),qty:requestedQty}]);
   document.getElementById('cartDrawer').classList.add('open');
 }
 
 function removeV2Product(id){shopV2Cart=shopV2Cart.filter(x=>x.id!==id);saveV2Cart();}
+function changeV2CartQuantity(id,delta){const item=shopV2Cart.find(x=>x.id===id);if(!item)return;item.qty=Math.max(1,Math.min(99,item.qty+delta));saveV2Cart();}
 function renderV2Cart(){
   const progressText=document.getElementById('shippingProgressText');
   const progressFill=document.getElementById('shippingProgressFill');
@@ -1258,7 +1261,7 @@ function renderV2Cart(){
   if(!shopV2Cart.length){box.innerHTML='<div class="cart-empty">'+purchaseT('cartEmpty')+'</div>';return;}
   box.innerHTML=shopV2Cart.map(x=>{
     const name=purchaseProductName(x.id,x.name),size=purchaseProductSize(x.id,x.size);
-    return '<div class="cart-item"><div><strong>'+officialCatalogEsc(name)+'</strong><small>'+officialCatalogEsc(size)+' · '+purchaseT('quantity')+' '+x.qty+(isFreeEditionId(x.id)?' · 🐝 +1 Punto Ape al download':' · '+(x.points*x.qty)+' '+purchaseT('points'))+'</small></div><div><strong>'+(isFreeEditionId(x.id)?'GRATIS':euro(x.price*x.qty))+'</strong><button type="button" onclick="removeV2Product(\''+x.id+'\')">'+purchaseT('remove')+'</button></div></div>';
+    return '<div class="cart-item"><div><strong>'+officialCatalogEsc(name)+'</strong><small>'+officialCatalogEsc(size)+' · '+purchaseT('quantity')+' '+x.qty+(isFreeEditionId(x.id)?' · 🐝 +1 Punto Ape al download':' · '+(x.points*x.qty)+' '+purchaseT('points'))+'</small><div class="cart-qty-controls"><button type="button" aria-label="Diminuisci quantità" onclick="changeV2CartQuantity(\''+x.id+'\',-1)">−</button><span>'+x.qty+'</span><button type="button" aria-label="Aumenta quantità" onclick="changeV2CartQuantity(\''+x.id+'\',1)">+</button></div></div><div><strong>'+(isFreeEditionId(x.id)?'GRATIS':euro(x.price*x.qty))+'</strong><button type="button" onclick="removeV2Product(\''+x.id+'\')">'+purchaseT('remove')+'</button></div></div>';
   }).join('');
 }
 
@@ -1630,6 +1633,7 @@ function openProductDetail(id){
   if(apiOggiPreviewBtn)apiOggiPreviewBtn.hidden=!isFreeEditionId(p.id);
   document.getElementById('productDetailPrice').textContent=INFORMATION_ONLY_IDS.has(p.id)?'':(isFreeEditionId(p.id)?'GRATIS':euro(p.price));
   document.getElementById('productDetailSize').textContent=INFORMATION_ONLY_IDS.has(p.id)?p.size:(isFreeEditionId(p.id)?(p.size+' · 🐝 +1 Punto Ape al download'):(p.size+(p.points?' · 🐝 '+p.points+' Punti Ape':'')));
+  document.getElementById('productDetailQty').value='1';
   productDetailAdd.dataset.id=p.id;
   productDetailAdd.dataset.name=p.name;
   productDetailAdd.dataset.price=String(p.price);
@@ -2146,6 +2150,8 @@ document.addEventListener('click',e=>{if(!document.getElementById('siteSearch').
 document.querySelectorAll('.add-btn').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();addV2Product(btn);}));
 document.getElementById('cartFab').addEventListener('click',()=>document.getElementById('cartDrawer').classList.add('open'));
 document.getElementById('cartClose').addEventListener('click',()=>document.getElementById('cartDrawer').classList.remove('open'));
+document.getElementById('cartContinueShopping').addEventListener('click',()=>document.getElementById('cartDrawer').classList.remove('open'));
+document.querySelectorAll('.product-buy .add-btn').forEach(btn=>{if(btn.closest('.product-buy').querySelector('.shop-qty-input'))return;const qty=document.createElement('input');qty.type='number';qty.min='1';qty.max='99';qty.step='1';qty.value='1';qty.className='shop-qty-input';qty.setAttribute('aria-label','Quantità da aggiungere');btn.before(qty);});
 document.getElementById('startCheckout').addEventListener('click',()=>{
   if(!shopV2Cart.length){alert(purchaseT('addFirst'));return;}
   if(shopV2Cart.some(x=>isFreeEditionId(x.id))){
