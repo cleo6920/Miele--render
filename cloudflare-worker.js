@@ -163,7 +163,10 @@ export default {
         mode: 'cloudflare-v2-safe',
         staticAssets: true,
         frontendSource: 'latest-v2-synced',
-        apiMode: 'temporary-vercel-v2-proxy'
+        apiMode: 'temporary-vercel-v2-proxy',
+        shopBannerDiagnostic: '20261018-after-search-v1',
+        bannerPresent: SHOP_HTML.includes('class="shipping-promo"'),
+        bannerAfterSearch: SHOP_HTML.indexOf('class="shipping-promo"') > SHOP_HTML.indexOf('id="siteSearch"')
       }, {
         headers: { 'Cache-Control': 'no-store' }
       });
