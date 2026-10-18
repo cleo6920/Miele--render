@@ -428,7 +428,7 @@ body.fda-xmas-other main>section:nth-of-type(even){background:#f9e9e7!important}
   const decor = '<div id="fda-christmas-corners" aria-hidden="true"><div class="fda-sprig left">'+sprig+'</div><div class="fda-sprig right">'+sprig+'</div></div>';
   const ribbon = '<div id="fda-christmas-ribbon" aria-label="Atmosfera natalizia alla Fabbrica delle Api"><span class="star" aria-hidden="true">✦</span><span><strong>Natale alla Fabbrica delle Api</strong> · la magia delle feste incontra il mondo delle api</span><span class="star" aria-hidden="true">✦</span></div>';
   const pageType = pathname === '/chi-siamo' ? 'about' : pathname === '/alveoterapia' ? 'alveoterapia' : pathname === '/centro' ? 'galena' : pathname === '/' || pathname === '/home' ? 'home' : pathname === '/shop' ? 'shop' : pathname === '/alveo-digitale' ? 'digital' : pathname === '/bacheca' ? 'board' : pathname === '/punti-ape' || pathname === '/saldo-api.html' ? 'points' : 'other';
-  html=html.replace(/<body([^>]*)>/i, (full,attrs)=>'<body'+attrs+' class="fda-xmas-'+pageType+'">');
+  html=html.replace(/<body([^>]*)>/i, (full,attrs)=>'<body'+(/\bclass\s*=/.test(attrs)?attrs.replace(/\bclass\s*=\s*(["\'])(.*?)\1/i,(m,q,c)=>'class='+q+c+' fda-xmas-'+pageType+q):attrs+' class="fda-xmas-'+pageType+'"')+'>');
   html=html.replace(/<\/head>/i,css+'</head>');
   html=html.replace(/<body([^>]*)>/i, (full, attrs)=>'<body'+attrs+'>'+decor+ribbon);
   return html;
