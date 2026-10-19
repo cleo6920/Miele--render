@@ -70,7 +70,17 @@ a{color:inherit}
 .nav-links .shop{color:#ffe59e;font-weight:700}
 section[id]{scroll-margin-top:92px}
 .home-today{padding:34px 0 72px;background:var(--cream)}
-.home-today-grid{display:grid;grid-template-columns:1.4fr .8fr .8fr;gap:18px}
+.home-today-grid{display:grid;grid-template-columns:1fr 2fr 1fr;gap:18px}
+.home-today-feature{min-height:350px;border-radius:28px;overflow:hidden;background:#3c1026;color:#fff;box-shadow:0 16px 42px rgba(26,31,27,.12);display:flex;flex-direction:column}
+.home-today-feature h3{margin:0;padding:18px 12px;text-align:center;font:700 clamp(22px,2.5vw,36px)/1.08 Georgia,'Times New Roman',serif;letter-spacing:.025em;color:#ffe09b}
+.home-today-feature-sides{display:grid;grid-template-columns:1fr 1fr;flex:1}
+.home-today-feature-side{display:flex;flex-direction:column;justify-content:flex-end;min-height:260px;padding:20px 15px;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.88)),url('/images/alveari-busatello.jpg') center/cover}
+.home-today-feature-side.diffusori{background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.88)),url('/images/centro-alveoterapia-hq.webp')}
+.home-today-feature-side+.home-today-feature-side{border-left:2px solid #edc46d}
+.home-today-feature-side strong{display:block;font-size:clamp(16px,1.7vw,24px);line-height:1.12}
+.home-today-feature-side span{display:inline-block;align-self:flex-start;margin-top:12px;background:#eab944;color:#321024;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:900;letter-spacing:.04em}
+@media(max-width:950px){.home-today-grid{grid-template-columns:1fr 2fr}.home-today-card:last-child{grid-column:1/-1}}
+@media(max-width:620px){.home-today-grid{grid-template-columns:1fr}.home-today-feature-sides{grid-template-columns:1fr 1fr}.home-today-feature-side{min-height:230px;padding:12px}.home-today-card:last-child{grid-column:auto}}
 .home-today-card{position:relative;min-height:350px;border-radius:28px;overflow:hidden;background:#111;color:#fff;box-shadow:0 16px 42px rgba(26,31,27,.12);text-decoration:none}
 .home-today-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .home-today-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(0,0,0,.82))}
@@ -78,8 +88,8 @@ section[id]{scroll-margin-top:92px}
 .home-today-copy small{display:block;text-transform:uppercase;letter-spacing:.14em;color:#f5cb68;font-weight:900;margin-bottom:7px}
 .home-today-copy h3{font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1.03;margin:0 0 8px}
 .home-today-copy p{margin:0;color:#ece8df}
-@media(max-width:950px){.home-today-grid{grid-template-columns:1fr 1fr}.home-today-card:first-child{grid-column:1/-1}}
-@media(max-width:620px){.home-today{padding:24px 0 52px}.home-today-grid{grid-template-columns:1fr}.home-today-card:first-child{grid-column:auto}.home-today-card{min-height:320px}}
+
+@media(max-width:620px){.home-today{padding:24px 0 52px}.home-today-card{min-height:320px}}
 .hero{min-height:650px;display:grid;align-items:end;color:#fff;position:relative;overflow:hidden}
 .hero::before,.hero::after{content:"";position:absolute;inset:0 50% 0 0;background:url('/images/alveari-busatello.jpg?v=home-narrative1') center/cover no-repeat}
 .hero::after{inset:0 0 0 50%;background-image:url('/images/centro-alveoterapia-originale.png?v=home-narrative1');background-position:center}
@@ -397,10 +407,19 @@ linear-gradient(150deg,transparent 24%,rgba(198,151,40,.08) 25%,rgba(198,151,40,
         <img src="/images/centro-alveoterapia-hq.webp" alt="Galena delle Api">
         <div class="home-today-copy"><small>Autunno · Inverno</small><h3>La Galena delle Api</h3><p>Alveoterapia Integrata con diffusori<br>Castel d'Ario · Tel. 334 2895989</p></div>
       </a>
-      <a class="home-today-card" href="/alveoterapia">
-        <img src="/images/alveari-busatello.jpg" alt="Arnie all'Oasi del Busatello">
-        <div class="home-today-copy"><small>Primavera · Estate</small><h3>Dentro il paesaggio del Busatello</h3><p>Scopri perché l'Oasi non è soltanto il luogo delle arnie, ma parte del racconto dei nostri mieli.</p></div>
-      </a>
+      <div class="home-today-feature" aria-label="Alveoterapia Integrata: con api reali e con diffusori">
+        <h3>ALVEOTERAPIA INTEGRATA</h3>
+        <div class="home-today-feature-sides">
+          <div class="home-today-feature-side">
+            <strong>Alveoterapia con api reali</strong>
+            <span>NOVITÀ ASSOLUTA</span>
+          </div>
+          <div class="home-today-feature-side diffusori">
+            <strong>Alveoterapia con diffusori</strong>
+            <span>NOVITÀ ASSOLUTA</span>
+          </div>
+        </div>
+      </div>
       <a class="home-today-card" href="/bacheca">
         <img src="/images/alveo-digitale-card-render.webp" alt="Novità dalla Fabbrica delle Api">
         <div class="home-today-copy"><small>Novità</small><h3>La Bacheca</h3><p>Comunicazioni, idee, nuovi contenuti e aggiornamenti dalla Fabbrica delle Api.</p></div>
