@@ -470,7 +470,7 @@ img{display:block;max-width:100%}
 
 /* Allestimento natalizio: catalogo temporaneamente riservato all'Alveoterapia Integrata. */
 body.christmas-shop-prep main > section:not(#alveoterapia-prodotti):not(#christmas-shop-notice):not(#natale-regali){display:none!important}
-body.christmas-shop-prep .project-links,body.christmas-shop-prep .site-search{display:none!important}
+body.christmas-shop-prep .project-links{display:flex!important}body.christmas-shop-prep .site-search{display:block!important}
 body.christmas-shop-prep .project-bar>.shipping-promo{display:none!important}
 body.christmas-shop-prep .shipping-promo{display:none!important}
 #christmas-shop-notice .notice-holiday{font-size:clamp(20px,2.5vw,29px);color:#ffdc88}
@@ -536,6 +536,14 @@ body.christmas-shop-prep #alveoterapia-prodotti{scroll-margin-top:120px}
 #natale-regali .xmas-gift-link{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;padding:24px 12px;text-decoration:none;min-height:205px;text-align:center}
 #natale-regali .xmas-gift-link:hover{transform:translateY(-3px);box-shadow:0 12px 26px #4c23102e}
 #natale-regali .xmas-gift-link:focus-visible{outline:3px solid #a9771d}
+
+/* Keep Shop navigation, Parliamone and site search visible during Christmas preparation */
+body.christmas-shop-prep .project-bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:9px 14px}
+body.christmas-shop-prep .project-links{flex:1 1 100%;display:flex!important;overflow-x:auto;min-width:0;gap:8px}
+body.christmas-shop-prep .project-links a.talk{background:#f0b52f;color:#203b2e;border-color:#f0b52f;font-weight:900}
+body.christmas-shop-prep .site-search{display:block!important;flex:1 1 270px;min-width:200px;max-width:none}
+body.christmas-shop-prep .ape-chat-launch{flex:0 1 350px}
+@media(max-width:620px){body.christmas-shop-prep .ape-chat-launch{flex:1 1 100%}body.christmas-shop-prep .site-search{flex:1 1 100%}}
 </style>
 <link rel="stylesheet" href="/global-nav-v2.css?v=20260922-1">
 <style id="shop-alveoterapia-hero-title">.shop-alveo-kicker{display:flex!important;flex-direction:column;align-items:flex-start;gap:7px;letter-spacing:normal!important}.shop-alveo-kicker strong{font:900 clamp(26px,3.5vw,48px)/1.1 Arial,sans-serif!important;color:#ffdb85!important;letter-spacing:.045em!important;text-shadow:0 3px 12px rgba(0,0,0,.55)}.shop-alveo-kicker span{font-size:12px;font-weight:800;letter-spacing:.15em;color:#ffe9bd}@media(max-width:600px){.shop-alveo-kicker strong{font-size:clamp(23px,6vw,34px)!important}}</style></head>
