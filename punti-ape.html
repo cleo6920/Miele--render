@@ -47,6 +47,27 @@
 .punti-check-intro h2{font:700 clamp(27px,4vw,39px)/1.1 Georgia,serif;color:#4f1c2d;margin:9px 0}
 .punti-check-intro p{color:#536459;line-height:1.5;margin:0}
 @media(max-width:720px){.punti-premio{grid-template-columns:1fr}.punti-step{padding:16px}.punti-step h2{font-size:21px}.hero{padding:27px 22px}}
+
+/* Esperienza Punti Ape: invito caldo e commerciale, mantenendo il modulo originale */
+.ape-verifica{margin:30px 0 16px;padding:28px 24px 25px;border-radius:28px;background:radial-gradient(circle at 100% 0%,rgba(236,188,65,.20),transparent 45%),linear-gradient(135deg,#0c392b,#15543e);box-shadow:0 14px 35px rgba(10,52,37,.14)}
+.ape-verifica-heading{text-align:center;max-width:760px;margin:0 auto 23px}
+.ape-verifica-kicker,.ape-form-kicker{display:block;font-size:12px;letter-spacing:.16em;font-weight:900;color:#ffdb80;margin-bottom:10px}
+.ape-verifica-heading h2{font:700 clamp(29px,4.4vw,46px)/1.07 Georgia,serif;color:#ffe4a2;margin:0 0 12px;text-wrap:balance}
+.ape-verifica-heading p{color:#f2f4e8;font-size:17px;line-height:1.45;margin:0}
+.ape-verifica .guide{margin:0;gap:16px}
+.ape-verifica .card{min-height:232px;display:flex;flex-direction:column;align-items:center;text-align:center;text-decoration:none;color:#21372a;background:linear-gradient(160deg,#fffef9,#fff0ce);border:1px solid #f1d88c;border-radius:23px;padding:23px 17px 18px;transition:transform .2s,box-shadow .2s;box-shadow:0 8px 20px rgba(0,0,0,.10)}
+.ape-verifica .card:hover,.ape-verifica .card:focus-visible{transform:translateY(-4px);box-shadow:0 16px 28px rgba(0,0,0,.2)}
+.ape-verifica .card .icon{display:grid;place-items:center;width:62px;height:62px;border-radius:50%;background:#f7d579;font-size:29px}
+.ape-verifica .card:nth-child(2) .icon{background:#d9ebd2}
+.ape-verifica .card h3{font:700 clamp(20px,2vw,25px)/1.13 Georgia,serif;color:#661f35;margin:14px 0 9px}
+.ape-verifica .card p{font-size:14px;line-height:1.45;color:#4e5d4c;flex:1}
+.ape-card-action{display:block;margin-top:17px;padding:10px 15px;border-radius:99px;background:#641c34;color:#fff;font-size:13px;font-weight:900}
+.ape-verifica .card:nth-child(2) .ape-card-action{background:#104a36}
+.lookup{background:linear-gradient(155deg,#fff9ec,#fff3d9);border:1px solid #ebd19a}
+.lookup .ape-form-kicker{color:#9c661e}
+.lookup h2{color:#572039;font-size:clamp(28px,3.5vw,38px)}
+.lookup>p{font-size:16px}
+@media(max-width:760px){.ape-verifica{padding:24px 15px}.ape-verifica .card{min-height:auto}.ape-verifica-heading p{font-size:15px}}
 </style>
 </head>
 <body>
@@ -74,16 +95,18 @@
 </div>
 </section>
 
-<div class="punti-check-intro"><span>🐝 I TUOI PUNTI APE</span><h2>Scopri quanti punti hai raccolto</h2><p>Scegli uno dei tre modi qui sotto per verificare i tuoi punti: email, telefono oppure codice personale.</p></div>
-<section class="guide">
-<div class="card"><div class="icon">📧</div><h3>Email</h3><p>Se hai lasciato la tua email, è il modo più semplice per ritrovare i punti.</p></div>
-<div class="card"><div class="icon">📱</div><h3>Telefono</h3><p>Puoi usare il numero di telefono indicato nei tuoi acquisti o download.</p></div>
-<div class="card"><div class="icon">🔐</div><h3>Codice Punti Ape</h3><p>Se non hai lasciato contatti, usa il codice personale che hai ricevuto con il download.</p></div>
+<section class="ape-verifica" aria-label="Verifica i tuoi Punti Ape">
+<div class="ape-verifica-heading"><span class="ape-verifica-kicker">🐝 IL TUO TESORO CRESCE</span><h2>Quanti Punti Ape hai conquistato?</h2><p>Il tuo prossimo regalo potrebbe essere più vicino di quanto immagini! Scegli come ritrovare i tuoi punti.</p></div>
+<div class="guide">
+<a class="card" href="#verifica-punti" onclick="document.querySelector('.tab[data-kind=email]').click()"><div class="icon">✉️</div><h3>Con la tua email</h3><p>Hai lasciato la tua email? Scopri subito quanti punti hai raccolto.</p><span class="ape-card-action">Scopri i tuoi punti →</span></a>
+<a class="card" href="#verifica-punti" onclick="document.querySelector('.tab[data-kind=phone]').click()"><div class="icon">📱</div><h3>Con il tuo telefono</h3><p>Usa il numero indicato nei tuoi acquisti o download.</p><span class="ape-card-action">Scopri i tuoi punti →</span></a>
+<a class="card" href="#verifica-punti" onclick="document.querySelector('.tab[data-kind=code]').click()"><div class="icon">🔐</div><h3>Con il tuo codice Ape</h3><p>Hai ricevuto un codice personale? I tuoi punti ti aspettano!</p><span class="ape-card-action">Scopri i tuoi punti →</span></a>
+</div>
 </section>
-
-<section class="lookup">
-<h2>Controlla il saldo</h2>
-<p>Scegli come vuoi identificarti. Serve solo uno dei tre dati.</p>
+<section class="lookup" id="verifica-punti">
+<div class="ape-form-kicker">✨ IL TUO REGALO SI AVVICINA</div>
+<h2>Scopri i tuoi Punti Ape</h2>
+<p>Inserisci uno solo di questi dati per vedere i punti che hai raccolto.</p>
 <div class="tabs">
 <button type="button" class="tab active" data-kind="email">📧 Email</button>
 <button type="button" class="tab" data-kind="phone">📱 Telefono</button>
