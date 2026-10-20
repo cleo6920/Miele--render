@@ -93,6 +93,11 @@ section[id]{scroll-margin-top:92px}
 @media(max-width:620px){.home-today-grid{grid-template-columns:1fr}.home-today-feature-sides{grid-template-columns:1fr 1fr}.home-today-feature-side{min-height:230px;padding:12px}.home-today-card:last-child{grid-column:auto}}
 .home-today-card{position:relative;min-height:350px;border-radius:28px;overflow:hidden;background:#111;color:#fff;box-shadow:0 16px 42px rgba(26,31,27,.12);text-decoration:none}
 .home-today-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* Show the complete promotional artwork instead of cropping its wide text */
+.home-today-card.fabbrica-card{background:#fff8e9;display:flex;align-items:center;justify-content:center}
+.home-today-card.fabbrica-card img{position:static;display:block;width:100%;height:100%;object-fit:contain;object-position:center}
+.home-today-card.fabbrica-card::after{display:none}
+.home-today-card.fabbrica-card:hover{cursor:pointer}
 .home-today-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(0,0,0,.82))}
 .home-today-copy{position:absolute;z-index:2;left:25px;right:25px;bottom:24px}
 .home-today-copy small{display:block;text-transform:uppercase;letter-spacing:.14em;color:#f5cb68;font-weight:900;margin-bottom:7px}
