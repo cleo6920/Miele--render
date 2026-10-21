@@ -2,12 +2,21 @@
   "version": 1,
   "lines": [
     {
+      "slug": "alveoterapia",
+      "name": "Alveoterapia Integrata",
+      "teaser": "Un incontro speciale con il mondo delle api.",
+      "icon": "sun",
+      "status": "Collezione in preparazione",
+      "order": 0,
+      "image": null
+    },
+    {
       "slug": "alimenti-bevande",
       "name": "Alimenti e Bevande",
       "teaser": "Sapori da regalare, momenti da condividere.",
       "icon": "utensils",
       "status": "46 confezioni previste",
-      "order": 0,
+      "order": 1,
       "image": null
     },
     {
@@ -16,7 +25,7 @@
       "teaser": "Piccoli gesti, grandi attenzioni.",
       "icon": "sparkles",
       "status": "Collezione in preparazione",
-      "order": 1,
+      "order": 2,
       "image": null
     },
     {
@@ -25,7 +34,7 @@
       "teaser": "La sorpresa più golosa è tutta da scoprire.",
       "icon": "candy",
       "status": "Collezione in preparazione",
-      "order": 2,
+      "order": 3,
       "image": null
     },
     {
@@ -34,7 +43,7 @@
       "teaser": "Un regalo di bellezza e delicatezza.",
       "icon": "flower",
       "status": "Collezione in preparazione",
-      "order": 3,
+      "order": 4,
       "image": null
     },
     {
@@ -43,7 +52,7 @@
       "teaser": "Rituali e attenzioni per ogni occasione.",
       "icon": "heart",
       "status": "Collezione in preparazione",
-      "order": 4,
+      "order": 5,
       "image": null
     },
     {
@@ -52,15 +61,6 @@
       "teaser": "Una nuova esperienza da immaginare.",
       "icon": "droplet",
       "status": "Linea in preparazione",
-      "order": 5,
-      "image": null
-    },
-    {
-      "slug": "alveoterapia",
-      "name": "Alveoterapia",
-      "teaser": "Scopri il mondo dell’alveare in un dono.",
-      "icon": "sun",
-      "status": "Collezione in preparazione",
       "order": 6,
       "image": null
     }
