@@ -259,7 +259,7 @@ function hydrateOfficialCatalog(html) {
   try { products = JSON.parse(match[1]); }
   catch (error) { throw new Error('[Cloudflare V2] Catalogo ufficiale non leggibile: ' + error.message); }
 
-  const sections = ['alveoterapia-prodotti','alveare','propoli','cosmesi','linea-veleni','tesori-francesco','alveo-digitale'];
+  const sections = ['alveare','propoli','cosmesi','linea-veleni','tesori-francesco','alveo-digitale']; // Alveoterapia moved to /confezioni-linea.html?linea=alveoterapia
   const category = {
     'alveoterapia-prodotti':'Alveoterapia',
     'alveare':'Linea Alimenti',
@@ -573,7 +573,7 @@ async function main() {
         const cardCount = (html.match(/class="catalog-card product-openable/g) || []).length;
         if (cardCount < 30) throw new Error('[Cloudflare V2] Catalogo prerenderizzato incompleto: ' + cardCount + ' card.');
         const sectionCount = (html.match(/data-official-section=/g) || []).length;
-        if (sectionCount < 6) throw new Error('[Cloudflare V2] Sezioni prodotto mancanti: ' + sectionCount + '/6.');
+        if (sectionCount < 5) throw new Error('[Cloudflare V2] Sezioni prodotto mancanti nello shop: ' + sectionCount + '/5 (Alveoterapia è nella Linea 01).');
       }
 
       if (pathname === '/alveo-digitale') {
@@ -605,7 +605,7 @@ async function main() {
     const canonicalShopHtml = fs.readFileSync(path.join(dist, 'shop-v2.html'), 'utf8');
     const canonicalCardCount = (canonicalShopHtml.match(/class="catalog-card product-openable/g) || []).length;
     const canonicalSectionCount = (canonicalShopHtml.match(/data-official-section=/g) || []).length;
-    if (canonicalCardCount < 30 || canonicalSectionCount < 6) {
+    if (canonicalCardCount < 30 || canonicalSectionCount < 5) {
       throw new Error('[Cloudflare V2] Shop canonico incompleto: '+canonicalCardCount+' card, '+canonicalSectionCount+' sezioni.');
     }
     fs.writeFileSync(
