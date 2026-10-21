@@ -111,3 +111,17 @@ jobs:
             fi
             echo "::endgroup::"
           done
+
+      - name: Verify gift detail page structure on public domain
+        if: success()
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -e
+          for host in lafabbricadelleapi.it la-fabbrica-delle-api-test.althea12830.workers.dev; do
+            curl --fail --silent --show-error --location --max-time 30 -H "Cache-Control: no-cache" "https://$host/confezioni-linea.html?linea=alimenti-bevande&regalo=REG-001&check=$COMMIT_SHA" -o /tmp/gift-live.html
+            test "$(grep -o 'data-layout="contenuto-sinistra-acquisto-destra-v2"' /tmp/gift-live.html | wc -l)" -eq 1 || { echo "::error::Stale gift page layout at $host"; exit 1; }
+            grep -q "Acquista su WhatsApp" /tmp/gift-live.html || { echo "::error::Order CTA missing at $host"; exit 1; }
+            grep -q "<h2>Contiene</h2>" /tmp/gift-live.html || { echo "::error::Contents label missing at $host"; exit 1; }
+            echo "$host: independent blocks Contiene (left) and Acquista (right) are deployed."
+          done
