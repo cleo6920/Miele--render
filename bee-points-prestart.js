@@ -32,7 +32,7 @@ try {
                                 };
 
                                 const packPrice = Number(selectedPack?.price ?? product.packs?.[0]?.price ?? 0);
-                                let beePoints = baseBeePoints(packPrice);
+                                let beePoints = product.id === 'confezione-b01-dolce-incontro' ? 3 : baseBeePoints(packPrice);
                                 let bonusLabel = '';
 
                                 if (product.category === 'veleno-api') {
