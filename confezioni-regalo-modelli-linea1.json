@@ -1,0 +1,387 @@
+{
+  "version": 1,
+  "notes": "Modelli in programmazione, non confezioni già assemblate. Prezzi indicativi approvati da riesaminare al momento della pubblicazione. Foto da produrre fedeli all'inventario.",
+  "models": [
+    {
+      "id": "B01",
+      "name": "Dolce Incontro",
+      "teaser": "Due dolcezze che si incontrano in un piccolo dono.",
+      "type": "Bis",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 12,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "fragola",
+          "label": "Miele alla Fragola del Busatello 250 g"
+        }
+      ],
+      "price": 13.9,
+      "beePoints": 3,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "B02",
+      "name": "Pausa d'Oro",
+      "teaser": "Una pausa speciale da assaporare lentamente.",
+      "type": "Bis",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 4,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "caffe",
+          "label": "Liquore al Caffè - I Tesori di Francesco"
+        }
+      ],
+      "price": 13.9,
+      "beePoints": 3,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "B03",
+      "name": "Abbraccio d'Autunno",
+      "teaser": "Il calore della tradizione in un regalo inatteso.",
+      "type": "Bis",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 2,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "castagne",
+          "label": "Castagne al Rum - I Tesori di Francesco"
+        }
+      ],
+      "price": 13.9,
+      "beePoints": 3,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "B04",
+      "name": "Agrumi in Fiore",
+      "teaser": "Due profumi, una sorpresa luminosa.",
+      "type": "Bis",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 1,
+      "products": [
+        {
+          "id": "agrumi500",
+          "label": "Miele Agrumi BIO Vaccaro 500 g"
+        },
+        {
+          "id": "sulla500",
+          "label": "Miele Sulla BIO Vaccaro 500 g"
+        }
+      ],
+      "price": 22.9,
+      "beePoints": 6,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "B05",
+      "name": "Due Terre, Un Miele",
+      "teaser": "Un viaggio fra caratteri e profumi.",
+      "type": "Bis",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 1,
+      "products": [
+        {
+          "id": "agrumi500",
+          "label": "Miele Agrumi BIO Vaccaro 500 g"
+        },
+        {
+          "id": "castagno500",
+          "label": "Miele Castagno BIO Vaccaro 500 g"
+        }
+      ],
+      "price": 22.9,
+      "beePoints": 6,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "B06",
+      "name": "Essenza di Natura",
+      "teaser": "Due specialità per chi ama la natura.",
+      "type": "Bis",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 1,
+      "products": [
+        {
+          "id": "sulla500",
+          "label": "Miele Sulla BIO Vaccaro 500 g"
+        },
+        {
+          "id": "castagno500",
+          "label": "Miele Castagno BIO Vaccaro 500 g"
+        }
+      ],
+      "price": 22.9,
+      "beePoints": 6,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "T01",
+      "name": "Tre Sapori, Una Storia",
+      "teaser": "Tre incontri golosi, una sorpresa da scoprire.",
+      "type": "Tris",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 9,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "fragola",
+          "label": "Miele alla Fragola del Busatello 250 g"
+        },
+        {
+          "id": "caffe",
+          "label": "Liquore al Caffè - I Tesori di Francesco"
+        }
+      ],
+      "price": 20.9,
+      "beePoints": 5,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "T02",
+      "name": "Arcobaleno di Dolcezza",
+      "teaser": "Tre note fruttate per un momento speciale.",
+      "type": "Tris",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 5,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "fragola",
+          "label": "Miele alla Fragola del Busatello 250 g"
+        },
+        {
+          "id": "melone",
+          "label": "Miele al Melone del Busatello 250 g"
+        }
+      ],
+      "price": 20.9,
+      "beePoints": 5,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "T03",
+      "name": "La Dolce Meraviglia",
+      "teaser": "Un piccolo viaggio fra sapori sorprendenti.",
+      "type": "Tris",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 1,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "limoncello",
+          "label": "Limoncello - I Tesori di Francesco"
+        },
+        {
+          "id": "favo",
+          "label": "Miele di Acacia in Favo 200 g"
+        }
+      ],
+      "price": 26.9,
+      "beePoints": 7,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "T04",
+      "name": "Tesori dell'Alveare",
+      "teaser": "Tre meraviglie da condividere.",
+      "type": "Tris",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 1,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "acacia40",
+          "label": "Miele di Acacia 40 g"
+        },
+        {
+          "id": "favo",
+          "label": "Miele di Acacia in Favo 200 g"
+        }
+      ],
+      "price": 22.9,
+      "beePoints": 6,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "T05",
+      "name": "Radici di Miele",
+      "teaser": "La tradizione si veste di dolcezza.",
+      "type": "Tris",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 2,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "acacia40",
+          "label": "Miele di Acacia 40 g"
+        },
+        {
+          "id": "castagno",
+          "label": "Miele di Castagno Apifiore"
+        }
+      ],
+      "price": 17.9,
+      "beePoints": 5,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "T06",
+      "name": "Risveglio Dorato",
+      "teaser": "Un trio dal carattere vivace.",
+      "type": "Tris",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 3,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "acacia40",
+          "label": "Miele di Acacia 40 g"
+        },
+        {
+          "id": "zenzero",
+          "label": "Miele Acacia e Zenzero 200 g"
+        }
+      ],
+      "price": 18.9,
+      "beePoints": 5,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "T07",
+      "name": "Soffio di Natura",
+      "teaser": "Un momento di scoperta, tre volte speciale.",
+      "type": "Tris",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 2,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "acacia40",
+          "label": "Miele di Acacia 40 g"
+        },
+        {
+          "id": "eucalipto",
+          "label": "Miele Eucalipto 250 g"
+        }
+      ],
+      "price": 17.9,
+      "beePoints": 5,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "T08",
+      "name": "Carezza Balsamica",
+      "teaser": "Un abbraccio di profumi inattesi.",
+      "type": "Tris",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 1,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "acacia40",
+          "label": "Miele di Acacia 40 g"
+        },
+        {
+          "id": "balsamico",
+          "label": "Miele Balsamico Italiano 200 g"
+        }
+      ],
+      "price": 22.9,
+      "beePoints": 6,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "T09",
+      "name": "Intenso Incanto",
+      "teaser": "Tre sapori intensi, un'emozione da regalare.",
+      "type": "Tris",
+      "line": "Alimenti e Bevande",
+      "quantityPlanned": 1,
+      "products": [
+        {
+          "id": "millefiori",
+          "label": "Miele Millefiori del Busatello 250 g"
+        },
+        {
+          "id": "eucalipto",
+          "label": "Miele Eucalipto 250 g"
+        },
+        {
+          "id": "balsamico",
+          "label": "Miele Balsamico Italiano 200 g"
+        }
+      ],
+      "price": 26.9,
+      "beePoints": 7,
+      "image": null,
+      "status": "in preparazione",
+      "purchaseEnabled": false
+    }
+  ]
+}
