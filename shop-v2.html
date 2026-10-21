@@ -1376,7 +1376,7 @@ function addV2Product(btn){
 }
 
 function removeV2Product(id){shopV2Cart=shopV2Cart.filter(x=>x.id!==id);saveV2Cart();}
-function changeV2CartQuantity(id,delta){const item=shopV2Cart.find(x=>x.id===id);if(!item)return;item.qty=Math.max(1,Math.min(99,item.qty+delta));saveV2Cart();}
+function changeV2CartQuantity(id,delta){const item=shopV2Cart.find(x=>x.id===id);if(!item)return;const maxQty=id==='regalo-sapori-del-bosco'?1:99;item.qty=Math.max(1,Math.min(maxQty,item.qty+delta));saveV2Cart();}
 function renderV2Cart(){
   const progressText=document.getElementById('shippingProgressText');
   const progressFill=document.getElementById('shippingProgressFill');
