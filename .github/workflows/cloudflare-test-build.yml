@@ -193,7 +193,7 @@ jobs:
           for host in lafabbricadelleapi.it la-fabbrica-delle-api-test.althea12830.workers.dev; do
             curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/confezioni-linea.html?linea=alimenti-bevande&regalo=B01&v=$COMMIT_SHA" -o /tmp/b01-live.html
             grep -Fq 'confezione-b01-dolce-incontro.png' /tmp/b01-live.html
-            grep -Fq 'acquistaRegalo=B01' /tmp/b01-live.html
+            grep -Fq "acquistaRegalo='+encodeURIComponent(m.id)" /tmp/b01-live.html
             grep -Fq 'Il cuore di Dolce Incontro' /tmp/b01-live.html
             grep -Fq '"id":"B01"' /tmp/b01-live.html
             grep -Fq '"points":3' /tmp/b01-live.html
@@ -207,3 +207,29 @@ jobs:
           curl --fail --silent --show-error --location --retry 1 --max-time 30 'https://gcdn.picsart.com/editing-temp/23444fe3-04b6-4f26-8d7d-a7738bdc17ce.jpeg' -o /tmp/b01-millefiori-photo
           [ "$(file -b --mime-type /tmp/b01-millefiori-photo)" = "image/jpeg" ]
           [ "$(wc -c < /tmp/b01-millefiori-photo)" -gt 5000 ]
+
+      - name: Verify B02 and B03 gift cards on public site
+        if: success()
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for host in lafabbricadelleapi.it la-fabbrica-delle-api-test.althea12830.workers.dev; do
+            curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/confezioni-linea.html?linea=alimenti-bevande&regalo=B02&v=$COMMIT_SHA" -o /tmp/b02-live.html
+            grep -Fq 'confezione-b02-pausa-doro.png' /tmp/b02-live.html
+            grep -Fq 'confezione-b03-abbraccio-dautunno.png' /tmp/b02-live.html
+            grep -Fq 'Il piacere di una pausa speciale' /tmp/b02-live.html
+            grep -Fq 'Due sapori che raccontano' /tmp/b02-live.html
+            grep -Fq "\"id\":\"B02\"" /tmp/b02-live.html
+            grep -Fq "\"id\":\"B03\"" /tmp/b02-live.html
+            grep -Fq "acquistaRegalo='+encodeURIComponent(m.id)" /tmp/b02-live.html
+            for file in confezione-b02-pausa-doro.png confezione-b03-abbraccio-dautunno.png; do
+              curl --fail --silent --show-error --location --max-time 30 "https://$host/images/$file?v=$COMMIT_SHA" -o /tmp/b02-b03-live.png
+              [ "$(file -b --mime-type /tmp/b02-b03-live.png)" = "image/png" ]
+              [ "$(wc -c < /tmp/b02-b03-live.png)" -gt 500000 ]
+            done
+            curl --fail --silent --show-error --location --max-time 30 "https://$host/shop-v2.html?v=$COMMIT_SHA" -o /tmp/b02-b03-shop.html
+            grep -Fq 'regalo-b02-pausa-doro' /tmp/b02-b03-shop.html
+            grep -Fq 'regalo-b03-abbraccio-dautunno' /tmp/b02-b03-shop.html
+            echo "$host: B02 & B03 image, two-product galleries, 13.90 checkout and cart links visible."
+          done
