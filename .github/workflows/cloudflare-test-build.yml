@@ -72,6 +72,9 @@ jobs:
           test -f dist/home.html
           test -d dist/images
           test -f cloudflare-worker.js
+          grep -q '"regalo-sapori-del-bosco": 6' dist/shop-v2.html
+          grep -q 'acquistaRegalo' dist/shop-v2.html
+          grep -q "'regalo-sapori-del-bosco':2000" cloudflare-worker.js
           test -f wrangler.jsonc
           test "$(grep -o 'class="gift-line-card"' dist/shop-v2.html | wc -l)" -eq 8
           ! grep -q 'Sinfonia di Frutta' dist/shop-v2.html
@@ -120,8 +123,9 @@ jobs:
           set -e
           for host in lafabbricadelleapi.it la-fabbrica-delle-api-test.althea12830.workers.dev; do
             curl --fail --silent --show-error --location --max-time 30 -H "Cache-Control: no-cache" "https://$host/confezioni-linea.html?linea=alimenti-bevande&regalo=REG-001&check=$COMMIT_SHA" -o /tmp/gift-live.html
-            test "$(grep -o 'data-layout="contenuto-sinistra-acquisto-destra-v2"' /tmp/gift-live.html | wc -l)" -eq 1 || { echo "::error::Stale gift page layout at $host"; exit 1; }
-            grep -q "Acquista su WhatsApp" /tmp/gift-live.html || { echo "::error::Order CTA missing at $host"; exit 1; }
+            grep -q 'class="hero-bottom"' /tmp/gift-live.html || { echo "::error::Gift contents and checkout not in right place at $host"; exit 1; }
+            grep -q 'acquistaRegalo=REG-001' /tmp/gift-live.html || { echo "::error::Shop checkout CTA missing at $host"; exit 1; }
+            ! grep -q 'wa.me/393348476020' /tmp/gift-live.html || { echo "::error::Old WhatsApp CTA still present at $host"; exit 1; }
             grep -q "<h2>Contiene</h2>" /tmp/gift-live.html || { echo "::error::Contents label missing at $host"; exit 1; }
-            echo "$host: independent blocks Contiene (left) and Acquista (right) are deployed."
+            echo "$host: Contiene under price, Acquista to its right, checkout link enabled."
           done
