@@ -6,7 +6,7 @@
     "start": "node shipping-policy-start.js"
   },
   "engines": {
-    "node": ">=20.0.0 <22.0.0"
+    "node": "24.x"
   },
   "dependencies": {
     "express": "^4.21.2",
