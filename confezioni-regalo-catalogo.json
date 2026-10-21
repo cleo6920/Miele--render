@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "settings": {
+    "beePointsStep": 3.5,
+    "bisPackaging": 2,
+    "trisPackaging": 3
+  },
+  "products": [
+    {
+      "id": "busatello-fragola-250",
+      "name": "Miele alla Fragola del Busatello",
+      "format": "250 g",
+      "supplier": "Mieli del Busatello",
+      "retailPrice": 6,
+      "image": "/images/tris-alveare-fragola.webp",
+      "description": "Una nota fruttata da gustare a colazione, sul pane o per dare carattere a yogurt e dolci.",
+      "curiosity": "I mieli aromatizzati permettono di sperimentare abbinamenti diversi anche nei dessert più semplici."
+    },
+    {
+      "id": "tesori-caffe",
+      "name": "Liquore al Caffè",
+      "format": "Etichetta 250 ml · capacità da verificare",
+      "supplier": "I Tesori di Francesco",
+      "retailPrice": 6,
+      "image": null,
+      "description": "Un liquore dal gusto intenso, da proporre come fine pasto o in un dessert per adulti.",
+      "curiosity": "Una piccola quantità può arricchire una crema da dessert, rispettando sempre le indicazioni dell'etichetta."
+    },
+    {
+      "id": "tesori-castagne-rum",
+      "name": "Castagne al Rum",
+      "format": "250 g",
+      "supplier": "I Tesori di Francesco",
+      "retailPrice": 6,
+      "image": null,
+      "description": "Una specialità da assaporare come piccolo dessert, da sola o con un accompagnamento cremoso.",
+      "curiosity": "Le castagne evocano la tradizione autunnale e si prestano a presentazioni eleganti a fine pasto."
+    }
+  ],
+  "packages": [
+    {
+      "id": "REG-001",
+      "slug": "sapori-del-bosco",
+      "name": "Sapori del Bosco",
+      "line": "Alimenti e Bevande",
+      "type": "tris",
+      "teaser": "Tre piccole tentazioni, un incontro di sapori tutto da scoprire.",
+      "image": "/images/Confezione%20regalo%20gourmet%20con%20nastro%20dorato.png",
+      "productIds": [
+        "busatello-fragola-250",
+        "tesori-caffe",
+        "tesori-castagne-rum"
+      ],
+      "price": 18,
+      "beePoints": 6,
+      "priceMode": "etichetta-confezione-esistente",
+      "stockStatus": "da-verificare",
+      "published": false,
+      "description": "Una confezione dal carattere caldo e avvolgente: una nota fruttata, il profumo del caffè e la tradizione delle castagne al rum si incontrano in un dono originale.",
+      "occasion": "Per un pensiero goloso, una ricorrenza o un fine pasto speciale.",
+      "purchaseStatus": "pending-checkout-integration"
+    }
+  ]
+}
