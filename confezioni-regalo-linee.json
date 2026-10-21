@@ -47,12 +47,21 @@
       "image": null
     },
     {
+      "slug": "alta-cosmesi-veleno-api",
+      "name": "Alta Cosmesi al Veleno delle Api",
+      "teaser": "Una selezione esclusiva di bellezza ispirata al mondo delle api.",
+      "icon": "sparkles",
+      "status": "Collezione in preparazione",
+      "order": 5,
+      "image": null
+    },
+    {
       "slug": "benessere",
       "name": "Benessere",
       "teaser": "Rituali e attenzioni per ogni occasione.",
       "icon": "heart",
       "status": "Collezione in preparazione",
-      "order": 5,
+      "order": 6,
       "image": null
     },
     {
@@ -61,7 +70,7 @@
       "teaser": "Una nuova esperienza da immaginare.",
       "icon": "droplet",
       "status": "Linea in preparazione",
-      "order": 6,
+      "order": 7,
       "image": null
     }
   ]
