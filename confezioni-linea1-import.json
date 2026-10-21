@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "line": "Alimenti e Bevande",
+  "releaseStatus": "draft",
+  "notes": "Quantità previste e non ancora scaricate. 18 confezioni regalo già pronte escluse. Ordine Pronto Natura non ancora ricevuto. Non pubblicare senza foto e prova checkout.",
+  "recipes": [
+    {
+      "code": "B01",
+      "plannedQuantity": 12,
+      "productIds": [
+        "millefiori",
+        "fragola"
+      ],
+      "unitPrice": 13.9,
+      "beePoints": 3,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "B02",
+      "plannedQuantity": 4,
+      "productIds": [
+        "millefiori",
+        "caffe"
+      ],
+      "unitPrice": 13.9,
+      "beePoints": 3,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "B03",
+      "plannedQuantity": 2,
+      "productIds": [
+        "millefiori",
+        "castagne"
+      ],
+      "unitPrice": 13.9,
+      "beePoints": 3,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "B04",
+      "plannedQuantity": 1,
+      "productIds": [
+        "agrumi500",
+        "sulla500"
+      ],
+      "unitPrice": 22.9,
+      "beePoints": 6,
+      "availability": "planned-purchase",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "B05",
+      "plannedQuantity": 1,
+      "productIds": [
+        "agrumi500",
+        "castagno500"
+      ],
+      "unitPrice": 22.9,
+      "beePoints": 6,
+      "availability": "planned-purchase",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "B06",
+      "plannedQuantity": 1,
+      "productIds": [
+        "sulla500",
+        "castagno500"
+      ],
+      "unitPrice": 22.9,
+      "beePoints": 6,
+      "availability": "planned-purchase",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "T01",
+      "plannedQuantity": 9,
+      "productIds": [
+        "millefiori",
+        "fragola",
+        "caffe"
+      ],
+      "unitPrice": 20.9,
+      "beePoints": 5,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "T02",
+      "plannedQuantity": 5,
+      "productIds": [
+        "millefiori",
+        "fragola",
+        "melone"
+      ],
+      "unitPrice": 20.9,
+      "beePoints": 5,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "T03",
+      "plannedQuantity": 1,
+      "productIds": [
+        "millefiori",
+        "limoncello",
+        "favo"
+      ],
+      "unitPrice": 26.9,
+      "beePoints": 7,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "T04",
+      "plannedQuantity": 1,
+      "productIds": [
+        "millefiori",
+        "acacia40",
+        "favo"
+      ],
+      "unitPrice": 22.9,
+      "beePoints": 6,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "T05",
+      "plannedQuantity": 2,
+      "productIds": [
+        "millefiori",
+        "acacia40",
+        "castagno"
+      ],
+      "unitPrice": 17.9,
+      "beePoints": 5,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "T06",
+      "plannedQuantity": 3,
+      "productIds": [
+        "millefiori",
+        "acacia40",
+        "zenzero"
+      ],
+      "unitPrice": 18.9,
+      "beePoints": 5,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "T07",
+      "plannedQuantity": 2,
+      "productIds": [
+        "millefiori",
+        "acacia40",
+        "eucalipto"
+      ],
+      "unitPrice": 17.9,
+      "beePoints": 5,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "T08",
+      "plannedQuantity": 1,
+      "productIds": [
+        "millefiori",
+        "acacia40",
+        "balsamico"
+      ],
+      "unitPrice": 22.9,
+      "beePoints": 6,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    },
+    {
+      "code": "T09",
+      "plannedQuantity": 1,
+      "productIds": [
+        "millefiori",
+        "eucalipto",
+        "balsamico"
+      ],
+      "unitPrice": 26.9,
+      "beePoints": 7,
+      "availability": "inventory",
+      "imageStatus": "original-product-photos-required",
+      "checkoutStatus": "not-enabled"
+    }
+  ]
+}
