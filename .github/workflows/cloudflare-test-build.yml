@@ -99,6 +99,12 @@ jobs:
       - name: Verify essential output
         run: |
           test -f dist/index.html
+          # Three Alveoterapia products must be listed only under Linea 01.
+          test -f dist/confezioni-linea.html
+          grep -q 'function renderAlveoterapiaProducts' dist/confezioni-linea.html
+          grep -q 'Capsule PROPOLIT (5 pz)' dist/confezioni-linea.html
+          grep -q 'handleAlveoterapiaCategoryLink' dist/shop-v2.html
+          ! grep -q '<section class="catalog-world" id="alveoterapia-prodotti"' dist/shop-v2.html
           test -f dist/shop/index.html
           test -f dist/home.html
           test -d dist/images
@@ -147,6 +153,22 @@ jobs:
             echo "::endgroup::"
           done
 
+      - name: Verify Alveoterapia products are in Linea 01, not shop homepage
+        if: success()
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -e
+          for host in lafabbricadelleapi.it la-fabbrica-delle-api-test.althea12830.workers.dev; do
+            curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/shop-v2.html?alveo_move=$COMMIT_SHA" -o /tmp/alveo-shop.html
+            ! grep -q '<section class="catalog-world" id="alveoterapia-prodotti"' /tmp/alveo-shop.html || { echo 'Old Alveoterapia listing still on shop home'; exit 1; }
+            grep -q 'handleAlveoterapiaCategoryLink' /tmp/alveo-shop.html || { echo 'Product cart link handler not live'; exit 1; }
+            curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/confezioni-linea.html?linea=alveoterapia&check=$COMMIT_SHA" -o /tmp/alveo-line.html
+            grep -q 'function renderAlveoterapiaProducts' /tmp/alveo-line.html || { echo 'Alveoterapia line content missing'; exit 1; }
+            grep -q 'Capsule PROPOLIT (5 pz)' /tmp/alveo-line.html || { echo 'Capsule products missing'; exit 1; }
+            grep -q 'propolterapy-professional' /tmp/alveo-line.html || { echo 'Diffuser product missing'; exit 1; }
+            echo "$host: all three products in Linea 01 and removed from homepage."
+          done
       - name: Verify gift detail page structure on public domain
         if: success()
         env:
