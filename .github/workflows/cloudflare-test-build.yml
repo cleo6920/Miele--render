@@ -194,7 +194,7 @@ jobs:
             curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/confezioni-linea.html?linea=alimenti-bevande&regalo=B01&v=$COMMIT_SHA" -o /tmp/b01-live.html
             grep -Fq 'confezione-b01-dolce-incontro.png' /tmp/b01-live.html
             grep -Fq 'acquistaRegalo=B01' /tmp/b01-live.html
-            grep -Fq 'Due mieli, due modi di sorprendere' /tmp/b01-live.html
+            grep -Fq 'Il cuore di Dolce Incontro' /tmp/b01-live.html
             grep -Fq '"id":"B01"' /tmp/b01-live.html
             grep -Fq '"points":3' /tmp/b01-live.html
             curl --fail --silent --show-error --location --max-time 30 "https://$host/images/confezione-b01-dolce-incontro.png?v=$COMMIT_SHA" -o /tmp/b01-live.png
@@ -204,3 +204,6 @@ jobs:
             grep -Fq 'regalo-b01-dolce-incontro' /tmp/b01-shop.html
             echo "$host: B01 visible with photo, two-product gallery and cart integration."
           done
+          curl --fail --silent --show-error --location --retry 1 --max-time 30 'https://gcdn.picsart.com/editing-temp/23444fe3-04b6-4f26-8d7d-a7738bdc17ce.jpeg' -o /tmp/b01-millefiori-photo
+          [ "$(file -b --mime-type /tmp/b01-millefiori-photo)" = "image/jpeg" ]
+          [ "$(wc -c < /tmp/b01-millefiori-photo)" -gt 5000 ]
