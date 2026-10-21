@@ -36,9 +36,37 @@ jobs:
           test -d dist/images
           test -f cloudflare-worker.js
           test -f wrangler.jsonc
-          echo "Cloudflare test build PASS"
+          test "$(grep -o 'class="gift-line-card"' dist/shop-v2.html | wc -l)" -eq 8
+          ! grep -q 'Sinfonia di Frutta' dist/shop-v2.html
+          grep -q 'regali-natale-mondo-api.webp' dist/shop-v2.html
+          echo "Cloudflare test build PASS: 8 gift sections, no stale cards, optimized Christmas banner"
 
       - name: Deploy Cloudflare Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: npx wrangler deploy
+
+      - name: Verify actual live site after deployment
+        if: success()
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          sleep 6
+          for host in lafabbricadelleapi.it la-fabbrica-delle-api-test.althea12830.workers.dev; do
+            echo "::group::Live content at $host"
+            url="https://$host/shop-v2.html?check=$COMMIT_SHA"
+            if curl --fail --silent --show-error --location --retry 2 --max-time 30 -H 'Cache-Control: no-cache' "$url" -o /tmp/shop-response.html; then
+              echo "bytes=$(wc -c < /tmp/shop-response.html)"
+              echo "gift_line_cards=$(grep -o 'class="gift-line-card"' /tmp/shop-response.html | wc -l)"
+              echo "old_gift_cards=$(grep -o 'Sinfonia di Frutta' /tmp/shop-response.html | wc -l)"
+              echo "fast_christmas_image=$(grep -o 'regali-natale-mondo-api.webp' /tmp/shop-response.html | wc -l)"
+              if [ "$host" = "lafabbricadelleapi.it" ]; then
+                [ "$(grep -o 'class="gift-line-card"' /tmp/shop-response.html | wc -l)" -eq 8 ] || { echo "::error::Live domain is not showing 8 cards"; exit 1; }
+                ! grep -q 'Sinfonia di Frutta' /tmp/shop-response.html || { echo "::error::Live domain still shows old cards"; exit 1; }
+              fi
+            else
+              echo "::error::Cannot check public domain $host"
+              exit 1
+            fi
+            echo "::endgroup::"
+          done
