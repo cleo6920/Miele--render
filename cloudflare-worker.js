@@ -26,6 +26,8 @@ function payloadHasDisabledVeleni(payload){
 const ORDER_SHIP_WEIGHT_G = {
   'regalo-sapori-del-bosco':2000,
   'regalo-b01-dolce-incontro':1300,
+  'regalo-b02-pausa-doro':1400,
+  'regalo-b03-abbraccio-dautunno':1400,
   millefiori:430,melone:430,fragola:430,pesca:430,arancia:430,
   'propolterapy-professional':1500,'capsule-pb':120,'capsule-propolit':120,
   castagno:430,'acacia-zenzero-apinfiore':370,'miele-eucalipto-apinfiore':430,balsammiel:370,
