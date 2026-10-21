@@ -195,7 +195,8 @@ jobs:
             grep -Fq 'confezione-b01-dolce-incontro.png' /tmp/b01-live.html
             grep -Fq 'acquistaRegalo=B01' /tmp/b01-live.html
             grep -Fq 'Due mieli, due modi di sorprendere' /tmp/b01-live.html
-            grep -Fq '3 Punti Ape' /tmp/b01-live.html
+            grep -Fq '"id":"B01"' /tmp/b01-live.html
+            grep -Fq '"points":3' /tmp/b01-live.html
             curl --fail --silent --show-error --location --max-time 30 "https://$host/images/confezione-b01-dolce-incontro.png?v=$COMMIT_SHA" -o /tmp/b01-live.png
             [ "$(file -b --mime-type /tmp/b01-live.png)" = "image/png" ]
             [ "$(wc -c < /tmp/b01-live.png)" -gt 100000 ]
