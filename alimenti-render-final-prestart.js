@@ -9,7 +9,7 @@ try {
     'millefiori', 'melone', 'fragola', 'pesca', 'arancia',
     'castagno', 'acacia-zenzero-apinfiore', 'miele-eucalipto-apinfiore',
     'balsammiel', 'acacia', 'favo-integrale-bio', 'polline-italiano',
-    'pappa-reale-italiana-bio', 'orsetti-gommosi'
+    'pappa-reale-italiana-bio', 'orsetti-gommosi', 'confezione-b01-dolce-incontro'
   ];
 
   const rendererRegex = /products\.filter\(p => p\.category === selectedCategory\)\.sort\(\(a,b\) => a\.order - b\.order\)\.map\(product => \(/g;
