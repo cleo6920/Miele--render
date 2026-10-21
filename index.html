@@ -2383,8 +2383,8 @@ const wrapRef = useRef(null);
                     image: "/images/confezione-b01-dolce-incontro.png",
                     packs: [{ id: "b01-regalo", label: "Confezione regalo completa · 2 vasetti da 250 g", jars: 1, price: 13.90 }],
                     beePoints: 3,
-                    inStock: true,
-                    stock: 1,
+                    inStock: false,
+                    stock: 0,
                     order: 900,
                     category: "alimenti",
                     bundleContents: ["Miele Millefiori del Busatello 250 g", "Miele alla Fragola del Busatello 250 g"]
@@ -3290,6 +3290,19 @@ const wrapRef = useRef(null);
             // Categorie da mostrare nel negozio
             const allowedCategoriesForShop = ['busatello','prelibati','tesori','leccornie','terapia','cosmesi', 'alveoterapia', 'alimenti'];
 
+            // B01 e' assemblata da 2 prodotti sciolti: non si inventa una giacenza autonoma.
+            // Si propone al massimo una confezione quando entrambe le referenze risultano disponibili.
+            const withB01BundleStock = (catalog) => {
+                const units = (id) => {
+                    const item = catalog.find(p => p.id === id);
+                    return item && item.inStock === true ? Math.max(0, Math.floor(Number(item.stock) || 0)) : 0;
+                };
+                const available = Math.min(1, units('millefiori'), units('fragola'));
+                return catalog.map(p => p.id === 'confezione-b01-dolce-incontro'
+                    ? { ...p, stock: available, inStock: available > 0 }
+                    : p);
+            };
+
             // Effetto per inizializzare Firebase e caricare i prodotti
             useEffect(() => {
                 // ... IL CODICE DI INIZIALIZZAZIONE FIREBASE RESTA IDENTICO ...
@@ -3304,7 +3317,7 @@ const wrapRef = useRef(null);
                         if (typeof window !== 'undefined') {
                             window.archivedProducts = staticInitialProducts.filter(p => !allowedCategoriesForShop.includes(p.category));
                         }
-                        setProducts(filtered);
+                        setProducts(withB01BundleStock(filtered));
                         setIsLoadingProducts(false);
                         setIsAuthReady(true);
                         return;
@@ -3337,7 +3350,7 @@ const wrapRef = useRef(null);
                         if (typeof window !== 'undefined') {
                             window.archivedProducts = staticInitialProducts.filter(p => !allowedCategoriesForShop.includes(p.category));
                         }
-                        setProducts(filtered);
+                        setProducts(withB01BundleStock(filtered));
                         return;
                     }
 
@@ -3375,7 +3388,7 @@ const wrapRef = useRef(null);
                         if (typeof window !== 'undefined') {
                             window.archivedProducts = staticInitialProducts.filter(p => !allowedCategoriesForShop.includes(p.category));
                         }
-                        setProducts(filtered);
+                        setProducts(withB01BundleStock(filtered));
                         setIsLoadingProducts(false);
                         return;
                     }
@@ -3398,7 +3411,7 @@ const wrapRef = useRef(null);
                         if (typeof window !== 'undefined') {
                             window.archivedProducts = mergedProducts.filter(p => !allowedCategoriesForShop.includes(p.category));
                         }
-                        setProducts(filtered);
+                        setProducts(withB01BundleStock(filtered));
                         if (isLoadingProducts) setIsLoadingProducts(false);
                     }, (error) => {
                         console.error("ERRORE nel listener dei prodotti Firestore:", error);
@@ -3406,7 +3419,7 @@ const wrapRef = useRef(null);
                         if (typeof window !== 'undefined') {
                             window.archivedProducts = staticInitialProducts.filter(p => !allowedCategoriesForShop.includes(p.category));
                         }
-                        setProducts(filtered);
+                        setProducts(withB01BundleStock(filtered));
                         setIsLoadingProducts(false);
                     });
 
