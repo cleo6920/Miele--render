@@ -615,6 +615,27 @@ body.christmas-shop-prep .ape-chat-launch{flex:0 1 350px}
 @media(max-width:700px){#natale-regali .gift-lines-grid{gap:12px}#natale-regali .gift-line-body{padding:15px 12px!important}#natale-regali .gift-line-body h3{font-size:20px!important;margin:13px 0 9px!important}#natale-regali .gift-line-body p{font-size:14px!important;min-height:3.4em}#natale-regali .gift-line-arrow{font-size:11px!important;padding:10px!important}}
 @media(prefers-reduced-motion:reduce){#natale-regali .gift-line-card,#natale-regali .gift-line-photo img{transition:none!important}}
 </style>
+<style id="gift-line-photo-full-height-20261022">
+/* Solo foto delle 8 linee regalo: 4:3 coincide con l'immagine ufficiale
+   1000x750 della Linea Alimenti. Più alte del precedente 16:9, senza tagli. */
+#natale-regali .gift-line-photo {
+  aspect-ratio: 4 / 3 !important;
+  width: 100%;
+  height: auto;
+  flex-shrink: 0;
+}
+#natale-regali .gift-line-photo-real img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+/* Evita che l'ingrandimento al passaggio del mouse tagli nuovamente la foto. */
+#natale-regali .gift-line-card:hover .gift-line-photo-real img {
+  transform: none !important;
+}
+</style>
 </head>
 <body class="christmas-shop-prep notranslate" translate="no">
 <header class="site-header">
