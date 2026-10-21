@@ -28,6 +28,27 @@ jobs:
           CLOUDFLARE_BUILD: '1'
         run: npm run build:cloudflare
 
+      - name: Create optimized WebP from the correct uploaded Christmas image
+        run: |
+          python -m pip install --disable-pip-version-check --quiet Pillow
+          python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          source=Path("images/Regali dal mondo delle api_ Natale in festa.png")
+          output=Path("dist/images/regali-natale-nuovo-20261021.webp")
+          if not source.exists():
+              raise RuntimeError("Correct Christmas image not found")
+          with Image.open(source) as picture:
+              original_size=picture.size
+              picture=picture.convert("RGB")
+              picture.thumbnail((1920, 1400), Image.Resampling.LANCZOS)
+              picture.save(output, format="WEBP", quality=86, method=6)
+          print("Correct original image:", original_size, "bytes:", source.stat().st_size)
+          print("New optimized image:", Image.open(output).size, "bytes:", output.stat().st_size)
+          if output.stat().st_size < 30000:
+              raise RuntimeError("Unexpectedly small optimized banner")
+          PY
+
       - name: Verify essential output
         run: |
           test -f dist/index.html
@@ -38,8 +59,9 @@ jobs:
           test -f wrangler.jsonc
           test "$(grep -o 'class="gift-line-card"' dist/shop-v2.html | wc -l)" -eq 8
           ! grep -q 'Sinfonia di Frutta' dist/shop-v2.html
-          grep -q 'regali-natale-mondo-api.webp' dist/shop-v2.html
-          echo "Cloudflare test build PASS: 8 gift sections, no stale cards, optimized Christmas banner"
+          grep -q 'regali-natale-nuovo-20261021.webp' dist/shop-v2.html
+          test -s dist/images/regali-natale-nuovo-20261021.webp
+          echo "Cloudflare test build PASS: 8 gift sections, no stale cards, correct new Christmas banner"
 
       - name: Deploy Cloudflare Worker
         env:
@@ -59,7 +81,10 @@ jobs:
               echo "bytes=$(wc -c < /tmp/shop-response.html)"
               echo "gift_line_cards=$((grep -o 'class="gift-line-card"' /tmp/shop-response.html || true) | wc -l)"
               echo "old_gift_cards=$((grep -o 'Sinfonia di Frutta' /tmp/shop-response.html || true) | wc -l)"
-              echo "fast_christmas_image=$((grep -o 'regali-natale-mondo-api.webp' /tmp/shop-response.html || true) | wc -l)"
+              echo "fast_christmas_image=$((grep -o 'regali-natale-nuovo-20261021.webp' /tmp/shop-response.html || true) | wc -l)"
+              curl --fail --silent --show-error --location --retry 2 --max-time 30 "https://$host/images/regali-natale-nuovo-20261021.webp?check=$COMMIT_SHA" -o /tmp/banner-verified.webp
+              [ "$(file -b --mime-type /tmp/banner-verified.webp)" = "image/webp" ] || { echo "::error::Correct banner image is not a WebP"; exit 1; }
+              [ "$(wc -c < /tmp/banner-verified.webp)" -ge 30000 ] || { echo "::error::Correct banner image too small"; exit 1; }
               if [ "$host" = "lafabbricadelleapi.it" ]; then
                 [ "$((grep -o 'class="gift-line-card"' /tmp/shop-response.html || true) | wc -l)" -eq 8 ] || { echo "::error::Live domain is not showing 8 cards"; exit 1; }
                 ! grep -q 'Sinfonia di Frutta' /tmp/shop-response.html || { echo "::error::Live domain still shows old cards"; exit 1; }
