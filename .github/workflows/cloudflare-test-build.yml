@@ -65,12 +65,44 @@ jobs:
             echo "Permanent correct banner already present."
           fi
 
+      - name: Optimize new Alimenti e Bevande Christmas photo
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          source=Path("images/Cesta natalizia italiana gourmet con fiocco dorato.png")
+          output=Path("dist/images/linea-alimenti-natale-regali.webp")
+          if not source.is_file():
+              raise RuntimeError("Uploaded Alimenti e Bevande image is missing")
+          with Image.open(source) as img:
+              img=img.convert("RGB")
+              img.thumbnail((1000, 1000),Image.Resampling.LANCZOS)
+              img.save(output,format="WEBP",quality=82,method=6)
+          if output.stat().st_size < 20000:
+              raise RuntimeError("The converted gift image looks incomplete")
+          print("Category photo optimized:",output.name, output.stat().st_size,"bytes")
+          PY
+
+      - name: Preserve optimized category photo in GitHub images
+        run: |
+          if [ ! -s images/linea-alimenti-natale-regali.webp ]; then
+            cp dist/images/linea-alimenti-natale-regali.webp images/linea-alimenti-natale-regali.webp
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add images/linea-alimenti-natale-regali.webp
+            git commit -m "Optimize Alimenti e Bevande Christmas category photo"
+            git push origin HEAD:cloudflare-test
+          else
+            echo "Optimized category photo already preserved."
+          fi
+
       - name: Verify essential output
         run: |
           test -f dist/index.html
           test -f dist/shop/index.html
           test -f dist/home.html
           test -d dist/images
+          test -s dist/images/linea-alimenti-natale-regali.webp
           test -f cloudflare-worker.js
           grep -q '"regalo-sapori-del-bosco": 6' dist/shop-v2.html
           grep -q 'acquistaRegalo' dist/shop-v2.html
