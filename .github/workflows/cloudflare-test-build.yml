@@ -57,11 +57,11 @@ jobs:
             url="https://$host/shop-v2.html?check=$COMMIT_SHA"
             if curl --fail --silent --show-error --location --retry 2 --max-time 30 -H 'Cache-Control: no-cache' "$url" -o /tmp/shop-response.html; then
               echo "bytes=$(wc -c < /tmp/shop-response.html)"
-              echo "gift_line_cards=$(grep -o 'class="gift-line-card"' /tmp/shop-response.html | wc -l)"
-              echo "old_gift_cards=$(grep -o 'Sinfonia di Frutta' /tmp/shop-response.html | wc -l)"
-              echo "fast_christmas_image=$(grep -o 'regali-natale-mondo-api.webp' /tmp/shop-response.html | wc -l)"
+              echo "gift_line_cards=$((grep -o 'class="gift-line-card"' /tmp/shop-response.html || true) | wc -l)"
+              echo "old_gift_cards=$((grep -o 'Sinfonia di Frutta' /tmp/shop-response.html || true) | wc -l)"
+              echo "fast_christmas_image=$((grep -o 'regali-natale-mondo-api.webp' /tmp/shop-response.html || true) | wc -l)"
               if [ "$host" = "lafabbricadelleapi.it" ]; then
-                [ "$(grep -o 'class="gift-line-card"' /tmp/shop-response.html | wc -l)" -eq 8 ] || { echo "::error::Live domain is not showing 8 cards"; exit 1; }
+                [ "$((grep -o 'class="gift-line-card"' /tmp/shop-response.html || true) | wc -l)" -eq 8 ] || { echo "::error::Live domain is not showing 8 cards"; exit 1; }
                 ! grep -q 'Sinfonia di Frutta' /tmp/shop-response.html || { echo "::error::Live domain still shows old cards"; exit 1; }
               fi
             else
