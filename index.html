@@ -1564,6 +1564,12 @@ const wrapRef = useRef(null);
                         }}
                     />
                     <h3 className="text-2xl font-bold text-amber-700">{product.name}</h3>
+                    {product.id === 'confezione-b01-dolce-incontro' && (
+                        <div data-b01-card="true" className="mt-3 w-full text-center space-y-1">
+                            <p className="text-sm text-stone-700">Millefiori del Busatello 250 g + Miele alla Fragola del Busatello 250 g, entrambi inclusi.</p>
+                            <p className="text-xl font-black text-amber-800">€ 13,90 <span className="text-sm font-semibold">· 3 Punti Ape</span></p>
+                        </div>
+                    )}
                 </div>
             );
         }
@@ -1646,6 +1652,34 @@ const wrapRef = useRef(null);
                             <h2 className="text-4xl font-bold text-amber-800">{product.name}</h2>
                             <p className={product.id === 'caramelle-incartate-70g' ? 'text-2xl font-bold text-white leading-relaxed' : 'text-lg text-stone-700 leading-relaxed'} dangerouslySetInnerHTML={{ __html: product.description }}>
 </p>
+
+                            {product.id === 'confezione-b01-dolce-incontro' && (
+                                <div data-b01-contents="true" className="rounded-2xl border border-amber-300 bg-amber-50 p-5 space-y-4">
+                                    <div>
+                                        <p className="text-xs uppercase tracking-widest font-black text-amber-800">B01 · Confezione regalo</p>
+                                        <h3 className="text-2xl font-bold text-amber-950 mt-1">Contiene</h3>
+                                        <p className="text-sm text-stone-700 mt-2">Nel prezzo della confezione sono già compresi entrambi i vasetti e la presentazione regalo.</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="rounded-xl border border-amber-200 bg-white p-3">
+                                            <img src="/images/tris-alveare-millefiori.jpg" alt="Miele Millefiori del Busatello incluso nella confezione" className="w-full h-36 object-contain rounded-lg bg-white" />
+                                            <p className="font-bold text-amber-900 mt-2">Miele Millefiori del Busatello · 250 g</p>
+                                            <p className="text-sm text-stone-600 mt-1">Il carattere floreale e armonioso dell'Oasi, ideale per una colazione dal gusto naturale.</p>
+                                            <p className="text-xs font-extrabold text-emerald-800 mt-2">Incluso nella confezione</p>
+                                        </div>
+                                        <div className="rounded-xl border border-amber-200 bg-white p-3">
+                                            <img src="/images/tris-alveare-fragola.webp" alt="Miele alla Fragola del Busatello incluso nella confezione" className="w-full h-36 object-contain rounded-lg bg-white" />
+                                            <p className="font-bold text-amber-900 mt-2">Miele alla Fragola del Busatello · 250 g</p>
+                                            <p className="text-sm text-stone-600 mt-1">Una nota fruttata e golosa per dare un tocco originale a yogurt, pane e dolci.</p>
+                                            <p className="text-xs font-extrabold text-emerald-800 mt-2">Incluso nella confezione</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-amber-200 pt-3">
+                                        <strong className="text-xl text-amber-950">€ 13,90 · IVA inclusa</strong>
+                                        <span className="rounded-full bg-amber-200 text-amber-950 px-3 py-1 font-black">🐝 3 Punti Ape</span>
+                                    </div>
+                                </div>
+                            )}
                             {product.id === 'caramelle-incartate-70g' && (
                                 <p className="text-3xl text-red-600 font-extrabold">
                                     Da 5 buste (anche miste): sconto −13% applicato in carrello.
@@ -2206,7 +2240,12 @@ const wrapRef = useRef(null);
             useEffect(() => {
                 try {
                     const requestedLine = new URLSearchParams(window.location.search).get('linea');
-                    if (requestedLine === 'veleni') {
+                    if (requestedLine === 'alimenti') {
+                        setSelectedProductId(null);
+                        setSelectedCategory('alimenti');
+                        setHasNavigatedAway(true);
+                        setTimeout(() => window.scrollTo({ top: 0, behavior: 'auto' }), 80);
+                    } else if (requestedLine === 'veleni') {
                         setSelectedProductId(null);
                         setSelectedCategory('veleno-api');
                         setHasNavigatedAway(true);
@@ -2217,6 +2256,16 @@ const wrapRef = useRef(null);
                 }
             }, []);
             const [products, setProducts] = useState([]);
+            // B01_DEEPLINK: apre il dettaglio solo dopo il caricamento del catalogo.
+            useEffect(() => {
+                const requestedProduct = new URLSearchParams(window.location.search).get('prodotto');
+                if (requestedProduct !== 'confezione-b01-dolce-incontro') return;
+                if (!products.some(p => p.id === 'confezione-b01-dolce-incontro')) return;
+                setSelectedCategory('alimenti');
+                setSelectedProductId('confezione-b01-dolce-incontro');
+                setHasNavigatedAway(true);
+            }, [products]);
+
             const [isLoadingProducts, setIsLoadingProducts] = useState(true);
             const [cartItems, setCartItems] = useState([]);
             const [name, setName] = useState(() => localStorage.getItem('customerName') || "");
@@ -2327,6 +2376,20 @@ const wrapRef = useRef(null);
 
             // Lista statica di prodotti predefiniti (fallback e struttura iniziale)
             const staticInitialProducts = [
+                {
+                    id: "confezione-b01-dolce-incontro",
+                    name: "Dolce Incontro",
+                    description: "Il profumo dei fiori del Busatello incontra la dolcezza fruttata della fragola: due vasetti da assaporare e regalare, presentati in una confezione elegante con fiocco dorato.",
+                    image: "/images/confezione-b01-dolce-incontro.png",
+                    packs: [{ id: "b01-regalo", label: "Confezione regalo completa · 2 vasetti da 250 g", jars: 1, price: 13.90 }],
+                    beePoints: 3,
+                    inStock: true,
+                    stock: 1,
+                    order: 900,
+                    category: "alimenti",
+                    bundleContents: ["Miele Millefiori del Busatello 250 g", "Miele alla Fragola del Busatello 250 g"]
+                },
+
 
                 {
                   id: "capsule-essential",
@@ -3225,7 +3288,7 @@ const wrapRef = useRef(null);
             console.log("[STOCK MODE]", STOCK_MODE);
 
             // Categorie da mostrare nel negozio
-            const allowedCategoriesForShop = ['busatello','prelibati','tesori','leccornie','terapia','cosmesi', 'alveoterapia'];
+            const allowedCategoriesForShop = ['busatello','prelibati','tesori','leccornie','terapia','cosmesi', 'alveoterapia', 'alimenti'];
 
             // Effetto per inizializzare Firebase e caricare i prodotti
             useEffect(() => {
