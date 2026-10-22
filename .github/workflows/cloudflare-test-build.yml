@@ -233,3 +233,32 @@ jobs:
             grep -Fq 'regalo-b03-abbraccio-dautunno' /tmp/b02-b03-shop.html
             echo "$host: B02 & B03 image, two-product galleries, 13.90 checkout and cart links visible."
           done
+
+      - name: Verify B04 B05 B06 and T01 live
+        if: success()
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for host in lafabbricadelleapi.it la-fabbrica-delle-api-test.althea12830.workers.dev; do
+            curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/confezioni-linea.html?linea=alimenti-bevande&regalo=B04&v=$COMMIT_SHA" -o /tmp/four-gifts.html
+            curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/shop-v2.html?v=$COMMIT_SHA" -o /tmp/four-gifts-shop.html
+            for code in B04 B05 B06 T01; do
+              grep -Fq "\"id\":\"$code\"" /tmp/four-gifts.html
+            done
+            for filename in confezione-b04-agrumi-in-fiore confezione-b05-due-terre-un-miele confezione-b06-essenza-di-natura confezione-t01-tre-sapori-una-storia; do
+              grep -Fq "/images/$filename.png" /tmp/four-gifts.html
+              curl --fail --silent --show-error --location --max-time 30 "https://$host/images/$filename.png?v=$COMMIT_SHA" -o /tmp/four-gifts-image.png
+              [ "$(file -b --mime-type /tmp/four-gifts-image.png)" = "image/png" ]
+              [ "$(wc -c < /tmp/four-gifts-image.png)" -gt 500000 ]
+            done
+            grep -Fq 'La dolcezza che sboccia in due fioriture' /tmp/four-gifts.html
+            grep -Fq 'Un viaggio tra fiori e boschi' /tmp/four-gifts.html
+            grep -Fq 'Due caratteri, una sola natura' /tmp/four-gifts.html
+            grep -Fq "Tre protagonisti, un'unica storia da gustare" /tmp/four-gifts.html
+            grep -Fq 'regalo-b04-agrumi-in-fiore' /tmp/four-gifts-shop.html
+            grep -Fq 'regalo-b05-due-terre-un-miele' /tmp/four-gifts-shop.html
+            grep -Fq 'regalo-b06-essenza-di-natura' /tmp/four-gifts-shop.html
+            grep -Fq 'regalo-t01-tre-sapori-una-storia' /tmp/four-gifts-shop.html
+            echo "$host: B04 B05 B06 T01 visible, approved images and checkout catalog present."
+          done
