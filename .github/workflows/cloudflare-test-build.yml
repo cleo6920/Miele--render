@@ -96,6 +96,29 @@ jobs:
             echo "Optimized category photo already preserved."
           fi
 
+      - name: Inspect uploaded gift images visually once
+        run: |
+          git fetch --depth=1 origin main
+          python - <<'PY'
+          import base64, io, subprocess
+          from PIL import Image,ImageDraw,ImageFont
+          names=['Cestino regalo di miele italiano.png','b04befd1-bf37-4446-8087-cf0fd964bee5.png','Confezione regalo di mieli artigianali (1).png','Cofanetto regalo di miele artigianale.png']
+          canvas=Image.new('RGB',(1150,1290),'#f1f0ec')
+          draw=ImageDraw.Draw(canvas)
+          for index,name in enumerate(names):
+              data=subprocess.check_output(['git','show','FETCH_HEAD:images/'+name])
+              im=Image.open(io.BytesIO(data)).convert('RGB')
+              im.thumbnail((555,570),Image.Resampling.LANCZOS)
+              x=(index%2)*575+(575-im.width)//2
+              y=(index//2)*645+38
+              canvas.paste(im,(x,y))
+              draw.text(((index%2)*575+12,(index//2)*645+5),f'{index}  '+name[:45],fill='#29241c')
+          buffer=io.BytesIO()
+          canvas.save(buffer,format='JPEG',quality=80,optimize=True)
+          print('GIFT_IMAGE_CONTACT_SHEET_BEGIN')
+          print(base64.b64encode(buffer.getvalue()).decode())
+          print('GIFT_IMAGE_CONTACT_SHEET_END')
+          PY
       - name: Verify essential output
         run: |
           test -f dist/index.html
