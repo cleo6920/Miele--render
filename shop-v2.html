@@ -1092,7 +1092,7 @@ body.christmas-shop-prep .ape-chat-launch{flex:0 1 350px}
 <button class="cart-fab" type="button" id="cartFab">Il tuo cestino <b id="cartCount">0</b></button>
 <aside class="cart-drawer" id="cartDrawer" aria-label="Cestino">
   <div class="cart-head"><h2>Il tuo cestino</h2><button class="cart-close" id="cartClose" type="button">×</button></div>
-  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-items" id="cartItems"></div><p id="giftStockNotice" role="status" aria-live="polite" style="display:none;margin:8px 13px;padding:10px 12px;border:1px solid #cba65e;border-radius:9px;background:#fff3d6;color:#563518;font-weight:700;font-size:12px;line-height:1.45"></p>
   <div class="cart-foot"><div class="shipping-progress" id="shippingProgress" aria-live="polite"><span id="shippingProgressText">Spedizione gratuita in Italia da 69,90 €</span><div class="shipping-progress-track"><div class="shipping-progress-fill" id="shippingProgressFill"></div></div></div><div class="cart-points"><span>🐝 Punti Ape di questo ordine</span><span id="cartPoints">0</span></div><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><button class="cart-continue-shopping" type="button" id="cartContinueShopping">← Continua lo shopping</button><button class="checkout-new" type="button" id="startCheckout">Continua con l'ordine →</button><div class="cart-note">100 Punti Ape = cesto omaggio con 5 prodotti a scelta.</div></div>
 </aside>
 
@@ -1419,13 +1419,50 @@ async function fetchGiftAvailable(id){
  GIFT_AVAILABILITY[id]=Math.max(0,x.available);
  return GIFT_AVAILABILITY[id];
 }
+let giftStockNotice='';
+let giftStockCheckPending=false;
 async function refreshGiftCartStock(){
- for(const line of shopV2Cart.filter(x=>isGiftBoxId(x.id))){
-   try{await fetchGiftAvailable(line.id)}catch(_){delete GIFT_AVAILABILITY[line.id]}
+ const lines=shopV2Cart.filter(x=>isGiftBoxId(x.id));
+ if(!lines.length){giftStockNotice='';renderV2Cart();return {ok:true,changed:false};}
+ giftStockCheckPending=true;renderV2Cart();
+ const modifications=[],failures=[];
+ try{
+   for(const item of lines){
+     try{
+       const available=await fetchGiftAvailable(item.id);
+       if(item.qty>available){
+         const previous=item.qty;
+         if(available===0){
+           shopV2Cart=shopV2Cart.filter(x=>x.id!==item.id);
+           modifications.push(item.name+': '+previous+' → 0 (esaurito e rimosso)');
+         }else{
+           item.qty=available;
+           modifications.push(item.name+': '+previous+' → '+available);
+         }
+       }
+     }catch(_){
+       delete GIFT_AVAILABILITY[item.id];
+       failures.push(item.name);
+     }
+   }
+   if(modifications.length){
+     giftStockNotice='Disponibilità aggiornata: '+modifications.join('; ')+'. Prezzi e Punti Ape sono stati ricalcolati. Controlla il carrello prima di pagare.';
+     checkoutPromo={code:'',discount:0,total:null,testMode:false};
+     shippingState={cost:null,pending:false,label:purchaseT('toCalculate'),reason:''};
+     const promo=document.getElementById('promoCodeInput');
+     if(promo)promo.value='';
+     localStorage.setItem(SHOP_V2_CART_KEY,JSON.stringify(shopV2Cart));
+   }else if(failures.length){
+     giftStockNotice='Impossibile controllare ora le confezioni: '+failures.join(', ')+'. Il pagamento resta bloccato finché la disponibilità non viene verificata.';
+   }
+   return {ok:failures.length===0,changed:modifications.length>0,modifications,failures};
+ }finally{
+   giftStockCheckPending=false;
+   renderV2Cart();
  }
- renderV2Cart();
 }
-window.addEventListener('focus',refreshGiftCartStock);
+window.addEventListener('focus',()=>{refreshGiftCartStock();});
+window.addEventListener('pageshow',()=>{refreshGiftCartStock();});
 async function addV2Product(btn){
   const id=btn.dataset.id;
   if(INFORMATION_ONLY_IDS.has(id))return;
@@ -1482,12 +1519,18 @@ function renderV2Cart(){
   document.getElementById('cartCount').textContent=count;
   document.getElementById('cartTotal').textContent=euro(cartTotal());
   document.getElementById('cartPoints').textContent=cartPoints();
+  const notice=document.getElementById('giftStockNotice');
+  if(notice){notice.textContent=giftStockNotice;notice.style.display=giftStockNotice?'block':'none';}
   const checkoutBtn=document.getElementById('startCheckout');
-  if(checkoutBtn)checkoutBtn.textContent=shopV2Cart.some(x=>isFreeEditionId(x.id))?'Continua con il download gratuito →':'Continua con l\'ordine →';
+  const unsafe=shopV2Cart.some(x=>isGiftBoxId(x.id)&&(!Number.isInteger(GIFT_AVAILABILITY[x.id])||x.qty>GIFT_AVAILABILITY[x.id]));
+  if(checkoutBtn){
+    checkoutBtn.disabled=giftStockCheckPending||unsafe;
+    checkoutBtn.textContent=giftStockCheckPending?'Controllo disponibilità…':unsafe?'Verifica disponibilità necessaria':shopV2Cart.some(x=>isFreeEditionId(x.id))?'Continua con il download gratuito →':"Continua con l'ordine →";
+  }
   if(!shopV2Cart.length){box.innerHTML='<div class="cart-empty">'+purchaseT('cartEmpty')+'</div>';return;}
   box.innerHTML=shopV2Cart.map(x=>{
     const name=purchaseProductName(x.id,x.name),size=purchaseProductSize(x.id,x.size);
-    return '<div class="cart-item"><div><strong>'+officialCatalogEsc(name)+'</strong><small>'+officialCatalogEsc(size)+' · '+purchaseT('quantity')+' '+x.qty+(isFreeEditionId(x.id)?' · 🐝 +1 Punto Ape al download':' · '+(x.points*x.qty)+' '+purchaseT('points'))+(isGiftBoxId(x.id)&&Number.isInteger(GIFT_AVAILABILITY[x.id])?' · Disponibili: '+GIFT_AVAILABILITY[x.id]:'')+'</small><div class="cart-qty-controls"><button type="button" aria-label="Diminuisci quantità" onclick="changeV2CartQuantity(\''+x.id+'\',-1)">−</button><span>'+x.qty+'</span><button type="button" aria-label="Aumenta quantità" onclick="changeV2CartQuantity(\''+x.id+'\',1)">+</button></div></div><div><strong>'+(isFreeEditionId(x.id)?'GRATIS':euro(x.price*x.qty))+'</strong><button type="button" onclick="removeV2Product(\''+x.id+'\')">'+purchaseT('remove')+'</button></div></div>';
+    return '<div class="cart-item"><div><strong>'+officialCatalogEsc(name)+'</strong><small>'+officialCatalogEsc(size)+' · '+purchaseT('quantity')+' '+x.qty+(isFreeEditionId(x.id)?' · 🐝 +1 Punto Ape al download':' · '+(x.points*x.qty)+' '+purchaseT('points'))+(isGiftBoxId(x.id)&&Number.isInteger(GIFT_AVAILABILITY[x.id])?' · Disponibili: '+GIFT_AVAILABILITY[x.id]:'')+'</small><div class="cart-qty-controls"><button type="button" aria-label="Diminuisci quantità" onclick="changeV2CartQuantity(\''+x.id+'\',-1)">−</button><span>'+x.qty+'</span><button type="button" aria-label="Aumenta quantità" '+(isGiftBoxId(x.id)&&Number.isInteger(GIFT_AVAILABILITY[x.id])&&x.qty>=GIFT_AVAILABILITY[x.id]?' disabled title="Disponibilità massima raggiunta"':'')+' onclick="changeV2CartQuantity(\''+x.id+'\',1)">+</button></div></div><div><strong>'+(isFreeEditionId(x.id)?'GRATIS':euro(x.price*x.qty))+'</strong><button type="button" onclick="removeV2Product(\''+x.id+'\')">'+purchaseT('remove')+'</button></div></div>';
   }).join('');
 }
 
