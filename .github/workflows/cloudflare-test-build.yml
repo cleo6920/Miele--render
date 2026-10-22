@@ -324,3 +324,25 @@ jobs:
             grep -Fq 'regalo-t05-radici-di-miele' /tmp/tris-shop.html
             echo "$host: T02 T03 T04 T05 images and checkout live."
           done
+
+
+      - name: Verify T06 T08 T09 gift photos cards and exact checkout prices
+        if: success()
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for host in lafabbricadelleapi.it la-fabbrica-delle-api-test.althea12830.workers.dev; do
+            curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/confezioni-linea.html?linea=alimenti-bevande&regalo=T06&check=$COMMIT_SHA" -o /tmp/new-gifts.html
+            curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/shop-v2.html?check=$COMMIT_SHA" -o /tmp/new-shop.html
+            for code in t06-risveglio-dorato t08-carezza-balsamica t09-intenso-incanto; do
+              grep -q "confezione-$code.webp" /tmp/new-gifts.html || { echo "Missing gift photo $code"; exit 1; }
+              grep -q "confezione-$code.webp" /tmp/new-shop.html || { echo "Missing shop SKU photo $code"; exit 1; }
+              curl --fail --silent --show-error --location --max-time 30 "https://$host/images/confezione-$code.webp" -o /tmp/photo.webp
+              test "$(wc -c < /tmp/photo.webp)" -gt 20000
+            done
+            grep -q "'T06':{id:'regalo-t06-risveglio-dorato',points:5" /tmp/new-shop.html
+            grep -q "'T08':{id:'regalo-t08-carezza-balsamica',points:6" /tmp/new-shop.html
+            grep -q "'T09':{id:'regalo-t09-intenso-incanto',points:7" /tmp/new-shop.html
+            echo "$host: T06 T08 T09 gifts and real checkout routes available."
+          done
