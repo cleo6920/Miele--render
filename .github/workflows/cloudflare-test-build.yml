@@ -263,7 +263,7 @@ jobs:
             echo "$host: B04 B05 B06 T01 visible, approved images and checkout catalog present."
           done
 
-      - name: Verify T02 T03 T04 and leave T05 unpublished
+      - name: Verify T02 T03 T04 and T05 published
         if: success()
         env:
           COMMIT_SHA: ${{ github.sha }}
@@ -276,16 +276,16 @@ jobs:
               grep -Fq "\"id\":\"$code\"" /tmp/tris-check.html
             done
             grep -Fq '"id":"T05","name":"Radici di Miele"' /tmp/tris-check.html
-            grep -Fq '"status":"in preparazione","image":null' /tmp/tris-check.html
-            for filename in confezione-t02-arcobaleno-di-dolcezza confezione-t03-la-dolce-meraviglia confezione-t04-tesori-dell-alveare; do
+            grep -Fq '"status":"confezione pronta","image":"/images/confezione-t05-radici-di-miele.png"' /tmp/tris-check.html
+            for filename in confezione-t02-arcobaleno-di-dolcezza confezione-t03-la-dolce-meraviglia confezione-t04-tesori-dell-alveare confezione-t05-radici-di-miele; do
               grep -Fq "/images/$filename.png" /tmp/tris-check.html
               curl --fail --silent --show-error --location --max-time 30 "https://$host/images/$filename.png?v=$COMMIT_SHA" -o /tmp/tris-photo.png
               [ "$(file -b --mime-type /tmp/tris-photo.png)" = "image/png" ]
               [ "$(wc -c < /tmp/tris-photo.png)" -gt 500000 ]
             done
-            for code in regalo-t02-arcobaleno-di-dolcezza regalo-t03-la-dolce-meraviglia regalo-t04-tesori-dell-alveare; do
+            for code in regalo-t02-arcobaleno-di-dolcezza regalo-t03-la-dolce-meraviglia regalo-t04-tesori-dell-alveare regalo-t05-radici-di-miele; do
               grep -Fq "$code" /tmp/tris-shop.html
             done
-            if grep -Fq 'regalo-t05-radici-di-miele' /tmp/tris-shop.html; then exit 1; fi
-            echo "$host: T02 T03 T04 images and checkout live, T05 still in preparation."
+            grep -Fq 'regalo-t05-radici-di-miele' /tmp/tris-shop.html
+            echo "$host: T02 T03 T04 T05 images and checkout live."
           done
