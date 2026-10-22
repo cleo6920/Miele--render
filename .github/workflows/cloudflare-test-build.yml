@@ -96,7 +96,7 @@ jobs:
             echo "Optimized category photo already preserved."
           fi
 
-      - name: Optimize verified T06 T08 T09 gift photographs
+      - name: Optimize verified gift photographs T06 T07 T08 T09
         run: |
           git fetch --depth=1 origin main
           python - <<'PY'
@@ -107,6 +107,7 @@ jobs:
               'b04befd1-bf37-4446-8087-cf0fd964bee5.png':'confezione-t06-risveglio-dorato.webp',
               'Confezione regalo di mieli artigianali (1).png':'confezione-t08-carezza-balsamica.webp',
               'Cofanetto regalo di miele artigianale.png':'confezione-t09-intenso-incanto.webp',
+              'Confezione regalo di miele artigianale.png':'confezione-t07-soffio-di-natura.webp',
           }
           for source,dest in photos.items():
               data=subprocess.check_output(['git','show','FETCH_HEAD:images/'+source])
@@ -119,16 +120,16 @@ jobs:
                   if target.stat().st_size < 20000: raise RuntimeError('Photograph too small: '+dest)
           PY
 
-      - name: Preserve three optimized verified gift photographs
+      - name: Preserve four optimized verified gift photographs
         run: |
-          for name in confezione-t06-risveglio-dorato.webp confezione-t08-carezza-balsamica.webp confezione-t09-intenso-incanto.webp; do
+          for name in confezione-t06-risveglio-dorato.webp confezione-t07-soffio-di-natura.webp confezione-t08-carezza-balsamica.webp confezione-t09-intenso-incanto.webp; do
             if [ ! -s "images/$name" ]; then cp "dist/images/$name" "images/$name"; fi
           done
-          if [ -n "$(git status --porcelain -- images/confezione-t06-risveglio-dorato.webp images/confezione-t08-carezza-balsamica.webp images/confezione-t09-intenso-incanto.webp)" ]; then
+          if [ -n "$(git status --porcelain -- images/confezione-t06-risveglio-dorato.webp images/confezione-t07-soffio-di-natura.webp images/confezione-t08-carezza-balsamica.webp images/confezione-t09-intenso-incanto.webp)" ]; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add images/confezione-t06-risveglio-dorato.webp images/confezione-t08-carezza-balsamica.webp images/confezione-t09-intenso-incanto.webp
-            git commit -m 'Preserve verified gift photographs T06 T08 T09 in WebP'
+            git add images/confezione-t06-risveglio-dorato.webp images/confezione-t07-soffio-di-natura.webp images/confezione-t08-carezza-balsamica.webp images/confezione-t09-intenso-incanto.webp
+            git commit -m 'Preserve verified gift photographs T06 T07 T08 T09 in WebP'
             git push origin HEAD:cloudflare-test
           fi
       - name: Verify essential output
