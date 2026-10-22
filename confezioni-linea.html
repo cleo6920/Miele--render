@@ -354,7 +354,7 @@ async function refreshGiftAvailability(m){
  if(!sku||!label||!qty||!link)return;
  label.textContent='Controllo disponibilità…';qty.disabled=true;link.setAttribute('aria-disabled','true');
  try{
-   const r=await fetch('/api/gift-stock?id='+encodeURIComponent(sku),{cache:'no-store'});
+   const r=await fetch('/api/xpay-status?giftStock=1&id='+encodeURIComponent(sku),{cache:'no-store'});
    if(!r.ok)throw Error('Disponibilità non verificabile');
    const data=await r.json();
    const stock=(data.items||[]).find(x=>x.id===sku);
