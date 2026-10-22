@@ -173,13 +173,19 @@ try {
     html = html.replace(placeholderPattern, integratoriHome);
   }
 
-  // Usa la foto rappresentativa ufficiale delle confezioni Integratori solo dopo
-  // che sia stata caricata su GitHub. Prima del caricamento conserva la foto attuale.
-  const integratorHeroPath = path.join(__dirname, 'images', 'linea-integratori-home.jpg');
-  if (fs.existsSync(integratorHeroPath)) {
+  // Foto rappresentativa Integratori: accetta sia il nome standard JPEG
+  // sia il PNG originale caricato per le sette confezioni.
+  const integratorHeroJpg = path.join(__dirname, 'images', 'linea-integratori-home.jpg');
+  const integratorHeroPng = path.join(__dirname, 'images', 'Cofanetti di Apicoltura Artigianale.png');
+  const integratorHeroUrl = fs.existsSync(integratorHeroJpg)
+    ? '/images/linea-integratori-home.jpg'
+    : (fs.existsSync(integratorHeroPng)
+      ? '/images/Cofanetti%20di%20Apicoltura%20Artigianale.png'
+      : null);
+  if (integratorHeroUrl) {
     html = html.replaceAll(
       'https://gcdn.picsart.com/editing-temp/e721a4c8-1129-4ae9-b0d6-9b9fac485388.jpeg',
-      '/images/linea-integratori-home.jpg'
+      integratorHeroUrl
     );
   }
 
