@@ -1675,6 +1675,13 @@ async function completeOrderDraft(){
   statusBox.textContent='';
 
   try{
+    // Ultima verifica prima di richiedere il pagamento a Nexi.
+    const giftCheck=await refreshGiftCartStock();
+    if(!giftCheck.ok||giftCheck.changed||!shopV2Cart.length){
+      const error=new Error(giftCheck.changed?'Le quantità delle confezioni sono cambiate. Controlla il nuovo carrello e conferma di nuovo.':'Disponibilità non verificabile: nessun pagamento è stato richiesto.');
+      error.stockChanged=true;
+      throw error;
+    }
     if(shippingState.cost===null || shippingState.cost===undefined) await calculateShipping();
 
     if(shippingState.pending){
@@ -1758,7 +1765,17 @@ async function completeOrderDraft(){
 
     window.location.href=data.url;
   }catch(error){
-    statusBox.textContent=error?.message||purchaseT('sendError');
+    const message=error?.message||purchaseT('sendError');
+    const stockError=error?.stockChanged||/disponibilit[aà] insufficiente|stock insufficiente|quantit[aà] insufficiente/i.test(message);
+    if(stockError){
+      await refreshGiftCartStock();
+      giftStockNotice=message+' Il prezzo finale deve essere riconfermato prima di pagare.';
+      document.getElementById('checkoutOverlay').classList.remove('open');
+      document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');
+      document.getElementById('cartDrawer').classList.add('open');
+      renderV2Cart();
+    }
+    statusBox.textContent=message;
     confirmBtn.disabled=false;
     confirmBtn.textContent=oldLabel;
   }
@@ -2417,7 +2434,10 @@ siteSearchGo.addEventListener('click',()=>{
 document.addEventListener('click',e=>{if(!document.getElementById('siteSearch').contains(e.target))closeSiteSearch();});
 
 document.querySelectorAll('.add-btn').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();addV2Product(btn);}));
-document.getElementById('cartFab').addEventListener('click',()=>document.getElementById('cartDrawer').classList.add('open'));
+document.getElementById('cartFab').addEventListener('click',async()=>{
+  document.getElementById('cartDrawer').classList.add('open');
+  await refreshGiftCartStock();
+});
 
 /* I prodotti dell'Alveoterapia sono elencati soltanto nella Linea 01.
    Questi ingressi aprono la scheda completa o aggiungono al carrello
@@ -2488,8 +2508,13 @@ document.getElementById('cartFab').addEventListener('click',()=>document.getElem
 document.getElementById('cartClose').addEventListener('click',()=>document.getElementById('cartDrawer').classList.remove('open'));
 document.getElementById('cartContinueShopping').addEventListener('click',()=>document.getElementById('cartDrawer').classList.remove('open'));
 document.querySelectorAll('.product-buy .add-btn').forEach(btn=>{if(btn.closest('.product-buy').querySelector('.shop-qty-input'))return;const qty=document.createElement('input');qty.type='number';qty.min='1';qty.max='99';qty.step='1';qty.value='1';qty.className='shop-qty-input';qty.setAttribute('aria-label','Quantità da aggiungere');btn.before(qty);});
-document.getElementById('startCheckout').addEventListener('click',()=>{
+document.getElementById('startCheckout').addEventListener('click',async()=>{
   if(!shopV2Cart.length){alert(purchaseT('addFirst'));return;}
+  const stock=await refreshGiftCartStock();
+  if(!stock.ok || stock.changed || !shopV2Cart.length){
+    alert(stock.changed?'La disponibilità è cambiata: il carrello è stato aggiornato. Controlla quantità, totale e Punti Ape prima di continuare.':'La disponibilità non è verificabile. Non è possibile procedere al pagamento.');
+    return;
+  }
   if(shopV2Cart.some(x=>isFreeEditionId(x.id))){
     document.getElementById('cartDrawer').classList.remove('open');
     openFreeEditionModal();
@@ -2509,6 +2534,16 @@ document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('clic
     const ok=await validStepOne();
     btn.disabled=false;
     if(!ok)return;
+  }
+  if(next===3){
+    const stock=await refreshGiftCartStock();
+    if(!stock.ok||stock.changed){
+      document.getElementById('checkoutOverlay').classList.remove('open');
+      document.getElementById('checkoutOverlay').setAttribute('aria-hidden','true');
+      document.getElementById('cartDrawer').classList.add('open');
+      alert(stock.changed?'Il carrello è stato aggiornato secondo le ultime disponibilità. Verifica il totale prima di continuare.':'Disponibilità non verificabile. Riprova dal carrello.');
+      return;
+    }
   }
   showCheckoutStep(next);
   if(next===3)await renderCheckoutSummary();
