@@ -1411,7 +1411,7 @@ function trackShopEcommerce(eventName, products){
 const GIFT_AVAILABILITY={};
 const isGiftBoxId=id=>String(id||'').startsWith('regalo-');
 async function fetchGiftAvailable(id){
- const r=await fetch('/api/gift-stock?id='+encodeURIComponent(id),{cache:'no-store'});
+ const r=await fetch('/api/xpay-status?giftStock=1&id='+encodeURIComponent(id),{cache:'no-store'});
  if(!r.ok)throw Error('Verifica giacenze temporaneamente indisponibile');
  const d=await r.json();
  const x=(d.items||[]).find(v=>v.id===id);
