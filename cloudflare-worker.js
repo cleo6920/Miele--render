@@ -37,6 +37,7 @@ const ORDER_SHIP_WEIGHT_G = {
   'regalo-t04-tesori-dell-alveare':1550,
   'regalo-t05-radici-di-miele':1550,
   'regalo-t06-risveglio-dorato':1550,
+  'regalo-t07-soffio-di-natura':1550,
   'regalo-t08-carezza-balsamica':1550,
   'regalo-t09-intenso-incanto':1700,
   millefiori:430,melone:430,fragola:430,pesca:430,arancia:430,
