@@ -96,29 +96,41 @@ jobs:
             echo "Optimized category photo already preserved."
           fi
 
-      - name: Inspect uploaded gift images visually once
+      - name: Optimize verified T06 T08 T09 gift photographs
         run: |
           git fetch --depth=1 origin main
           python - <<'PY'
-          import base64, io, subprocess
-          from PIL import Image,ImageDraw,ImageFont
-          names=['Cestino regalo di miele italiano.png','b04befd1-bf37-4446-8087-cf0fd964bee5.png','Confezione regalo di mieli artigianali (1).png','Cofanetto regalo di miele artigianale.png']
-          canvas=Image.new('RGB',(1150,1290),'#f1f0ec')
-          draw=ImageDraw.Draw(canvas)
-          for index,name in enumerate(names):
-              data=subprocess.check_output(['git','show','FETCH_HEAD:images/'+name])
-              im=Image.open(io.BytesIO(data)).convert('RGB')
-              im.thumbnail((555,570),Image.Resampling.LANCZOS)
-              x=(index%2)*575+(575-im.width)//2
-              y=(index//2)*645+38
-              canvas.paste(im,(x,y))
-              draw.text(((index%2)*575+12,(index//2)*645+5),f'{index}  '+name[:45],fill='#29241c')
-          buffer=io.BytesIO()
-          canvas.save(buffer,format='JPEG',quality=80,optimize=True)
-          print('GIFT_IMAGE_CONTACT_SHEET_BEGIN')
-          print(base64.b64encode(buffer.getvalue()).decode())
-          print('GIFT_IMAGE_CONTACT_SHEET_END')
+          from PIL import Image
+          from pathlib import Path
+          import io,subprocess
+          photos={
+              'b04befd1-bf37-4446-8087-cf0fd964bee5.png':'confezione-t06-risveglio-dorato.webp',
+              'Confezione regalo di mieli artigianali (1).png':'confezione-t08-carezza-balsamica.webp',
+              'Cofanetto regalo di miele artigianale.png':'confezione-t09-intenso-incanto.webp',
+          }
+          for source,dest in photos.items():
+              data=subprocess.check_output(['git','show','FETCH_HEAD:images/'+source])
+              with Image.open(io.BytesIO(data)) as image:
+                  image=image.convert('RGB')
+                  image.thumbnail((980,980),Image.Resampling.LANCZOS)
+                  target=Path('dist/images')/dest
+                  image.save(target,format='WEBP',quality=83,method=6)
+                  print(dest,'original',len(data),'webp',target.stat().st_size)
+                  if target.stat().st_size < 20000: raise RuntimeError('Photograph too small: '+dest)
           PY
+
+      - name: Preserve three optimized verified gift photographs
+        run: |
+          for name in confezione-t06-risveglio-dorato.webp confezione-t08-carezza-balsamica.webp confezione-t09-intenso-incanto.webp; do
+            if [ ! -s "images/$name" ]; then cp "dist/images/$name" "images/$name"; fi
+          done
+          if [ -n "$(git status --porcelain -- images/confezione-t06-risveglio-dorato.webp images/confezione-t08-carezza-balsamica.webp images/confezione-t09-intenso-incanto.webp)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add images/confezione-t06-risveglio-dorato.webp images/confezione-t08-carezza-balsamica.webp images/confezione-t09-intenso-incanto.webp
+            git commit -m 'Preserve verified gift photographs T06 T08 T09 in WebP'
+            git push origin HEAD:cloudflare-test
+          fi
       - name: Verify essential output
         run: |
           test -f dist/index.html
