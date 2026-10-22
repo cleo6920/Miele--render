@@ -105,7 +105,7 @@ try {
   html = replaceDescriptionForProduct(
     html,
     'cosmesi-candela-alveare-cera-api',
-    'Candela Alveare Grande prodotta artigianalmente in cera d’api, materiale naturale realizzato dalle api. La forma richiama il classico alveare e la rende adatta anche come elemento decorativo. Secondo i dati ufficiali Apinfiore misura circa 5 x 4 cm alla base, 6 cm in altezza e pesa circa 58 g. La cera d’api diffonde un profumo delicato e naturale e, una volta accesa, crea una luce calda e accogliente.'
+    'Candela Alveare Grande prodotta artigianalmente in cera d’api, materiale naturale realizzato dalle api. La forma richiama il classico alveare e la rende adatta anche come elemento decorativo. Secondo le dimensioni dichiarate misura circa 5 x 4 cm alla base, 6 cm in altezza e pesa circa 58 g. La cera d’api diffonde un profumo delicato e naturale e, una volta accesa, crea una luce calda e accogliente.'
   );
 
   const mandatoryCategories = ['veleno-api', 'integratori', 'cosmesi-cera', 'tesori-francesco'];
