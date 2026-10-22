@@ -262,3 +262,30 @@ jobs:
             grep -Fq 'regalo-t01-tre-sapori-una-storia' /tmp/four-gifts-shop.html
             echo "$host: B04 B05 B06 T01 visible, approved images and checkout catalog present."
           done
+
+      - name: Verify T02 T03 T04 and leave T05 unpublished
+        if: success()
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for host in lafabbricadelleapi.it la-fabbrica-delle-api-test.althea12830.workers.dev; do
+            curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/confezioni-linea.html?linea=alimenti-bevande&regalo=T03&v=$COMMIT_SHA" -o /tmp/tris-check.html
+            curl --fail --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' "https://$host/shop-v2.html?v=$COMMIT_SHA" -o /tmp/tris-shop.html
+            for code in T02 T03 T04; do
+              grep -Fq "\"id\":\"$code\"" /tmp/tris-check.html
+            done
+            grep -Fq '"id":"T05","name":"Radici di Miele"' /tmp/tris-check.html
+            grep -Fq '"status":"in preparazione","image":null' /tmp/tris-check.html
+            for filename in confezione-t02-arcobaleno-di-dolcezza confezione-t03-la-dolce-meraviglia confezione-t04-tesori-dell-alveare; do
+              grep -Fq "/images/$filename.png" /tmp/tris-check.html
+              curl --fail --silent --show-error --location --max-time 30 "https://$host/images/$filename.png?v=$COMMIT_SHA" -o /tmp/tris-photo.png
+              [ "$(file -b --mime-type /tmp/tris-photo.png)" = "image/png" ]
+              [ "$(wc -c < /tmp/tris-photo.png)" -gt 500000 ]
+            done
+            for code in regalo-t02-arcobaleno-di-dolcezza regalo-t03-la-dolce-meraviglia regalo-t04-tesori-dell-alveare; do
+              grep -Fq "$code" /tmp/tris-shop.html
+            done
+            if grep -Fq 'regalo-t05-radici-di-miele' /tmp/tris-shop.html; then exit 1; fi
+            echo "$host: T02 T03 T04 images and checkout live, T05 still in preparation."
+          done
