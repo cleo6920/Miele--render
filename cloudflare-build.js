@@ -597,6 +597,17 @@ async function main() {
     fs.writeFileSync(path.join(dist, 'punti-ape.html'), christmasPuntiApeHtml, 'utf8');
     writeRoute('/punti-ape', christmasPuntiApeHtml);
 
+    // Confezioni regalo: pubblica anche l'URL pulito /confezioni-linea usato dalle card.
+    // La pagina usa un solo catalogo per tutte le linee; mai creare un secondo placeholder.
+    const giftLineHtml = fs.readFileSync(path.join(root, 'confezioni-linea.html'), 'utf8');
+    if (!giftLineHtml.includes('I01_Energia_dell_Alveare.jpg') ||
+        !giftLineHtml.includes('I07_Le_Risorse_dell_Alveare.jpg') ||
+        !giftLineHtml.includes("slug==='integratori'?DB.models.filter")) {
+      throw new Error('[Cloudflare V2] La Linea Integratori non è presente nel catalogo confezioni');
+    }
+    fs.writeFileSync(path.join(dist, 'confezioni-linea.html'), giftLineHtml, 'utf8');
+    writeRoute('/confezioni-linea', giftLineHtml);
+
     // Installa GA4 su tutte le pagine HTML generate prima di creare il bundle dello shop.
     injectGoogleAnalyticsIntoDist(dist);
 
