@@ -35,6 +35,7 @@ const ORDER_SHIP_WEIGHT_G = {
   'regalo-t02-arcobaleno-di-dolcezza':1750,
   'regalo-t03-la-dolce-meraviglia':1700,
   'regalo-t04-tesori-dell-alveare':1550,
+  'regalo-t05-radici-di-miele':1550,
   millefiori:430,melone:430,fragola:430,pesca:430,arancia:430,
   'propolterapy-professional':1500,'capsule-pb':120,'capsule-propolit':120,
   castagno:430,'acacia-zenzero-apinfiore':370,'miele-eucalipto-apinfiore':430,balsammiel:370,
