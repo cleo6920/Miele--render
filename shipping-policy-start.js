@@ -66,4 +66,7 @@ require('./xpay-server-prestart.js');
 require('./image-cache-refresh-prestart.js');
 
 // Mantiene il servizio web attivo dopo i prestart.
+// Anteprime delle confezioni Bis/Tris Integratori: senza prezzo o disponibilità fittizi.
+require('./integratori-gift-gallery-prestart.js');
+
 require('./server.js');
