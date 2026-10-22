@@ -343,6 +343,8 @@ jobs:
           assert rows and rows[0].get('id')=='regalo-b02-pausa-doro',data
           assert rows[0].get('available') is None or isinstance(rows[0].get('available'),int),data
           print('Live stock API verified; quantity B02:',rows[0].get('available'))
+          assert rows[0].get('available') is not None, 'Le quantità del piano non risultano inizializzate'
+          assert 0 <= rows[0]['available'] <= 4, 'Quantità B02 superiore al piano'
           PY
             curl --fail --silent --show-error --location --max-time 30 "https://$host/shop-v2.html?gift_stock_check=1" -o /tmp/available-shop.html
             grep -q 'fetchGiftAvailable' /tmp/available-shop.html
