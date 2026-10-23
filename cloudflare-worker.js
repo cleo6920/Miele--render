@@ -244,6 +244,42 @@ export default {
           {status:409,headers:{'Cache-Control':'no-store'}}
         );
       }
+      // Prima di inviare il pagamento a Nexi, ricontrolla sul server il
+      // raggio locale, senza fidarsi dell'importo spedizione fornito dal browser.
+      // Le richieste di semplice verifica coupon non hanno ancora un indirizzo.
+      if(checkoutPayload && checkoutPayload.validatePromo!==true){
+        const delivery=String(checkoutPayload.deliveryMethod||'').trim();
+        const customer=checkoutPayload.customer||{};
+        const shipping=Number(checkoutPayload.shippingCostOverride);
+        const amountRows=Array.isArray(checkoutPayload.items)?checkoutPayload.items:[];
+        const goods=amountRows.reduce((sum,x)=>sum+Number(x.amount||0)*Number(x.quantity||0),0);
+        const digitalOnly=Array.isArray(checkoutPayload.xpayCart)&&checkoutPayload.xpayCart.length===1&&
+          checkoutPayload.xpayCart[0]?.productId==='alveo-digitale-10-colazioni';
+        const country=String(customer.country||'IT').trim().toUpperCase();
+        if(!digitalOnly && delivery==='pickup' && shipping!==0){
+          return Response.json({error:'Il ritiro concordato non prevede costi di spedizione.'},{status:400});
+        }
+        if(!digitalOnly && delivery!=='pickup' && country==='IT'){
+          const addressParams=new URLSearchParams({
+            address:String(customer.address||''),cap:String(customer.postal_code||''),
+            city:String(customer.city||''),province:String(customer.state||''),country:'IT'
+          });
+          const addressUrl=new URL('/api/local-delivery-check?'+addressParams.toString(),url.origin);
+          const verification=await validateAddressNative(addressUrl);
+          if(verification.status!==200 || verification.body?.validFullAddress!==true){
+            return Response.json({error:'Indirizzo da verificare prima del pagamento.'},{status:400});
+          }
+          if(verification.body.eligible===true){
+            if(Math.round(shipping*100)!==300){
+              return Response.json({error:'Consegna locale entro 30 km: costo obbligatorio di 3,00 €. Aggiorna il checkout.'},{status:409});
+            }
+          }else if(goods<69.90 && Math.round(shipping*100)!==600){
+            return Response.json({error:'Spedizione Italia: 6,00 € fuori dal raggio locale. Aggiorna il checkout.'},{status:409});
+          }else if(goods>=69.90 && Math.round(shipping*100)!==0){
+            return Response.json({error:'Spedizione Italia gratuita da 69,90 € fuori dal raggio locale. Aggiorna il checkout.'},{status:409});
+          }
+        }
+      }
     }
 
     if (url.pathname.startsWith('/api/')) {
