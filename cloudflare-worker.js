@@ -154,16 +154,16 @@ async function validateAddressNative(url){
   // a structurally valid address as wrong. It remains valid for checkout, but
   // local free-delivery eligibility is conservatively disabled.
   if(!verified){
-    return {status:200,body:{ok:true,eligible:false,validAddressPair:true,validFullAddress:true,geocoded:false,country,verifiedAddress:q,verificationWarning:true}};
+    return {status:200,body:{ok:true,eligible:false,localDeliveryRadiusKm:30,localDeliveryCostEur:null,validAddressPair:true,validFullAddress:true,geocoded:false,country,verifiedAddress:q,verificationWarning:true}};
   }
 
   const lat=Number(verified.lat),lon=Number(verified.lon);
   let distanceKm=null,eligible=false;
   if(country==='IT'&&Number.isFinite(lat)&&Number.isFinite(lon)){
     distanceKm=Math.round(haversineKm(45.187,10.974,lat,lon)*10)/10;
-    eligible=distanceKm<=50;
+    eligible=distanceKm<=30;
   }
-  return {status:200,body:{ok:true,eligible,validAddressPair:true,validFullAddress:true,geocoded:true,country,distanceKm,verifiedAddress:verified.display_name||q}};
+  return {status:200,body:{ok:true,eligible,localDeliveryRadiusKm:30,localDeliveryCostEur:eligible?3:null,validAddressPair:true,validFullAddress:true,geocoded:true,country,distanceKm,verifiedAddress:verified.display_name||q}};
 }
 
 
