@@ -269,13 +269,21 @@ export default {
           if(verification.status!==200 || verification.body?.validFullAddress!==true){
             return Response.json({error:'Indirizzo da verificare prima del pagamento.'},{status:400});
           }
-          if(verification.body.eligible===true){
-            if(Math.round(shipping*100)!==300){
+          // Se entrambi i geocodificatori sono indisponibili, mantieni
+          // soltanto le tariffe note: mai 0 € sotto soglia per beni fisici.
+          const cents=Math.round(shipping*100);
+          if(verification.body.geocoded!==true){
+            const allowed=goods>=69.90?[0,300]:[300,600];
+            if(!allowed.includes(cents)){
+              return Response.json({error:'Tariffa di consegna non valida. Aggiorna il checkout.'},{status:409});
+            }
+          }else if(verification.body.eligible===true){
+            if(cents!==300){
               return Response.json({error:'Consegna locale entro 30 km: costo obbligatorio di 3,00 €. Aggiorna il checkout.'},{status:409});
             }
-          }else if(goods<69.90 && Math.round(shipping*100)!==600){
+          }else if(goods<69.90 && cents!==600){
             return Response.json({error:'Spedizione Italia: 6,00 € fuori dal raggio locale. Aggiorna il checkout.'},{status:409});
-          }else if(goods>=69.90 && Math.round(shipping*100)!==0){
+          }else if(goods>=69.90 && cents!==0){
             return Response.json({error:'Spedizione Italia gratuita da 69,90 € fuori dal raggio locale. Aggiorna il checkout.'},{status:409});
           }
         }
