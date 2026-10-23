@@ -1337,8 +1337,8 @@ a[data-back-btn-yellow] *, button[data-back-btn-yellow] *{
         <circle cx="14" cy="32" r="2" fill="#111"/>
         <circle cx="44" cy="32" r="2" fill="#111"/>
       </svg>
-      <div class="text">SPEDIZIONE GRATUITA PER ORDINI SUPERIORI A €120!</div>
-      <div class="htf-badge">€120+</div>
+      <div class="text">CONSEGNA ENTRO 30 KM: €3 · CORRIERE GRATIS DA €69,90 FUORI ZONA</div>
+      <div class="htf-badge">€69,90+</div>
     </div>
     <button id="htf-cart" class="htf-cart" type="button" title="Apri carrello">
       <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="#111" d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4ZM7.16 14h9.87a2 2 0 0 0 1.92-1.45l1.6-5.6A1 1 0 0 0 19.6 5H6.21l-.3-1.2A1 1 0 0 0 5 3H2a1 1 0 0 0 0 2h2.24l2.07 8.28A2.5 2.5 0 0 0 7.16 14Z"/></svg>
@@ -1846,9 +1846,9 @@ const wrapRef = useRef(null);
                                 </div>
 
 {/* MOSTRA MESSAGGIO PER SPEDIZIONE LOCALE GRATUITA */}
-{isLocalShipping && calculateCartTotals.shippingTotal === 0 && (
+{isLocalShipping && (
     <div className="text-center text-xs text-green-600 bg-green-500/10 p-2 rounded-md">
-        Spedizione Locale Gratuita (entro 50km)
+        Consegna locale nel raggio verificato di 30 km: € 3,00
     </div>
 )}
                                 <hr className="my-2 border-stone-200" />
@@ -3525,13 +3525,11 @@ const wrapRef = useRef(null);
                 });
                 let shippingTotal = 0;
                 if (isLocalShipping) {
-                    shippingTotal = 0;
-                } else if (goodsTotal >= 120) {
+                    shippingTotal = 3;
+                } else if (goodsTotal >= 69.90) {
                     shippingTotal = 0;
                 } else {
-                    const isSinglePromo10 = detailedCartItems.length === 1 && /10\s*confezion/.test(detailedCartItems[0].packLabel);
-                    if (isSinglePromo10) shippingTotal = 8;
-                    else shippingTotal = totalJarsInCart >= 3 ? 10 : 8;
+                    shippingTotal = 6;
                 }
                 const orderTotal = goodsTotal + shippingTotal;
                 window.__shippingEuro = shippingTotal;
@@ -4647,7 +4645,7 @@ async function buildPayload(){
     try {
       const ev = new CustomEvent('localShippingStatusChange', { detail: { isFree: !!isFree }});
       document.dispatchEvent(ev);
-      console.log('[LOCAL SHIPPING] status →', !!isFree ? 'FREE (≤50 km)' : 'STANDARD');
+      console.log('[LOCAL SHIPPING] status →', !!isFree ? 'LOCAL DELIVERY (€3, ≤30 km)' : 'STANDARD');
     } catch (e) { console.warn('dispatchLocalShippingStatusChange error', e); }
   };
   window.setLocalShippingFree = function (bool) { window.dispatchLocalShippingStatusChange(!!bool); };
@@ -4656,7 +4654,7 @@ async function buildPayload(){
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.querySelector('#hero-topbar-fixed .text');
-  if (el) el.textContent = "Spedizione 0€ entro 50 km dall' Oasi del Busatello (Vr-Mn) o ≥ €120";
+  if (el) el.textContent = "Consegna locale entro 30 km: €3,00 · Corriere gratuito da €69,90 fuori zona";
 });
 </script>
 <div id="histats_counter"></div>
@@ -5163,15 +5161,15 @@ _Hasync.push(['Histats.track_hits', '']);
 (function(){
   try{ if (window.__shippingPatchInstalled) return; window.__shippingPatchInstalled = true; }catch(e){}
   var SHIPPING = {
-    FREE_THRESHOLD: 120,
+    FREE_THRESHOLD: 69.90,
     LOCAL_CAP: ["37063","37050","37068","37069","46010","46020"]
   };
   function pickShipping(ctx){
     var t = Math.round((Number(ctx && ctx.total) || 0) * 100) / 100;
     var cap = (ctx && ctx.cap ? String(ctx.cap) : "");
-    if (t >= SHIPPING.FREE_THRESHOLD) return { id:"free", label:"Spedizione gratuita", cost:0 };
-    if (cap && SHIPPING.LOCAL_CAP.some(function(c){ return cap.startsWith(c); })) return { id:"local", label:"Consegna locale", cost:0 };
-    return { id:"courier", label:"Corriere", cost:6.90 };
+    if (cap && SHIPPING.LOCAL_CAP.some(function(c){ return cap.startsWith(c); })) return { id:"local", label:"Consegna locale da verificare entro 30 km", cost:3 };
+    if (t >= SHIPPING.FREE_THRESHOLD) return { id:"free", label:"Spedizione corriere gratuita", cost:0 };
+    return { id:"courier", label:"Corriere", cost:6 };
   }
   function getCartTotal(){
     try{
