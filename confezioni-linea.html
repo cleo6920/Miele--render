@@ -344,8 +344,8 @@ function refreshIntegratorListAvailability(){
    nodes.forEach(node=>{
       const stock=map.get(GIFT_STOCK_IDS[node.dataset.integratoriId]);
       node.textContent=stock&&stock.enabled===true&&Number.isInteger(stock.available)
-        ? 'Disponibili: '+stock.available
-        : 'Disponibilità non verificabile';
+        ? (stock.available>0?'Prenotabili: '+stock.available:'Esaurita · 0 prenotabili')
+        : 'Prenotazioni non attive';
    });
  }).catch(()=>nodes.forEach(n=>{n.textContent='Disponibilità non verificabile';}));
 }
