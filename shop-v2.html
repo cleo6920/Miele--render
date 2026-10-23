@@ -1093,7 +1093,7 @@ body.christmas-shop-prep .ape-chat-launch{flex:0 1 350px}
 <aside class="cart-drawer" id="cartDrawer" aria-label="Cestino">
   <div class="cart-head"><h2>Il tuo cestino</h2><button class="cart-close" id="cartClose" type="button">×</button></div>
   <div class="cart-items" id="cartItems"></div><p id="giftStockNotice" role="status" aria-live="polite" style="display:none;margin:8px 13px;padding:10px 12px;border:1px solid #cba65e;border-radius:9px;background:#fff3d6;color:#563518;font-weight:700;font-size:12px;line-height:1.45"></p>
-  <div class="cart-foot"><div class="shipping-progress" id="shippingProgress" aria-live="polite"><span id="shippingProgressText">Spedizione gratuita in Italia da 69,90 €</span><div class="shipping-progress-track"><div class="shipping-progress-fill" id="shippingProgressFill"></div></div></div><div class="cart-points"><span>🐝 Punti Ape di questo ordine</span><span id="cartPoints">0</span></div><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><button class="cart-continue-shopping" type="button" id="cartContinueShopping">← Continua lo shopping</button><button class="checkout-new" type="button" id="startCheckout">Continua con l'ordine →</button><div class="cart-note">100 Punti Ape = cesto omaggio con 5 prodotti a scelta.</div></div>
+  <div class="cart-foot"><div class="shipping-progress" id="shippingProgress" aria-live="polite"><span id="shippingProgressText">Corriere gratis da 69,90 € fuori dai 30 km; consegna locale 3,00 €</span><div class="shipping-progress-track"><div class="shipping-progress-fill" id="shippingProgressFill"></div></div></div><div class="cart-points"><span>🐝 Punti Ape di questo ordine</span><span id="cartPoints">0</span></div><div class="cart-total"><span>Totale prodotti</span><span id="cartTotal">€0,00</span></div><button class="cart-continue-shopping" type="button" id="cartContinueShopping">← Continua lo shopping</button><button class="checkout-new" type="button" id="startCheckout">Continua con l'ordine →</button><div class="cart-note">100 Punti Ape = cesto omaggio con 5 prodotti a scelta.</div></div>
 </aside>
 
 
@@ -1149,7 +1149,7 @@ body.christmas-shop-prep .ape-chat-launch{flex:0 1 350px}
       <div class="checkout-screen" data-step="2">
         <h3>Come vuoi ricevere l'ordine?</h3>
         <div class="delivery-options">
-          <label class="delivery-option"><input type="radio" name="delivery" value="courier" checked><strong>Corriere</strong><p>Consegna indicativa entro 5–6 giorni.</p></label>
+          <label class="delivery-option"><input type="radio" name="delivery" value="courier" checked><strong>Consegna a domicilio / corriere</strong><p>Entro 30 km da Castel d’Ario: 3,00 €. Oltre: 6,00 € in Italia, gratis da 69,90 € di prodotti. Consegna indicativa entro 5–6 giorni.</p></label>
           <label class="delivery-option"><input type="radio" name="delivery" value="pickup"><strong>Ritiro / accordo diretto</strong><p>Lo definiamo con te senza aggiungere passaggi inutili.</p></label><p id="coColdChainNotice" hidden style="color:#843c26;font-weight:750;margin:12px 0">Questa confezione contiene pappa reale fresca: soltanto ritiro concordato e trasporto refrigerato, nessuna spedizione ordinaria.</p>
         </div>
         <div class="field" style="margin-top:16px"><label>Note per la consegna</label><textarea id="coNotes" placeholder="Facoltativo"></textarea></div>
@@ -1350,12 +1350,6 @@ async function calculateShipping(){
     return shippingState;
   }
   const country=document.getElementById('coCountry').value||'IT';
-  if(country==='IT' && cartTotal()>=69.90){
-    const estimate=await fetch('/api/shipping-estimate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({country,items:shopV2Cart.filter(x=>x.id!=='alveo-digitale-10-colazioni').map(x=>({id:x.id,qty:x.qty}))})}).then(r=>r.json()).catch(()=>null);
-    shippingState={cost:0,pending:false,weightKg:Number(estimate?.weightKg||0),label:purchaseT('free'),reason:purchaseT('order200Reason')};
-    return shippingState;
-  }
-
   const local=await checkLocalDelivery(false);
   if(!local || local.ok!==true || local.validFullAddress!==true) throw new Error(purchaseT('addressVerify'));
 
@@ -1367,8 +1361,15 @@ async function calculateShipping(){
   const estimate=await estimateRes.json().catch(()=>null);
   if(!estimateRes.ok||!estimate?.ok) throw new Error(purchaseT('shippingCalcError'));
 
-  if(country==='IT' && local.eligible){
-    shippingState={cost:0,pending:false,weightKg:Number(estimate.weightKg||0),label:purchaseT('free'),reason:purchaseT('localReason')(local.distanceKm)};
+  // La consegna locale costa sempre 3,00 €, anche sopra la soglia nazionale.
+  if(country==='IT' && local.eligible && Number(local.distanceKm)<=30){
+    shippingState={cost:3,pending:false,weightKg:Number(estimate.weightKg||0),label:euro(3),reason:'Consegna locale entro 30 km da Castel d’Ario ('+Number(local.distanceKm).toFixed(1)+' km): 3,00 €'};
+    return shippingState;
+  }
+
+  if(country==='IT' && cartTotal()>=69.90){
+    const estimate=await fetch('/api/shipping-estimate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({country,items:shopV2Cart.filter(x=>x.id!=='alveo-digitale-10-colazioni').map(x=>({id:x.id,qty:x.qty}))})}).then(r=>r.json()).catch(()=>null);
+    shippingState={cost:0,pending:false,weightKg:Number(estimate?.weightKg||0),label:purchaseT('free'),reason:'Spedizione con corriere in Italia gratuita da 69,90 € (fuori dalla consegna locale entro 30 km)'};
     return shippingState;
   }
 
@@ -1531,7 +1532,7 @@ function renderV2Cart(){
   const progressText=document.getElementById('shippingProgressText');
   const progressFill=document.getElementById('shippingProgressFill');
   const remaining=Math.max(0,69.90-cartTotal());
-  if(progressText)progressText.textContent=cartTotal()>=69.90?'🎉 Hai raggiunto la spedizione gratuita in Italia!':cartTotal()>0?'Ti mancano '+euro(remaining)+' per la spedizione gratuita in Italia!':'Spedizione gratuita in Italia da 69,90 €';
+  if(progressText)progressText.textContent=cartTotal()>=69.90?'🎉 Corriere gratis fuori dai 30 km (consegna locale 3,00 €)!':cartTotal()>0?'Ti mancano '+euro(remaining)+' al corriere gratis fuori dai 30 km (consegna locale 3,00 €)!':'Corriere gratis da 69,90 € fuori dai 30 km; consegna locale 3,00 €';
   if(progressFill)progressFill.style.width=Math.min(100,Math.max(0,cartTotal()/69.90*100))+'%';
   const box=document.getElementById('cartItems');
   const count=shopV2Cart.reduce((s,x)=>s+x.qty,0);
@@ -3045,7 +3046,7 @@ function apePelùReply(question,history=[]){
   }
 
   if(has('sped','consegn','ordine')){
-    return 'L’ordine passa da cestino, dati, consegna, riepilogo e conferma. La consegna locale entro 50 km da Castel d’Ario è gratuita; anche gli ordini da €200 o più hanno spedizione gratuita. Negli altri casi il costo viene mostrato chiaramente prima della conferma.';
+    return 'L’ordine passa da cestino, dati, consegna, riepilogo e conferma. La consegna locale entro 30 km da Castel d’Ario costa 3,00 € anche per gli ordini sopra la soglia gratuita nazionale; fuori da questo raggio la spedizione con corriere in Italia costa 6,00 €, gratuita da 69,90 € di prodotti. Negli altri casi il costo viene mostrato chiaramente prima della conferma.';
   }
 
   // PRODOTTI PRESENTI ORA NELLA V2
