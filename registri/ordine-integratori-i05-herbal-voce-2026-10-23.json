@@ -1,0 +1,29 @@
+{
+  "data": "2026-10-23",
+  "fornitore": "Pronto Natura",
+  "codice_fornitore": "23/240336",
+  "marca": "HerbalGem",
+  "prodotto": "Herbal Voce BIO 250 ml",
+  "derivato_alveare": "Miele biologico presente in ricetta; vedere etichetta originale",
+  "prezzo_acquisto_iva_esclusa_eur": 8,
+  "aliquota_iva_percento": 10,
+  "prezzo_acquisto_iva_inclusa_eur": 8.8,
+  "prezzo_vendita_pubblico_iva_inclusa_eur": 15.9,
+  "quantita_piano_ordinato": 1,
+  "stato": "Approvato per acquisto e considerato ordinato ai fini della pianificazione; ricezione fisica non confermata, non prova di ordine inoltrato al fornitore",
+  "promozione_fornitore": "Pagina Pronto Natura indica 24 gommose Voce Bio incluse con acquisto sciroppo; verificare validità e presenza in consegna. Non incluse nella confezione I05 e non valorizzate.",
+  "confezione_destinazione": {
+    "codice": "I05",
+    "nome": "Energia dell'Alveare Plus",
+    "componenti": [
+      "Bee Energy BIO",
+      "Herbal Voce BIO HerbalGem 250 ml",
+      "Propoli gocce analcoliche 20 ml"
+    ],
+    "prezzo_pubblico_eur": 39.7,
+    "punti_ape": 11,
+    "prezzo_scatola_tris_eur": 3,
+    "quantita_prenotabile_pianificata": 1
+  },
+  "nota_foto": "Fotografia confezione I05 precedente con Sinugem non più valida; usare foto del singolo Herbal Voce fino a nuova foto originale del cofanetto corretto."
+}
