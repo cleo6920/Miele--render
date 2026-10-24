@@ -456,4 +456,4 @@ function renderDetail(m){
 
 if(!line)renderList();else if(giftId){const item=DB.models.find(x=>x.id===giftId&&(slug==='alimenti-bevande'?(!x.line||x.line==='alimenti-bevande'):slug==='integratori'?x.line==='integratori':slug==='dolci'?x.line==='dolci':slug==='cosmesi'?x.line==='cosmesi':false));if(item){renderDetail(item);refreshGiftAvailability(item);window.addEventListener('focus',()=>refreshGiftAvailability(item));document.getElementById('gift-purchase-link')?.addEventListener('click',function(ev){if(this.getAttribute('aria-disabled')==='true'){ev.preventDefault();return;}})}else renderList()}else renderList();
 if(slug==='integratori'&&!giftId)refreshIntegratorListAvailability();
-</script></body></html>
+</script><script defer src="/product-photo-magnifier.js?v=20261024-1"></script></body></html>
