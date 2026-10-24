@@ -636,6 +636,52 @@ body.christmas-shop-prep .ape-chat-launch{flex:0 1 350px}
   transform: none !important;
 }
 </style>
+
+<style id="global-product-photos-zoom-20261024">
+/* Più spazio alle fotografie originali nelle schede del catalogo.
+   Non taglia etichette e confezioni, mantiene object-fit: contain. */
+.catalog-card-media{
+  height:248px!important;
+  padding:6px!important;
+  overflow:hidden;
+}
+.catalog-card-media img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center;
+  transform:scale(1.08);
+}
+.product-new-media{
+  min-height:295px!important;
+  padding:8px!important;
+  overflow:hidden;
+}
+.product-new-media img{
+  max-height:280px!important;
+  object-fit:contain!important;
+  transform:scale(1.06);
+}
+.product-detail-media{
+  padding:18px!important;
+}
+.product-detail-media img{
+  max-width:480px!important;
+  max-height:475px!important;
+  object-fit:contain!important;
+}
+@media(max-width:620px){
+  .catalog-card-media{height:218px!important;padding:5px!important}
+  .catalog-card-media img{transform:scale(1.05)}
+  .product-new-media{min-height:245px!important}
+  .product-new-media img{max-height:225px!important;transform:scale(1.04)}
+  .product-detail-media{min-height:270px!important;padding:12px!important}
+  .product-detail-media img{max-height:270px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .catalog-card-media img,.product-new-media img{transition:none}
+}
+</style>
 </head>
 <body class="christmas-shop-prep notranslate" translate="no">
 <header class="site-header">
