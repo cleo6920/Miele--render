@@ -298,7 +298,7 @@ a{color:inherit}.top{background:#641b30;color:#ffedcc;padding:13px 20px}.top-inn
 .gift-buy-btn[aria-disabled="true"]{opacity:.55;filter:grayscale(.35);cursor:not-allowed}
 .gift-photo-missing{height:200px;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;background:#fff9e9;color:#735a37;font-weight:700;font-size:13px}.integratori-stock-badge{font-weight:800;color:#743048;font-size:13px;margin:10px 0 0}.gift-buy-btn[aria-disabled="true"]{opacity:.55;pointer-events:none}
 /* Product photography: spazio utile maggiore in tutte le linee regalo.
-   La foto resta intera; la scala moderata valorizza gli originali con margini bianchi. */
+   Le immagini rimangono intere: nessun ritaglio di prodotti o etichette. */
 .product-gallery .product .gift-product-media{
   height:242px;
   width:100%;
@@ -317,7 +317,7 @@ a{color:inherit}.top{background:#641b30;color:#ffedcc;padding:13px 20px}.top-inn
   max-width:100%;
   object-fit:contain;
   object-position:center;
-  transform:scale(1.12);
+  transform:none;
   transform-origin:center;
   background:#fff;
 }
@@ -340,7 +340,7 @@ a{color:inherit}.top{background:#641b30;color:#ffedcc;padding:13px 20px}.top-inn
 .grid .gift-pic{aspect-ratio:4/3!important}
 @media(max-width:720px){
   .product-gallery .product .gift-product-media{height:205px}
-  .product-gallery .product .gift-product-media img{transform:scale(1.08)}
+  .product-gallery .product .gift-product-media img{transform:none}
 }
 @media(max-width:690px){
   .detail{grid-template-columns:1fr}
