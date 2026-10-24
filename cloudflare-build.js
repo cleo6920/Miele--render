@@ -234,7 +234,8 @@ function copyBrowserAssets() {
     'saldo-api.js',
     'cesto-admin.js',
     'cloudflare-v2-fixes.js',
-    'shop-interactions-fix.js'
+    'shop-interactions-fix.js',
+    'product-photo-magnifier.js'
   ];
   for (const file of browserScripts) {
     if (!fs.existsSync(path.join(root, file))) {
