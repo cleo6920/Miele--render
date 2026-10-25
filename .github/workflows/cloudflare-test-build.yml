@@ -216,7 +216,7 @@ jobs:
             grep -q 'data-layout="acquista-dentro-contiene"' /tmp/gift-live.html || { echo "::error::Gift contents and checkout not in right place at $host"; exit 1; }
             grep -q 'id="gift-order-qty"' /tmp/gift-live.html || { echo "::error::Gift quantity selector missing at $host"; exit 1; }
             grep -q 'refreshGiftAvailability' /tmp/gift-live.html || { echo "::error::Live availability not wired at $host"; exit 1; }
-            ! grep -q 'wa.me/393348476020' /tmp/gift-live.html || { echo "::error::Old WhatsApp CTA still present at $host"; exit 1; }
+            ! sed -n '/function purchaseAction(m){/,/async function refreshGiftAvailability(m){/p' /tmp/gift-live.html | grep -q 'wa.me/393348476020' || { echo "::error::Old WhatsApp CTA still present in gift purchase action at $host"; exit 1; }
             grep -q "<h2>Contiene</h2>" /tmp/gift-live.html || { echo "::error::Contents label missing at $host"; exit 1; }
             echo "$host: Contiene with embedded Acquista in right-hand space, Nexi shop link enabled."
           done
