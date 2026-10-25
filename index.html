@@ -2012,9 +2012,9 @@ const wrapRef = useRef(null);
                 <h3 className="sky">La cosmesi delle api</h3>
               </a>
               <a className="card" href="#" onClick={(e) => { e.preventDefault(); onSelectCategory('7'); }}>
-                <img src="images/francesco.png" alt="I Tesori di Francesco" />
+                <img src="images/francesco.png" alt="Liquori e specialità" />
                 <span className="shade"></span>
-                <h3 className="amber">I Tesori di francesco</h3>
+                <h3 className="amber">Liquori e specialità</h3>
               </a>
               <a className="card" href="#" onClick={(e) => { e.preventDefault(); onSelectCategory('alveoterapia'); }}>
                 <img src="images/alveoterapia.png" alt="L' Alveoterapia" />
@@ -3815,7 +3815,7 @@ return { goodsTotal, goodsTotalNoDiscount, shippingTotal, orderTotal, totalJarsI
                                         {selectedCategory === '7' && (
                                           <section className="ph-wrap">
                                             <div className="ph-card">
-                                              <div className="ph-badge">I Tesori di Francesco</div>
+                                              <div className="ph-badge">Liquori e specialità</div>
                                               <h3 className="ph-title">Vetrina in allestimento</h3>
                                               <p className="ph-sub">Stiamo preparando una selezione speciale:</p>
                                               <ul className="ph-list">
@@ -3851,7 +3851,7 @@ return { goodsTotal, goodsTotalNoDiscount, shippingTotal, orderTotal, totalJarsI
                                         {selectedCategory === '7' && (
                                           <div className="px-4 py-6 text-stone-100">
                                             <h3 className="text-2xl font-bold">Vetrina in allestimento</h3>
-                                            <p>Stiamo preparando i Tesori di Francesco: limoncello, liquore al caffè e castagne al rum.</p>
+                                            <p>Stiamo preparando una selezione di specialità: limoncello, liquore al caffè e castagne al rum.</p>
                                             <a href="#" onClick={(e) => { e.preventDefault(); setSelectedCategory(null); }} className="btn btn-ghost mt-3">← Torna alle categorie</a>
                                           </div>
                                         )}
