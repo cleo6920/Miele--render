@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "lines": [
+    {
+      "slug": "alveoterapia",
+      "name": "Alveoterapia Integrata",
+      "teaser": "Un incontro speciale con il mondo delle api.",
+      "icon": "sun",
+      "status": "Collezione in preparazione",
+      "order": 0,
+      "image": null
+    },
+    {
+      "slug": "alimenti-bevande",
+      "name": "Alimenti e Bevande",
+      "teaser": "Sapori da regalare, momenti da condividere.",
+      "icon": "utensils",
+      "status": "46 confezioni previste",
+      "order": 1,
+      "image": null
+    },
+    {
+      "slug": "integratori",
+      "name": "Integratori",
+      "teaser": "Piccoli gesti, grandi attenzioni.",
+      "icon": "sparkles",
+      "status": "Collezione in preparazione",
+      "order": 2,
+      "image": null
+    },
+    {
+      "slug": "dolci",
+      "name": "Dolci",
+      "teaser": "La sorpresa più golosa è tutta da scoprire.",
+      "icon": "candy",
+      "status": "Collezione in preparazione",
+      "order": 3,
+      "image": null
+    },
+    {
+      "slug": "cosmesi",
+      "name": "Cosmesi",
+      "teaser": "Un regalo di bellezza e delicatezza.",
+      "icon": "flower",
+      "status": "Collezione in preparazione",
+      "order": 4,
+      "image": null
+    },
+    {
+      "slug": "alta-cosmesi-veleno-api",
+      "name": "Alta Cosmesi al Veleno delle Api",
+      "teaser": "Una selezione esclusiva di bellezza ispirata al mondo delle api.",
+      "icon": "sparkles",
+      "status": "Collezione in preparazione",
+      "order": 5,
+      "image": null
+    },
+    {
+      "slug": "benessere",
+      "name": "Benessere",
+      "teaser": "Rituali e attenzioni per ogni occasione.",
+      "icon": "heart",
+      "status": "Collezione in preparazione",
+      "order": 6,
+      "image": null
+    },
+    {
+      "slug": "profumeria",
+      "name": "Profumeria",
+      "teaser": "Una nuova esperienza da immaginare.",
+      "icon": "droplet",
+      "status": "Linea in preparazione",
+      "order": 7,
+      "image": null
+    }
+  ]
+}
