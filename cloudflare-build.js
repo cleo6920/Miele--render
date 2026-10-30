@@ -506,6 +506,21 @@ body.fda-xmas-home .fda-hero-alveo-name{font-size:clamp(24px,3vw,42px)!important
   return html;
 }
 
+function injectReservedAccessButton(html, pathname) {
+  if (pathname !== '/' && pathname !== '/home') return html;
+  const marker = '<div class="site-tools-note">Trova subito ciò che cerchi</div>';
+  if (!html.includes(marker)) throw new Error('[Cloudflare V2] Home senza barra strumenti: accesso riservato non inserito.');
+  if (html.includes('class="site-tools-admin-link"')) return html;
+  const link = '<a class="site-tools-admin-link" href="/area-riservata" aria-label="Apri area riservata: Punti Ape, ordini e gestione interna">🔐 Area riservata</a>';
+  const css = "<style id=\"fda-area-riservata-toolbar-style\">\n.site-tools-inner>.site-tools-note{margin-right:0!important}\n.site-tools-admin-link{display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 auto;gap:6px;min-height:36px;padding:8px 12px;margin-left:14px;margin-right:auto;border:1px solid #edc56e;border-radius:999px;background:#174a39;color:#ffe5a4!important;font:800 12px/1.2 Arial,Helvetica,sans-serif;text-decoration:none!important;white-space:nowrap;box-sizing:border-box}\n.site-tools-admin-link:hover,.site-tools-admin-link:focus-visible{background:#e3ad31;color:#153126!important}\n@media(max-width:900px){.site-tools-admin-link{order:0;margin:0 auto 0 0}}\n@media(max-width:550px){.site-tools-admin-link{flex:1 1 auto;max-width:220px;min-height:35px}}\n</style>";
+  html = html.replace(marker, marker + link);
+  html = html.replace(/<\/head>/i, css + '</head>');
+  if ((html.match(/class="site-tools-admin-link"/g)||[]).length !== 1) {
+    throw new Error('[Cloudflare V2] Area riservata duplicata o assente.');
+  }
+  return html;
+}
+
 function writeRoute(route, html) {
   const clean = route.replace(/^\/+|\/+$/g, '');
   if (!clean) {
@@ -556,6 +571,7 @@ async function main() {
       if(pathname==='/shop')html=hideApinfioreFromPublicCards(html);
       html = injectBrandSeo(html, pathname);
       html = injectChristmasTheme(html, pathname);
+      html = injectReservedAccessButton(html, pathname);
       if (!/<html/i.test(html)) throw new Error('[Cloudflare V2] HTML non valido da ' + pathname);
 
       if (pathname === '/' || pathname === '/home') {
