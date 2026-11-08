@@ -17,6 +17,7 @@ body{background:var(--cream);color:var(--ink)}
 .board-main{padding:56px 0 80px}
 .event-card{display:grid;grid-template-columns:minmax(300px,.82fr) minmax(0,1.18fr);gap:38px;align-items:start;background:#fffdf8;border:1px solid #e0d6c3;border-radius:30px;padding:26px;box-shadow:0 18px 46px rgba(39,34,20,.08)}
 .flyer-shell{background:#5b351f;border-radius:24px;padding:13px;box-shadow:0 18px 40px rgba(0,0,0,.18)}
+.castel-card{margin-bottom:32px}.castel-flyer{display:block;width:100%;height:auto;border-radius:14px}
 #eventFlyerCanvas{display:block;width:100%;height:auto;border-radius:14px;background:#eee}
 .event-copy{padding:10px 10px 10px 0}.event-copy .tag{display:inline-flex;padding:7px 11px;border-radius:999px;background:#f0bd48;color:#17362b;font-weight:950;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
 .event-copy h2{font:800 clamp(34px,4.5vw,56px)/1.02 Georgia,serif;margin:18px 0 12px}.event-lead{font-size:18px;line-height:1.65;color:#445149}
@@ -48,6 +49,22 @@ body{background:var(--cream);color:var(--ink)}
 
 <main class="board-main">
   <div class="board-wrap">
+    <article class="event-card castel-card" aria-labelledby="titolo-castel">
+      <a class="flyer-shell" href="/downloads/mercatini-castel-d-ario-2027.pdf">
+        <img class="castel-flyer" src="/images/bacheca/mercatini-castel-d-ario-2027.webp" alt="Apri il volantino dei Mercatini di Castel d’Ario 2027 in PDF">
+      </a>
+      <div class="event-copy">
+        <span class="tag">Invito per espositori</span>
+        <h2 id="titolo-castel">Nascono i mercatini di Castel d’Ario!</h2>
+        <p class="event-lead">Da marzo 2027 a Castel d’Ario (MN). È prevista la quarta domenica del mese, in attesa di conferma definitiva.</p>
+        <p>Collezionismo, vintage, casalinghi, abbigliamento e alimentazione.</p>
+        <p>Per inviare la richiesta online bastano nome e telefono, con il consenso privacy. Gli altri dati sono facoltativi.</p>
+        <div class="event-actions">
+          <a class="event-btn primary" href="/mercatini-eventi#adesione">Invia la tua adesione</a>
+          <a class="event-btn secondary" href="/downloads/mercatini-castel-d-ario-2027.pdf" download>Scarica il volantino (PDF)</a>
+        </div>
+      </div>
+    </article>
     <article class="event-card" style="margin-bottom:32px"><div class="event-copy"><span class="tag">Luoghi e storie dell’alveare</span><h2>Cosa puoi scoprire entrando nella Galena delle Api</h2><p>Conosci il centro di Castel d’Ario, il percorso al coperto e le domande da fare prima di organizzare una visita.</p><a class="event-btn primary" href="/galena-delle-api-da-scoprire">Leggi il racconto →</a></div></article>
 <article class="event-card">
       <div class="flyer-shell"><canvas id="eventFlyerCanvas" width="794" height="1136" aria-label="Locandina evento"></canvas></div>
