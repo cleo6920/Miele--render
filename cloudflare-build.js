@@ -229,6 +229,7 @@ function copyBrowserAssets() {
 
   const browserScripts = [
     'global-tools-v2.js',
+    'mercatini-adesioni-client.js',
     'shop-purchase-i18n.js',
     'render-language-de-test.js',
     'saldo-api.js',

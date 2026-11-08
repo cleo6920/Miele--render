@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mercatini ed Eventi | La Fabbrica delle Api</title>
+<meta name="description" content="Mercatini di Castel d’Ario da marzo 2027. Scopri le informazioni per gli espositori e invia la tua richiesta di partecipazione.">
+<link rel="canonical" href="https://lafabbricadelleapi.it/mercatini-eventi">
+<link rel="stylesheet" href="/site.css?v=2">
+<link rel="stylesheet" href="/global-nav-v2.css?v=20260922-1">
+<style>
+.market {color:#13382c;background:#fbf5e8}
+.market .wrap {width:min(1080px,calc(100% - 36px));margin-inline:auto}
+.market h1,.market h2 {font-family:Georgia,serif;line-height:1.1}
+.market h1 {font-size:clamp(2.6rem,7vw,5.2rem);margin:.25em 0}
+.market h2 {font-size:clamp(1.75rem,4vw,3rem);margin:.3em 0 .55em}
+.market p {line-height:1.6}
+.market .intro {padding:clamp(40px,8vw,85px) 0 28px}
+.market .label {font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#79550d;font-size:.8rem}
+.market .event,.market .registration {border:1px solid #e5d9be;background:#fffdf7;border-radius:24px}
+.market .event {display:grid;grid-template-columns:1.1fr 1fr;align-items:center;overflow:hidden}
+.market .event figure {margin:0}
+.market .event img {display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.market .event figcaption {padding:8px 16px;font-size:.8rem}
+.market .event-copy,.market .registration {padding:clamp(20px,5vw,46px)}
+.market .date {font-weight:800;color:#79550d}
+.market .registration {margin-top:28px;margin-bottom:56px;scroll-margin-top:130px}
+.market .fields {display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.market label {font-weight:700}
+.market label span {display:block;margin-bottom:6px}
+.market input:not([type=checkbox]),.market select {width:100%;min-height:48px;border:1px solid #827b69;border-radius:8px;background:#fff;color:#17382d;padding:9px;font:inherit}
+.market .consent {display:flex;gap:10px;align-items:flex-start;margin:16px 0}
+.market .consent input {width:20px;height:20px;flex:none;margin:2px 0 0}
+.market details {margin-top:20px;line-height:1.55}
+.market summary {cursor:pointer;font-weight:750}
+.market .action {display:inline-block;background:#143e30;color:#fff;border:0;border-radius:10px;padding:14px 22px;font:700 1rem system-ui;text-decoration:none;cursor:pointer}
+.market .action:disabled {opacity:.65;cursor:wait}
+.market :focus-visible {outline:3px solid #9b5b00;outline-offset:3px}
+.market .form-feedback:not(:empty) {margin-top:16px;padding:12px;background:#f5edda;border-radius:8px}
+@media(max-width:700px){.market .event,.market .fields{grid-template-columns:1fr}.market .action{width:100%;text-align:center}.market .event img{max-height:330px}}
+</style>
+<script src="/mercatini-adesioni-client.js" defer></script>
+</head>
+<body>
+<header class="site-header"><nav class="nav" aria-label="Navigazione principale">
+<a class="brand" href="/"><span class="brand-mark" aria-hidden="true">✦</span><span>LA FABBRICA DELLE API</span></a>
+<div class="nav-links"><a href="/">Home</a><a href="/alveoterapia">Alveoterapia</a><a href="/#luoghi">I luoghi</a><a href="/chi-siamo">Chi siamo</a><a href="/bacheca">Bacheca</a><a href="/mercatini-eventi" aria-current="page">Mercatini ed Eventi</a><a class="shop" href="/shop">Prodotti &amp; Shop</a><a class="talk" href="/contatti">Parliamone</a></div>
+</nav></header>
+<main class="market">
+<div class="wrap">
+<section class="intro"><span class="label">La Fabbrica delle Api · Per gli espositori</span><h1>Mercatini ed Eventi</h1><p>Scopri i prossimi appuntamenti e invia la tua richiesta di partecipazione.</p></section>
+<article class="event" aria-labelledby="castel-d-ario">
+<figure><img src="/images/mercatini-castello.webp" alt="Le mura e le torri del castello di Castel d’Ario" width="800" height="600"><figcaption>Foto di <a href="https://commons.wikimedia.org/wiki/File:Castel_d%27Ario-Castello.JPG">Massimo Telò</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> · adattata per il web</figcaption></figure>
+<div class="event-copy"><span class="label">Castel d’Ario · Mantova</span><h2 id="castel-d-ario">Nascono i mercatini di Castel d’Ario!</h2>
+<p class="date">Da marzo 2027 · Ogni quarta domenica del mese</p>
+<p>La quarta domenica è in attesa di conferma definitiva.</p>
+<p>Da marzo 2027 Castel d’Ario (MN) si arricchisce di un nuovo appuntamento mensile dedicato ai mercatini!</p>
+<p>Una bella occasione per esporre i vostri prodotti, far conoscere le vostre creazioni e incontrare nuovi visitatori.</p>
+<p>Le date dettagliate e le informazioni organizzative saranno aggiornate su questa pagina.</p>
+<a class="action" href="#adesione">Vai al modulo espositori</a></div>
+</article>
+<section class="registration" id="adesione" aria-labelledby="adesione-titolo">
+<span class="label">Per gli espositori</span><h2 id="adesione-titolo">Richiedi di partecipare</h2>
+<p>L’invio è una richiesta di partecipazione. L’eventuale conferma sarà comunicata dal gestore.</p>
+<form action="/mercatini-eventi/adesioni" method="post">
+<div class="fields">
+<label><span>Nome</span><input name="nome" autocomplete="given-name" maxlength="80" required></label>
+<label><span>Cognome</span><input name="cognome" autocomplete="family-name" maxlength="80" required></label>
+<label><span>Tipologia di merce esposta</span><input name="merce" maxlength="250" required></label>
+<label><span>Numero di telefono</span><input name="telefono" type="tel" autocomplete="tel" maxlength="24" required></label>
+<label><span>Indirizzo email</span><input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+<label><span>Mercatino di interesse</span><select name="evento" required><option value="castel-d-ario">Castel d’Ario (MN)</option></select></label>
+</div>
+<details id="informativa"><summary>Informativa privacy per le richieste di adesione</summary>
+<p>ALTHEA 12830 di Viri Pera Franco, titolare del trattamento, usa i dati del modulo con il tuo consenso per valutare la richiesta, contattarti e organizzare l’eventuale partecipazione. Il conferimento è necessario per gestire la richiesta. I dati sono accessibili al gestore autorizzato e trattati da Cloudflare quale fornitore tecnico per l’archiviazione. Sono conservati per il tempo necessario alla gestione della richiesta e dell’eventuale partecipazione.</p>
+<p>Puoi revocare il consenso e chiedere accesso, rettifica, cancellazione, limitazione e portabilità, ove applicabili, scrivendo a <a href="mailto:althea12830@gmail.com">althea12830@gmail.com</a>. Puoi proporre reclamo al Garante per la protezione dei dati personali. Leggi anche l’<a href="/privacy.html">informativa privacy del sito</a>.</p></details>
+<label class="consent"><input name="consenso" type="checkbox" value="si" required><span>Acconsento al trattamento dei miei dati per la gestione della richiesta di partecipazione.</span></label>
+<button class="action" type="submit">INVIA LA TUA ADESIONE</button>
+<p class="form-feedback" role="status" aria-live="polite"></p>
+</form>
+</section>
+</div>
+</main>
+<footer class="footer"><div class="footer-inner"><a href="/">La Fabbrica delle Api</a><a href="/contatti">Contatti</a><a href="/privacy.html">Privacy</a></div></footer>
+</body>
+</html>

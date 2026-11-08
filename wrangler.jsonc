@@ -4,6 +4,11 @@
   "main": "cloudflare-worker.js",
   "compatibility_date": "2026-09-24",
   "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [{
+    "binding": "MERCATINI_DB",
+    "database_name": "mercatini-adesioni",
+    "database_id": "95df7d7e-5153-4240-9cab-e45d869009bd"
+  }],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

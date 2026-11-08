@@ -1,5 +1,6 @@
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import SHOP_HTML from './cloudflare-shop-html.js';
+import { receiveMarketApplication } from './mercatini-adesioni.js';
 
 const VERCEL_V2_ORIGIN = 'https://miele-backend-omega.vercel.app';
 
@@ -167,11 +168,22 @@ async function validateAddressNative(url){
 }
 
 
+const MARKET_NAV_ROUTES = new Set(['/', '/home', '/contatti', '/centro', '/alveoterapia', '/chi-siamo', '/bacheca', '/galena-delle-api-da-scoprire']);
+
 const SHOP_ROUTES = new Set(['/shop','/shop/','/shop/index.html','/shop-v2','/shop-v2/','/shop-v2.html','/shop.html']);
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    if (url.pathname === '/mercatini-eventi/adesioni') {
+      return receiveMarketApplication(request, env.MERCATINI_DB);
+    }
+
+    if (url.pathname === '/mercatini-eventi/' || url.pathname === '/mercatini-eventi.html') {
+      url.pathname = '/mercatini-eventi';
+      return Response.redirect(url, 308);
+    }
 
     if (url.pathname === '/__cloudflare-test') {
       return Response.json({
@@ -376,7 +388,17 @@ export default {
     }
 
     const assetResponse = await env.ASSETS.fetch(request);
-    if (assetResponse.ok) return assetResponse;
+    if (assetResponse.ok) {
+      const path = url.pathname.replace(/\/$/, '') || '/';
+      if (MARKET_NAV_ROUTES.has(path) && assetResponse.headers.get('Content-Type')?.includes('text/html')) {
+        return new HTMLRewriter().on('nav .nav-links', {
+          element(menu) {
+            menu.prepend('<a href="/mercatini-eventi">Mercatini ed Eventi</a>', { html: true });
+          }
+        }).transform(assetResponse);
+      }
+      return assetResponse;
+    }
 
     if (url.pathname.startsWith('/images/')) {
       // First fallback: images already present in the Cloudflare migration branch.
