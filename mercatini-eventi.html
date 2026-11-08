@@ -61,19 +61,19 @@
 </article>
 <section class="registration" id="adesione" aria-labelledby="adesione-titolo">
 <span class="label">Per gli espositori</span><h2 id="adesione-titolo">Richiedi di partecipare</h2>
-<p>L’invio è una richiesta di partecipazione. L’eventuale conferma sarà comunicata dal gestore.</p>
+<p>Nome e telefono sono obbligatori. Gli altri dati sono facoltativi.</p><p>L’invio è una richiesta di partecipazione. L’eventuale conferma sarà comunicata dal gestore.</p>
 <form action="/mercatini-eventi/adesioni" method="post">
 <div class="fields">
 <label><span>Nome</span><input name="nome" autocomplete="given-name" maxlength="80" required></label>
-<label><span>Cognome</span><input name="cognome" autocomplete="family-name" maxlength="80" required></label>
-<label><span>Categoria merceologica</span><input name="merce" maxlength="250" required></label>
-<label><span>Metratura del banco (m²)</span><input name="metratura_banco" type="number" min="0.01" step="0.01" placeholder="Es. 9" required></label>
+<label><span>Cognome</span><input name="cognome" autocomplete="family-name" maxlength="80"></label>
+<label><span>Categoria merceologica</span><input name="merce" maxlength="250"></label>
+<label><span>Metratura del banco (m²)</span><input name="metratura_banco" type="number" min="0.01" step="0.01" placeholder="Es. 9"></label>
 <label><span>Numero di telefono</span><input name="telefono" type="tel" autocomplete="tel" maxlength="24" required></label>
-<label><span>Indirizzo email</span><input name="email" type="email" autocomplete="email" maxlength="254" required></label>
-<label><span>Mercatino di interesse</span><select name="evento" required><option value="castel-d-ario">Castel d’Ario (MN)</option></select></label>
+<label><span>Indirizzo email</span><input name="email" type="email" autocomplete="email" maxlength="254"></label>
+<label><span>Mercatino di interesse</span><select name="evento"><option value="castel-d-ario">Castel d’Ario (MN)</option></select></label>
 </div>
 <details id="informativa"><summary>Informativa privacy per le richieste di adesione</summary>
-<p>ALTHEA 12830 di Viri Pera Franco, titolare del trattamento, usa i dati del modulo con il tuo consenso per valutare la richiesta, contattarti e organizzare l’eventuale partecipazione. Il conferimento è necessario per gestire la richiesta. I dati sono accessibili al gestore autorizzato e trattati da Cloudflare quale fornitore tecnico per l’archiviazione. Sono conservati per il tempo necessario alla gestione della richiesta e dell’eventuale partecipazione.</p>
+<p>ALTHEA 12830 di Viri Pera Franco, titolare del trattamento, usa i dati del modulo con il tuo consenso per valutare la richiesta, contattarti e organizzare l’eventuale partecipazione. Nome e telefono sono necessari per gestire la richiesta. Gli altri dati sono facoltativi. I dati sono accessibili al gestore autorizzato e trattati da Cloudflare quale fornitore tecnico per l’archiviazione. Sono conservati per il tempo necessario alla gestione della richiesta e dell’eventuale partecipazione.</p>
 <p>Puoi revocare il consenso e chiedere accesso, rettifica, cancellazione, limitazione e portabilità, ove applicabili, scrivendo a <a href="mailto:althea12830@gmail.com">althea12830@gmail.com</a>. Puoi proporre reclamo al Garante per la protezione dei dati personali. Leggi anche l’<a href="/privacy.html">informativa privacy del sito</a>.</p></details>
 <label class="consent"><input name="consenso" type="checkbox" value="si" required><span>Acconsento al trattamento dei miei dati per la gestione della richiesta di partecipazione.</span></label>
 <button class="action" type="submit">INVIA LA TUA ADESIONE</button>

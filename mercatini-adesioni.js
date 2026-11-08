@@ -1,5 +1,5 @@
 const EVENTS = new Set(['castel-d-ario']);
-const CONSENT_VERSION = '2026-11-08';
+const CONSENT_VERSION = '2026-11-08-v2';
 const MAX_BODY_BYTES = 8192;
 
 function reply(request, message, status) {
@@ -52,17 +52,18 @@ export async function receiveMarketApplication(request, database) {
     const metratura = metraturaRaw ? Number(metraturaRaw.replace(',', '.')) : null;
     const email = get('email').toLowerCase();
     const telefono = get('telefono');
-    const evento = get('evento');
-    if (!nome || nome.length > 80 || !cognome || cognome.length > 80 ||
-        !merce || merce.length > 250 || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
-        telefono.length > 24 || !/^\+?[0-9 ().-]+$/.test(telefono) || !/^\d{6,15}$/.test(telefono.replace(/\D/g, '')) ||
-        (fields.has('metratura_banco') && (!/^\d+(?:[.,]\d{1,2})?$/.test(metraturaRaw) || !Number.isFinite(metratura) || metratura <= 0)) ||
+    const telefonoNormalizzato = telefono.replace(/\D/g, '');
+    const evento = get('evento') || 'castel-d-ario';
+    if (!nome || nome.length > 80 || cognome.length > 80 ||
+        merce.length > 250 || email.length > 254 || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) ||
+        telefono.length > 24 || !/^\+?[0-9 ().-]+$/.test(telefono) || !/^\d{6,15}$/.test(telefonoNormalizzato) ||
+        (metraturaRaw && (!/^\d+(?:[.,]\d{1,2})?$/.test(metraturaRaw) || !Number.isFinite(metratura) || metratura <= 0)) ||
         !EVENTS.has(evento) || get('consenso') !== 'si') {
       return reply(request, 'Controlla i dati inseriti e il consenso, poi riprova.', 400);
     }
     await database.prepare(
-      'INSERT INTO adesioni_mercatini (evento,nome,cognome,merce,telefono,email,versione_consenso,metratura_banco_mq) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(evento,email,nome,cognome) DO NOTHING'
-    ).bind(evento, nome, cognome, merce, telefono, email, CONSENT_VERSION, metratura).run();
+      'INSERT INTO adesioni_mercatini_v2 (evento,nome,cognome,merce,telefono,email,versione_consenso,metratura_banco_mq,telefono_normalizzato) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(evento,nome,telefono_normalizzato) DO NOTHING'
+    ).bind(evento, nome, cognome, merce, telefono, email, CONSENT_VERSION, metratura, telefonoNormalizzato).run();
     return reply(request, 'Richiesta ricevuta. Il gestore ti contatterà per l’eventuale conferma.', 200);
   } catch {
     return reply(request, 'Al momento non è possibile registrare la richiesta. Riprova più tardi.', 503);
